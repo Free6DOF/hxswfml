@@ -1,0 +1,28 @@
+<?xml version="1.0" ?>
+<swf>
+	<Header width="800" height="600" fps="30" version="10" compressed="true" frameCount="1" />
+	
+	<FileAttributes actionscript3="true" useNetwork="false" useDirectBlit="false" useGPU="false" hasMetaData="false" />
+	
+	<SetBackgroundColor color="0xaaaaaa" />
+
+	<ScriptLimits maxRecursionDepth="256" scriptTimeoutSeconds="15" />
+	
+	<DefineShape id="1" fillColor="0xff0000" lineWidth="1" lineColor = "0x000000" width="100" height="100" />
+	<DefineShape id="2" fillColor="0x00ff00" lineWidth="1" lineColor = "0x000000" width="100" height="100" />
+	<DefineShape id="3" fillColor="0x0000ff" lineWidth="1" lineColor = "0x000000" width="100" height="100" />
+	<DefineShape id="4" fillColor="0x000000" lineWidth="1" lineColor = "0x000000" width="100" height="100" />
+	
+	<DefineButton id="5">
+		<ButtonState up='true' id='1' depth='1' x='0' y='0' scaleX='1.0' scaleY='1.0' rotate0='0.0' rotate1='0.0'/>
+		<ButtonState over='true' id='2' depth='1' />
+		<ButtonState down='true' id='3' depth='1' />
+		<ButtonState hit='true' id='4' depth='1' />
+		</DefineButton>
+	
+	<PlaceObject id="5" depth="1" x="0" y="0" scaleX="1.0" scaleY="1.0"/>
+
+	<ShowFrame/>
+	
+</swf>
+
