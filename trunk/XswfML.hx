@@ -26,7 +26,7 @@ class XswfML
 		var args:Array<String> = neko.Sys.args();
 		if (args.length!=2)
 		{
-			Lib.print("Usage: hXswfML in.xml out.swf");
+			Lib.println("Usage: hXswfML in.xml out.swf");
 		}
 		else
 		{	
