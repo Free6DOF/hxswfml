@@ -1,7 +1,0 @@
-Movie
--cp ./
--main Movie
---flash-use-stage
--swf9 ../assets/Movie.swf
--swf-version 10
--swf-header 800:600:30:ffffff
