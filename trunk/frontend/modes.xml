@@ -1,0 +1,1 @@
+<?xml version="1.0" encoding="iso-8859-1"?><modes>	<mode name="xml"  file="modes/xml.xml"  ext="xml"/>	<mode name="haxe" file="modes/haxe.xml" ext="hx"/>	<mode name="bash" file="modes/bash.xml" ext="sh"/>	<mode name="make" file="modes/make.xml" ext="makefile"/>	<mode name="html" file="modes/html.xml" ext="html"/>	<mode name="css"  file="modes/css.xml" ext="css"/></modes>
