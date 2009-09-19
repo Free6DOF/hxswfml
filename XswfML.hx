@@ -87,7 +87,6 @@ class HXswfML
 				case 'definesound' : swfWriter.writeTag(defineSound());
 				case 'definefont' : swfWriter.writeTag(defineFont());
 				case 'defineabc' : swfWriter.writeTag(defineABC());
-				//case 'definevideo'  : swfWriter.writeTag(defineVideo());//TODO (port from FLVParser (AS3).)
 					
 				case 'placeobject' : swfWriter.writeTag(placeObject2());
 				case 'removeobject' : swfWriter.writeTag(removeObject2());
