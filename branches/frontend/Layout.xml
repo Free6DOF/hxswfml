@@ -1,0 +1,468 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<haxegui:Layout name="Example1">
+	<!-- Main Window -->
+	<haxegui:Window name="SwfMillEditor" x="100" y="30" width="800" height="600" sizeable="true">
+	<!-- MenuBar -->
+		<haxegui:controls:MenuBar name="MenuBar1" width="100%" x="10" y="20">
+			<haxegui:controls:Menu name="_File">
+				<haxegui:DataSource>
+					<Xml><![CDATA[
+					<root>
+						<item label="_New" action="root.new()"/>
+						<item label="_Open" action="root.load()"/>
+						<item label="_Save" disabled="true"/>
+						<item label="Save _As" disabled="true"/>
+						<item label="_Revert" disabled="true"/>
+						<separator/>
+						<item label="_Import"/>
+						<item label="Import To _Library"/>
+						<item type="separator"/>
+						<item label="_Export" disabled="true">
+							<item label="To ZIP Package"/>
+							<item label="To _HTML"/>
+						</item>
+						<item type="separator"/>
+						<item label="_Quit" action="bye"/>
+					</root>
+					]]>
+					</Xml>
+				</haxegui:DataSource>
+			</haxegui:controls:Menu>
+			<haxegui:controls:Menu name="_Edit">
+				<haxegui:DataSource>
+					<List>
+						<String>_Copy</String>
+						<String>_Paste</String>
+						<String>Cu_t</String>
+						<String></String>
+						<String>_Preferences</String>
+					</List>
+					<Xml><![CDATA[
+					<root>
+							<menuitem label="_Copy"/>
+							<menuitem label="_Paste"/>
+							<menuitem label="Cu_t"/>
+							<separator/>
+							<menuitem label="_Preferences" action="root.options()"/>
+					</root>
+					]]>
+					</Xml>
+				</haxegui:DataSource>
+			</haxegui:controls:Menu>
+			<haxegui:controls:Menu name="_Tools">
+				<haxegui:DataSource>
+					<List>
+						<String>swfdump</String>
+						<String>swfextract</String>
+						<String>xsltproc</String>
+					</List>
+				</haxegui:DataSource>
+			</haxegui:controls:Menu>
+
+			<haxegui:controls:Menu name="_View">
+				<haxegui:DataSource>
+					<Xml><![CDATA[
+					<root>
+						<menuitem label="_Windows">
+							<menuitem label="Preview" type="check" toggled="false" action="root.togglePreviewVisible(event)"/>
+							<menuitem label="Source" type="check" toggled="true" action="root.toggleSourceVisible()"/>
+							<menuitem label="Stage" type="check" toggled="true" action="root.toggleStageVisible()"/>
+							<menuitem label="Library" type="check" toggled="true" action="root.toggleLibraryVisible()"/>
+						</menuitem>
+					</root>
+					]]>
+					</Xml>
+				</haxegui:DataSource>
+			</haxegui:controls:Menu>
+			<haxegui:controls:Spacer/>
+			<haxegui:controls:Menu name="_Help">
+				<haxegui:DataSource>
+					<List>
+						<String>Haxegui Help</String>
+						<String><![CDATA[<A HREF="http://swfmill.org/">SwfMill WebSite</A>]]></String>
+						<String></String>
+						<String>About</String>
+					</List>
+				</haxegui:DataSource>
+			</haxegui:controls:Menu>
+		</haxegui:controls:MenuBar>
+		<!-- Main ToolBar -->
+		<haxegui:controls:ToolBar name="Toolbar" x="10" y="42">
+			<haxegui:containers:HBox x="20" y="4" height="30" cellSpacing="0">
+				<haxegui:controls:Button width="30" icon="STOCK_NEW"  name="New"/>
+				<haxegui:controls:Button width="30" icon="STOCK_OPEN" name="Load"/>
+				<haxegui:controls:Button width="30" icon="STOCK_SAVE" name="Save"/>
+				<haxegui:controls:ToolBarSeperator width="30"/>
+				<haxegui:controls:Button width="30" icon="STOCK_COPY"  name="Copy"  disabled="true"/>
+				<haxegui:controls:Button width="30" icon="STOCK_CUT"   name="Cut"   disabled="true"/>
+				<haxegui:controls:Button width="30" icon="STOCK_PASTE" name="Paste" disabled="true"/>
+				<haxegui:controls:ToolBarSeperator width="30"/>
+				<haxegui:controls:Button width="30" icon="STOCK_UNDO" name="Undo" disabled="true"/>
+				<haxegui:controls:Button width="30" icon="STOCK_REDO" name="Redo" disabled="true"/>
+				<haxegui:controls:Button width="30" icon="STOCK_FIND" name="Find" disabled="false"/>
+				<haxegui:controls:ToolBarSeperator width="30"/>
+				<haxegui:controls:Button width="80" icon="run.png" label="Run" name="Run" disabled="true"/>
+				<haxegui:controls:ComboBox width="80" x="{this.prevSibling().x+88}" y="5" name="Mode" text="" disabled="true"/>
+			</haxegui:containers:HBox>
+			<haxegui:controls:Component name="Throbber" y="4" right="40">
+			<events>
+				<script type="text/hscript" action="onLoaded"><![CDATA[
+				this.blendMode = flash.display.BlendMode.ADD;
+				var mc = Lib.attach("Throbber");
+				mc.stop();
+				mc.visible = false;
+				this.addChild(mc);
+				]]>
+				</script>
+			</events>
+			</haxegui:controls:Component>
+		</haxegui:controls:ToolBar>
+		<!-- Time-Line -->
+		<haxegui:containers:Container name="timeline" x="10" y="82" height="60" visible="false"/>
+		<!-- Main ScrollPane -->
+		<haxegui:containers:ScrollPane name="ScrollPane1" x="10" y="142" left="10" right="10" top="82" bottom="20">
+		<!-- Main Container -->
+			<haxegui:containers:Container name="Container1" color="0x888888">
+			<!-- Preview Window -->
+				<haxegui:Window name="Preview" width="300" visible="false">
+					<haxegui:controls:ToolBar name="ToolBar" x="10" y="20">
+						<haxegui:controls:ComboBox name="ComboBox1" width="80" x="24" y="10" text="100%">
+						<events>
+							<script type="text/hscript" action="onLoaded">
+							<![CDATA[
+							function onChanged(e) {
+								var sp = this.getParentWindow().getChildByName("ScrollPane1");
+								if(sp.content.numChildren==0) return;
+								if(sp.content.numChildren==1) return;
+								var canvas = sp.content.getChildAt(sp.content.numChildren);
+								var swf = sp.content.getChildAt(sp.content.numChildren-1);
+								var str = this.input.getText();
+								if(swf==null) return;
+								var zoom = .01*Std.parseInt(str.substr(0,str.length-1));
+								swf.scaleX = zoom;
+								swf.scaleY = zoom;
+								canvas.scaleX = zoom;
+								canvas.scaleY = zoom;
+							}
+							this.addEventListener(flash.events.Event.CHANGE, onChanged, false, 0, true);
+							]]>
+							</script>
+						</events>
+							<haxegui:DataSource>
+								<Array>
+								<String>5%</String>
+								<String>10%</String>
+								<String>15%</String>
+								<String>25%</String>
+								<String>50%</String>
+								<String>75%</String>
+								<String>100%</String>
+								<String>125%</String>
+								<String>150%</String>
+								<String>200%</String>
+								<String>300%</String>
+								<String>400%</String>
+								</Array>
+							</haxegui:DataSource>
+						</haxegui:controls:ComboBox>
+						<haxegui:controls:Slider name="Slider" x="130" y="6" step="2" page="5">
+							<events>
+								<script type="text/hscript" action="onLoaded">
+								<![CDATA[
+								function onChanged(e) {
+									var combo = this.prevSibling();
+									var str = combo.input.getText();
+									str = str.substr(0, str.length-1);
+
+									var zoom = this.adjustment.getValue()/((this.box.width-this.handle.box.width)>>2);
+
+									combo.input.setText(Math.round(100*zoom)+"%");
+								if(sp.content.numChildren==0) return;
+								if(sp.content.numChildren==1) return;
+
+									var sp = this.getParentWindow().getChildByName("ScrollPane1");
+									var swf = sp.content.getChildAt(sp.content.numChildren);
+									var canvas = sp.content.getChildAt(sp.content.numChildren-1);
+									if(swf==null) return;
+
+									swf.scaleX = zoom;
+									swf.scaleY = zoom;
+									canvas.scaleX = zoom;
+									canvas.scaleY = zoom;
+								}
+								this.adjustment.addEventListener(flash.events.Event.CHANGE, onChanged, false, 0, true);
+								]]>
+								</script>
+							</events>
+						</haxegui:controls:Slider>
+						<haxegui:containers:HBox fitH="false" width="120" cellSpacing="0" x="300" y="4">
+							<haxegui:controls:Button width="30" icon="zoom-in.png" name="ZoomIn">
+							<events>
+								<script type="text/hscript" action="mouseClick">
+								<![CDATA[
+									var combo = parent.prevSibling().prevSibling();
+									var str = combo.input.getText();
+									str = str.substr(0, str.length-1);
+									var zoom = .01*Std.parseInt(str);
+									zoom += .1;
+
+									combo.input.setText(Math.round(100*zoom)+"%");
+
+									var sp = this.getParentWindow().getChildByName("ScrollPane1");
+									var swf = sp.content.getChildAt(sp.content.numChildren);
+									var canvas = sp.content.getChildAt(sp.content.numChildren-1);
+									if(swf==null) return;
+
+									swf.scaleX = zoom;
+									swf.scaleY = zoom;
+									canvas.scaleX = zoom;
+									canvas.scaleY = zoom;
+
+								]]>
+								</script>
+							</events>
+							</haxegui:controls:Button>
+							<haxegui:controls:Button width="30" icon="zoom-out.png"  name="ZoomOut">
+							<events>
+								<script type="text/hscript" action="mouseClick">
+								<![CDATA[
+									var combo = parent.prevSibling().prevSibling();
+									var str = combo.input.getText();
+									str = str.substr(0, str.length-1);
+									var zoom = .01*Std.parseInt(str);
+									zoom -= .1;
+
+									combo.input.setText(Math.round(100*zoom)+"%");
+
+									var sp = this.getParentWindow().getChildByName("ScrollPane1");
+									var swf = sp.content.getChildAt(sp.content.numChildren);
+									var canvas = sp.content.getChildAt(sp.content.numChildren-1);
+									if(swf==null) return;
+
+									swf.scaleX = zoom;
+									swf.scaleY = zoom;
+									canvas.scaleX = zoom;
+									canvas.scaleY = zoom;
+
+								]]>
+								</script>
+							</events>
+							</haxegui:controls:Button>
+							<haxegui:controls:Button width="30" icon="zoom-fit-best.png" name="BestFit">
+							<events>
+								<script type="text/hscript" action="mouseClick">
+								<![CDATA[
+								]]>
+								</script>
+							</events>
+							</haxegui:controls:Button>
+							<haxegui:controls:Button width="30" icon="zoom-original.png" name="Original">
+							<events>
+								<script type="text/hscript" action="mouseClick">
+								<![CDATA[
+									var combo = parent.prevSibling().prevSibling();
+									var str = combo.input.getText();
+									str = str.substr(0, str.length-1);
+									var zoom = 1;
+
+									combo.input.setText(Math.round(100*zoom)+"%");
+
+									var sp = this.getParentWindow().getChildByName("ScrollPane1");
+									var swf = sp.content.getChildAt(sp.content.numChildren);
+									var canvas = sp.content.getChildAt(sp.content.numChildren-1);
+									if(swf==null) return;
+
+									swf.scaleX = 1;
+									swf.scaleY = 1;
+									canvas.scaleX = 1;
+									canvas.scaleY = 1;
+
+								]]>
+								</script>
+							</events>
+							</haxegui:controls:Button>
+						</haxegui:containers:HBox>
+					</haxegui:controls:ToolBar>
+					<haxegui:containers:ScrollPane name="ScrollPane1" x="10" y="60" width="100%" height="100%">
+						<events>
+							<script type="text/hscript" action="onLoaded">
+							<![CDATA[
+							function onMouseMove(e) {
+								if(e.target==this.vert || e.target==this.horz) return;
+								var p = new flash.geom.Point(e.stageX, e.stageY);
+								var m = Size.fromRect(this.box).shift(1).toPoint();
+								var pb = this.content.transform.pixelBounds;
+								var lc = Reflect.field(root, "lastClick");
+								if(lc==null) return;
+								p = p.subtract(lc);
+								var d = p.length*Math.exp(-.5);
+								p.normalize(1);
+
+								this.vert.handle.updatePositionTween(new feffects.Tween(0,1,3000, feffects.easing.Expo.easeOut), new flash.geom.Point(0, -p.y*d), this.vert.adjust);
+								this.horz.handle.updatePositionTween(new feffects.Tween(0,1,3000, feffects.easing.Expo.easeOut), new flash.geom.Point(0, -p.x*d), this.horz.adjust);
+							}
+
+							function onMouseUp(e) {
+								//this.removeEventListener(flash.events.MouseEvent.MOUSE_MOVE, onMouseMove);
+								//stage.removeEventListener(flash.events.MouseEvent.MOUSE_UP, onMouseUp);
+								Reflect.setField(root, "lastClick", null);
+							}
+
+							function onMouseDown(e) {
+								if(e.target==this.vert || e.target==this.horz) return;
+								this.addEventListener(flash.events.MouseEvent.MOUSE_MOVE, onMouseMove, false, 0, true);
+								stage.addEventListener(flash.events.MouseEvent.MOUSE_UP, onMouseUp, false, 0, true);
+								Reflect.setField(root, "lastClick", new flash.geom.Point(e.stageX, e.stageY));
+							}
+
+
+							this.addEventListener(flash.events.MouseEvent.MOUSE_DOWN, onMouseDown, false, 0, true);
+							]]>
+							</script>
+							<script type="text/hscript" action="mouseWheel">
+							<![CDATA[
+								var toolbar = this.getParentWindow().getChildByName("ToolBar");
+								var slider = toolbar.getChildByName("Slider");
+								slider.adjustment.setValue(slider.adjustment.getValue()+event.delta);
+							]]>
+							</script>
+						</events>
+					</haxegui:containers:ScrollPane>
+				</haxegui:Window>
+			<!-- Library Window -->
+				<Library name="Library" x="670" y="40" width="170" height="300">
+					<events>
+						<script type="text/hscript" action="onLoaded">
+						<![CDATA[
+						]]>
+						</script>
+					</events>
+					<haxegui:controls:TabNavigator x="10" y="20" name="tabnav">
+						<haxegui:controls:Tab name="Images" active="true"/>
+						<haxegui:controls:Tab name="SVG"    x="40"/>
+						<haxegui:controls:Tab name="Sounds" x="80"/>
+						<haxegui:controls:Tab name="Fonts"  x="120"/>
+						<haxegui:controls:Tab name="Text"   x="160"/>
+					</haxegui:controls:TabNavigator>
+				<haxegui:windowClasses:StatusBar>
+					<haxegui:controls:Label x="2" y="2" text="0 Item(s)"/>
+				</haxegui:windowClasses:StatusBar>
+				</Library>
+
+			<!-- Stage -->
+				<haxegui:Window name="Stage" x="20" y="20">
+					<haxegui:containers:ScrollPane name="ScrollPane1" x="30" y="40">
+						<haxegui:containers:Container name="Container1">
+							<haxegui:toys:Rectangle name="canvas" width="320" height="240" roundness="0" color="0xFFFFFF" stroke="0">
+							<events>
+								<script type="text/hscript" action="onLoaded"><![CDATA[
+								var sp = parent.parent.parent;
+
+								function onParentResize(e) {
+									this.x = Math.max(0, (parent.box.width - this.box.width) >> 1);
+									this.y = Math.max(0, (parent.box.height - this.box.height) >> 1);
+								}
+
+								parent.addEventListener(events.ResizeEvent.RESIZE, onParentResize);
+
+								this.filters = [new flash.filters.DropShadowFilter (4, 45, DefaultStyle.DROPSHADOW, .75, 8, 8, .75, flash.filters.BitmapFilterQuality.HIGH, false, false, false)];
+								]]>
+								</script>
+							</events>
+							</haxegui:toys:Rectangle>
+						</haxegui:containers:Container>
+					</haxegui:containers:ScrollPane>
+					<haxegui:controls:Component name="hruler" x="10" y="20" color="{parent.color}">
+					<haxegui:toys:Arrow y="10" rotation="90" color="0" width="6" height="6"/>
+					<events>
+						<script type="text/hscript" action="onLoaded">
+						<![CDATA[
+						function onParentResize(e) {
+							this.redraw();
+							this.scrollRect = new flash.geom.Rectangle(0,0,parent.box.width-10, 20);
+						}
+						parent.addEventListener(events.ResizeEvent.RESIZE, onParentResize, false, 0, true);
+
+						function onMouseMove(e) {
+							var arrow = this.firstChild();
+							var x = this.globalToLocal(new flash.geom.Point(e.stageX, 0)).x;
+							arrow.place(x, 4);
+						}
+						parent.addEventListener(flash.events.MouseEvent.MOUSE_MOVE, onMouseMove, false, 0, true);
+						]]>
+						</script>
+						<script type="text/hscript" action="redraw">
+						<![CDATA[
+						this.graphics.clear();
+						this.graphics.lineStyle(0, 0, 0);
+						this.graphics.beginFill(Color.tint(this.color, .85));
+						this.graphics.drawRect(0,0,parent.box.width-10, 20);
+						this.graphics.endFill();
+						this.graphics.lineStyle(1, Color.darken(this.color, 30), 1);
+						for(i in 0...(Math.round(parent.box.width/10)-3)) {
+							this.graphics.moveTo(20+i*10, (i%5==0) ? 5 : 15);
+							this.graphics.lineTo(20+i*10, 20);
+						}
+						for(i in 0...(Math.round(parent.box.width/50))) {
+							var l = new haxegui.controls.Label(this);
+							l.init();
+							l.setText(i*50);
+							l.place(20+50*i, 2);
+						}
+						]]>
+						</script>
+					</events>
+					</haxegui:controls:Component>
+					<haxegui:controls:Component name="vruler" x="10" y="40" color="{parent.color}">
+					<haxegui:toys:Arrow x="4" y="20" rotation="0" color="0" width="6" height="6"/>
+					<events>
+						<script type="text/hscript" action="onLoaded">
+						<![CDATA[
+						function onParentResize(e) {
+							this.redraw();
+							this.scrollRect = new flash.geom.Rectangle(0,20,20,parent.box.height-30);
+						}
+						parent.addEventListener(events.ResizeEvent.RESIZE, onParentResize);
+
+						function onMouseMove(e) {
+							var arrow = this.firstChild();
+							var y = this.globalToLocal(new flash.geom.Point(0, e.stageY)).y;
+							arrow.place(4, y);
+						}
+						parent.addEventListener(flash.events.MouseEvent.MOUSE_MOVE, onMouseMove, false, 0, true);
+						]]>
+						</script>
+						<script type="text/hscript" action="redraw">
+						<![CDATA[
+						this.graphics.clear();
+						this.graphics.lineStyle(0, 0, 0);
+						this.graphics.beginFill(Color.tint(this.color, .85));
+						this.graphics.drawRect(0, 20, 20, parent.box.height-40);
+						this.graphics.endFill();
+						this.graphics.lineStyle(1, Color.darken(this.color, 30), 1);
+						for(i in 0...(Math.round(parent.box.height/10)-4)) {
+							this.graphics.moveTo((i%5==0) ? 5 : 15, 20+i*10);
+							this.graphics.lineTo(20, 20+i*10);
+						}
+						for(i in 0...(Math.round(parent.box.height/50))) {
+							var l = new haxegui.controls.Label(this);
+							l.init();
+							l.setText(i*50);
+							l.place(2, 40+50*i - l.width);
+							if(i==1) l.move(0,-4);
+							l.rotation = -90;
+						}
+						]]>
+						</script>
+					</events>
+					</haxegui:controls:Component>
+				</haxegui:Window>
+
+			<!-- Xml Editor -->
+				<XmlEditor name="XML" x="40" y="40" width="600" height="300"/>
+
+
+			</haxegui:containers:Container>
+		</haxegui:containers:ScrollPane>
+	</haxegui:Window>
+</haxegui:Layout>

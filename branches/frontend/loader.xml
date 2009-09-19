@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<loader>
+	<layout url="Layout.xml"/>
+	<style name="rounder"/>
+<!--	<domain baseurl="http://haxegui.googlecode.com/svn/trunk/"/>-->
+	<domain baseurl=""/>
+	<server address="http://localhost" port="2000" file="server.n"/>
+	<!--<GLOBAL_OBJECT>flash.Lib.current</GLOBAL_OBJECT>-->
+</loader>
