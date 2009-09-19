@@ -1,0 +1,1 @@
+<?xml version="1.0" encoding="iso-8859-1"?><rules>		<rule name="comment" value="^#.*" color="0x999999"/>		<rule name="string" value='"\w+"' color="0x0000FF"/>		<rule name="operators" value="([-|\\|;]+)" color="0x557744"/></rules>
