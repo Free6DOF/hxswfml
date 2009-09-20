@@ -1,0 +1,90 @@
+<?xml version="1.0" ?>
+<swf>
+	<Header />
+	Mandatory : none
+	Default values: width="800" height="600" fps="30" version="10" compressed="true" frameCount="1"
+	
+	<FileAttributes />
+	Mandatory: none
+	Default values: actionscript3="true" useNetwork="false" useDirectBlit="false" useGPU="false" hasMetaData="false" />
+	
+	<SetBackgroundColor />
+	Mandatory : none
+	Default values: color="0xffffff" />
+
+	<ScriptLimits />
+	Mandatory: none
+	Default values : maxRecursionDepth="256" scriptTimeoutSeconds="15" />
+
+	<DefineBitsJPEG2 /> 
+	Mandatory:  id="1" file="pathToImageFile" />
+	
+	
+	<DefineShape />
+	Mandatory: id="2" bitmapId="1"/>
+	
+	<DefineShape />  
+	Mandatory: id="3" width="100" height="100"
+	Default values : fillColor="0x000000" lineWidth="1" lineColor="0x000000"  />
+	
+	<PlaceObject id="2" name="instanceName" depth="1" move='false'  x="0" y="0" scaleX="1.0" scaleY="1.0" rotate0='0.0' rotate1='0.0' />
+
+	The move and id attribytes indicate whether a new character is being added to the display list, or a character already on the display list is being modified:
+	-move = false and id is present: A new character (id) is placed on the display list at the specified depth. 
+	-move = true and id is absent: The character at the specified depth is modified. Because any given depth can have only one character, no id is required.
+	-move = true and id is present: The character at the specified Depth is removed, and a new character (id) is placed at that depth. 
+
+	<RemoveObject/>
+	Mandatory:  depth="1" />
+
+	<DefineSprite />
+	Mandatory: id="4" frameCount="1">
+		Allowed tags inside DefineSprite:
+		<PlaceObject />
+		<RemoveObject />
+		<StartSound />
+		<FrameLabel />
+		<ShowFrame />
+		<EndFrame />
+		</DefineSprite>
+	
+	<DefineButton >
+	Mandatory: id="5" >
+	Allowed tags inside DefineButton:
+		<ButtonState />
+		Mandatory up/over/down/hit='true/false' id='1' depth='1' 
+		Default values: x='0' y='0' scaleX='1.0' scaleY='1.0' rotate0='0.0' rotate1='0.0'/>
+		</DefineButton>
+	
+
+	<DefineBinaryData />
+	Mandatory: id="5" file="pathToAnyFile" />
+
+
+	<DefineSound />
+	Mandatory : id="7" file="pathToMP3File" />
+	
+	<StartSound />
+	Mandatory id="7" 
+	Default values: stop="false" loopCount="0" />
+
+	<DefineFont />
+	Mandatory: id="8" file="path_to_swf_containing_font.swf" />
+
+	<SymbolClass />
+	Mandatory: id="1" class="MyBitmap" />
+
+
+	<DefineABC />
+	Mandatory: file="path_to_swf_containing_abc.swf" />
+	
+	<FrameLabel />
+	Mandatory: name="frame1" 
+	Default values: anchor="false" />
+	
+	<ShowFrame/>
+	
+	<EndFrame />
+	
+</swf>
+
