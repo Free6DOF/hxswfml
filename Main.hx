@@ -109,7 +109,7 @@ import haxegui.utils.Color;
 import haxegui.utils.Printing;
 import haxegui.utils.Size;
 //}}}
-//{{{ SwfMillEditor
+//{{{ Frontend
 import XmlEditor;
 import Library;
 import Actions;
@@ -334,7 +334,7 @@ class Main extends Sprite
 
 
 		/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		window = cast root.getChildByName ("SwfMillEditor");
+		window = cast root.getChildByName ("hXswfML FrontEnd");
 		updateTitle();
 
 
@@ -508,7 +508,12 @@ class Main extends Sprite
 				filedialog.filterCombo.addEventListener(Event.CHANGE, function(e) Actions.readDirectoryFiltered (".", filedialog.filterCombo.input.getText(), onReadDirectory));
 
 				// read directory (xml filter)
-				Actions.readDirectoryFiltered (".", "^.+\\.(xml)$", onReadDirectory);
+				//Actions.readDirectoryFiltered (".", "^.+\\.(xml)$", onReadDirectory);
+				var readDir = function(s) {
+					Actions.readDirectoryFiltered (s, "^.+\\.(xml)$", onReadDirectory);
+				}
+				cnx.Server.getWebCwd.call ([], readDir);
+				//Actions.readDirectoryFiltered (d, "^.+\\.(xml)$", onReadDirectory);
 
 				var path = "Container1.VDivider.ScrollPane1.content";
 
@@ -541,7 +546,8 @@ class Main extends Sprite
 				}
 				//}}}
 				if(directoryCache==null)
-				Actions.getDirectoryTree (".", onDirectoryTree)
+				// Actions.getDirectoryTree (".", onDirectoryTree)
+				Actions.getDirectoryTree (p, onDirectoryTree)
 				else {
 					tree.process (directoryCache, tree.rootNode);
 					tree.rootNode.expander.expanded = true;
@@ -552,7 +558,8 @@ class Main extends Sprite
 
 			}
 
-			Actions.getFullPath (".", onPath);
+			//Actions.getFullPath (".", onPath);
+			Actions.getWebCwd(onPath);
 
 			//{{{ onFileSelected
 			var onFileSelected = function(e:Event) {
@@ -567,10 +574,14 @@ class Main extends Sprite
 				for(mode in modes.elements())
 				if(mode.get("ext")==ext) {
 					modeCombo.input.setText(mode.get("name"));
-					Actions.load(mode.get("file"), function(x:String) {
+
+					var onPath = function(s) {
+					Actions.load(s+mode.get("file"), function(x:String) {
 						editor.mode = Xml.parse(x).firstElement();
 						trace("Loaded mode for "+ext);
 					});
+					}
+					Actions.getWebCwd(onPath);
 				}
 
 				throbber.stop();
@@ -642,7 +653,8 @@ class Main extends Sprite
 				Actions.readDirectoryFiltered (".", filter, onReadDirectory);
 
 			}
-			Actions.getFullPath(".", onPath);
+			//Actions.getFullPath(".", onPath);
+			Actions.getWebCwd(onPath);
 
 		}
 		Reflect.setField (root, "import", doImport);
@@ -653,6 +665,23 @@ class Main extends Sprite
 			cnx.Server.getCwd.call ([], function(v) haxe.Log.trace(v, here));
 		}
 		Reflect.setField (root, "getCwd", getCwd);
+		//}}}
+
+
+		//{{{ getExePath
+		var getExePath = function () {
+			cnx.Server.getExePath.call ([], function(v) haxe.Log.trace(v, here));
+		}
+		Reflect.setField (root, "getExePath", getExePath);
+		//}}}
+
+
+		//{{{ getWebCwd
+		var getWebCwd = function() {
+			//return neko.Web.getCwd();
+			cnx.Server.getWebCwd.call ([], function(v) haxe.Log.trace(v, here));
+		}
+		Reflect.setField (root, "getWebCwd", getWebCwd);
 		//}}}
 
 
@@ -951,7 +980,7 @@ class Main extends Sprite
 
 	//{{{ updateTitle
 	public static function updateTitle() {
-		window.titlebar.title.setText("SwfMillEditor - " + filename);
+		window.titlebar.title.setText("hXswfML FrontEnd - " + filename);
 	}
 	//}}}
 
@@ -977,7 +1006,11 @@ class Main extends Sprite
 
 			combo.dataSource = ds;
 		}
-		Actions.load("modes.xml", onModesLoaded);
+
+		var loadModes = function(s) {
+		Actions.load(s+"modes.xml", onModesLoaded);
+		}
+		cnx.Server.getWebCwd.call ([], loadModes);
 
 	}
 	//}}}
@@ -1157,6 +1190,7 @@ class Main extends Sprite
 			}
 			//Actions.getFullPath (e.target.name, onPath);
 			Actions.getFullPath (filedialog.path+"/"+e.target.name, onPath);
+			//Actions.getWebCwd(onPath);
 
 			if(e.target.hasEventListener(TreeEvent.ITEM_OPENING))
 			e.target.removeEventListener(TreeEvent.ITEM_OPENING, onTreeItemExpanded);

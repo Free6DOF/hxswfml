@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="iso-8859-1"?>
 <haxegui:Layout name="Example1">
 	<!-- Main Window -->
-	<haxegui:Window name="SwfMillEditor" x="100" y="30" width="800" height="600" sizeable="true">
+	<haxegui:Window name="hXswfML FrontEnd" x="100" y="30" width="800" height="600" sizeable="true">
 	<!-- MenuBar -->
 		<haxegui:controls:MenuBar name="MenuBar1" width="100%" x="10" y="20">
 			<haxegui:controls:Menu name="_File">
@@ -30,13 +30,6 @@
 			</haxegui:controls:Menu>
 			<haxegui:controls:Menu name="_Edit">
 				<haxegui:DataSource>
-					<List>
-						<String>_Copy</String>
-						<String>_Paste</String>
-						<String>Cu_t</String>
-						<String></String>
-						<String>_Preferences</String>
-					</List>
 					<Xml><![CDATA[
 					<root>
 							<menuitem label="_Copy"/>
@@ -120,7 +113,7 @@
 		<!-- Time-Line -->
 		<haxegui:containers:Container name="timeline" x="10" y="82" height="60" visible="false"/>
 		<!-- Main ScrollPane -->
-		<haxegui:containers:ScrollPane name="ScrollPane1" x="10" y="142" left="10" right="10" top="82" bottom="20">
+		<haxegui:containers:ScrollPane name="ScrollPane1" fitH="false" fitV="false" x="10" y="142" left="10" right="0" top="82" bottom="20">
 		<!-- Main Container -->
 			<haxegui:containers:Container name="Container1" color="0x888888">
 			<!-- Preview Window -->
