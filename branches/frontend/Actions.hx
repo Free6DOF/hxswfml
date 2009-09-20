@@ -34,6 +34,10 @@ class Actions {
 	// 	cnx.Server.getCwd.call ([], cb);
 	// }
 
+	public static inline function getWebCwd(cb:Dynamic->Void) {
+	 	cnx.Server.getWebCwd.call ([], cb);
+	}
+
 	public static inline function load(file:String, cb:Dynamic->Void) {
 		cnx.Server.load.call([file], cb);
 	}

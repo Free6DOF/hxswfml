@@ -654,13 +654,16 @@ class XmlEditor extends Window {
 		//		drawTabs();
 		//		redrawTextPane();
 
-
 		//		var metrics = tf.getLineMetrics(i);
 
 		if(tf==null) return;
 		tf.width = Math.max(scrollpane.width, tf.width);
 		tf.height = scrollpane.height - (scrollpane.horz.visible ? 20 : 0);
 
+		// var bar = scrollpane.vert;
+		// bar.visible = false;
+
+		// tf.dispatchEvent(new Event(Event.SCROLL));
 		// highlight();
 	}
 	//}}}

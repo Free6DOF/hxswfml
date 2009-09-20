@@ -247,9 +247,23 @@ class Server {
 	//}}}
 
 
-	//{{{ cpuTime
+	//{{{ getExePath
+	public function getExePath() : String {
+		return neko.Sys.executablePath();
+	}
+	//}}}
+
+
+	//{{{ getCwd
 	public function getCwd() : String {
 		return neko.Sys.getCwd();
+	}
+	//}}}
+
+
+	//{{{ getWebCwd
+	public function getWebCwd() : String {
+		return neko.Web.getCwd();
 	}
 	//}}}
 
