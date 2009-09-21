@@ -66,7 +66,41 @@ enum SWFTag {
 	TDoAction(data : haxe.io.Bytes);
 	TScriptLimits(maxRecursion:Int, timeoutSeconds:Int);
 	TDefineButton2(id : Int, records : Array<ButtonRecord> );
+	TDefineEditText(id : Int, data : TextFieldData );
 	TUnknown( id : Int, data : haxe.io.Bytes );
+}
+typedef TextFieldData =
+{
+	var bounds:Rect;
+	var hasText:Bool;//---
+	var wordWrap:Bool;
+	var multiline:Bool;
+	var password:Bool;
+	var input:Bool;
+	var hasTextColor:Bool;//---
+	var hasMaxLength:Bool;//---
+	var hasFont:Bool;//---
+	var hasFontClass:Bool;//---
+	var autoSize:Bool;
+	var hasLayout:Bool;//---
+	var selectable:Bool;
+	var border:Bool;
+	var wasStatic:Bool;
+	var html:Bool;
+	var useOutlines:Bool;
+	
+	var fontID:Int;//UI16
+	var fontClass:String;
+	var fontHeight:Int;//UI16
+	var textColor:RGBA;//RGBA
+	var maxLength:Int;//UI16
+	var align:Int;//UI8
+	var leftMargin:Int;//UI16
+	var rightMargin:Int;//UI16
+	var indent:Int;//UI16
+	var leading:Int;//SI16
+	var variableName:String;
+	var initialText:String;	
 }
 typedef ButtonRecord =
 {

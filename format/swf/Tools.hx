@@ -161,6 +161,7 @@ class Tools {
 		case TDoAction(data): [hex(data,max)];
 		case TScriptLimits(maxRecursion, timeoutSeconds): ["maxRecursion",maxRecursion,"timeoutSeconds",timeoutSeconds];
 		case TDefineButton2(id, records):["id",id,"records",records];
+		case TDefineEditText(id, data):["id", id];
 		case TUnknown(id,data): ["id",id,"data",hex(data,max)];
 		}
 		var b = new StringBuf();

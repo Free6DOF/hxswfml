@@ -1262,185 +1262,237 @@ class Writer {
 		writeMatrix(btnRec.matrix);
 		o.writeByte(0);//CXFORMWITHALPHA
 	}
-	public function writeTag( t : SWFTag ) {
+	function writeDefineEditText(data:TextFieldData):Void
+	{
+		writeRect(data.bounds);
+		bits.writeBit(data.hasText);
+		bits.writeBit(data.wordWrap);
+		bits.writeBit(data.multiline);
+		bits.writeBit(data.password);
+		bits.writeBit(data.input);
+		bits.writeBit(data.hasTextColor);
+		bits.writeBit(data.hasMaxLength);
+		bits.writeBit(data.hasFont);
+		bits.writeBit(data.hasFontClass);
+		bits.writeBit(data.autoSize);
+		bits.writeBit(data.hasLayout);
+		bits.writeBit(data.selectable);
+		bits.writeBit(data.border);
+		bits.writeBit(data.wasStatic);
+		bits.writeBit(data.html);
+		bits.writeBit(data.useOutlines);
+		
+		if(data.hasFont)		
+			o.writeUInt16(data.fontID);
+		if(data.hasFontClass)	
+			o.writeString(data.fontClass);
+		o.writeUInt16(data.fontHeight);
+		if(data.hasTextColor)	
+			writeRGBA(data.textColor);
+		if(data.hasMaxLength)	
+			o.writeUInt16(data.maxLength);
+		if(data.hasLayout)	
+		{
+			o.writeByte(data.align);
+			o.writeUInt16(data.leftMargin);
+			o.writeUInt16(data.rightMargin);
+			o.writeUInt16(data.indent);
+			o.writeInt16(data.leading);
+		}
+		o.writeString(data.variableName);
+		o.writeByte(0);//string ending
+		if(data.hasText)		
+			o.writeString(data.initialText);
+			o.writeByte(0);//string ending
+	}
+	
+	public function writeTag( t : SWFTag )
+	{
 		switch( t ) 
 		{
-		case TUnknown(id,data):
-			writeTID(id,data.length);
-			o.write(data);
+			case TUnknown(id,data):
+				writeTID(id,data.length);
+				o.write(data);
 
-		case TShowFrame:
-			writeTID(TagId.ShowFrame,0);
+			case TShowFrame:
+				writeTID(TagId.ShowFrame,0);
+				
+			case TEnd:
+				writeTID(TagId.End,0);
+
+			case TShape(id, sdata):
+				writeShape(id, sdata);
+
+			case TMorphShape(id, data):
+				writeMorphShape(id, data);
+
+			case TFont(id, data):
+				writeFont(id, data);
 			
-		case TEnd:
-			writeTID(TagId.End,0);
+			case TFontInfo(id, data):
+				writeFontInfo(id, data);
 
-		case TShape(id, sdata):
-			writeShape(id, sdata);
+			case TBinaryData(id, data):
+				writeTID(TagId.DefineBinaryData, data.length + 6);
+				o.writeUInt16(id);
+				o.writeUInt30(0);
+				o.write(data);
 
-		case TMorphShape(id, data):
-			writeMorphShape(id, data);
+			case TBackgroundColor(color):
+				writeTID(TagId.SetBackgroundColor,3);
+				o.writeUInt24(color);
 
-		case TFont(id, data):
-			writeFont(id, data);
-		
-		case TFontInfo(id, data):
-			writeFontInfo(id, data);
+			case TPlaceObject2(po):
+				var t = openTMP();
+				writePlaceObject(po,false);
+				var bytes = closeTMP(t);
+				writeTID(TagId.PlaceObject2,bytes.length);
+				o.write(bytes);
 
-		case TBinaryData(id, data):
-			writeTID(TagId.DefineBinaryData, data.length + 6);
-			o.writeUInt16(id);
-			o.writeUInt30(0);
-			o.write(data);
+			case TPlaceObject3(po):
+				var t = openTMP();
+				writePlaceObject(po,true);
+				var bytes = closeTMP(t);
+				writeTID(TagId.PlaceObject3,bytes.length);
+				o.write(bytes);
 
-		case TBackgroundColor(color):
-			writeTID(TagId.SetBackgroundColor,3);
-			o.writeUInt24(color);
+			case TRemoveObject2(depth):
+				writeTID(TagId.RemoveObject2,2);
+				o.writeUInt16(depth);
 
-		case TPlaceObject2(po):
-			var t = openTMP();
-			writePlaceObject(po,false);
-			var bytes = closeTMP(t);
-			writeTID(TagId.PlaceObject2,bytes.length);
-			o.write(bytes);
-
-		case TPlaceObject3(po):
-			var t = openTMP();
-			writePlaceObject(po,true);
-			var bytes = closeTMP(t);
-			writeTID(TagId.PlaceObject3,bytes.length);
-			o.write(bytes);
-
-		case TRemoveObject2(depth):
-			writeTID(TagId.RemoveObject2,2);
-			o.writeUInt16(depth);
-
-		case TFrameLabel(label,anchor):
-			var bytes = haxe.io.Bytes.ofString(label);
-			writeTID(TagId.FrameLabel,bytes.length + 1 + (anchor?1:0));
-			o.write(bytes);
-			o.writeByte(0);
-			if( anchor ) o.writeByte(1);
-
-		case TClip(id,frames,tags):
-			var t = openTMP();
-			for( t in tags )
-				writeTag(t);
-			var bytes = closeTMP(t);
-			writeTID(TagId.DefineSprite,bytes.length + 6);
-			o.writeUInt16(id);
-			o.writeUInt16(frames);
-			o.write(bytes);
-			o.writeUInt16(0); // end-tag
-
-		case TDoInitActions(id,data):
-			writeTID(TagId.DoInitAction,data.length + 2);
-			o.writeUInt16(id);
-			o.write(data);
-
-		case TActionScript3(data,ctx):
-			if( ctx == null )
-				writeTID(TagId.RawABC,data.length);
-			else {
-				var len = data.length + 4 + ctx.label.length + 1;
-				writeTID(TagId.DoABC,len);
-				o.writeUInt30(ctx.id);
-				o.writeString(ctx.label);
+			case TFrameLabel(label,anchor):
+				var bytes = haxe.io.Bytes.ofString(label);
+				writeTID(TagId.FrameLabel,bytes.length + 1 + (anchor?1:0));
+				o.write(bytes);
 				o.writeByte(0);
-			}
-			o.write(data);
+				if( anchor ) o.writeByte(1);
 
-		case TSymbolClass(sl):
-			writeSymbols(sl, TagId.SymbolClass);
-		case TExportAssets(sl):
-			writeSymbols(sl, TagId.ExportAssets);
-		/*
-		case TSandBox(n):
-			writeTID(TagId.FileAttributes,4);
-			o.writeUInt30(n);
-			*/
-		case TSandBox(v):
-			writeTID(TagId.FileAttributes,4);
-			writeFileAttributes(v);
+			case TClip(id,frames,tags):
+				var t = openTMP();
+				for( t in tags )
+					writeTag(t);
+				var bytes = closeTMP(t);
+				writeTID(TagId.DefineSprite,bytes.length + 6);
+				o.writeUInt16(id);
+				o.writeUInt16(frames);
+				o.write(bytes);
+				o.writeUInt16(0); // end-tag
 
-		case TBitsLossless(l):
-			var cbits = switch( l.color ) { case CM8Bits(n): n; default: null; };
-			writeTIDExt(TagId.DefineBitsLossless,l.data.length + ((cbits == null)?8:7));
-			o.writeUInt16(l.cid);
-			switch( l.color ) {
-			case CM8Bits(_): o.writeByte(3);
-			case CM15Bits: o.writeByte(4);
-			case CM24Bits: o.writeByte(5);
-			default: throw "assert";
-			}
-			o.writeUInt16(l.width);
-			o.writeUInt16(l.height);
-			if( cbits != null ) o.writeByte(cbits);
-			o.write(l.data);
-
-		case TBitsLossless2(l):
-			var cbits = switch( l.color ) { case CM8Bits(n): n; default: null; };
-			writeTIDExt(TagId.DefineBitsLossless2,l.data.length + ((cbits == null)?7:8));
-			o.writeUInt16(l.cid);
-			switch( l.color ) {
-			case CM8Bits(_): o.writeByte(3);
-			case CM32Bits: o.writeByte(5);
-			default: throw "assert";
-			}
-			o.writeUInt16(l.width);
-			o.writeUInt16(l.height);
-			if( cbits != null ) o.writeByte(cbits);
-			o.write(l.data);
-
-		case TJPEGTables(data):
-			writeTIDExt(TagId.JPEGTables, data.length);
-			o.write(data);
-
-		case TBitsJPEG(id, jdata):
-			switch (jdata) {
-			case JDJPEG1(data):
-				writeTIDExt(TagId.DefineBits, data.length + 2);
+			case TDoInitActions(id,data):
+				writeTID(TagId.DoInitAction,data.length + 2);
 				o.writeUInt16(id);
 				o.write(data);
-			case JDJPEG2(data):
-				writeTIDExt(TagId.DefineBitsJPEG2, data.length + 2);
-				o.writeUInt16(id);
-				o.write(data);
-			case JDJPEG3(data, mask):	
-				writeTIDExt(TagId.DefineBitsJPEG3, data.length + mask.length + 6);
-				o.writeUInt16(id);
-				o.writeUInt30(data.length);
-				o.write(data);
-				o.write(mask);
-			}
 
-		case TSound(data):
-			writeSound(data);
-			
-		case TStartSound(id, soundInfo):
-			soundInfo.hasLoops ? writeTID(TagId.StartSound,3+2) : writeTID(TagId.StartSound,3);
-			o.writeUInt16(id);
-			writeSoundInfo(soundInfo);
-			
-		case TDoAction(data):
-			writeTID(TagId.DoAction,data.length);
-			o.write(data);
-			
-		case TScriptLimits(maxRecursion, timeoutseconds):
-			writeTID(TagId.ScriptLimits,4);
-			o.writeUInt16(maxRecursion);
-			o.writeUInt16(timeoutseconds);
-		case TDefineButton2(id, buttonRecords):
-			var t = openTMP();
-			for( t in buttonRecords )
-				writeButtonRecord(t);
-			var bytes = closeTMP(t);
-			writeTID(TagId.DefineButton2, bytes.length + 6);
-			o.writeUInt16(id);
-			o.writeByte(0);
-			o.writeUInt16(0);
-			o.write(bytes);
-			o.writeByte(0); // end-tag
+			case TActionScript3(data,ctx):
+				if( ctx == null )
+					writeTID(TagId.RawABC,data.length);
+				else {
+					var len = data.length + 4 + ctx.label.length + 1;
+					writeTID(TagId.DoABC,len);
+					o.writeUInt30(ctx.id);
+					o.writeString(ctx.label);
+					o.writeByte(0);
+				}
+				o.write(data);
+
+			case TSymbolClass(sl):
+				writeSymbols(sl, TagId.SymbolClass);
+			case TExportAssets(sl):
+				writeSymbols(sl, TagId.ExportAssets);
+			/*
+			case TSandBox(n):
+				writeTID(TagId.FileAttributes,4);
+				o.writeUInt30(n);
+				*/
+			case TSandBox(v):
+				writeTID(TagId.FileAttributes,4);
+				writeFileAttributes(v);
+
+			case TBitsLossless(l):
+				var cbits = switch( l.color ) { case CM8Bits(n): n; default: null; };
+				writeTIDExt(TagId.DefineBitsLossless,l.data.length + ((cbits == null)?8:7));
+				o.writeUInt16(l.cid);
+				switch( l.color ) {
+				case CM8Bits(_): o.writeByte(3);
+				case CM15Bits: o.writeByte(4);
+				case CM24Bits: o.writeByte(5);
+				default: throw "assert";
+				}
+				o.writeUInt16(l.width);
+				o.writeUInt16(l.height);
+				if( cbits != null ) o.writeByte(cbits);
+				o.write(l.data);
+
+			case TBitsLossless2(l):
+				var cbits = switch( l.color ) { case CM8Bits(n): n; default: null; };
+				writeTIDExt(TagId.DefineBitsLossless2,l.data.length + ((cbits == null)?7:8));
+				o.writeUInt16(l.cid);
+				switch( l.color ) {
+				case CM8Bits(_): o.writeByte(3);
+				case CM32Bits: o.writeByte(5);
+				default: throw "assert";
+				}
+				o.writeUInt16(l.width);
+				o.writeUInt16(l.height);
+				if( cbits != null ) o.writeByte(cbits);
+				o.write(l.data);
+
+			case TJPEGTables(data):
+				writeTIDExt(TagId.JPEGTables, data.length);
+				o.write(data);
+
+			case TBitsJPEG(id, jdata):
+				switch (jdata) {
+				case JDJPEG1(data):
+					writeTIDExt(TagId.DefineBits, data.length + 2);
+					o.writeUInt16(id);
+					o.write(data);
+				case JDJPEG2(data):
+					writeTIDExt(TagId.DefineBitsJPEG2, data.length + 2);
+					o.writeUInt16(id);
+					o.write(data);
+				case JDJPEG3(data, mask):	
+					writeTIDExt(TagId.DefineBitsJPEG3, data.length + mask.length + 6);
+					o.writeUInt16(id);
+					o.writeUInt30(data.length);
+					o.write(data);
+					o.write(mask);
+				}
+
+			case TSound(data):
+				writeSound(data);
+				
+			case TStartSound(id, soundInfo):
+				soundInfo.hasLoops ? writeTID(TagId.StartSound,3+2) : writeTID(TagId.StartSound,3);
+				o.writeUInt16(id);
+				writeSoundInfo(soundInfo);
+				
+			case TDoAction(data):
+				writeTID(TagId.DoAction,data.length);
+				o.write(data);
+				
+			case TScriptLimits(maxRecursion, timeoutseconds):
+				writeTID(TagId.ScriptLimits,4);
+				o.writeUInt16(maxRecursion);
+				o.writeUInt16(timeoutseconds);
+			case TDefineButton2(id, buttonRecords):
+				var t = openTMP();
+				for( t in buttonRecords )
+					writeButtonRecord(t);
+				var bytes = closeTMP(t);
+				writeTID(TagId.DefineButton2, bytes.length + 6);
+				o.writeUInt16(id);
+				o.writeByte(0);
+				o.writeUInt16(0);
+				o.write(bytes);
+				o.writeByte(0); // end-tag
+			case TDefineEditText(id, data):
+				var t = openTMP();
+				writeDefineEditText(data);
+				var bytes = closeTMP(t);
+					writeTID(TagId.DefineEditText, bytes.length + 2);
+				o.writeUInt16(id);
+				o.write(bytes);
 		}
 	}
 

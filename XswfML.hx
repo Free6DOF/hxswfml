@@ -86,6 +86,7 @@ class HXswfML
 				case 'definebinarydata' : swfWriter.writeTag(defineBinaryData());
 				case 'definesound' : swfWriter.writeTag(defineSound());
 				case 'definefont' : swfWriter.writeTag(defineFont());
+				case 'defineedittext' : swfWriter.writeTag(defineEditText());
 				case 'defineabc' : swfWriter.writeTag(defineABC());
 					
 				case 'placeobject' : swfWriter.writeTag(placeObject2());
@@ -290,7 +291,7 @@ class HXswfML
 									case DualChannel: true;
 									case Mono:false;
 								},
-//						samples : haxe.Int32.ofInt(mp3.sampleCount),
+						//samples : haxe.Int32.ofInt(mp3.sampleCount),
 						samples : haxe.Int32.ofInt(0),				
 						data : SDMp3(0, dataBytesOutput.getBytes())
 					});
@@ -329,6 +330,54 @@ class HXswfML
 		}
 		return throw 'No Font definitions were found inside swf: ' + file;
 	}
+	private function defineEditText()
+	{
+		var _id = _getInt('id',null);
+		checkAtt(_id, 'id');
+		
+		var width = _getInt('width',100);
+		var height = _getInt('height',100);
+		var bounds = {left :0*20, right : width*20, top:0*20,  bottom : height*20};
+		
+		var wordWrap:Bool = _getBool('wordWrap',true);
+		var multiline:Bool = _getBool('multiline',true);
+		var password:Bool = _getBool('password',false);
+		var input:Bool = !_getBool('input',false);//written as: readOnly:Bool
+		var autoSize:Bool = _getBool('autoSize',false); 
+		var selectable:Bool = !_getBool('selectable',false); //written as: noSelect:Bool
+		var border:Bool = _getBool('border',false);
+		var wasStatic:Bool = _getBool('wasStatic',false);
+		var html:Bool = _getBool('html',false);
+		var useOutlines:Bool = _getBool('useOutlines',false);
+		
+		var fontID:Int = _getInt('fontID',null);
+		var fontClass:String =_getString('fontClass',"");
+		var fontHeight:Int = _getInt('fontHeight',20);
+		var textColor:Int = _getInt('textColor',0x000000ff);
+		var maxLength:Int = _getInt('maxLength',0);
+		var align:Int = _getInt('align',0);//0 left, 1, center, 2 right, 3 justify
+		var leftMargin:Int = _getInt('leftMargin',0);
+		var rightMargin:Int = _getInt('rightMargin',0);
+		var indent:Int = _getInt('indent',0);
+		var leading:Int = _getInt('leading',0);
+		var variableName:String  = _getString('variableName',"");
+		var initialText:String  = _getString('initialText',"");
+		//file=""//TODO
+		
+		var hasText:Bool= (initialText!="")?true:false;
+		var hasTextColor:Bool=true;
+		var hasMaxLength:Bool = (maxLength!=0)?true:false;
+		var hasFont:Bool = (fontID!=null)?true:false;
+		var hasFontClass:Bool = (fontClass!="")?true:false;
+		var	hasLayout:Bool = (align!=0 || leftMargin!=0 || rightMargin!=0 || indent!=0 || leading!=0)? true:false;
+		
+		return TDefineEditText(_id, {	bounds:bounds, 
+										hasText:hasText, hasTextColor:hasTextColor, hasMaxLength:hasMaxLength, hasFont:hasFont, hasFontClass:hasFontClass, hasLayout:hasLayout,
+										wordWrap:wordWrap, multiline:multiline, password:password, input:input,	autoSize:autoSize, selectable:selectable, border:border, wasStatic:wasStatic,
+										html:html,useOutlines:useOutlines,fontID:fontID,fontClass:fontClass,fontHeight:fontHeight*20,
+										textColor:{	r:(textColor & 0xff000000) >> 24, g:(textColor & 0x00ff0000) >> 16, b:(textColor & 0x0000ff00)>>8, a:(textColor & 0x000000ff) },
+										maxLength:maxLength,align:align*20,leftMargin:leftMargin*20,rightMargin:rightMargin*20,indent:indent*20,leading:leading*20,variableName:variableName,initialText:initialText});
+									}
 	private function defineABC()
 	{
 		var remap = _getString('remap', "");
