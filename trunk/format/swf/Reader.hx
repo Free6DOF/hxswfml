@@ -1349,7 +1349,12 @@ class Reader {
 			var id = i.readUInt16();
 			TStartSound(id, readSoundInfo());
 		case TagId.DefineButton2:
-			var data = i.read(len);
+			var cid = i.readUInt16();
+			var data = i.read(len-2);
+			TUnknown(id,data);
+		case TagId.DefineEditText:
+			var cid = i.readUInt16();
+			var data = i.read(len-2);
 			TUnknown(id,data);
 		default:
 			var data = i.read(len);
