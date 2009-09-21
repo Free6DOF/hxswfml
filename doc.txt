@@ -70,6 +70,8 @@
 
 	<DefineFont />
 	Mandatory: id="8" file="path_to_swf_containing_font.swf" />
+	
+	<DefineEditText id="9" width="400" height="400" wordWrap="true" multiline="true" password="false" input="true" autoSize="false" selectable="true" border="true" wasStatic="false" html="false" useOutlines="true" fontID="8" fontClass="" fontHeight="12" textColor="0x000000ff" maxLength="0" align="0" leftMargin="0" rightMargin="0" indent="0" leading="0" variableName="" initialText="hello world" file=""/>
 
 	<SymbolClass />
 	Mandatory: id="1" class="MyBitmap" />
