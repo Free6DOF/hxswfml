@@ -108,17 +108,27 @@ class HXswfML
 	//FILE TAGS
 	private function header()
 	{
-		return {version:_getInt('version',10), compressed:_getBool('compressed',true), width:_getInt('width',800), height:_getInt('height',600), fps:_getInt('fps',30), nframes:_getInt('frameCount',1)};
+		return
+		{
+			version:_getInt('version',10), 
+			compressed:_getBool('compressed',true), 
+			width:_getInt('width',800), 
+			height:_getInt('height',600), 
+			fps:_getInt('fps',30), 
+			nframes:_getInt('frameCount',1)
+		};
 	}
 	private function fileAttributes()
 	{
-		return TSandBox ({
-							useDirectBlit:_getBool('useDirectBlit',false), 
-							useGPU:_getBool('useGPU',false), 
-							hasMetaData:_getBool('hasMetaData',false), 
-							actionscript3:_getBool('actionscript3',true), 
-							useNetWork:_getBool('useNetwork',false)
-							});
+		return 
+		TSandBox (
+		{
+			useDirectBlit:_getBool('useDirectBlit',false), 
+			useGPU:_getBool('useGPU',false), 
+			hasMetaData:_getBool('hasMetaData',false), 
+			actionscript3:_getBool('actionscript3',true), 
+			useNetWork:_getBool('useNetwork',false)
+		});
 	}
 	private function setBackgroundColor()
 	{
@@ -154,20 +164,33 @@ class HXswfML
 		{
 			var bitmapId = _getInt('bitmapId');
 			bounds = {left :0*20, right : width*20, top:0*20,  bottom : height*20}
-			shapeWithStyle = {
-								fillStyles:[FSBitmap(1, {scale:{x:0.0, y:0.0}, rotate:{rs0:0.0, rs1:0.0}, translate:{x:0, y:0}}, false, false)],
-								lineStyles:[], 
-								shapeRecords:[	SHRChange({	moveTo:{dx:width*20,dy:0*20}, 
-															fillStyle0:{idx:1}, 
-															fillStyle1:null, 
-															lineStyle:null, 
-															newStyles:null}), 
-												SHREdge(0, height*20),
-												SHREdge(-width*20, 0), 
-												SHREdge(0, -height*20), 
-												SHREdge(width*20, 0), 
-												SHREnd ]
-							}
+			shapeWithStyle = 
+			{
+				fillStyles:
+				[
+					FSBitmap(1, {scale:{x:0.0, y:0.0}, rotate:{rs0:0.0, rs1:0.0}, translate:{x:0, y:0}}, false, false)
+				],
+				lineStyles:
+				[
+				
+				], 
+				shapeRecords:
+				[	
+					SHRChange(
+					{	
+						moveTo:{dx:width*20,dy:0*20}, 
+						fillStyle0:{idx:1}, 
+						fillStyle1:null, 
+						lineStyle:null, 
+						newStyles:null
+					}), 
+					SHREdge(0, height*20),
+					SHREdge(-width*20, 0), 
+					SHREdge(0, -height*20), 
+					SHREdge(width*20, 0), 
+					SHREnd 
+				]
+			}
 		}
 		else
 		{
@@ -178,25 +201,64 @@ class HXswfML
 			var fillColor = _getInt('fillColor',0x000000);
 			var lineColor = _getInt('lineColor',0x000000);
 			var lineWidth = _getInt('lineWidth',1);
-			bounds = {left:0*20, right:width*20, top:0*20, bottom:height*20};
+			bounds =
+			{
+				left:0*20, 
+				right:width*20, 
+				top:0*20, 
+				bottom:height*20
+			};
+			var fillStyles = 
+			[
+				FSSolid(
+				{
+					r:(fillColor & 0xff0000) >> 16, 
+					g:(fillColor & 0x00ff00) >> 8, 
+					b:(fillColor & 0x0000ff)
+				})
+			];
+			var lineStyles = 
+			[
+				{	
+					width:lineWidth*20, 
+					data:LSRGB(
+					{
+						r:(lineColor & 0xff0000) >> 16, g:(lineColor & 0x00ff00) >> 8, b:lineColor & 0x0000ff
+					})
+				}
+			];
 			
-			var fillStyles = [FSSolid({	r:(fillColor & 0xff0000) >> 16, g:(fillColor & 0x00ff00) >> 8, b:(fillColor & 0x0000ff)})];
-			var lineStyles = [{	width:lineWidth*20, data:LSRGB({	r:(lineColor & 0xff0000) >> 16, g:(lineColor & 0x00ff00) >> 8, b:lineColor & 0x0000ff})}];
-			
-			shapeWithStyle = {	fillStyles:fillStyles,				
-								lineStyles:lineStyles,
-								shapeRecords:[	SHRChange({	moveTo:{dx:width*20,dy:0*20},
-															fillStyle0:{idx:1}, 
-															fillStyle1:null, 
-															lineStyle:{idx:1}, 
-															newStyles:null}), 
-												SHREdge(0, height*20), 
-												SHREdge(-width*20, 0), 
-												SHREdge(0, -height*20), 
-												SHREdge(width*20, 0), 
-												SHREnd 
-												]
-							}	
+			shapeWithStyle = 
+			{
+				fillStyles:fillStyles,				
+				lineStyles:lineStyles,
+				shapeRecords:
+				[
+					SHRChange(
+					{
+						moveTo:
+						{
+							dx:width*20,
+							dy:0*20
+						},
+						fillStyle0:
+						{
+							idx:1
+						}, 
+						fillStyle1:null, 
+						lineStyle:
+						{
+							idx:1
+						}, 
+						newStyles:null
+					}), 
+					SHREdge(0, height*20), 
+					SHREdge(-width*20, 0), 
+					SHREdge(0, -height*20), 
+					SHREdge(width*20, 0), 
+					SHREnd 
+				]
+			}	
 		}
 		return TShape(id, SHDShape1(bounds, shapeWithStyle));
 	}
@@ -236,7 +298,8 @@ class HXswfML
 				var down = _getBool('down', false);
 				var over = _getBool('over', false);
 				var up = _getBool('up', false);
-				if(hit==null && down==null && over==null && up==null) throw 'Missing button state in tag : ' + currentTagNode +'with id: ' + id;
+				if(hit==null && down==null && over==null && up==null) 
+					throw 'Missing button state in tag : ' + currentTagNode +'with id: ' + id;
 				var id = _getInt('id',null);
 				checkAtt(id, 'id');
 				var depth = _getInt('depth',null);
@@ -247,14 +310,33 @@ class HXswfML
 				var scaleY:Float = _getFloat('scaleY',1.0);
 				var rs0 :Float = _getFloat('rotate0',0.0);
 				var rs1 :Float = _getFloat('rotate1',0.0);
-				buttonRecords.push({hit:hit,
-									down:down,
-									over:over,
-									up:up,
-									id:id,
-									depth:depth,
-									matrix:{scale:{x:scaleX, y:scaleY}, rotate:{rs0:rs0, rs1:rs1}, translate:{x:x*20, y:y*20}}
-									});
+				buttonRecords.push(
+				{
+					hit:hit,
+					down:down,
+					over:over,
+					up:up,
+					id:id,
+					depth:depth,
+					matrix:
+					{
+						scale:
+						{
+							x:scaleX, 
+							y:scaleY
+						}, 
+						rotate:
+						{
+							rs0:rs0, 
+							rs1:rs1
+						}, 
+						translate:
+						{
+							x:x*20, 
+							y:y*20
+						}
+					}
+				});
 		}
 		return TDefineButton2(id, buttonRecords);
 	}
@@ -274,27 +356,31 @@ class HXswfML
 		mp3Writer.write(mp3, false);
 		var _sid = _getInt('id',null);
 		checkAtt(_sid, 'id');
-		return TSound( {sid:_sid,
-						format : SFMP3,
-						rate : switch(mp3Header.samplingRate) 
-								{
-									case SR_11025: SR11k;
-									case SR_22050: SR22k;
-									case SR_44100: SR44k;
-									default: throw 'Unsupported MP3 SoundRate' + mp3Header.samplingRate + ' in '+ fileIn;
-								},
-						is16bit : true,
-						isStereo : switch(mp3Header.channelMode) 
-								{
-									case Stereo: true;
-									case JointStereo: true;
-									case DualChannel: true;
-									case Mono:false;
-								},
-						//samples : haxe.Int32.ofInt(mp3.sampleCount),
-						samples : haxe.Int32.ofInt(0),				
-						data : SDMp3(0, dataBytesOutput.getBytes())
-					});
+		return TSound(
+		{
+			sid:_sid,
+			format : SFMP3,
+			rate : 
+			switch(mp3Header.samplingRate) 
+			{
+				case SR_11025: SR11k;
+				case SR_22050: SR22k;
+				case SR_44100: SR44k;
+				default: throw 'Unsupported MP3 SoundRate' + mp3Header.samplingRate + ' in '+ fileIn;
+			},
+			is16bit : true,
+			isStereo : 
+			switch(mp3Header.channelMode) 
+			{
+				case Stereo: true;
+				case JointStereo: true;
+				case DualChannel: true;
+				case Mono:false;
+			},
+			//samples : haxe.Int32.ofInt(mp3.sampleCount),
+			samples : haxe.Int32.ofInt(0),				
+			data : SDMp3(0, dataBytesOutput.getBytes())
+		});
 	}
 	private function defineBinaryData()
 	{
@@ -324,7 +410,6 @@ class HXswfML
 			{
 				case TFont(id, data): 
 					return TFont(_id, data);
-				
 				default://do nothing
 			}
 		}
@@ -371,13 +456,48 @@ class HXswfML
 		var hasFontClass:Bool = (fontClass!="")?true:false;
 		var	hasLayout:Bool = (align!=0 || leftMargin!=0 || rightMargin!=0 || indent!=0 || leading!=0)? true:false;
 		
-		return TDefineEditText(_id, {	bounds:bounds, 
-										hasText:hasText, hasTextColor:hasTextColor, hasMaxLength:hasMaxLength, hasFont:hasFont, hasFontClass:hasFontClass, hasLayout:hasLayout,
-										wordWrap:wordWrap, multiline:multiline, password:password, input:input,	autoSize:autoSize, selectable:selectable, border:border, wasStatic:wasStatic,
-										html:html,useOutlines:useOutlines,fontID:fontID,fontClass:fontClass,fontHeight:fontHeight*20,
-										textColor:{	r:(textColor & 0xff000000) >> 24, g:(textColor & 0x00ff0000) >> 16, b:(textColor & 0x0000ff00)>>8, a:(textColor & 0x000000ff) },
-										maxLength:maxLength,align:align*20,leftMargin:leftMargin*20,rightMargin:rightMargin*20,indent:indent*20,leading:leading*20,variableName:variableName,initialText:initialText});
-									}
+		return TDefineEditText(
+		_id, 
+		{
+			bounds:bounds, 
+			hasText:hasText, 
+			hasTextColor:hasTextColor, 
+			hasMaxLength:hasMaxLength, 
+			hasFont:hasFont, 
+			hasFontClass:hasFontClass, 
+			hasLayout:hasLayout,
+			
+			wordWrap:wordWrap, 
+			multiline:multiline, 
+			password:password, 
+			input:input,	
+			autoSize:autoSize, 
+			selectable:selectable, 
+			border:border, 
+			wasStatic:wasStatic,
+			
+			html:html,
+			useOutlines:useOutlines,
+			fontID:fontID,
+			fontClass:fontClass,
+			fontHeight:fontHeight*20,
+			textColor:
+			{
+				r:(textColor & 0xff000000) >> 24, 
+				g:(textColor & 0x00ff0000) >> 16, 
+				b:(textColor & 0x0000ff00)>>8, 
+				a:(textColor & 0x000000ff) 
+			},
+			maxLength:maxLength,
+			align:align*20,
+			leftMargin:leftMargin*20,
+			rightMargin:rightMargin*20,
+			indent:indent*20,
+			leading:leading*20,
+			variableName:variableName,
+			initialText:initialText
+		});
+	}
 	private function defineABC()
 	{
 		var remap = _getString('remap', "");
