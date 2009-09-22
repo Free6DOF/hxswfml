@@ -47,7 +47,7 @@
 		Default :  x=0, y=0, scaleX=1.0, scaleY=1.0, rotate0=0.0, rotate1=0, repeat=false, smooth=false
 	Signature: <DefineShape id="?" bitmapId="?" x="0" y="0" scaleX="1.0" scaleY="1.0" rotate0="0.0" rotate1="0" repeat="false" smooth="false" />
 
-<DefineShape />  
+<DefineShape/>  
 	Parent: <swf>
 	Children: none
 	Attributes: id, width, height, fillColor, lineWidth, lineColor
@@ -55,7 +55,7 @@
 		Default : fillColor=0x000000 lineWidth=0 lineColor=0x000000
 	Signature: <DefineShape id="?" width="?" height="?" fillColor="0x000000" lineWidth="0" lineColor="0x000000" />
 
-<DefineSprite> </DefineSprite>
+<DefineSprite></DefineSprite>
 	Parent: <swf>
 	Children: <PlaceObject/>,<RemoveObject/>,<StartSound/>,<FrameLabel/>,<ShowFrame/>,<EndFrame/>
 	Attributes: id
@@ -71,7 +71,7 @@
 		<EndFrame />
 	</DefineSprite>
 
-<DefineButton> </DefineButton>
+<DefineButton></DefineButton>
 	Parent: <swf>
 	Children: <ButtonState/>
 	Attributes: id 
@@ -82,7 +82,7 @@
 		<ButtonState id="?" depth="?" up="false" over="false" down="false"  hit="false" x="0" y="0" scaleX="1.0" scaleY="1.0" rotate0="0.0" rotate1="0.0" />
 	</DefineButton>
 
-<DefineBinaryData />
+<DefineBinaryData/>
 	Parent: <swf>
 	Children: none
 	Attributes:
@@ -90,7 +90,7 @@
 		Default:
 	Signature: <DefineBinaryData id="?" file=".path/to/file *.any" />
 
-<DefineSound />
+<DefineSound/>
 	Parent: <swf>
 	Children: none
 	Attributes:
@@ -98,7 +98,7 @@
 		Default:
 	Signature: <DefineSound id="?" file=".path/to/file *.mp3" />
 
-<DefineFont />
+<DefineFont/>
 	Parent: <swf>
 	Children: none
 	Attributes:
@@ -106,7 +106,7 @@
 		Default:
 	Signature: <DefineFont id="?" file="path/to/swf/containing/font.swf" />
 
-<DefineEditText />
+<DefineEditText/>
 	Parent: <swf>
 	Children: none
 	Attributes:id, width, height, wordWrap, multiline, password, input, autoSize, selectable, border, wasStatic, html, useOutlines, fontID, fontClass, fontHeight, textColor, maxLength, align, leftMargin, rightMargin, indent, leading, variableName, initialText, file
@@ -114,7 +114,7 @@
 		Default:useOutlines=false, fontID=null, initialText="", file="", width=100, height=100, wordWrap=true, multiline=true, password=false, input=false, autoSize=false, selectable=false, border=false, wasStatic=false, html=false, fontClass="", fontHeight=12, textColor=0x000000ff, maxLength=0, align=0(/1/2/3), leftMargin=0, rightMargin=0, indent=0, leading=0, variableName=""
 	Signature: <DefineEditText id="?" fontID="?(if useOutlines)" useOutlines="false" initialText="" file="" width="100" height="100" wordWrap="true" multiline="true" password="false" input="false" autoSize="false" selectable="false" border="false" wasStatic="false" html="false" fontClass="" fontHeight="12" textColor="0x000000ff" maxLength="0" align="0" leftMargin="0" rightMargin="0" indent="0" leading="0" variableName="" />
 
-<DefineABC />
+<DefineABC/>
 	Parent: <swf>
 	Children: none
 	Attributes:file
@@ -142,7 +142,7 @@
 		Default:
 	Signature: <RemoveObject depth="?" />
 
-<StartSound />
+<StartSound/>
 	Parent: <swf> or <DefineSprite>
 	Children: none
 	Attributes:id, stop, loopCount
@@ -150,7 +150,7 @@
 		Default:stop=false, loopCount=0
 	Signature: <StartSound id="?" stop="false" loopCount="0" />
 
-<SymbolClass />
+<SymbolClass/>
 	Parent: <swf>
 	Children: none
 	Attributes:id, class
@@ -158,7 +158,7 @@
 		Default:
 	Signature: <SymbolClass id="?" class="?" />
 
-<FrameLabel />
+<FrameLabel/>
 	Parent: <swf> or <DefineSprite>
 	Children: none
 	Attributes:name, anchor
@@ -172,14 +172,14 @@
 	Attributes:none
 	Signature: <ShowFrame/>
 
-<EndFrame />
+<EndFrame/>
 	Parent: <swf> or <DefineSprite>
 	Children: none
 	Attributes:none
 	Signature: <EndFrame />
 
 
-<swf>
+<swf></swf>
 	Parent: none (root/document element)
 	Children:
 		<Header/>,<FileAttributes/>,<SetBackgroundColor/>,<ScriptLimits/>,
