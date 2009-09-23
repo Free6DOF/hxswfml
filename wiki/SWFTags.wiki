@@ -6,6 +6,7 @@
 		Mandatory: none
 		Default:width=800, height=600, fps=30, version=10, compressed=true, frameCount=1
 	Signature: <Header width="800" height="600" fps="30" version="10" compressed="true" frameCount="1" />
+	Usage: <Header/>
 
 <FileAttributes/>
 	Parent: <swf>
@@ -14,6 +15,7 @@
 		Mandatory: none
 		Default: actionscript3=true, useNetwork=false, useDirectBlit=false, useGPU=false, hasMetaData=false
 	Signature: <FileAttributes actionscript3="true" useNetwork="false" useDirectBlit="false" useGPU="false" hasMetaData="false" />
+	Usage: <FileAttributes/>
 
 <SetBackgroundColor/>
 	Parent: <swf>
@@ -22,6 +24,7 @@
 		Mandatory: none
 		Default: color=0xffffff
 	Signature: <SetBackgroundColor color="0xFFFFFF" />
+	Usage: <SetBackgroundColor/>
 
 <ScriptLimits/>
 	Parent: <swf>
@@ -30,6 +33,7 @@
 		Mandatory: none
 		Default values : maxRecursionDepth=256, scriptTimeoutSeconds=15
 	Signature: <ScriptLimits maxRecursionDepth="256" scriptTimeoutSeconds="15" />
+	Usage: <ScriptLimits/>
 
 <DefineBitsJPEG2/>
 	Parent: <swf>
@@ -38,6 +42,7 @@
 		Mandatory: id,file
 		Default:
 	Signature: <DefineBitsJPEG2 id="?" file="./path/to/file *.jpg, *.png, *.gif" />
+	Usage: <DefineBitsJPEG2 id="1" file="picture.jpg" />
 
 <DefineShape/>
 	Parent: <swf>
@@ -46,6 +51,7 @@
 		Mandatory: id, bitmapId
 		Default :  x=0, y=0, scaleX=1.0, scaleY=1.0, rotate0=0.0, rotate1=0, repeat=false, smooth=false
 	Signature: <DefineShape id="?" bitmapId="?" x="0" y="0" scaleX="1.0" scaleY="1.0" rotate0="0.0" rotate1="0" repeat="false" smooth="false" />
+	Usage: <DefineShape id="2" bitmapId="1/>
 
 <DefineShape/>  
 	Parent: <swf>
@@ -54,6 +60,7 @@
 		Mandatory: id, width, height
 		Default : fillColor=0x000000 lineWidth=0 lineColor=0x000000
 	Signature: <DefineShape id="?" width="?" height="?" fillColor="0x000000" lineWidth="0" lineColor="0x000000" />
+	Usage: <DefineShape id="1" width="100" height="200"/>
 
 <DefineSprite></DefineSprite>
 	Parent: <swf>
@@ -70,6 +77,13 @@
 		<ShowFrame />
 		<EndFrame />
 	</DefineSprite>
+	Usage: 
+	<DefineShape id="1" width="100" height="100"/>
+	<DefineSprite id="2" frameCount="1">
+		<PlaceObject id="1" depth="1"/>
+		<ShowFrame />
+		<EndFrame />
+	</DefineSprite>
 
 <DefineButton></DefineButton>
 	Parent: <swf>
@@ -81,6 +95,14 @@
 	<DefineButton id="?">
 		<ButtonState id="?" depth="?" up="false" over="false" down="false"  hit="false" x="0" y="0" scaleX="1.0" scaleY="1.0" rotate0="0.0" rotate1="0.0" />
 	</DefineButton>
+	Usage:
+	<DefineShape id="1" width="100" height="100"/>
+	<DefineButton id="2">
+		<ButtonState id="1" depth="1" up="true"/>
+		<ButtonState id="1" depth="1" over="true"/>
+		<ButtonState id="1" depth="1" down="true"/>
+		<ButtonState id="1" depth="1" hit="true"/>
+	</DefineButton>
 
 <DefineBinaryData/>
 	Parent: <swf>
@@ -89,6 +111,7 @@
 		Mandatory: id, file 
 		Default:
 	Signature: <DefineBinaryData id="?" file=".path/to/file *.any" />
+	Usage: <DefineBinaryData id="1" file="movie.swf" />
 
 <DefineSound/>
 	Parent: <swf>
@@ -97,6 +120,7 @@
 		Mandatory: id, file 
 		Default:
 	Signature: <DefineSound id="?" file=".path/to/file *.mp3" />
+	Usage: <DefineSound id="1" file="song.mp3" />
 
 <DefineFont/>
 	Parent: <swf>
@@ -105,6 +129,7 @@
 		Mandatory: id, file 
 		Default:
 	Signature: <DefineFont id="?" file="path/to/swf/containing/font.swf" />
+	Signature: <DefineFont id="1" file="arial.swf" />
 
 <DefineEditText/>
 	Parent: <swf>
@@ -113,6 +138,7 @@
 		Mandatory: id 
 		Default:useOutlines=false, fontID=null, initialText="", file="", width=100, height=100, wordWrap=true, multiline=true, password=false, input=false, autoSize=false, selectable=false, border=false, wasStatic=false, html=false, fontClass="", fontHeight=12, textColor=0x000000ff, maxLength=0, align=0(/1/2/3), leftMargin=0, rightMargin=0, indent=0, leading=0, variableName=""
 	Signature: <DefineEditText id="?" fontID="?(if useOutlines)" useOutlines="false" initialText="" file="" width="100" height="100" wordWrap="true" multiline="true" password="false" input="false" autoSize="false" selectable="false" border="false" wasStatic="false" html="false" fontClass="" fontHeight="12" textColor="0x000000ff" maxLength="0" align="0" leftMargin="0" rightMargin="0" indent="0" leading="0" variableName="" />
+	Usage: <DefineEditText id="1" initialText="hello"/>
 
 <DefineABC/>
 	Parent: <swf>
@@ -120,7 +146,8 @@
 	Attributes:file
 		Mandatory: file
 		Default:
-	Signature: <DefineABC file"path/to/swf/containing/abc.swf" />
+	Signature: <DefineABC file="path/to/swf/containing/abc.swf" />
+	Usage: <DefineABC file="movie_with_abc.swf" />
 
 <PlaceObject/> 
 	Parent: <swf> or <DefineSprite>
@@ -133,6 +160,7 @@
 		-move = true and id is present: The character at the specified Depth is removed, and a new character (id) is placed at that depth. 
 		Default: name="", move=false, x=0, y=0, scaleX=1.0, scaleY=1.0, rotate0=0.0, rotate1=0.0
 	Signature: <PlaceObject id="?" depth="?" name="" move="false" x="0" y="0" scaleX="1.0" scaleY="1.0" rotate0="0.0" rotate1="0.0" />
+	Signature: <PlaceObject id="1" depth="1" />
 
 <RemoveObject/>
 	Parent: <swf> or <DefineSprite>
@@ -141,6 +169,8 @@
 		Mandatory: depth
 		Default:
 	Signature: <RemoveObject depth="?" />
+	Usage: <RemoveObject depth="1" />
+
 
 <StartSound/>
 	Parent: <swf> or <DefineSprite>
@@ -149,6 +179,7 @@
 		Mandatory: id
 		Default:stop=false, loopCount=0
 	Signature: <StartSound id="?" stop="false" loopCount="0" />
+	Usage: <StartSound id="1"/>
 
 <SymbolClass/>
 	Parent: <swf>
@@ -157,6 +188,9 @@
 		Mandatory: id, class
 		Default:
 	Signature: <SymbolClass id="?" class="?" />
+	Usage: 
+	<SymbolClass id="0" class="flash.boot" />
+	<SymbolClass id="1" class="com.example.MyMovieClip" />
 
 <FrameLabel/>
 	Parent: <swf> or <DefineSprite>
@@ -165,19 +199,21 @@
 		Mandatory: name
 		Default:anchor=false
 	Signature: <FrameLabel name="?" anchor="false" />
+	Usage: <FrameLabel name="home" />
 
 <ShowFrame/>
 	Parent: <swf> or <DefineSprite>
 	Children: none
 	Attributes:none
 	Signature: <ShowFrame/>
+	Usage: <ShowFrame/>
 
 <EndFrame/>
 	Parent: <swf> or <DefineSprite>
 	Children: none
 	Attributes:none
 	Signature: <EndFrame />
-
+	Usage: <EndFrame />
 
 <swf></swf>
 	Parent: none (root/document element)
