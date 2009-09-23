@@ -101,6 +101,11 @@ class HXswfML
 				case 'showframe' : swfWriter.writeTag(showFrame());
 				case 'endframe' : swfWriter.writeTag(endFrame());
 				
+				case 'tween' : 
+					var tweentags = tween();
+					for(twt in tweentags)
+						swfWriter.writeTag(twt);
+				
 				default : throw 'Unsupported swf tag : '+ currentTagNode.nodeName;
 			}
 		}
@@ -263,6 +268,11 @@ class HXswfML
 				case "framelabel":tags.push(frameLabel());
 				case 'showframe': tags.push(showFrame());
 				case "endframe":tags.push(endFrame());
+				
+				case 'tween' : 
+					var tweentags = tween();
+					for(twt in tweentags)
+						tags.push(twt);
 				
 				default: throw 'Unsupported tag:' + currentTagNode.nodeName  + ' found inside DefineSprite with id: '+ id;
 			}
@@ -578,6 +588,118 @@ class HXswfML
 		
 		return TPlaceObject2(_placeObject);
 	}
+	private function moveObject(depth, x, y, scaleX, scaleY, rs0, rs1)
+	{
+		var id = null;
+		var depth = depth;
+		var name = "";
+		var move = true;
+		var translate = {x:x, y:y};
+		var scale;
+		if(scaleX==null && scaleY==null)scale = null;
+		else if(scaleX==null && scaleY!=null) scale = {x:1.0, y:scaleY};
+		else if(scaleX!=null && scaleY==null) scale = {x:scaleX, y:1.0};
+		else  scale = {x:scaleX, y:scaleY};
+		var rotate;
+		if(rs0==null && rs1==null) rotate = null;
+		else if(rs0==null && rs1!=null) rotate = {rs0:0.0, rs1:rs1};
+		else if(rs0!=null && rs1==null) rotate = {rs0:rs0, rs1:0.0};
+		else rotate = {rs0:rs0, rs1:rs1};
+		var _placeObject:PlaceObject = new PlaceObject();
+		_placeObject.depth = depth;
+		_placeObject.move = move;
+		_placeObject.cid = id;
+		_placeObject.matrix={scale:scale, rotate:rotate, translate:translate};
+		_placeObject.color=null;
+		_placeObject.ratio=null;
+		_placeObject.instanceName = name==""?null:name;
+		_placeObject.clipDepth=null;
+		_placeObject.events=null;
+		_placeObject.filters=null;
+		_placeObject.blendMode=null;
+		_placeObject.bitmapCache = false;
+		return TPlaceObject2(_placeObject);
+	}
+	
+	private function tween()/*::Array<SWFTag>*/
+	{
+		var depth:Int = _getInt('depth', null);
+		checkAtt(depth, 'depth');
+		var frameCount:Int = _getInt('frameCount', null);
+		checkAtt(frameCount, 'frameCount');
+		var startX:Int=0;
+		var startY:Int=0;
+		var startScaleX:Float=null;
+		var startScaleY:Float=null;
+		var startRotateO:Float=null;
+		var startRotate1:Float=null;
+		var endX:Int=0;
+		var endY:Int=0;
+		var endScaleX:Float=null;
+		var endScaleY:Float=null;
+		var endRotateO:Float=null;
+		var endRotate1:Float=null;
+		for(tagNode in currentTagNode.elements())
+		{
+			currentTagNode = tagNode;
+			var prop:String = _getString('prop', "");
+			var startxy:Int=0;
+			var endxy:Int=0;
+			var start:Float=null;
+			var end:Float=null;
+			if(prop=='x' || prop=='y')
+			{
+				startxy=_getInt('start', 0);
+				endxy=_getInt('end', 0);
+				checkAtt(startxy, 'start');
+				checkAtt(endxy, 'end');
+			}
+			else
+			{
+				start = _getFloat('start', null);
+				end = _getFloat('end', null);
+				checkAtt(start, 'start');
+				checkAtt(end, 'end');
+			}
+			switch(prop)
+			{
+				case 'x': 
+					startX = startxy;
+					endX = endxy;
+				case 'y':
+					startY = startxy;
+					endY = endxy;
+				case 'scaleX': 
+					startScaleX = start;
+					endScaleX = end;
+				case 'scaleY': 
+					startScaleY = start;
+					endScaleY = end;
+				case 'rotate0':
+					startRotateO = start;
+					endRotateO = end;
+				case 'rotate1':
+					startRotate1 = start;
+					endRotate1 = end;
+				default : 
+					throw 'Unsupported tween tag : '+ currentTagNode.nodeName + 'using : ' + prop;
+			}
+		}
+		var tags:Array<SWFTag> = new Array();
+		for(i in 0...frameCount)
+		{
+			var dx:Int = (startX==null||endX==null)?0:Std.int(startX+((endX-startX)*i)/frameCount);
+			var dy:Int = (startY==null||endY==null)?0:Std.int(startY+((endY-startY)*i)/frameCount);
+			var dsx:Float = (startScaleX==null||endScaleX==null)?null:startScaleX+((endScaleX-startScaleX)*i)/frameCount;
+			var dsy:Float = (startScaleY==null||endScaleY==null)?null:startScaleY+((endScaleY-startScaleY)*i)/frameCount;
+			var drs0:Float = (startRotateO==null||endRotateO==null)?null:startRotateO+((endRotateO-startRotateO)*i)/frameCount;
+			var drs1:Float = (startRotate1==null||endRotate1==null)?null:startRotate1+((endRotate1-startRotate1)*i)/frameCount;
+			tags.push(moveObject(depth, dx*20, dy*20, dsx, dsy ,drs0 , drs1));
+			tags.push(showFrame());
+		}
+		return tags;
+	}
+	
 	private function removeObject2()
 	{
 		var depth = _getInt('depth',null);
@@ -690,7 +812,7 @@ class HXswfML
 		return currentTagNode.exists(att)? currentTagNode.get(att) : defaultValue;
 	}
 	//check for missing mandatory attributes
-	private function checkAtt(att, name):Void
+	private function checkAtt(att:Dynamic , name):Void
 	{
 		if(att==null) throw 'Attribute ' + name + ' missing in tag ' + currentTagNode;
 	}
