@@ -161,26 +161,26 @@ class HXswfML
 		var shapeWithStyle;
 		if(currentTagNode.exists('bitmapId'))
 		{
-			var bitmapId = _getInt('bitmapId');
-			var width = bitmapIds[bitmapId][0];
-			var height = bitmapIds[bitmapId][1];
-			var scaleX = _getFloat('scaleX',1.0);
-			var scaleY = _getFloat('scaleY',1.0);
-			var scale = (scaleX==1.0 && scaleY==1.0)?{x:scaleX*20, y:scaleY*20}:{x:scaleX*20, y:scaleY*20};
+			var bitmapId = _getInt('bitmapId',null);
+			var width = bitmapIds[bitmapId][0]*20;
+			var height = bitmapIds[bitmapId][1]*20;
+			var scaleX = _getFloat('scaleX',1.0)*20;
+			var scaleY = _getFloat('scaleY',1.0)*20;
+			var scale = {x:scaleX, y:scaleY};
 			var rotate0 = _getFloat('rotate0',0.0);
 			var rotate1 = _getFloat('rotate1',0.0);
-			var rotate = (rotate0==0.0 && rotate1==0.0)?{rs0:rotate0*20, rs1:rotate1*20}:{rs0:rotate0*20, rs1:rotate1*20};
-			var x = _getInt('x',0);
-			var y = _getInt('y',0);
-			var translate = (x==0 && y==0)?{x:x*20, y:y*20}:{x:x*20, y:y*20}
+			var rotate = {rs0:rotate0, rs1:rotate1};
+			var x = _getInt('x',0)*20;
+			var y = _getInt('y',0)*20;
+			var translate = {x:x, y:y}
 			var repeat:Bool = _getBool('repeat',false);
 			var smooth:Bool = _getBool('smooth',false);
-			bounds = {left :x*20, right : x*20 + width*20, top:y*20,  bottom : y*20 + height*20}
+			bounds = {left :x, right : x + width, top:y,  bottom : y + height}
 			shapeWithStyle = 
 			{
 				fillStyles:
 				[
-					FSBitmap(1, {scale:scale, rotate:rotate, translate:translate}, repeat, smooth)
+					FSBitmap(bitmapId, {scale:scale, rotate:rotate, translate:translate}, repeat, smooth)
 				],
 				lineStyles:
 				[
@@ -190,37 +190,37 @@ class HXswfML
 				[	
 					SHRChange(
 					{	
-						moveTo:{dx:x*20+width*20,dy:y*20}, 
+						moveTo:{dx:x+width,dy:y}, 
 						fillStyle0:{idx:1}, 
 						fillStyle1:null, 
 						lineStyle:null, 
 						newStyles:null
 					}), 
-					SHREdge(x*20, y*20+height*20), 
-					SHREdge(x*20-width*20, y*20), 
-					SHREdge(x*20, y*20-height*20), 
-					SHREdge(x*20+width*20, y*20), 
+					SHREdge(x, y+height), 
+					SHREdge(x-width, y), 
+					SHREdge(x, y-height), 
+					SHREdge(x+width, y), 
 					SHREnd 
 				]
 			}
 		}
 		else
 		{
-			var width = _getInt('width', null);
+			var width = _getInt('width', null)*20;
 			checkAtt(width, 'width');
-			var height = _getInt('height', null);
+			var height = _getInt('height', null)*20;
 			checkAtt(height, 'height');
 			var fillColor = _getInt('fillColor',0x000000);
 			var lineColor = _getInt('lineColor',0x000000);
-			var lineWidth = _getInt('lineWidth',0);
-			var x = _getInt('x',0);
-			var y = _getInt('y',0);
-			bounds ={ left:x*20, right:x*20+width*20, top:y*20, bottom:y*20 + height*20};
+			var lineWidth = _getInt('lineWidth',0)*20;
+			var x = _getInt('x',0)*20;
+			var y = _getInt('y',0)*20;
+			bounds ={ left:x, right:x+width, top:y, bottom:y + height};
 			var fillStyles = 
 			[
 				FSSolid({r:(fillColor & 0xff0000) >> 16, g:(fillColor & 0x00ff00) >> 8, b:(fillColor & 0x0000ff)})
 			] ;
-			var lineStyles = (lineWidth==0)?[]:[{width:lineWidth*20, data:LSRGB({r:(lineColor & 0xff0000) >> 16, g:(lineColor & 0x00ff00) >> 8, b:lineColor & 0x0000ff})}];
+			var lineStyles = (lineWidth==0)?[]:[{width:lineWidth, data:LSRGB({r:(lineColor & 0xff0000) >> 16, g:(lineColor & 0x00ff00) >> 8, b:lineColor & 0x0000ff})}];
 			shapeWithStyle = 
 			{
 				fillStyles:fillStyles,				
@@ -229,16 +229,16 @@ class HXswfML
 				[
 					SHRChange(
 					{
-						moveTo:{dx:x*20+width*20, dy:y*20},
+						moveTo:{dx:x+width, dy:y},
 						fillStyle0:{idx:1}, 
 						fillStyle1:null, 
 						lineStyle:{idx:1}, 
 						newStyles:null
 					}), 
-					SHREdge(x*20, y*20+height*20), 
-					SHREdge(x*20-width*20, y*20), 
-					SHREdge(x*20, y*20-height*20), 
-					SHREdge(x*20+width*20, y*20), 
+					SHREdge(x, y+height), 
+					SHREdge(x-width, y), 
+					SHREdge(x, y-height), 
+					SHREdge(x+width, y), 
 					SHREnd 
 				]
 			}	
@@ -287,12 +287,25 @@ class HXswfML
 				checkAtt(id, 'id');
 				var depth = _getInt('depth',null);
 				checkAtt(depth, 'depth');
-				var x:Int = _getInt('x',0);
-				var y:Int = _getInt('y',0);
-				var scaleX:Float = _getFloat('scaleX',1.0);
-				var scaleY:Float = _getFloat('scaleY',1.0);
-				var rs0 :Float = _getFloat('rotate0',0.0);
-				var rs1 :Float = _getFloat('rotate1',0.0);
+				
+				var x:Int = _getInt('x',0)*20;
+				var y:Int = _getInt('y',0)*20;
+
+				var scaleX:Float = _getFloat('scaleX',null);
+				var scaleY:Float = _getFloat('scaleY',null);
+				var scale;
+				if(scaleX==null && scaleY==null)
+					scale=null;
+				else
+					scale={x:scaleX, y:scaleY};
+					
+				var rs0 :Float = _getFloat('rotate0',null);
+				var rs1 :Float = _getFloat('rotate1',null);
+				var rotate;
+				if(rs0==null && rs1==null)
+					rotate=null;
+				else
+					rotate={rs0:rs0, rs1:rs1};
 				buttonRecords.push(
 				{
 					hit:hit,
@@ -301,7 +314,7 @@ class HXswfML
 					up:up,
 					id:id,
 					depth:depth,
-					matrix:{scale:{x:scaleX, y:scaleY}, rotate:{rs0:rs0, rs1:rs1}, translate:{x:x*20, y:y*20}}
+					matrix:{scale:scale, rotate:rotate, translate:{x:x, y:y}}
 				});
 		}
 		return TDefineButton2(id, buttonRecords);
@@ -386,9 +399,9 @@ class HXswfML
 		var _id = _getInt('id',null);
 		checkAtt(_id, 'id');
 		
-		var width = _getInt('width',100);
-		var height = _getInt('height',100);
-		var bounds = {left :0*20, right : width*20, top:0*20,  bottom : height*20};
+		var width = _getInt('width',100)*20;
+		var height = _getInt('height',100)*20;
+		var bounds = {left :0*20, right : width, top:0,  bottom : height};
 		
 		var wordWrap:Bool = _getBool('wordWrap',true);
 		var multiline:Bool = _getBool('multiline',true);
@@ -403,14 +416,14 @@ class HXswfML
 		
 		var fontID:Int = _getInt('fontID',null);
 		var fontClass:String =_getString('fontClass',"");
-		var fontHeight:Int = _getInt('fontHeight',20);
+		var fontHeight:Int = _getInt('fontHeight',12)*20;
 		var textColor:Int = _getInt('textColor',0x000000ff);
 		var maxLength:Int = _getInt('maxLength',0);
 		var align:Int = _getInt('align',0);//0 left, 1, center, 2 right, 3 justify
-		var leftMargin:Int = _getInt('leftMargin',0);
-		var rightMargin:Int = _getInt('rightMargin',0);
-		var indent:Int = _getInt('indent',0);
-		var leading:Int = _getInt('leading',0);
+		var leftMargin:Int = _getInt('leftMargin',0)*20;
+		var rightMargin:Int = _getInt('rightMargin',0)*20;
+		var indent:Int = _getInt('indent',0)*20;
+		var leading:Int = _getInt('leading',0)*20;
 		var variableName:String  = _getString('variableName',"");
 		var initialText:String  = _getString('initialText',"");
 		//file=""//TODO
@@ -446,7 +459,7 @@ class HXswfML
 			useOutlines:useOutlines,
 			fontID:fontID,
 			fontClass:fontClass,
-			fontHeight:fontHeight*20,
+			fontHeight:fontHeight,
 			textColor:
 			{
 				r:(textColor & 0xff000000) >> 24, 
@@ -455,11 +468,11 @@ class HXswfML
 				a:(textColor & 0x000000ff) 
 			},
 			maxLength:maxLength,
-			align:align*20,
-			leftMargin:leftMargin*20,
-			rightMargin:rightMargin*20,
-			indent:indent*20,
-			leading:leading*20,
+			align:align,
+			leftMargin:leftMargin,
+			rightMargin:rightMargin,
+			indent:indent,
+			leading:leading,
 			variableName:variableName,
 			initialText:initialText
 		});
@@ -528,12 +541,24 @@ class HXswfML
 		//checkAtt(id, 'id');
 		var depth:Int = _getInt('depth', null);
 		checkAtt(depth, 'depth');
-		var x:Int = _getInt('x',0);
-		var y:Int = _getInt('y',0);
-		var scaleX:Float = _getFloat('scaleX',1.0);
-		var scaleY:Float = _getFloat('scaleY',1.0);
-		var rs0 :Float = _getFloat('rotate0',0.0);
-		var rs1 :Float = _getFloat('rotate1',0.0);
+		var x:Int = _getInt('x',0)*20;
+		var y:Int = _getInt('y',0)*20;
+		var scale;
+		var scaleX:Float = _getFloat('scaleX',null);
+		var scaleY:Float = _getFloat('scaleY',null);
+		if(scaleX==null && scaleY==null)
+			scale=null;
+		else
+			scale={x:scaleX, y:scaleY};
+			
+		var rs0 :Float = _getFloat('rotate0',null);
+		var rs1 :Float = _getFloat('rotate1',null);
+		var rotate;
+		if(rs0==null && rs1==null)
+			rotate=null;
+		else
+			rotate={rs0:rs0, rs1:rs1};
+			
 		var name = _getString('name', "");
 		var move = _getBool('move', false);
 		
@@ -541,7 +566,7 @@ class HXswfML
 		_placeObject.depth = depth;
 		_placeObject.move = move==false?null:move;
 		_placeObject.cid = id;
-		_placeObject.matrix={scale:{x:scaleX, y:scaleY}, rotate:{rs0:rs0, rs1:rs1}, translate:{x:x*20, y:y*20}};
+		_placeObject.matrix={scale:scale, rotate:rotate, translate:{x:x, y:y}};
 		_placeObject.color=null;
 		_placeObject.ratio=null;
 		_placeObject.instanceName = name==""?null:name;
