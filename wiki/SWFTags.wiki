@@ -15,7 +15,7 @@
 		Mandatory: none
 		Default: actionscript3=true, useNetwork=false, useDirectBlit=false, useGPU=false, hasMetaData=false
 	Signature: <FileAttributes actionscript3="true" useNetwork="false" useDirectBlit="false" useGPU="false" hasMetaData="false" />
-	Usage: <FileAttributes/>
+	Usage: <FileAttributes/> (You must use this tag right after the <Header> tag if the final swf contains AS3)
 
 <SetBackgroundColor/>
 	Parent: <swf>
