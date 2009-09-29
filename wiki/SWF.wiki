@@ -1,5 +1,5 @@
 1)SWF general:<br>
-[ http://www.adobe.com/devnet/swf/pdf/swf_file_format_spec_v10.pdf ] (see pages 26 to 33)<br>
+[http://www.adobe.com/devnet/swf/pdf/swf_file_format_spec_v10.pdf] (see pages 26 to 33)<br>
 -A swf always starts with a `<Header />` tag <br>
 -If the swf contains a `<DefineABC />` tag (ActionscriptByteCode,AS3) a `<FileAttributes/>` tag is mandatory right after the `<Header/>` tag.<br>
 -A swf contains at least one `<ShowFrame/>` tag.<br>
@@ -132,6 +132,4 @@ Example of a 2 frame movieclip showing a black rectangle in frame 1 and a red re
 	<!-- <EndFrame/> inserted automatically by hXswfML -->
 </swf>
 }}}
-
-
 
