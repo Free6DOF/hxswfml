@@ -1,3 +1,5 @@
 XswfML
 -main XswfML
 -neko hXswfML.n
+
+-cmd nekotools boot hXswfML.n

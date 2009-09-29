@@ -28,7 +28,6 @@
  * DAMAGE.
  */
 package format.swf;
-
 typedef Fixed = haxe.Int32;
 typedef Fixed8 = Int;
 
@@ -62,6 +61,9 @@ enum SWFTag {
 	TJPEGTables( data : haxe.io.Bytes );
 	TBinaryData( id : Int, data : haxe.io.Bytes );
 	TSound( data : Sound );
+	//TSoundStreamHead2(data:SoundStreamHead2);
+	//TDefineVideoStream(id:Int, data:VideoInfo);
+	//TDefineVideoFrame(id:Int, frameNum:Int, data:VideoData);
 	TStartSound(id:Int, soundInfo:SoundInfo);
 	TDoAction(data : haxe.io.Bytes);
 	TScriptLimits(maxRecursion:Int, timeoutSeconds:Int);
@@ -502,7 +504,21 @@ enum ColorModel {
 	CM24Bits; // Lossless only
 	CM32Bits; // Lossless2 only
 }
-
+typedef VideoInfo={
+	var numFrames:Int; 
+	var width:Int;
+	var height:Int;
+	var deblocking:Bool;
+	var smoothing:Bool;
+	var codecId:Int;
+}
+enum VideoData {
+	H263videoPacket;
+	SCREENvideoPacket;
+	VP6SWFvideoPacket;
+	VP6SWFALPHAvideoPacket;
+	SCREENV2videoPacket;
+}
 typedef Sound = {
 	var sid : Int;
 	var format : SoundFormat;
@@ -512,6 +528,26 @@ typedef Sound = {
 	var samples : haxe.Int32;
 	var data : SoundData;
 };
+
+typedef SoundStreamHead2={
+
+	var playbackSoundRate:Int;//0 = 5.5 kHz, 1 = 11 kHz, 2 = 22 kHz, 3 = 44 kHz, 
+	var playbackSoundSize:Int;//Always 1 (16 bit).
+	var playbackSoundType:Bool;//0mono, 1stereo
+
+	var streamSoundCompression:Int;//1=ADPCM 2=MP3 , 0,3=raw, uncompressed samples, 6, NELLYMOSERDATA record
+	var streamSoundRate:Int;//0 = 5.5 kHz, 1 = 11 kHz, 2 = 22 kHz, 3 = 44 kHz, 
+	var streamSoundSize:Bool;//Always 1 (16 bit).
+	var streamSoundType:Bool;//0mono, 1stereo
+	var streamSoundSampleCount:Int;//Average number of samples in each SoundStreamBlock. Not affected by mono/stereo setting; 
+	//for stereo sounds this is the number of sample pairs.
+	var latencySeek:Null<Int>;//If StreamSoundCompression = 2, SI16 Otherwise absent
+  //The value here should match the SeekSamples field in the first SoundStreamBlock for this stream.
+}
+typedef MP3streamSoundData={
+	var sampleCount:Int;//Number of samples represented by this block. Not affected by mono/stereo setting; for stereo sounds this is the number of sample pairs.
+	var mp3SoundData:Array<_MP3Frame>;//MP3 frames with SeekSamples values.
+}
 
 enum SoundData {
 	SDMp3( seek : Int, data : haxe.io.Bytes );
@@ -609,5 +645,103 @@ typedef FontLayoutData = {
 	var leading: Int;
 	var glyphs: Array<FontLayoutGlyphData>;
 	var kerning: Array<FontKerningData>;
+}
+typedef _MP3Frame = {
+	var header : _MP3Header;
+	var data : haxe.io.Bytes;
+}
+
+typedef _MP3Header = {
+   public var version : MPEGVersion;  
+   public var layer : Layer;
+
+   public var hasCrc : Bool;
+   public var crc16 : Int;
+
+   public var bitrate : Bitrate;
+
+   public var samplingRate : SamplingRate;
+
+   public var isPadded : Bool;
+   public var privateBit : Bool;
+
+   public var channelMode : ChannelMode;
+   public var isIntensityStereo : Bool;
+   public var isMSStereo : Bool;
+
+   public var isCopyrighted : Bool;
+
+   public var isOriginal : Bool;
+
+   public var emphasis : Emphasis;
+}
+
+enum MPEGVersion {
+   MPEG_V1;
+   MPEG_V2;
+   MPEG_V25;
+   MPEG_Reserved;
+}
+
+enum Bitrate {
+   BR_8;
+   BR_16;
+   BR_24;
+   BR_32;
+   BR_40;
+   BR_48;
+   BR_56;
+   BR_64;
+   BR_80;
+   BR_96;
+   BR_112;
+   BR_128;
+   BR_144;
+   BR_160;
+   BR_176;
+   BR_192;
+   BR_224;
+   BR_256;
+   BR_288;
+   BR_320;
+   BR_352;
+   BR_384;
+   BR_416;
+   BR_448;
+   BR_Free;
+   BR_Bad;
+}
+
+enum SamplingRate {
+   SR_8000;
+   SR_11025;
+   SR_12000;
+   SR_22050;
+   SR_24000;
+   SR_32000;
+   SR_44100;
+   SR_48000;
+   SR_Bad;
+}
+
+enum Layer {
+   LayerReserved;
+   Layer3;
+   Layer2;
+   Layer1;
+}
+
+enum ChannelMode {
+   Stereo;
+   JointStereo;
+   DualChannel;
+   Mono;
+}
+
+enum Emphasis {
+   NoEmphasis;
+   Ms50_15;
+   CCIT_J17;
+   InvalidEmphasis;
 }
 
