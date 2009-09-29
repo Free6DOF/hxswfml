@@ -1,0 +1,137 @@
+1)SWF general:<br>
+[ http://www.adobe.com/devnet/swf/pdf/swf_file_format_spec_v10.pdf ] (see pages 26 to 33)<br>
+-A swf always starts with a `<Header />` tag <br>
+-If the swf contains a `<DefineABC />` tag (ActionscriptByteCode,AS3) a `<FileAttributes/>` tag is mandatory right after the `<Header/>` tag.<br>
+-A swf contains at least one `<ShowFrame/>` tag.<br>
+-A swf always ends with an `<EndFrame/>` tag.<br>
+The most basic swf (a movie with 1 empty frame) looks like:
+{{{
+<swf>
+	<Header/>
+	<ShowFrame/>
+	<EndFrame/>
+</swf>
+}}}
+The FlashPlayer will start parsing/playing the tags from the top till it reaches the `<EndFrame/>` tag.<br>
+When it encounters a `<ShowFrame/>` it renders to screen.<br>
+Note that although the `<EndFrame/>` tag is available for use, under normal circumstances you will never need it as it is added automatically by hXswfML.<br>
+
+ 
+2)hXswfML syntax:<br>
+-Element names are not case sensitive. `<fileattributes/>` is equally valid to `<FileAttributes>`<br>
+-The attribute names are casesensitive.<br>
+-Most tags have some default values set:<br>
+Using `<Header/>` will be compiled as `<Header width="800" height="600" fps="30" version="10" compressed="true" frameCount="1" />`<br>
+If you only want to change the framerate you would use: `<Header fps="12"/>`<br>
+-Some tags have mandatory attributes which must be set. The program will throw an error and tell you what attribute is missing in which tag.<br>
+
+The names of some elements in the hXswfML may seem confusing at some points (DefineSprite defines a MovieClip for example), but they are kept the same as much as possible as in the official swf file specifications, making a lookup for information more easy.<br>
+More information about the swf file format and the possible tags can be found here:<br>
+ [http://www.adobe.com/devnet/swf/pdf/swf_file_format_spec_v10.pdf]<br>
+ [http://www.m2osw.com/en/swf_alexref.html]<br>
+ [http://www.the-labs.com/MacromediaFlash/SWF-Spec/SWFfilereference.html#h2SWFFileTags]<br>
+ [http://www.half-serious.com/swf/format/index.html]<br>
+ [http://www.delphiflash.com/xml-tags-specification.htm#ShowFrame]<br>
+ 
+-Definition tags vs control/displaytags<br>
+To define a character or symbol swf you use a definition tag.<br>
+Example: <br>
+{{{
+<DefineShape id="1" width="100" height="100" fillColor="0x000000" /> 
+}}}
+creates a black 100x100 rectangle.<br>
+The id of this tag must be unique in the swf.<br>
+
+To show this rectangle you must place it on the display list with a control/display tag.<br>
+Example:<br>
+{{{
+<PlaceObject id="1" depth="1" />
+}}}
+-id refers to the definition tag that has set id to 1.<br>
+-the depth must be unique in the swf<br>
+
+To render to screen you conclude with a `<ShowFrame/>` tag. <br>
+Everything that has been put on or removed from the display up until the next `<ShowFrame/>` will be rendered to screen.<br>
+
+A movie with 1 frame, rendering a black rectangle on screen looks like:<br>
+{{{
+<swf>
+	<Header/>
+	<DefineShape id="1" width="100" height="100" fillColor="0x000000" />
+	<PlaceObject id="1" depth="1" />
+	<ShowFrame/>
+	
+	<!-- <EndFrame/> inserted automatically by hXswfML -->
+</swf>
+}}}
+
+Multiframe movies:<br>
+To show a black rectangle in frame 1 and a red rectangle in frame 2 you use:<br>
+{{{
+<swf>
+	<Header frameCount="2" />
+	<DefineShape id="1" width="100" height="100" fillColor="0x000000" />
+	<DefineShape id="2" width="100" height="100" fillColor="0xFF0000" />
+	
+	<PlaceObject id="1" depth="1" />
+	<ShowFrame/>
+	
+	<RemoveObject depth="1" />
+	<PlaceObject id="2" depth="1" />
+	<ShowFrame/>
+	<!-- <EndFrame/> inserted automatically by hXswfML -->
+</swf>
+}}}
+
+You can omit the `<RemoveObject/>` tag by using the move attribute in the PlaceObject tag:<br>
+{{{
+<swf>
+	<Header frameCount="2" />
+	<DefineShape id="1" width="100" height="100" fillColor="0x000000" />
+	<DefineShape id="2" width="100" height="100" fillColor="0xFF0000" />
+	
+	<PlaceObject id="1" depth="1" />
+	<ShowFrame/>
+	
+	<PlaceObject id="2" depth="1" move="true" />
+	<ShowFrame/>
+	<!-- <EndFrame/> inserted automatically by hXswfML -->
+</swf>
+}}}
+
+A more complete explanation of the move attribute can be found in the swf file specs on page 35.<br>
+Short summary:<br>
+ The move and id attribytes indicate whether a new character is being added to the display list, or a character already on the display list is being modified:<br>
+  -move = false and id is present: A new character (id) is placed on the display list at the specified depth. <br>
+  -move = true and id is absent: The character at the specified depth is modified. Because any given depth can have only one character, no id is required.<br>
+  -move = true and id is present: The character at the specified Depth is removed, and a new character (id) is placed at that depth. <br>
+	
+MovieClips:<br>
+A movieclip can be considered as a 'mini swf'. A limited set of the swf tags can be used inside a movieclip:<br>
+Available tags are: `<PlaceObject/>, <RemoveObject/>, <StartSound/>, <FrameLabel/>, <ShowFrame />, <EndFrame />`<br>
+Example of a 2 frame movieclip showing a black rectangle in frame 1 and a red rectangle in frame 2:<br>
+{{{
+<swf>
+	<Header/>
+	
+	<DefineShape id="1" width="100" height="100" fillColor="0x000000" />
+	
+	<DefineShape id="2" width="100" height="100" fillColor="0xFF0000" />
+	
+	<DefineSprite id="3" frameCount="2">
+		<PlaceObject id="1" depth="1" />
+		<ShowFrame/>
+		<PlaceObject id="2" depth="1" move="true" />
+		<ShowFrame/>
+		<!-- <EndFrame/> inserted automatically by hXswfML -->
+	</DefineSprite>
+	
+	<PlaceObject id="3" depth="1" />
+	
+	<ShowFrame/>
+	<!-- <EndFrame/> inserted automatically by hXswfML -->
+</swf>
+}}}
+
+
+
