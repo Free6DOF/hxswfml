@@ -267,8 +267,6 @@
 	
 	<StartSound id="?" stop="false" loopCount="0" />
 	
-	<FrameLabel name="?" anchor="false" />
-	
 	<DefineABC file="path/to/swf/containing/abc.swf" />
 	
 	<SymbolClass id="?" class="?" />
