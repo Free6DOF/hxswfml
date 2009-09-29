@@ -11,6 +11,7 @@ import haxe.io.Bytes;
 import haxe.io.BytesInput;
 import haxe.io.BytesOutput;
 
+
 import neko.Lib;
 import neko.io.File;
 
@@ -90,6 +91,7 @@ class HXswfML
 				case 'definefont' : swfWriter.writeTag(defineFont());
 				case 'defineedittext' : swfWriter.writeTag(defineEditText());
 				case 'defineabc' : swfWriter.writeTag(defineABC());
+				//case 'definevideo' : swfWriter.writeTag(defineVideo());
 					
 				case 'placeobject' : swfWriter.writeTag(placeObject2());
 				case 'removeobject' : swfWriter.writeTag(removeObject2());
@@ -279,6 +281,7 @@ class HXswfML
 		}
 		return TClip(id, frames, tags);
 	}
+
 	private function defineButton2()
 	{
 		var id = _getInt('id',null);
@@ -392,7 +395,6 @@ class HXswfML
 		var header = swfReader.readHeader();
 		var tags:Array<SWFTag> = swfReader.readTagList();
 		swfBytesInput.close();
-		
 		for (tag in tags)
 		{
 			switch (tag)
@@ -474,7 +476,7 @@ class HXswfML
 			{
 				r:(textColor & 0xff000000) >> 24, 
 				g:(textColor & 0x00ff0000) >> 16, 
-				b:(textColor & 0x0000ff00)>>8, 
+				b:(textColor & 0x0000ff00) >>  8, 
 				a:(textColor & 0x000000ff) 
 			},
 			maxLength:maxLength,
@@ -551,35 +553,52 @@ class HXswfML
 		//checkAtt(id, 'id');
 		var depth:Int = _getInt('depth', null);
 		checkAtt(depth, 'depth');
-		var x:Int = _getInt('x',0)*20;
-		var y:Int = _getInt('y',0)*20;
+		
+		//scale:
 		var scale;
 		var scaleX:Float = _getFloat('scaleX',null);
 		var scaleY:Float = _getFloat('scaleY',null);
 		if(scaleX==null && scaleY==null)
-			scale=null;
-		else
-			scale={x:scaleX, y:scaleY};
-			
-		var rs0 :Float = _getFloat('rotate0',null);
-		var rs1 :Float = _getFloat('rotate1',null);
+			scale = null;
+		else if(scaleX==null && scaleY!=null) 
+			scale = {x:1.0, y:scaleY};
+		else if(scaleX!=null && scaleY==null) 
+			scale = {x:scaleX, y:1.0};
+		else  
+			scale = {x:scaleX, y:scaleY};
+		//rotate:
 		var rotate;
-		if(rs0==null && rs1==null)
-			rotate=null;
-		else
-			rotate={rs0:rs0, rs1:rs1};
-			
+		var rs0:Float = _getFloat('rotate0',null);
+		var rs1:Float = _getFloat('rotate1',null);
+		if(rs0==null && rs1==null) 
+			rotate = null;
+		else if(rs0==null && rs1!=null) 
+			rotate = {rs0:0.0, rs1:rs1};
+		else if(rs0!=null && rs1==null) 
+			rotate = {rs0:rs0, rs1:0.0};
+		else 
+			rotate = {rs0:rs0, rs1:rs1};
+		//translate:
+		var translate;
+		var x:Int = _getInt('x',0)*20;
+		var y:Int = _getInt('y',0)*20;
+		translate = {x:x, y:y};
+		
 		var name = _getString('name', "");
+		if(name=="")
+			name=null;
 		var move = _getBool('move', false);
+		if(move==false)
+			move=null;
 		
 		var _placeObject:PlaceObject = new PlaceObject();
 		_placeObject.depth = depth;
-		_placeObject.move = move==false?null:move;
+		_placeObject.move = move;
 		_placeObject.cid = id;
-		_placeObject.matrix={scale:scale, rotate:rotate, translate:{x:x, y:y}};
+		_placeObject.matrix={scale:scale, rotate:rotate, translate:translate};
 		_placeObject.color=null;
 		_placeObject.ratio=null;
-		_placeObject.instanceName = name==""?null:name;
+		_placeObject.instanceName = name;
 		_placeObject.clipDepth=null;
 		_placeObject.events=null;
 		_placeObject.filters=null;
@@ -741,14 +760,14 @@ class HXswfML
 	{
 		return TEnd;
 	}	
-//helper for defineShape for DefineBitsJPEG2
+	//helper for defineShape for DefineBitsJPEG2
 	private function storeWidthHeight(id:Int, fileName:String, _bytes:Bytes):Void
 	{
-		var extension = fileName.substr(fileName.lastIndexOf('.')+1);
+		var extension = fileName.substr(fileName.lastIndexOf('.')+1).toLowerCase();
 		var height=0;
 		var width=0;
 		var bytes = new BytesInput(_bytes);
-		if(extension.toLowerCase()=='jpg' || extension.toLowerCase()=='jpeg')
+		if(extension=='jpg' || extension=='jpeg')
 		{
 			if (bytes.readByte() != 255 || bytes.readByte() != 216)
 			{

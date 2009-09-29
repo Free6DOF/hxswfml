@@ -270,7 +270,8 @@ class Writer {
 	}
 
 	function writePlaceObject(po:PlaceObject,v3) {
-		var f = 0, f2 = 0;
+		var f = 0;
+		var f2 = 0;
 		if( po.move ) f |= 1;
 		if( po.cid != null ) f |= 2;
 		if( po.matrix != null ) f |= 4;
@@ -279,6 +280,7 @@ class Writer {
 		if( po.instanceName != null ) f |= 32;
 		if( po.clipDepth != null ) f |= 64;
 		if( po.events != null ) f |= 128;
+		
 		if( po.filters != null ) f2 |= 1;
 		if( po.blendMode != null ) f2 |= 2;
 		if( po.bitmapCache ) f2 |= 4;
@@ -1361,18 +1363,19 @@ class Writer {
 				o.writeUInt16(depth);
 
 			case TFrameLabel(label,anchor):
-				var bytes = haxe.io.Bytes.ofString(label);
-				writeTID(TagId.FrameLabel,bytes.length + 1 + (anchor?1:0));
-				o.write(bytes);
+				var length = label.length + 1 + (anchor?1:0);
+				writeTIDExt(TagId.FrameLabel,length);
+				o.writeString(label);
 				o.writeByte(0);
-				if( anchor ) o.writeByte(1);
+				if(anchor)
+					o.writeByte(1);
 
 			case TClip(id,frames,tags):
 				var t = openTMP();
 				for( t in tags )
 					writeTag(t);
 				var bytes = closeTMP(t);
-				writeTID(TagId.DefineSprite,bytes.length + 6);
+				writeTIDExt(TagId.DefineSprite,bytes.length + 6);
 				o.writeUInt16(id);
 				o.writeUInt16(frames);
 				o.write(bytes);
@@ -1397,13 +1400,10 @@ class Writer {
 
 			case TSymbolClass(sl):
 				writeSymbols(sl, TagId.SymbolClass);
+				
 			case TExportAssets(sl):
 				writeSymbols(sl, TagId.ExportAssets);
-			/*
-			case TSandBox(n):
-				writeTID(TagId.FileAttributes,4);
-				o.writeUInt30(n);
-				*/
+
 			case TSandBox(v):
 				writeTID(TagId.FileAttributes,4);
 				writeFileAttributes(v);
