@@ -19,7 +19,7 @@ Note that although the `<EndFrame/>` tag is available for use, under normal circ
  
 2)hXswfML syntax:<br>
 -Element names are not case sensitive. `<fileattributes/>` is equally valid to `<FileAttributes>`<br>
--The attribute names are casesensitive.<br>
+-The attribute names are case sensitive.<br>
 -Most tags have some default values set:<br>
 Using `<Header/>` will be compiled as `<Header width="800" height="600" fps="30" version="10" compressed="true" frameCount="1" />`<br>
 If you only want to change the framerate you would use: `<Header fps="12"/>`<br>
@@ -97,7 +97,7 @@ You can omit the `<RemoveObject/>` tag by using the move attribute in the PlaceO
 
 A more complete explanation of the move attribute can be found in the swf file specs on page 35.<br>
 Short summary:<br>
- The move and id attribytes indicate whether a new character is being added to the display list, or a character already on the display list is being modified:<br>
+ The move and id attributes indicate whether a new character is being added to the display list, or a character already on the display list is being modified:<br>
   -move = false and id is present: A new character (id) is placed on the display list at the specified depth. <br>
   -move = true and id is absent: The character at the specified depth is modified. Because any given depth can have only one character, no id is required.<br>
   -move = true and id is present: The character at the specified Depth is removed, and a new character (id) is placed at that depth. <br>
