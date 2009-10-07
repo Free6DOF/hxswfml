@@ -1,0 +1,71 @@
+The following classes can be linked to a tag/asset inside your swf:<br>
+<br>
+1)flash.display.Bitmap<br>
+2)flash.display.BitmapData<br>
+3)flash.display.MovieClip<br>
+4)flash.display.Sprite<br>
+5)flash.display.SimpleButton<br>
+6)flash.media.Sound<br>
+7)flash.text.Font<br>
+8)flash.utils.ByteArray<br>
+9)The document class of your script<br>
+{{{
+<swf>
+	<Header/>
+	<FileAttributes />
+	
+	<!--flash.display.Bitmap-->
+	<DefineBitsJPEG2 id="1" file="picture.png" />
+	<SymbolClass id="1" class="com.example.MyBitmap" />
+	
+	<!--flash.display.BitmapData-->
+	<DefineBitsJPEG2 id="2" file="picture.png" />
+	<SymbolClass id="2" class="com.example.MyBitmapData" />
+	
+	<DefineShape id="3" bitmapId="1" />
+	
+	<!--flash.display.MovieClip-->
+	<DefineSprite id="4" frameCount="2">
+		<PlaceObject id="3" depth="1" />
+		<ShowFrame />
+		<PlaceObject id="3" depth="1" move='true'/>
+		<ShowFrame />
+	</DefineSprite>
+	<SymbolClass id="4" class="com.example.MyMovieClip" />
+	
+	<!--flash.display.Sprite-->
+	<DefineSprite id="5" frameCount="1">
+		<PlaceObject id="3" depth="1" />
+		<ShowFrame />
+	</DefineSprite>
+	<SymbolClass id="5" class="com.example.MySprite" />
+	
+	<!--flash.display.SimpleButton-->
+	<DefineButton id="6">
+		<ButtonState up='true' id='3' depth='1' />
+		<ButtonState over='true' id='3' depth='1' />
+		<ButtonState down='true' id='3' depth='1' />
+		<ButtonState hit='true' id='3' depth='1' />
+	</DefineButton>
+	<SymbolClass id="6" class="com.example.MySimpleButton" />
+	
+	<!--flash.media.Sound-->
+	<DefineSound id="7" file="sound.mp3" />
+	<SymbolClass id="7" class="com.example.MySound" />
+	
+	<!--flash.text.Font-->
+	<DefineFont id="8" file="fontInSwf.swf" />
+	<SymbolClass id="8" class="com.example.MyFont" />
+	
+	<!--flash.utils.ByteArray-->
+	<DefineBinaryData id="9" file="picture.png" />
+	<SymbolClass id="9" class="com.example.MyByteArray" />
+	
+	<!--your document class (must always be id 0) -->
+	<DefineABC file="Script.swf" />
+	<SymbolClass id="0" class="com.example.MyDocumentClass" />
+
+	<ShowFrame/>
+	
+</swf>
+}}}
