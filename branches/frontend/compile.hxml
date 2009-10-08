@@ -28,7 +28,10 @@
 -swf-header 1024:768:30:3C3C3C
 #-xml output.xml
 
-
+### Server ###
 --next
 -neko server.n
 -main Server
+
+
+

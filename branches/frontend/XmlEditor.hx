@@ -20,6 +20,7 @@
 
 //{{{ Imports
 import feffects.Tween;
+import flash.Lib;
 import flash.accessibility.Accessibility;
 import flash.display.Bitmap;
 import flash.display.BitmapData;
@@ -34,28 +35,40 @@ import flash.events.DataEvent;
 import flash.events.Event;
 import flash.events.EventDispatcher;
 import flash.events.FocusEvent;
+import flash.events.IOErrorEvent;
 import flash.events.KeyboardEvent;
 import flash.events.MouseEvent;
 import flash.events.TextEvent;
+import flash.events.ProgressEvent;
 import flash.external.ExternalInterface;
 import flash.geom.Point;
 import flash.geom.Rectangle;
 import flash.geom.Transform;
-import flash.Lib;
 import flash.net.FileFilter;
 import flash.net.FileReference;
 import flash.net.FileReferenceList;
 import flash.net.URLLoader;
 import flash.net.URLRequest;
+import flash.system.ApplicationDomain;
 import flash.system.Capabilities;
+import flash.system.LoaderContext;
 import flash.text.TextField;
 import flash.ui.Keyboard;
+import flash.ui.Keyboard;
+import haxe.Timer;
+import haxe.remoting.HttpAsyncConnection;
 import haxegui.Appearance;
 import haxegui.Automator;
 import haxegui.Binding;
-import haxegui.ColorPicker;
 import haxegui.ColorPicker2;
+import haxegui.ColorPicker;
 import haxegui.Console;
+import haxegui.DataSource;
+import haxegui.Haxegui;
+import haxegui.Introspector;
+import haxegui.RichTextEditor;
+import haxegui.Stats;
+import haxegui.Window;
 import haxegui.containers.Accordion;
 import haxegui.containers.Container;
 import haxegui.containers.Divider;
@@ -79,11 +92,8 @@ import haxegui.controls.TabNavigator;
 import haxegui.controls.ToolBar;
 import haxegui.controls.Tree;
 import haxegui.controls.UiList;
-import haxegui.DataSource;
 import haxegui.events.MenuEvent;
 import haxegui.events.ResizeEvent;
-import haxegui.Haxegui;
-import haxegui.Introspector;
 import haxegui.managers.CursorManager;
 import haxegui.managers.FocusManager;
 import haxegui.managers.LayoutManager;
@@ -91,20 +101,51 @@ import haxegui.managers.MouseManager;
 import haxegui.managers.ScriptManager;
 import haxegui.managers.StyleManager;
 import haxegui.managers.WindowManager;
-import haxegui.RichTextEditor;
-import haxegui.Stats;
 import haxegui.utils.Color;
 import haxegui.utils.Printing;
 import haxegui.utils.Size;
-import haxegui.Window;
-import haxe.remoting.HttpAsyncConnection;
-import haxe.Timer;
 //}}}
 
 
 using haxegui.utils.Color;
 
 
+//{{{ IEditorPlugin
+interface IEditorPlugin {
+	public var url : String;
+
+	public function start() : Void;
+	public function run() : Void;
+	public function redraw() : Void;
+}
+//}}}
+
+
+//{{{ EditorPlugin
+class EditorPlugin implements IEditorPlugin {
+	public var url : String;
+
+	public var editor : XmlEditor;
+	public var console : Console;
+
+	public function new(?url:String=null) {
+		if(url==null)
+		url = Type.getClassName(Type.getClass(this)) + ".swf";
+	}
+
+	public function toString() : String {
+		return "["+Type.getClassName(Type.getClass(this))+"]"+url;
+	}
+
+	public function start()  {}
+	public function run()    {}
+	public function redraw() {}
+
+}
+//}}}
+
+
+//{{{ XmlEditor
 /**
 * XmlEditor
 *
@@ -138,28 +179,53 @@ class XmlEditor extends Window {
 
 	public var mode	  			: Xml;
 
+
+	public var gutterWidth 		: Int;
+
 	private var openTags 		: Array<String>;
 
+	public var plugins : Array<IEditorPlugin>;
 	//{{{ Static
 
-	public static var SWFMILL_TAGS : Array<String> = ["place", "clip", "sound", "textfield", "font"];
 
 
 	static var layoutXml = Xml.parse('
 	<haxegui:Layout name="XmlEditor">
-	<haxegui:controls:ToolBar y="20" height="24"/>
-	<haxegui:containers:VDivider name="divider" handlePosition="200"  top="44" bottom="0" fitV="false">
+	<haxegui:containers:VDivider name="divider" handlePosition="200"  top="20" bottom="0" fitV="false">
 	<haxegui:containers:HDivider name="divider2" top="0">
-	<haxegui:containers:ScrollPane name="treePane">
-			<!-- Tree will be added here later -->
+	<haxegui:containers:Container fitV="false" fitH="false">
+	<haxegui:controls:ToolBar height="24">
+	<haxegui:containers:HBox x="20" fitH="false" width="48" cellSpacing="0">
+	<haxegui:controls:Button width="24" height="24" icon="STOCK_VIEW_REFRESH_16x16">
+	<events>
+	<script type="text/hscript" action="mouseClick"><![CDATA[
+	this.getParentWindow().updateTree();
+	]]>
+	</script>
+	</events>
+	</haxegui:controls:Button>
+	<haxegui:controls:Button width="24" height="24" icon="DOCUMENT_PROPERTIES_16x16"/>
+	</haxegui:containers:HBox>
+	</haxegui:controls:ToolBar>
+	<haxegui:containers:ScrollPane name="treePane" y="24">
+	<!-- Tree will be added here later -->
 	</haxegui:containers:ScrollPane>
+	</haxegui:containers:Container>
 	<haxegui:containers:Grid name="hbox" cellSpacing="0" rows="1" cols="2">
 	<!-- Lists will be added here later -->
 	</haxegui:containers:Grid>
 	</haxegui:containers:HDivider>
-	<haxegui:containers:ScrollPane name="textPane">
+	<haxegui:containers:Container>
+	<haxegui:controls:ToolBar height="24">
+	<haxegui:containers:HBox x="20" fitH="false" width="48" cellSpacing="0">
+		<haxegui:controls:Button width="24" height="24" icon="16x16/format-indent-less.png"/>
+		<haxegui:controls:Button width="24" height="24" icon="16x16/format-indent-more.png"/>
+	</haxegui:containers:HBox>
+	</haxegui:controls:ToolBar>
+	<haxegui:containers:ScrollPane y="24" name="textPane">
 	<!-- Text will be added here later -->
 	</haxegui:containers:ScrollPane>
+	</haxegui:containers:Container>
 	</haxegui:containers:VDivider>
 	<haxegui:windowClasses:StatusBar>
 	<haxegui:controls:Label name="info" x="2" y="2" />
@@ -173,6 +239,7 @@ class XmlEditor extends Window {
 	//{{{ init
 	override public function init(?opts:Dynamic=null) {
 		openTags = [];
+		gutterWidth = 30;
 
 		super.init(opts);
 
@@ -187,8 +254,8 @@ class XmlEditor extends Window {
 
 		vdivider = cast getChildByName("divider");
 		hdivider = untyped vdivider.getChildByName("divider2");
-		treePane = cast hdivider.getChildByName("treePane");
-		scrollpane = cast vdivider.getChildByName("textPane");
+		treePane = untyped hdivider.firstChild().getChildByName("treePane");
+		scrollpane = untyped vdivider.firstChild().nextSibling().getChildByName("textPane");
 
 
 		//tree = cast treePane.getChildByName("tree");
@@ -206,16 +273,17 @@ class XmlEditor extends Window {
 		// graphics for the gutter
 		scrollpane.setAction("redraw",
 		"
+		var w = this.getParentWindow().gutterWidth;
 		this.graphics.clear();
 		this.graphics.beginFill(Color.tint(Color.BLUE, .1));
-		this.graphics.drawRect(0,0,30,this.box.height);
+		this.graphics.drawRect(0,0,w,this.box.height);
 		this.graphics.endFill();
 		this.graphics.lineStyle(2, Color.tint(Color.BLUE, .4), 1, false, flash.display.LineScaleMode.NONE, flash.display.CapsStyle.NONE);
-		this.graphics.moveTo(30,0);
-		this.graphics.lineTo(30,this.box.height);
+		this.graphics.moveTo(w,0);
+		this.graphics.lineTo(w,this.box.height);
 		this.graphics.lineStyle(0,0,0);
 		this.graphics.beginFill(Color.tint(Color.WHITE, 0));
-		this.graphics.drawRect(30,0,this.box.width-30,this.box.height);
+		this.graphics.drawRect(w,0,this.box.width-w,this.box.height);
 		this.graphics.endFill();
 		"
 		);
@@ -234,12 +302,14 @@ class XmlEditor extends Window {
 		tf.alwaysShowSelection = true;
 		tf.type = flash.text.TextFieldType.INPUT;
 		tf.defaultTextFormat = new flash.text.TextFormat("FreeMono", 14);
+		tf.doubleClickEnabled = true;
 
 		tf.addEventListener(TextEvent.TEXT_INPUT, updateStatusBar);
 		tf.addEventListener(Event.SCROLL, onTextFieldScrolled);
 		tf.addEventListener(Event.CHANGE, updateStatusBar);
 		tf.addEventListener(MouseEvent.MOUSE_DOWN, updateStatusBar);
 		tf.addEventListener(MouseEvent.MOUSE_UP, updateStatusBar);
+		tf.addEventListener(MouseEvent.DOUBLE_CLICK, onTextDoubleClick);
 		tf.addEventListener(KeyboardEvent.KEY_DOWN, updateStatusBar);
 
 		var keyFocusChangeHandler = function(e:FocusEvent) {
@@ -268,6 +338,7 @@ class XmlEditor extends Window {
 
 				// DELETE & BACKSPACE
 				case 46, 8:
+				if(self.tf!=null && self.tf.text!=null)
 				try {
 					self.xml = Xml.parse(self.tf.text);
 					//self.updateTree();
@@ -309,7 +380,7 @@ class XmlEditor extends Window {
 
 		var m2 = gutter.getLineMetrics(0);
 		gutter.y = Std.int(m1.height - m2.height)>>1 - 1;
-		gutter.width = 30;
+		gutter.width = gutterWidth;
 		gutter.height = 1000;
 		gutter.wordWrap = false;
 		gutter.mouseEnabled = false;
@@ -328,18 +399,76 @@ class XmlEditor extends Window {
 
 
 		tf.addEventListener(Event.SCROLL, onScroll, false, 0, true);
-
-
 		tf.addEventListener(TextEvent.TEXT_INPUT, onChange, false, 0, true);
 
 
+		// plugins = [
+		// untyped new CamelCasePlugin(),
+		// untyped new FoldingPlugin(),
+		// untyped new WhiteSpacePlugin()
+		// ];
+
+		// loadPlugins();
 	}
 	//}}}
 
+
+	//{{{ loadPlugin
+	// public function loadPlugin() {}
+	//}}}
+
+	//{{{
+	public function unLoadPlugins() {
+		if(plugins==null) return;
+		for(plugin in plugins) {}
+		plugins = null;
+	}
+	//}}}
+
+	//{{{ loadPlugins
+	public function loadPlugins() {
+		// if(plugins==null) return;
+		for(plugin in plugins) {
+			// if(plugin.url==null) continue;
+			// trace(plugin.toString());
+
+			// plugin.editor = this;
+			// plugin.console = untyped root.getChildByName("Console");
+			// plugin.start();
+
+			var appdom = new ApplicationDomain();
+			// var appdom = new ApplicationDomain(ApplicationDomain.currentDomain);
+			// var appdom = ApplicationDomain.currentDomain;
+			// var ctx = new LoaderContext(false, ApplicationDomain.currentDomain);
+			var ctx = new LoaderContext(false, appdom);
+			var loader = new Loader();
+			var onIoError = function(e) trace(e);
+			var onComplete = function(e:Event) {
+				plugin.start();
+				trace(e);
+			}
+
+			loader.contentLoaderInfo.addEventListener(Event.COMPLETE, onComplete);
+			// loader.contentLoaderInfo.addEventListener(Event.INIT, onComplete);
+			// loader.contentLoaderInfo.addEventListener(ProgressEvent.PROGRESS, function(e) {});
+			loader.contentLoaderInfo.addEventListener(IOErrorEvent.IO_ERROR, onIoError);
+
+			try {
+				loader.load(new URLRequest(plugin.url), ctx);
+			}
+			catch(e:Dynamic) {
+				trace(e);
+			}
+		}
+	}
+	//}}}
+
+	//{{{ onChange
 	public function onChange(e:TextEvent) {
 		highlight();
 		//haxe.Timer.delay(updateTree, 300);
 	}
+	//}}}
 
 
 	//{{{ onTextFieldScrolled
@@ -384,7 +513,7 @@ class XmlEditor extends Window {
 			//var tag = line.split("<").pop().split(">").shift();
 
 			//line = StringTools.htmlEscape(line);
-
+			if(tf.text!=null)
 			xml = Xml.parse(tf.text);
 
 
@@ -455,7 +584,7 @@ class XmlEditor extends Window {
 				");
 			}
 
-			updateTree();
+			// updateTree();
 
 			var id = lineXml.get("id");
 		}
@@ -546,6 +675,21 @@ class XmlEditor extends Window {
 	//}}}
 
 
+	//{{{ onTextDoubleClick
+	public function onTextDoubleClick(e:MouseEvent) {
+		var selection = e.target.text.substr(e.target.selectionBeginIndex, e.target.selectionEndIndex - e.target.selectionBeginIndex);
+		trace(StringTools.htmlEscape(selection));
+		var s = e.target.selectionBeginIndex;
+		var r = ~/([?\wA-Z][a-z]+)/;
+		while(r.match(selection)) {
+			var m = r.matchedPos();
+			tf.setSelection(s + m.pos, s + m.pos + m.len);
+			selection = r.matchedRight();
+		}
+	}
+	//}}}
+
+
 	//{{{ onMouseDown
 	public override function onMouseDown(e:MouseEvent) {
 
@@ -610,24 +754,24 @@ class XmlEditor extends Window {
 			tf.dispatchEvent(new Event(Event.SCROLL));
 
 			try {
-			list1.removeItems();
-			list2.removeItems();
+				list1.removeItems();
+				list2.removeItems();
 
-			var ds1 = list1.dataSource = new DataSource();
-			var ds2  = list1.dataSource = new DataSource();
-			ds1.data = [""];
-			ds2.data = [""];
+				var ds1 = list1.dataSource = new DataSource();
+				var ds2  = list1.dataSource = new DataSource();
+				ds1.data = [""];
+				ds2.data = [""];
 
-			for(i in node.attributes()) {
-				ds1.data.push(i);
-				ds2.data.push(node.get(i));
-			}
+				for(i in node.attributes()) {
+					ds1.data.push(i);
+					ds2.data.push(node.get(i));
+				}
 
-			ds1.data.push("");ds2.data.push("");
-			ds1.data.push("");ds2.data.push("");
+				ds1.data.push("");ds2.data.push("");
+				ds1.data.push("");ds2.data.push("");
 
-			list1.dataSource = ds1;
-			list2.dataSource = ds2;
+				list1.dataSource = ds1;
+				list2.dataSource = ds2;
 			}
 			catch(e:Dynamic) {
 				trace(e);
@@ -706,6 +850,12 @@ class XmlEditor extends Window {
 			var i = tf.caretIndex;
 			switch(e.keyCode){
 				// case "/".code:
+				case Keyboard.UP:
+				currentLine--;
+
+				case Keyboard.DOWN:
+				currentLine++;
+
 				case 191:
 				var lastChar = tf.text.charAt(tf.caretIndex-1);
 				//if(lastChar=="<" &&
@@ -716,7 +866,9 @@ class XmlEditor extends Window {
 					tf.setSelection(i + tag.length + 2, i + tag.length + 2);
 					highlight();
 				}
-				case Keyboard.LEFT, Keyboard.RIGHT, Keyboard.UP, Keyboard.DOWN:
+
+				// case Keyboard.LEFT, Keyboard.RIGHT, Keyboard.UP, Keyboard.DOWN:
+
 				default:
 				// highlight();
 			}
@@ -740,8 +892,9 @@ class XmlEditor extends Window {
 	//{{{ redrawTextPane
 	public function redrawTextPane() {
 		try {
+
+
 			scrollpane.content.graphics.clear();
-			drawTabs();
 
 			var rect = tf.getCharBoundaries(tf.caretIndex);
 
@@ -761,8 +914,14 @@ class XmlEditor extends Window {
 
 			scrollpane.content.graphics.lineStyle(1, Color.tint(Color.GREEN, .3), 1, false, flash.display.LineScaleMode.NONE);
 			scrollpane.content.graphics.beginFill(Color.tint(Color.GREEN,.2), .5);
-			scrollpane.content.graphics.drawRect(30,realOffset,tf.width-50, lineHeight);
+			scrollpane.content.graphics.drawRect(gutterWidth,realOffset,tf.width-20-gutterWidth, lineHeight);
 			scrollpane.content.graphics.endFill();
+
+
+			for(p in plugins)
+			// if(Reflect.hasField(p, "redraw") && Reflect.isFunction(Reflect.field(p, "redraw")))
+			// if(Lambda.has(Type.getInstanceFields(Type.getClass(p)), "redraw"))
+			Reflect.callMethod(p, Reflect.field(p, "redraw"), []);
 
 		}
 		catch(e:Dynamic) {
@@ -779,33 +938,7 @@ class XmlEditor extends Window {
 		haxegui.Profiler.begin(here.className.split(".").pop()+"."+here.methodName);
 
 		tree.rootNode.removeItems();
-
-		/*
-		var o = {};
-
-		if(xml.firstElement().elementsNamed("frame").hasNext())
-		for(frame in xml.firstElement().elementsNamed("frame")) {
-		var f = {};
-		Reflect.setField(o, "frame", f);
-
-		var lib = frame.firstElement();
-
-		for(tagName in SWFMILL_TAGS) {
-		var tag = {};
-		var elements = lib.elementsNamed(tagName);
-		if(elements.hasNext()) {
-		Reflect.setField(f, tagName, tag);
-		for(el in elements)
-		Reflect.setField(tag, el.get("id"), el.get("id"));
-		}
-		}
-
-		}
-		tree.process(o, tree.rootNode);
-		*/
-
 		tree.processXml(xml, tree.rootNode);
-
 		tree.expandFull();
 
 		haxegui.Profiler.end();
@@ -865,49 +998,6 @@ class XmlEditor extends Window {
 
 		//trace("Highlighting took: "+(haxe.Timer.stamp()-dt));
 		haxegui.Profiler.end();
-	}
-	//}}}
-
-	//{{{ drawTabs
-	public function drawTabs() {
-		var p = 0;
-
-
-		var start = tf.getLineOffset(tf.scrollV-1);
-		var last = tf.getLineOffset(tf.bottomScrollV-1) + tf.getLineLength(tf.bottomScrollV-1);
-
-		var r = tf.getCharBoundaries(start);
-		var _y : Float = -r.y + r.height/2 + 3;
-
-		var i = start;
-
-		// while((i = tf.text.indexOf("\t", i))<last) {
-		while((i = tf.text.indexOf("\t", i))!=-1) {
-			if(i>last) break;
-			var l = tf.getLineIndexOfChar(i);
-
-			//if(l > tf.bottomScrollV) return;
-
-			// var metrics = tf.getLineMetrics(l);
-			// _y = metrics.height + 1 ;
-
-			var rect = tf.getCharBoundaries(i);
-			if(rect==null || rect.isEmpty()) rect = new flash.geom.Rectangle();
-			// scrollpane.graphics.beginFill(Color.MAGENTA, .5);
-			// scrollpane.graphics.drawRect(30+rect.x,rect.y,rect.width,rect.height);
-			// scrollpane.graphics.endFill();
-
-			scrollpane.content.graphics.lineStyle(1, Color.tint(Color.BLACK, .1), 1, false, flash.display.LineScaleMode.NONE);
-			scrollpane.content.graphics.moveTo(30+rect.x, _y + rect.y);
-			scrollpane.content.graphics.lineTo(30+rect.x+rect.width, _y + rect.y);
-
-			scrollpane.content.graphics.lineStyle(1, Color.tint(Color.BLACK, .3), 1, false, flash.display.LineScaleMode.NONE);
-			scrollpane.content.graphics.lineTo(27+rect.x+rect.width, _y + rect.y+3);
-			scrollpane.content.graphics.moveTo(30+rect.x+rect.width, _y + rect.y);
-			scrollpane.content.graphics.lineTo(27+rect.x+rect.width, _y + rect.y-3);
-
-			i++;
-		}
 	}
 	//}}}
 
@@ -1000,3 +1090,4 @@ class XmlEditor extends Window {
 	//}}}
 	//}}}
 }
+//}}}

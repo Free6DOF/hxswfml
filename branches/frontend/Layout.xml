@@ -92,7 +92,9 @@
 				<haxegui:controls:ToolBarSeperator width="30"/>
 				<haxegui:controls:Button width="30" icon="STOCK_UNDO" name="Undo" disabled="true"/>
 				<haxegui:controls:Button width="30" icon="STOCK_REDO" name="Redo" disabled="true"/>
-				<haxegui:controls:Button width="30" icon="STOCK_FIND" name="Find" disabled="false"/>
+				<haxegui:controls:Button width="30" icon="STOCK_FIND" name="Find" disabled="true"/>
+				<haxegui:controls:Button width="30" icon="STOCK_FIND_NEXT" name="FindNext" disabled="true"/>
+				<haxegui:controls:Button width="30" icon="STOCK_FIND_REPLACE" name="FindReplace" disabled="true"/>
 				<haxegui:controls:ToolBarSeperator width="30"/>
 				<haxegui:controls:Button width="80" icon="run.png" label="Run" name="Run" disabled="true"/>
 				<haxegui:controls:ComboBox width="80" x="{this.prevSibling().x+88}" y="5" name="Mode" text="" disabled="true"/>

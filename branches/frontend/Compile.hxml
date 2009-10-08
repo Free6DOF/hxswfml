@@ -28,7 +28,34 @@
 -swf-header 1024:768:30:3C3C3C
 #-xml output.xml
 
-
+### Server ###
 --next
 -neko server.n
 -main Server
+
+
+### Plugins ###
+## WhiteSpace ##
+--next
+-main WhiteSpacePlugin.hx
+-swf9 plugins/WhiteSpacePlugin.swf
+-lib aPath
+-lib hscript
+-lib feffects
+
+## CamelCase ##
+--next
+-main CamelCasePlugin.hx
+-swf9 plugins/CamelCasePlugin.swf
+-lib aPath
+-lib hscript
+-lib feffects
+
+## Folding ##
+--next
+-main FoldingPlugin.hx
+-swf9 plugins/FoldingPlugin.swf
+-lib aPath
+-lib hscript
+-lib feffects
+
