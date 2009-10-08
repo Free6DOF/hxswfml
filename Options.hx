@@ -17,8 +17,41 @@
 // IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 // CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
+import haxegui.Window;
+import haxegui.containers.Container;
+import haxegui.controls.TabNavigator;
+import haxegui.controls.Image;
 
-class Options {
+class Options extends Window {
+
+	public var container : Container;
+	public var tabNav : TabNavigator;
+
+	public override function init(?opt:Dynamic=null) {
+		super.init();
+
+		type = WindowType.MODAL;
+
+		this.center();
+
+		container = new Container(this);
+		container.init();
+
+		tabNav = new TabNavigator(container);
+		tabNav.init({left:0, right:0, top:0, height: 48});
+
+		var tab = new Tab(tabNav);
+		tab.init({width:48, height: 48});
+
+		var icon = new Icon(tab);
+		icon.init({src:Icon.STOCK_NEW});
+
+		var tab = new Tab(tabNav, 48);
+		tab.init({width:48, height: 48});
+
+		var icon = new Icon(tab);
+		icon.init({src:Icon.STOCK_OPEN});
+	}
 
 }
 

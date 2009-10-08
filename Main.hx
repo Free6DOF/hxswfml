@@ -358,6 +358,21 @@ class Main extends Sprite
 		editor = cast o.getChildByName ("XML");
 		source = editor.tf;
 
+
+		var onReadPluginsDirectory = function(v:Array<String>) {
+			// trace(Std.string(v));
+			editor.plugins = [];
+			for(p in v) {
+				//var plug = new EditorPlugin();
+				var className = p.split(".").shift();
+				var plug : IEditorPlugin = Type.createInstance(Type.resolveClass(className), [Haxegui.baseURL+"plugins/"+p]);
+				plug.url = Haxegui.baseURL+"plugins/"+p;
+				editor.plugins.push(plug);
+			}
+			editor.loadPlugins();
+		}
+		Actions.readDirectoryFiltered ("plugins", "^.+\\.(swf)$", onReadPluginsDirectory);
+
 		preview = cast o.getChildByName ("Preview");
 
 		stageWin = cast o.getChildByName ("Stage");
@@ -382,7 +397,7 @@ class Main extends Sprite
 		Reflect.setField(root, "loadModes", loadModes);
 
 
-		Reflect.setField(root, "options", function() {});
+		Reflect.setField(root, "options", function() new Options().init());
 		Reflect.setField(root, "toggleLibraryVisible", toggleLibraryVisible);
 		Reflect.setField(root, "togglePreviewVisible", togglePreviewVisible);
 		Reflect.setField(root, "toggleSourceVisible", toggleSourceVisible);
@@ -508,11 +523,11 @@ class Main extends Sprite
 				filedialog.filterCombo.addEventListener(Event.CHANGE, function(e) Actions.readDirectoryFiltered (".", filedialog.filterCombo.input.getText(), onReadDirectory));
 
 				// read directory (xml filter)
-				//Actions.readDirectoryFiltered (".", "^.+\\.(xml)$", onReadDirectory);
-				var readDir = function(s) {
-					Actions.readDirectoryFiltered (s, "^.+\\.(xml)$", onReadDirectory);
-				}
-				cnx.Server.getWebCwd.call ([], readDir);
+				Actions.readDirectoryFiltered (".", "^.+\\.(xml)$", onReadDirectory);
+				// var readDir = function(s) {
+					// Actions.readDirectoryFiltered (s, "^.+\\.(xml)$", onReadDirectory);
+				// }
+				// cnx.Server.getWebCwd.call ([], readDir);
 				//Actions.readDirectoryFiltered (d, "^.+\\.(xml)$", onReadDirectory);
 
 				var path = "Container1.VDivider.ScrollPane1.content";
@@ -558,8 +573,8 @@ class Main extends Sprite
 
 			}
 
-			//Actions.getFullPath (".", onPath);
-			Actions.getWebCwd(onPath);
+			Actions.getFullPath (".", onPath);
+			// Actions.getWebCwd(onPath);
 
 			//{{{ onFileSelected
 			var onFileSelected = function(e:Event) {
@@ -575,13 +590,14 @@ class Main extends Sprite
 				if(mode.get("ext")==ext) {
 					modeCombo.input.setText(mode.get("name"));
 
-					var onPath = function(s) {
-					Actions.load(s+mode.get("file"), function(x:String) {
+					// var onPath = function(s) {
+					// Actions.load(s+mode.get("file"), function(x:String) {
+					Actions.load(mode.get("file"), function(x:String) {
 						editor.mode = Xml.parse(x).firstElement();
 						trace("Loaded mode for "+ext);
 					});
-					}
-					Actions.getWebCwd(onPath);
+					// }
+					// Actions.getWebCwd(onPath);
 				}
 
 				throbber.stop();
@@ -604,6 +620,9 @@ class Main extends Sprite
 			// o.getChildByName ("Find").__setDisabled (false);
 			o.getChildByName ("Run").__setDisabled (false);
 			o.getChildByName ("Mode").__setDisabled (false);
+			o.getChildByName ("Find").__setDisabled (false);
+			o.getChildByName ("Find").__setDisabled (false);
+			o.getChildByName ("FindReplace").__setDisabled (false);
 		}
 		btn.addEventListener (MouseEvent.CLICK, doLoad);
 		Reflect.setField (root, "load", doLoad);
@@ -653,8 +672,8 @@ class Main extends Sprite
 				Actions.readDirectoryFiltered (".", filter, onReadDirectory);
 
 			}
-			//Actions.getFullPath(".", onPath);
-			Actions.getWebCwd(onPath);
+			Actions.getFullPath(".", onPath);
+			// Actions.getWebCwd(onPath);
 
 		}
 		Reflect.setField (root, "import", doImport);
@@ -992,7 +1011,7 @@ class Main extends Sprite
 
 		var combo : ComboBox = cast o.getChildByName ("Mode");
 
-		var onModesLoaded=function(s:String) {
+		var onModesLoaded = function(s:String) {
 			modes = Xml.parse(StringTools.htmlUnescape(s)).firstElement();
 			var ds = new DataSource();
 			ds.data = [];
@@ -1007,10 +1026,12 @@ class Main extends Sprite
 			combo.dataSource = ds;
 		}
 
-		var loadModes = function(s) {
-		Actions.load(s+"modes.xml", onModesLoaded);
-		}
-		cnx.Server.getWebCwd.call ([], loadModes);
+		Actions.load("modes.xml", onModesLoaded);
+
+		// var loadModes = function(s) {
+		// Actions.load(s+"modes.xml", onModesLoaded);
+		// }
+		// cnx.Server.getWebCwd.call ([], loadModes);
 
 	}
 	//}}}
