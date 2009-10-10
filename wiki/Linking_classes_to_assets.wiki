@@ -16,7 +16,7 @@ The following classes can be linked to a tag/asset inside your swf:<br>
 	
 	<!--flash.display.Bitmap-->
 	<DefineBitsJPEG2 id="1" file="picture.png" />
-	<SymbolClass id="1" class="com.example.MyBitmap" />
+	<SymbolClass id="1" class="com.example.MyBitmap" base="flash.display.Bitmap"/>
 	
 	<!--flash.display.BitmapData-->
 	<DefineBitsJPEG2 id="2" file="picture.png" />
@@ -31,14 +31,14 @@ The following classes can be linked to a tag/asset inside your swf:<br>
 		<PlaceObject id="3" depth="1" move='true'/>
 		<ShowFrame />
 	</DefineSprite>
-	<SymbolClass id="4" class="com.example.MyMovieClip" />
+	<SymbolClass id="4" class="com.example.MyMovieClip" base="flash.display.MovieClip/>
 	
 	<!--flash.display.Sprite-->
 	<DefineSprite id="5" frameCount="1">
 		<PlaceObject id="3" depth="1" />
 		<ShowFrame />
 	</DefineSprite>
-	<SymbolClass id="5" class="com.example.MySprite" />
+	<SymbolClass id="5" class="com.example.MySprite" base="flash.display.Sprite"/>
 	
 	<!--flash.display.SimpleButton-->
 	<DefineButton id="6">
@@ -47,19 +47,19 @@ The following classes can be linked to a tag/asset inside your swf:<br>
 		<ButtonState down='true' id='3' depth='1' />
 		<ButtonState hit='true' id='3' depth='1' />
 	</DefineButton>
-	<SymbolClass id="6" class="com.example.MySimpleButton" />
+	<SymbolClass id="6" class="com.example.MySimpleButton" base="flash.display.SimpleButton"/>
 	
 	<!--flash.media.Sound-->
 	<DefineSound id="7" file="sound.mp3" />
-	<SymbolClass id="7" class="com.example.MySound" />
+	<SymbolClass id="7" class="com.example.MySound" base="flash.media.Sound"/>
 	
 	<!--flash.text.Font-->
 	<DefineFont id="8" file="fontInSwf.swf" />
-	<SymbolClass id="8" class="com.example.MyFont" />
+	<SymbolClass id="8" class="com.example.MyFont" base="flash.text.Font"/>
 	
 	<!--flash.utils.ByteArray-->
 	<DefineBinaryData id="9" file="picture.png" />
-	<SymbolClass id="9" class="com.example.MyByteArray" />
+	<SymbolClass id="9" class="com.example.MyByteArray" base="flash.utils.ByteArray"/>
 	
 	<!--your document class (must always be id 0) -->
 	<DefineABC file="Script.swf" />
@@ -69,3 +69,4 @@ The following classes can be linked to a tag/asset inside your swf:<br>
 	
 </swf>
 }}}
+If you supply a base class the according actionscript bytecode will automatically be generated and added to the swf. If you omit a class for the base attribute you must define a class inside your script that extends the correct class.
