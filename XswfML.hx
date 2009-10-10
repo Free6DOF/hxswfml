@@ -1,4 +1,6 @@
 package;
+import format.abc.Data;
+
 import format.swf.Data;
 import format.swf.Reader;
 import format.swf.Writer;
@@ -10,7 +12,6 @@ import format.mp3.Writer;
 import haxe.io.Bytes;
 import haxe.io.BytesInput;
 import haxe.io.BytesOutput;
-
 
 import neko.Lib;
 import neko.io.File;
@@ -97,7 +98,7 @@ class HXswfML
 				case 'removeobject' : swfWriter.writeTag(removeObject2());
 				case 'startsound' : swfWriter.writeTag(startSound());
 					
-				case 'symbolclass' : swfWriter.writeTag(symbolClass());
+				case 'symbolclass' : for(t in symbolClass())swfWriter.writeTag(t);
 					
 				case "framelabel" : swfWriter.writeTag(frameLabel());
 				case 'showframe' : swfWriter.writeTag(showFrame());
@@ -108,7 +109,7 @@ class HXswfML
 					for(twt in tweentags)
 						swfWriter.writeTag(twt);
 				
-				default : throw 'Unsupported swf tag : '+ currentTagNode.nodeName;
+				default : throw 'Unsupported swf tag : '+ currentTagNode.nodeName + ', TAG: ' +currentTagNode.toString();
 			}
 		}
 		swfWriter.writeEnd();
@@ -276,7 +277,7 @@ class HXswfML
 					for(twt in tweentags)
 						tags.push(twt);
 				
-				default: throw 'Unsupported tag:' + currentTagNode.nodeName  + ' found inside DefineSprite with id: '+ id;
+				default: throw 'Unsupported tag:' + currentTagNode.nodeName  + ' found inside DefineSprite with id: '+ id + ', TAG: '+currentTagNode.toString();
 			}
 		}
 		return TClip(id, frames, tags);
@@ -295,7 +296,7 @@ class HXswfML
 				var over = _getBool('over', false);
 				var up = _getBool('up', false);
 				if(hit==null && down==null && over==null && up==null) 
-					throw 'Missing button state in tag : ' + currentTagNode +'with id: ' + id;
+					throw 'Missing button state in tag : ' + currentTagNode +'with id: ' + id +', TAG: '+currentTagNode.toString();
 				var id = _getInt('id',null);
 				checkAtt(id, 'id');
 				var depth = _getInt('depth',null);
@@ -358,7 +359,7 @@ class HXswfML
 				case SR_11025: SR11k;
 				case SR_22050: SR22k;
 				case SR_44100: SR44k;
-				default: throw 'Unsupported MP3 SoundRate' + mp3Header.samplingRate + ' in '+ fileIn;
+				default: throw 'Unsupported MP3 SoundRate' + mp3Header.samplingRate + ' in '+ fileIn + ', TAG: '+ currentTagNode.toString();
 			},
 			is16bit : true,
 			isStereo : 
@@ -404,7 +405,7 @@ class HXswfML
 				default://do nothing
 			}
 		}
-		return throw 'No Font definitions were found inside swf: ' + file;
+		return throw 'No Font definitions were found inside swf: ' + file + ', TAG: ' +currentTagNode.toString();
 	}
 	private function defineEditText()
 	{
@@ -543,7 +544,7 @@ class HXswfML
 				default://do nothing
 			}
 		}
-		return throw 'No ABC files were found inside swf: ' + file;
+		return throw 'No ABC files were found inside swf: ' + file + ', TAG : ' + currentTagNode.toString();
 	}
 	
 	//CONTROL TAGS
@@ -701,7 +702,7 @@ class HXswfML
 					startRotate1 = start;
 					endRotate1 = end;
 				default : 
-					throw 'Unsupported tween tag : '+ currentTagNode.nodeName + 'using : ' + prop;
+					throw 'Unsupported tween tag : '+ currentTagNode.nodeName + 'using : ' + prop + ', TAG: '+currentTagNode.toString();
 			}
 		}
 		var tags:Array<SWFTag> = new Array();
@@ -741,7 +742,20 @@ class HXswfML
 		var className = _getString('class', "");
 		checkAttS(className, 'class');
 		var symbols: Array<SymData> = [{cid:cid, className:className}];
-		return TSymbolClass(symbols);
+		var baseClass = _getString('base', "");
+		var tags : Array<SWFTag>=new Array();
+		if(baseClass!="")
+		{
+			var abcTag = createABC(className, baseClass, cid);
+			if(abcTag ==null)	
+				throw 'Unsupported base class: ' + baseClass + ', TAG: ' + currentTagNode.toString();
+			tags = [abcTag, TSymbolClass(symbols)];
+		}
+		else 
+		{
+			tags = [TSymbolClass(symbols)];
+		}
+		return tags;
 	}
 	
 	//FRAME TAGS:
@@ -760,7 +774,7 @@ class HXswfML
 	{
 		return TEnd;
 	}	
-	//helper for defineShape for DefineBitsJPEG2
+
 	private function storeWidthHeight(id:Int, fileName:String, _bytes:Bytes):Void
 	{
 		var extension = fileName.substr(fileName.lastIndexOf('.')+1).toLowerCase();
@@ -771,7 +785,7 @@ class HXswfML
 		{
 			if (bytes.readByte() != 255 || bytes.readByte() != 216)
 			{
-				throw "SOI (Start Of Image) marker 0xff 0xd8 missing";
+				throw 'SOI (Start Of Image) marker 0xff 0xd8 missing , TAG: ' + currentTagNode.toString();
 			}
 			var marker:Int;
 			var len:Int;
@@ -813,7 +827,129 @@ class HXswfML
 		bitmapIds[id]=[width, height];
 		
 	}
-	//helpers for reading xml attributes and converting to correct datatype and/or default value
+
+	private function createABC(className:String, baseClass:String, id:Int)
+	{
+		var ctx = new format.abc.Context();
+		var abcOutput = new haxe.io.BytesOutput();
+		
+		switch(baseClass)
+		{
+			case 'flash.display.MovieClip':
+				var c = ctx.beginClass(className);
+				c.superclass = ctx.type("flash.display.MovieClip");
+				ctx.addClassSuper("flash.events.EventDispatcher");
+				ctx.addClassSuper("flash.display.DisplayObject");
+				ctx.addClassSuper("flash.display.InteractiveObject");
+				ctx.addClassSuper("flash.display.DisplayObjectContainer");
+				ctx.addClassSuper("flash.display.Sprite");
+				ctx.addClassSuper("flash.display.MovieClip");
+				var m = ctx.beginMethod(className, [], null, false, false, false, true);
+				m.maxStack = 2;
+				c.constructor = m.type;
+				ctx.ops( [OThis,OConstructSuper(0), ORetVoid,] );
+				ctx.finalize();
+				format.abc.Writer.write(abcOutput, ctx.getData());
+				return TActionScript3(abcOutput.getBytes());
+				
+			case 'flash.display.Sprite':
+				var c = ctx.beginClass(className);
+				c.superclass = ctx.type("flash.display.Sprite");
+				ctx.addClassSuper("flash.events.EventDispatcher");
+				ctx.addClassSuper("flash.display.DisplayObject");
+				ctx.addClassSuper("flash.display.InteractiveObject");
+				ctx.addClassSuper("flash.display.DisplayObjectContainer");
+				ctx.addClassSuper("flash.display.Sprite");
+				var m = ctx.beginMethod(className, [], null, false, false, false, true);
+				m.maxStack = 2;
+				c.constructor = m.type;
+				ctx.ops( [OThis,OConstructSuper(0), ORetVoid,] );
+				ctx.finalize();
+				format.abc.Writer.write(abcOutput, ctx.getData());
+				return TActionScript3(abcOutput.getBytes());
+				
+			case 'flash.display.SimpleButton':
+				var c = ctx.beginClass(className);
+				c.superclass = ctx.type("flash.display.SimpleButton");
+				ctx.addClassSuper("flash.events.EventDispatcher");
+				ctx.addClassSuper("flash.display.DisplayObject");
+				ctx.addClassSuper("flash.display.InteractiveObject");
+				ctx.addClassSuper("flash.display.SimpleButton");
+				var m = ctx.beginMethod(className, [], null, false, false, false, true);
+				m.maxStack = 2;
+				c.constructor = m.type;
+				ctx.ops( [OThis,OConstructSuper(0), ORetVoid,] );
+				ctx.finalize();
+				format.abc.Writer.write(abcOutput, ctx.getData());
+				return TActionScript3(abcOutput.getBytes());
+			
+			case 'flash.display.Bitmap':
+				var c = ctx.beginClass(className);
+				c.superclass = ctx.type("flash.display.Bitmap");
+				ctx.addClassSuper("flash.events.EventDispatcher");
+				ctx.addClassSuper("flash.display.DisplayObject");
+				ctx.addClassSuper("flash.display.Bitmap");
+				var m = ctx.beginMethod(className, [], null, false, false, false, true);
+				m.maxStack = 2;
+				c.constructor = m.type;
+				ctx.ops( [OThis,OConstructSuper(0), ORetVoid,] );
+				ctx.finalize();
+				format.abc.Writer.write(abcOutput, ctx.getData());
+				return TActionScript3(abcOutput.getBytes());
+			/*
+			case 'flash.display.BitmapData'://FIXME (width and height in ctor) use bitmapIds[cid][0] and bitmapIds[cid][1] 
+				var c = ctx.beginClass(className);
+				c.superclass = ctx.type("flash.display.BitmapData");
+				var m = ctx.beginMethod(className, [], null, false, false, false, true);
+				m.maxStack = 2;
+				c.constructor = m.type;
+				ctx.ops( [OThis,OConstructSuper(0), ORetVoid,] );
+				ctx.finalize();
+				format.abc.Writer.write(abcOutput, ctx.getData());
+				return abcOutput.getBytes();
+			*/
+			case 'flash.media.Sound':
+				var c = ctx.beginClass(className);
+				c.superclass = ctx.type("flash.media.Sound");
+				ctx.addClassSuper("flash.events.EventDispatcher");
+				ctx.addClassSuper("flash.media.Sound");
+				var m = ctx.beginMethod(className, [], null, false, false, false, true);
+				m.maxStack = 2;
+				c.constructor = m.type;
+				ctx.ops( [OThis,OConstructSuper(0), ORetVoid,] );
+				ctx.finalize();
+				format.abc.Writer.write(abcOutput, ctx.getData());
+				return TActionScript3(abcOutput.getBytes());
+				
+			case 'flash.text.Font':
+				var c = ctx.beginClass(className);
+				c.superclass = ctx.type("flash.text.Font");
+				ctx.addClassSuper("flash.text.Font");
+				var m = ctx.beginMethod(className, [], null, false, false, false, true);
+				m.maxStack = 2;
+				c.constructor = m.type;
+				ctx.ops( [OThis,OConstructSuper(0), ORetVoid,] );
+				ctx.finalize();
+				format.abc.Writer.write(abcOutput, ctx.getData());
+				return TActionScript3(abcOutput.getBytes());
+			
+			case 'flash.utils.ByteArray':
+				var c = ctx.beginClass(className);
+				c.superclass = ctx.type("flash.utils.ByteArray");
+				ctx.addClassSuper("flash.utils.ByteArray");
+				var m = ctx.beginMethod(className, [], null, false, false, false, true);
+				m.maxStack = 2;
+				c.constructor = m.type;
+				ctx.ops( [OThis,OConstructSuper(0), ORetVoid,] );
+				ctx.finalize();
+				format.abc.Writer.write(abcOutput, ctx.getData());
+				return TActionScript3(abcOutput.getBytes());
+				
+			default : 
+				return null;
+		}
+	}
+	
 	private function _getInt(att:String, ?defaultValue:Int):Int
 	{
 		return currentTagNode.exists(att)? Std.parseInt(currentTagNode.get(att)) : defaultValue;
@@ -830,13 +966,13 @@ class HXswfML
 	{
 		return currentTagNode.exists(att)? currentTagNode.get(att) : defaultValue;
 	}
-	//check for missing mandatory attributes
+
 	private function checkAtt(att:Dynamic , name):Void
 	{
-		if(att==null) throw 'Attribute ' + name + ' missing in tag ' + currentTagNode;
+		if(att==null) throw 'Attribute ' + name + ' missing in tag: ' + currentTagNode;
 	}
 	private function checkAttS(att, name):Void
 	{
-		if(att=="") throw 'Attribute ' + name + ' missing in tag ' + currentTagNode;
+		if(att=="") throw 'Attribute ' + name + ' missing in tag: ' + currentTagNode;
 	}
 }
