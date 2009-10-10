@@ -187,10 +187,12 @@
 	Attributes:id, class
 		Mandatory: id, class
 		Default:
-	Signature: <SymbolClass id="?" class="?" />
+	Signature: <SymbolClass id="?" class="?" base=""/>
 	Usage: 
 	<SymbolClass id="0" class="flash.boot" />
 	<SymbolClass id="1" class="com.example.MyMovieClip" />
+	<SymbolClass id="1" class="com.example.MyMovieClip" base="flash.display.MovieClip"/>
+
 
 <FrameLabel/>
 	Parent: <swf> or <DefineSprite>
