@@ -69,4 +69,4 @@ The following classes can be linked to a tag/asset inside your swf:<br>
 	
 </swf>
 }}}
-If you supply a base class then a class with the according actionscript bytecode will be automatically generated and added to the swf. If you omit a class for the base attribute then you must define a class inside your script that extends the correct class.
+If you supply a base class then a class with the according actionscript bytecode will be automatically generated and added to the swf. If you omit a class for the base attribute then you must define one inside your script that extends the correct class.
