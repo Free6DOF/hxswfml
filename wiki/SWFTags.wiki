@@ -41,8 +41,8 @@
 	Attributes:file
 		Mandatory: file
 		Default:
-	Signature: <MetaData file='path/to/file/containing/rdf_metadata *.xml, *.txt /> 
-	Usage: <MetaData file='rdf_metadata.xml />
+	Signature: <MetaData file="path/to/file/containing/rdf_metadata *.xml, *.txt" /> 
+	Usage: <MetaData file="rdf_metadata.xml" />
 
 
 <DefineBitsJPEG2/>
