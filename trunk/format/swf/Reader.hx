@@ -1356,6 +1356,13 @@ class Reader {
 			var cid = i.readUInt16();
 			var data = i.read(len-2);
 			TUnknown(id,data);
+		case TagId.Metadata:
+			var data = i.readString(len);
+			TMetadata(data);
+		case TagId.DefineScalingGrid:
+			var id = i.readUInt16();
+			var splitter = readRect();
+			TDefineScalingGrid(id, splitter);
 		default:
 			var data = i.read(len);
 			TUnknown(id,data);
