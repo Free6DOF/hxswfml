@@ -239,9 +239,9 @@
 <swf></swf>
 	Parent: none (root/document element)
 	Children:
-		<Header/>,<FileAttributes/>,<SetBackgroundColor/>,<ScriptLimits/>,
-		<DefineBitsJPEG2/>,<DefineShape/>,<DefineSprite>,<DefineButton>,<DefineBinaryData/>,<DefineSound/>,<DefineFont/>,<DefineEditText/>,<DefineABC/>,
-		<PlaceObject/>,<RemoveObject/>,<StartSound/>,
+		<Header/>,<FileAttributes/>,<SetBackgroundColor/>,<ScriptLimits/>,<MetaData/>
+		<DefineBitsJPEG2/>,<DefineShape/>,<DefineSprite>,<DefineButton>,<DefineBinaryData/>,<DefineSound/>,<DefineFont/>,<DefineEditText/>,<DefineScalingGrid/>,<DefineABC/>,
+		<PlaceObject/>,<RemoveObject/>,<StartSound/>,<SymbolClass/>
 		<FrameLabel/><ShowFrame/><EndFrame/>
 	Attributes: none
 	Signature:
@@ -254,7 +254,9 @@
 	<SetBackgroundColor color="0xFFFFFF" />
 	
 	<ScriptLimits maxRecursionDepth="256" scriptTimeoutSeconds="15" />
-	
+
+	<MetaData file="path/to/file/containing/rdf_metadata *.txt, *.xml" />
+
 	<DefineBitsJPEG2 id="?" file="path/to/file *.jpg, *.png, *.gif" />
 	
 	<DefineBinaryData id="?" file="path/to/file *.any " />
@@ -281,14 +283,16 @@
 	<DefineButton id="?">
 		<ButtonState id="?" depth="?" up="false" over="false" down="false"  hit="false" x="0" y="0" scaleX="1.0" scaleY="1.0" rotate0="0.0" rotate1="0.0" />
 	</DefineButton>
-	
+
+	<DefineScalingGrid id="?" x="?" width="?" y="?" height="?" />
+
+	<DefineABC file="path/to/swf/containing/abc.swf" />
+
 	<PlaceObject id="?" depth="?" name="" move="false" x="0" y="0" scaleX="1.0" scaleY="1.0" rotate0="0.0" rotate1="0.0" />
 	
 	<RemoveObject depth="?" />
 	
 	<StartSound id="?" stop="false" loopCount="0" />
-	
-	<DefineABC file="path/to/swf/containing/abc.swf" />
 	
 	<SymbolClass id="?" class="?" />
 	
