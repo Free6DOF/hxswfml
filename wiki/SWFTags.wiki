@@ -35,7 +35,7 @@
 	Signature: <ScriptLimits maxRecursionDepth="256" scriptTimeoutSeconds="15" />
 	Usage: <ScriptLimits/>
 
-<ScriptLimits/>
+<MetaData />
 	Parent: <swf>
 	Children: none
 	Attributes:file
