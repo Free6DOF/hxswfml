@@ -1,15 +1,20 @@
 1)SWF general:<br>
 [http://www.adobe.com/devnet/swf/pdf/swf_file_format_spec_v10.pdf] (see pages 26 to 33)<br>
+
 -A swf always starts with a `<Header />` tag <br>
+
 -If the swf contains a `<DefineABC />` tag (ActionscriptByteCode,AS3) a `<FileAttributes/>` tag is mandatory right after the `<Header/>` tag.<br>
+
+-If the swf contains a `<MetaData />` tag you must set the 'hasMetaData' attribute to true in the `<FileAttributes/>` tag.<br>
+
+-If you set the attribute 'hasMetaData' to true in the `<FileAttributes/>` tag then the swf must contain a `<MetaData />` tag.<br>
+
 -A swf contains at least one `<ShowFrame/>` tag.<br>
--A swf always ends with an `<EndFrame/>` tag.<br>
 The most basic swf (a movie with 1 empty frame) looks like:
 {{{
 <swf>
 	<Header/>
 	<ShowFrame/>
-	<EndFrame/>
 </swf>
 }}}
 The FlashPlayer will start parsing/playing the tags from the top till it reaches the `<EndFrame/>` tag.<br>
