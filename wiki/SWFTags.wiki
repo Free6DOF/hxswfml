@@ -35,6 +35,16 @@
 	Signature: <ScriptLimits maxRecursionDepth="256" scriptTimeoutSeconds="15" />
 	Usage: <ScriptLimits/>
 
+<ScriptLimits/>
+	Parent: <swf>
+	Children: none
+	Attributes:file
+		Mandatory: file
+		Default:
+	Signature: <MetaData file='path/to/file/containing/rdf_metadata *.xml, *.txt /> 
+	Usage: <MetaData file='rdf_metadata.xml />
+
+
 <DefineBitsJPEG2/>
 	Parent: <swf>
 	Children: none
@@ -148,6 +158,15 @@
 		Default:
 	Signature: <DefineABC file="path/to/swf/containing/abc.swf" />
 	Usage: <DefineABC file="movie_with_abc.swf" />
+
+<DefineScalingGrid />
+	Parent: <swf>
+	Children: none
+	Attributes: id, x, y, width, height
+		Mandatory: id, x, y, width, height
+		Default:
+	Signature: <DefineScalingGrid id="?" x="?" width="?" y="?" height="?" />
+	Usage: <DefineScalingGrid id="1" x="10" width="80" y="10" height="80" />
 
 <PlaceObject/> 
 	Parent: <swf> or <DefineSprite>
