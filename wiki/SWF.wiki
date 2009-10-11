@@ -13,12 +13,13 @@
 The most basic swf (a movie with 1 empty frame) looks like:
 {{{
 <swf>
-	<Header/>
-	<ShowFrame/>
+	<Header />
+	<ShowFrame />
+	<EndFrame />
 </swf>
 }}}
 The FlashPlayer will start parsing/playing the tags from the top till it reaches the `<EndFrame/>` tag.<br>
-When it encounters a `<ShowFrame/>` it renders to screen.<br>
+When it encounters a `<ShowFrame/>` it renders the previous tags to the screen.<br>
 Note that although the `<EndFrame/>` tag is available for use, under normal circumstances you will never need it as it is added automatically by hXswfML.<br>
 
  
