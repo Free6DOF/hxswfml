@@ -92,6 +92,7 @@ class HXswfML
 				case 'definefont' : swfWriter.writeTag(defineFont());
 				case 'defineedittext' : swfWriter.writeTag(defineEditText());
 				case 'defineabc' : swfWriter.writeTag(defineABC());
+				case 'definescalinggrid' : swfWriter.writeTag(defineScalingGrid());
 				//case 'definevideo' : swfWriter.writeTag(defineVideo());
 					
 				case 'placeobject' : swfWriter.writeTag(placeObject2());
@@ -99,6 +100,8 @@ class HXswfML
 				case 'startsound' : swfWriter.writeTag(startSound());
 					
 				case 'symbolclass' : for(t in symbolClass())swfWriter.writeTag(t);
+				
+				case 'metadata' : swfWriter.writeTag(metadata());
 					
 				case "framelabel" : swfWriter.writeTag(frameLabel());
 				case 'showframe' : swfWriter.writeTag(showFrame());
@@ -546,7 +549,25 @@ class HXswfML
 		}
 		return throw 'No ABC files were found inside swf: ' + file + ', TAG : ' + currentTagNode.toString();
 	}
-	
+	private function defineScalingGrid()
+	{
+		var id = _getInt('id',null);
+		checkAtt(id, 'id');
+		var x = _getInt('x',null);
+		checkAtt(x, 'x');
+		x*=20;
+		var y = _getInt('y',null);
+		checkAtt(y, 'y');
+		y*=20;
+		var width = _getInt('width', null);
+		checkAtt(width, 'width');
+		width*=20;
+		var height = _getInt('height', null);
+		checkAtt(height, 'height');
+		height*=20;
+		var splitter = { left:x, right:x+width, top:y, bottom:y + height};
+		return TDefineScalingGrid(id, splitter);
+	}
 	//CONTROL TAGS
 	private function placeObject2()
 	{
@@ -757,7 +778,13 @@ class HXswfML
 		}
 		return tags;
 	}
-	
+	private function metadata()
+	{
+		var file = _getString('file',"");
+		checkAttS(file, 'file');
+		var data = neko.io.File.getContent(file);
+		return TMetadata(data);
+	}
 	//FRAME TAGS:
 	private function frameLabel()
 	{

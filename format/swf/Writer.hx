@@ -1490,9 +1490,20 @@ class Writer {
 				var t = openTMP();
 				writeDefineEditText(data);
 				var bytes = closeTMP(t);
-					writeTID(TagId.DefineEditText, bytes.length + 2);
+				writeTID(TagId.DefineEditText, bytes.length + 2);
 				o.writeUInt16(id);
 				o.write(bytes);
+			case TMetadata(data):
+				writeTID(TagId.Metadata, data.length+1);
+				o.writeString(data);
+				o.writeByte(0);
+			case TDefineScalingGrid(id, splitter):
+				var t = openTMP();
+				writeRect(splitter);
+				var bytes = closeTMP(t);
+				writeTID(TagId.DefineScalingGrid, bytes.length + 2);
+				o.writeUInt16(id);
+				o.write(bytes);				
 		}
 	}
 

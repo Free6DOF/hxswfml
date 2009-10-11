@@ -69,6 +69,8 @@ enum SWFTag {
 	TScriptLimits(maxRecursion:Int, timeoutSeconds:Int);
 	TDefineButton2(id : Int, records : Array<ButtonRecord> );
 	TDefineEditText(id : Int, data : TextFieldData );
+	TMetadata(data:String);
+	TDefineScalingGrid(id:Int, splitter:Rect);
 	TUnknown( id : Int, data : haxe.io.Bytes );
 }
 typedef TextFieldData =
