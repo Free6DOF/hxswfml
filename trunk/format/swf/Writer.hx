@@ -1342,7 +1342,10 @@ class Writer {
 
 			case TBackgroundColor(color):
 				writeTID(TagId.SetBackgroundColor,3);
-				o.writeUInt24(color);
+				o.writeByte((color & 0xff0000) >> 16);
+				o.writeByte((color & 0x00ff00) >> 8);
+				o.writeByte(color & 0x0000ff);
+				//o.writeUInt24(color);//must be big endian
 
 			case TPlaceObject2(po):
 				var t = openTMP();
