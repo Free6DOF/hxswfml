@@ -47,7 +47,7 @@ class XswfML
 class HXswfML
 {
 	private var fileIn:String;
-	private var xml_str:String;
+	private var dictionary:Array<String>;
 	private var currentTagNode:Xml;
 	private var swfBytesOutput:BytesOutput;
 	private var swfWriter:format.swf.Writer;
@@ -56,8 +56,10 @@ class HXswfML
 	public function new(fileIn:String, fileOut:String)
 	{
 		bitmapIds = new Array();
+		dictionary = new Array();
 		//get xml
 		this.fileIn = fileIn;
+		checkFileExistence(fileIn);
 		var xml:Xml = Xml.parse(File.getContent(fileIn));
 		
 		//create SWF
@@ -158,8 +160,10 @@ class HXswfML
 	{
 		var id = _getInt('id',null);
 		checkAtt(id, 'id');
+		checkDictionary(id);
 		var file = _getString('file',"");
 		checkAttS(file, 'file');
+		checkFileExistence(file);
 		var bytes = neko.io.File.getBytes(file);
 		storeWidthHeight(id, file, bytes);
 		return TBitsJPEG(id, JDJPEG2(bytes));
@@ -168,11 +172,14 @@ class HXswfML
 	{
 		var id = _getInt('id',null);
 		checkAtt(id, 'id');
+		checkDictionary(id);
 		var bounds;
 		var shapeWithStyle;
 		if(currentTagNode.exists('bitmapId'))
 		{
 			var bitmapId = _getInt('bitmapId',null);
+			if(dictionary[bitmapId] != 'definebitsjpeg2')
+				throw 'The bitmapId : ' + bitmapId +' used in TAG: '+currentTagNode.toString() + 'must be a reference to a DefineBitsJPEG2 tag.';
 			var width = bitmapIds[bitmapId][0]*20;
 			var height = bitmapIds[bitmapId][1]*20;
 			var scaleX = _getFloat('scaleX',1.0)*20;
@@ -260,6 +267,7 @@ class HXswfML
 	{
 		var id = _getInt('id',null);
 		checkAtt(id, 'id');
+		checkDictionary(id);
 		var frames = _getInt('frameCount',1);
 		var tags : Array<SWFTag>=new Array();
 		for(tagNode in currentTagNode.elements())
@@ -290,6 +298,7 @@ class HXswfML
 	{
 		var id = _getInt('id',null);
 		checkAtt(id, 'id');
+		checkDictionary(id);
 		var buttonRecords : Array<ButtonRecord>=new Array();
 		for(buttonRecord in currentTagNode.elements())
 		{
@@ -299,9 +308,10 @@ class HXswfML
 				var over = _getBool('over', false);
 				var up = _getBool('up', false);
 				if(hit==null && down==null && over==null && up==null) 
-					throw 'Missing button state in tag : ' + currentTagNode +'with id: ' + id +', TAG: '+currentTagNode.toString();
+					throw 'Missing button state in tag : ' + currentTagNode +'with id: ' + id +', TAG: '+currentTagNode.toString() +'You need to supply at least one button state.';
 				var id = _getInt('id',null);
 				checkAtt(id, 'id');
+				checkTargetId(id);
 				var depth = _getInt('depth',null);
 				checkAtt(depth, 'depth');
 				
@@ -340,6 +350,7 @@ class HXswfML
 	{
 		var file = _getString('file',"");
 		checkAttS(file, 'file');
+		checkFileExistence(file);
 		var mp3FileBytes = neko.io.File.read(file, true);
 		var mp3Reader = new format.mp3.Reader(mp3FileBytes);
 
@@ -352,6 +363,7 @@ class HXswfML
 		mp3Writer.write(mp3, false);
 		var _sid = _getInt('id',null);
 		checkAtt(_sid, 'id');
+		checkDictionary(_sid);
 		return TSound(
 		{
 			sid:_sid,
@@ -382,8 +394,10 @@ class HXswfML
 	{
 		var id = _getInt('id',null);
 		checkAtt(id, 'id');
+		checkDictionary(id);
 		var file = _getString('file',"");
 		checkAttS(file, 'file');
+		checkFileExistence(file);
 		var bytes = neko.io.File.getBytes(file);
 		return TBinaryData(id, bytes);
 	}
@@ -391,8 +405,10 @@ class HXswfML
 	{
 		var _id = _getInt('id',null);
 		checkAtt(_id, 'id');
+		checkDictionary(_id);
 		var file = _getString('file',"");
 		checkAttS(file, 'file');
+		checkFileExistence(file);
 		var swf:Bytes = neko.io.File.getBytes(file);
 		var swfBytesInput = new BytesInput(swf);
 		var swfReader = new format.swf.Reader(swfBytesInput);
@@ -414,6 +430,7 @@ class HXswfML
 	{
 		var _id = _getInt('id',null);
 		checkAtt(_id, 'id');
+		checkDictionary(_id);
 		
 		var width = _getInt('width',100)*20;
 		var height = _getInt('height',100)*20;
@@ -431,6 +448,8 @@ class HXswfML
 		var useOutlines:Bool = _getBool('useOutlines',false);
 		
 		var fontID:Int = _getInt('fontID',null);
+		if(fontID!=null && dictionary[fontID]!='definefont')
+			throw 'The id:' + fontID + ' used in TAG: '+currentTagNode.toString() + ' must be a reference to a DefineFont tag';
 		var fontClass:String =_getString('fontClass',"");
 		var fontHeight:Int = _getInt('fontHeight',12)*20;
 		var textColor:Int = _getInt('textColor',0x000000ff);
@@ -498,6 +517,7 @@ class HXswfML
 		var remap = _getString('remap', "");
 		var file = _getString('file',"");
 		checkAttS(file, 'file');
+		checkFileExistence(file);
 		var swf:Bytes = neko.io.File.getBytes(file);
 		var swfBytesInput = new BytesInput(swf);
 		var swfReader = new format.swf.Reader(swfBytesInput);
@@ -553,6 +573,7 @@ class HXswfML
 	{
 		var id = _getInt('id',null);
 		checkAtt(id, 'id');
+		checkTargetId(id);
 		var x = _getInt('x',null);
 		checkAtt(x, 'x');
 		x*=20;
@@ -572,7 +593,8 @@ class HXswfML
 	private function placeObject2()
 	{
 		var id:Int = _getInt('id', null);
-		//checkAtt(id, 'id');
+		if(id!=null)
+			checkTargetId(id);
 		var depth:Int = _getInt('depth', null);
 		checkAtt(depth, 'depth');
 		
@@ -751,6 +773,7 @@ class HXswfML
 	{
 		var id:Int = _getInt('id',null);
 		checkAtt(id, 'id');
+		checkTargetId(id);
 		var stop:Bool = _getBool('stop', false);
 		var loopCount = _getInt('loopCount', 0);
 		var hasLoops = loopCount==0?false:true;
@@ -760,6 +783,7 @@ class HXswfML
 	{
 		var cid = _getInt('id',null);
 		checkAtt(cid, 'id');
+		checkTargetId(cid);
 		var className = _getString('class', "");
 		checkAttS(className, 'class');
 		var symbols: Array<SymData> = [{cid:cid, className:className}];
@@ -767,8 +791,8 @@ class HXswfML
 		var tags : Array<SWFTag>=new Array();
 		if(baseClass!="")
 		{
-			var abcTag = createABC(className, baseClass, cid);
-			if(abcTag ==null)	
+			var abcTag = createABC(className, baseClass);
+			if(abcTag == null)	
 				throw 'Unsupported base class: ' + baseClass + ', TAG: ' + currentTagNode.toString();
 			tags = [abcTag, TSymbolClass(symbols)];
 		}
@@ -782,6 +806,7 @@ class HXswfML
 	{
 		var file = _getString('file',"");
 		checkAttS(file, 'file');
+		checkFileExistence(file);
 		var data = neko.io.File.getContent(file);
 		return TMetadata(data);
 	}
@@ -855,7 +880,7 @@ class HXswfML
 		
 	}
 
-	private function createABC(className:String, baseClass:String, id:Int)
+	private function createABC(className:String, baseClass:String)
 	{
 		var ctx = new format.abc.Context();
 		var abcOutput = new haxe.io.BytesOutput();
@@ -923,18 +948,7 @@ class HXswfML
 				ctx.finalize();
 				format.abc.Writer.write(abcOutput, ctx.getData());
 				return TActionScript3(abcOutput.getBytes());
-			/*
-			case 'flash.display.BitmapData'://FIXME (width and height in ctor) use bitmapIds[cid][0] and bitmapIds[cid][1] 
-				var c = ctx.beginClass(className);
-				c.superclass = ctx.type("flash.display.BitmapData");
-				var m = ctx.beginMethod(className, [], null, false, false, false, true);
-				m.maxStack = 2;
-				c.constructor = m.type;
-				ctx.ops( [OThis,OConstructSuper(0), ORetVoid,] );
-				ctx.finalize();
-				format.abc.Writer.write(abcOutput, ctx.getData());
-				return abcOutput.getBytes();
-			*/
+			
 			case 'flash.media.Sound':
 				var c = ctx.beginClass(className);
 				c.superclass = ctx.type("flash.media.Sound");
@@ -1001,5 +1015,64 @@ class HXswfML
 	private function checkAttS(att, name):Void
 	{
 		if(att=="") throw 'Attribute ' + name + ' missing in tag: ' + currentTagNode;
+	}
+	private function checkDictionary(id:Int):Void
+	{
+		if(dictionary[id]!=null)
+			throw 'Overwriting an existing id: ' + id + ', with TAG: '+currentTagNode.toString(); 
+		if(id==0 && currentTagNode.nodeName.toLowerCase()!='symbolclass')
+			throw 'id 0 can only be used for the SymbolClass tag that references the DefineABC tag which holds your document class/main entry point';
+		dictionary[id] = currentTagNode.nodeName.toLowerCase();
+	}
+	private function checkTargetId(id:Int):Void
+	{
+		if(id!=0 && dictionary[id]==null)
+		{
+			throw 'The target id: ' + id +' used in TAG: '+currentTagNode.toString() + 'does not exist.';
+		}
+		else if(currentTagNode.nodeName.toLowerCase()=='placeobject' || currentTagNode.nodeName.toLowerCase()=='buttonrecord')
+		{
+			switch(dictionary[id])
+			{
+				case'defineshape':
+				case'definebutton':
+				case'definesprite':
+				case'defineedittext':
+				default: throw 'The target id:' + id + ' used in TAG: '+currentTagNode.toString() + ' must be a reference to a DefineShape, DefineButton, DefineSprite or DefineEditText tag'; 
+			}
+		}
+		else if(currentTagNode.nodeName.toLowerCase()=='definescalinggrid')
+		{
+			switch(dictionary[id])
+			{
+				case'definebutton':
+				case'definesprite':
+				default: throw 'The target id:' + id + ' used in TAG: '+currentTagNode.toString() + ' must be a reference to a DefineButton or DefineSprite tag'; 
+			}
+		}
+		else if(currentTagNode.nodeName.toLowerCase()=='startsound')
+		{
+			if(dictionary[id]!='definesound')
+				throw 'The target id:' + id + ' used in TAG: '+currentTagNode.toString() + ' must be a reference to a DefineSound tag'; 
+		}
+		else if(currentTagNode.nodeName.toLowerCase()=='symbolclass')
+		{
+			switch(dictionary[id])
+			{
+				case'definebutton':
+				case'definesprite':
+				case'definebinarydata':
+				case'definefont':
+				case'defineabc':
+				case'definesound':
+				case'definebitsjpeg2':
+				default:throw 'The target id:' + id + ' used in TAG: '+currentTagNode.toString() + ' must be a reference to a DefineButton, DefineSprite, DefineBinaryData, DefineFont, DefineABC, DefineSound or DefineBitsJPEG2 tag'; 
+			}
+		}
+	}
+	private function checkFileExistence(file:String):Void
+	{
+		if(!neko.FileSystem.exists(file))
+			throw 'File: ' + file + ' does not exist or could not be found at the given location.';
 	}
 }
