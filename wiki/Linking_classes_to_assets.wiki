@@ -8,7 +8,8 @@ The following classes can be linked to a tag/asset inside your swf:<br>
 6)flash.text.Font<br>
 7)flash.utils.ByteArray<br>
 8)The document class of your script<br>
-Check the example in the download directory : [http://hxswfml.googlecode.com/files/SymbolClass_base_test.zip]
+
+Check also the example in the downloads directory : [http://hxswfml.googlecode.com/files/SymbolClass_base_test.zip]
 {{{
 <swf>
 	<Header/>
