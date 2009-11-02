@@ -1,14 +1,13 @@
 The following classes can be linked to a tag/asset inside your swf:<br>
 <br>
 1)flash.display.Bitmap<br>
-2)flash.display.BitmapData<br>
-3)flash.display.MovieClip<br>
-4)flash.display.Sprite<br>
-5)flash.display.SimpleButton<br>
-6)flash.media.Sound<br>
-7)flash.text.Font<br>
-8)flash.utils.ByteArray<br>
-9)The document class of your script<br>
+2)flash.display.MovieClip<br>
+3)flash.display.Sprite<br>
+4)flash.display.SimpleButton<br>
+5)flash.media.Sound<br>
+6)flash.text.Font<br>
+7)flash.utils.ByteArray<br>
+8)The document class of your script<br>
 {{{
 <swf>
 	<Header/>
@@ -16,11 +15,7 @@ The following classes can be linked to a tag/asset inside your swf:<br>
 	
 	<!--flash.display.Bitmap-->
 	<DefineBitsJPEG2 id="1" file="picture.png" />
-	<SymbolClass id="1" class="com.example.MyBitmap" base="flash.display.Bitmap"/>
-	
-	<!--flash.display.BitmapData-->
-	<DefineBitsJPEG2 id="2" file="picture.png" />
-	<SymbolClass id="2" class="com.example.MyBitmapData" />
+	<SymbolClass id="1" class="MyBitmap" base="flash.display.Bitmap"/>
 	
 	<DefineShape id="3" bitmapId="1" />
 	
@@ -31,14 +26,14 @@ The following classes can be linked to a tag/asset inside your swf:<br>
 		<PlaceObject id="3" depth="1" move='true'/>
 		<ShowFrame />
 	</DefineSprite>
-	<SymbolClass id="4" class="com.example.MyMovieClip" base="flash.display.MovieClip/>
+	<SymbolClass id="4" class="MyMovieClip" base="flash.display.MovieClip/>
 	
 	<!--flash.display.Sprite-->
 	<DefineSprite id="5" frameCount="1">
 		<PlaceObject id="3" depth="1" />
 		<ShowFrame />
 	</DefineSprite>
-	<SymbolClass id="5" class="com.example.MySprite" base="flash.display.Sprite"/>
+	<SymbolClass id="5" class="MySprite" base="flash.display.Sprite"/>
 	
 	<!--flash.display.SimpleButton-->
 	<DefineButton id="6">
@@ -47,26 +42,27 @@ The following classes can be linked to a tag/asset inside your swf:<br>
 		<ButtonState down='true' id='3' depth='1' />
 		<ButtonState hit='true' id='3' depth='1' />
 	</DefineButton>
-	<SymbolClass id="6" class="com.example.MySimpleButton" base="flash.display.SimpleButton"/>
+	<SymbolClass id="6" class="MySimpleButton" base="flash.display.SimpleButton"/>
 	
 	<!--flash.media.Sound-->
 	<DefineSound id="7" file="sound.mp3" />
-	<SymbolClass id="7" class="com.example.MySound" base="flash.media.Sound"/>
+	<SymbolClass id="7" class="MySound" base="flash.media.Sound"/>
 	
 	<!--flash.text.Font-->
 	<DefineFont id="8" file="fontInSwf.swf" />
-	<SymbolClass id="8" class="com.example.MyFont" base="flash.text.Font"/>
+	<SymbolClass id="8" class="MyFont" base="flash.text.Font"/>
 	
 	<!--flash.utils.ByteArray-->
 	<DefineBinaryData id="9" file="picture.png" />
-	<SymbolClass id="9" class="com.example.MyByteArray" base="flash.utils.ByteArray"/>
+	<SymbolClass id="9" class="MyByteArray" base="flash.utils.ByteArray"/>
 	
 	<!--your document class (must always be id 0) -->
 	<DefineABC file="Script.swf" />
-	<SymbolClass id="0" class="com.example.MyDocumentClass" />
+	<SymbolClass id="0" class="flash.Boot" />
 
 	<ShowFrame/>
 	
 </swf>
 }}}
-If you supply a base class then a class with the according actionscript bytecode will be automatically generated and added to the swf. If you omit a class for the base attribute then you must define one inside your script that extends the correct class.
+If you supply a class name for the base attribute then a class with the according actionscript bytecode will be automatically generated and added to the swf. 
+If you omit a class name for the base attribute then you must define that class inside your script and it must extends the correct super class.
