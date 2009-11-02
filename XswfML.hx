@@ -5,6 +5,9 @@ import format.swf.Data;
 import format.swf.Reader;
 import format.swf.Writer;
 
+import format.zip.Data;
+import format.zip.Writer;
+
 import format.mp3.Data;
 import format.mp3.Reader;
 import format.mp3.Writer;
@@ -28,7 +31,9 @@ class XswfML
 		var args:Array<String> = neko.Sys.args();
 		if (args.length!=2)
 		{
+			Lib.println('hXswfML r53');
 			Lib.println("Usage: hXswfML in.xml out.swf");
+			neko.Sys.exit(1);
 		}
 		else
 		{	
@@ -38,7 +43,8 @@ class XswfML
 			}
 			else
 			{
-				throw '!' + args[0] + ' does not exist!';
+				Lib.println('!ERROR: File ' + args[0] + ' could not be found at the given location.');
+				neko.Sys.exit(1);
 			}
 		}
 	}
@@ -48,7 +54,10 @@ class HXswfML
 {
 	private var fileIn:String;
 	private var dictionary:Array<String>;
+	private var swfTags:Hash<Array<String>>;
+	private var xmlString:String;
 	private var currentTagNode:Xml;
+	private var swcClasses:Array<Array<String>>;
 	private var swfBytesOutput:BytesOutput;
 	private var swfWriter:format.swf.Writer;
 	private var bitmapIds:Array<Array<Int>>;//[[width, height]]
@@ -57,27 +66,107 @@ class HXswfML
 	{
 		bitmapIds = new Array();
 		dictionary = new Array();
+		swcClasses = new Array();
+		swfTags = new Hash();
+		swfTags.set('swf',[]);
+		swfTags.set('header', ['width', 'height', 'fps', 'version', 'compressed', 'frameCount']);
+		swfTags.set('fileattributes',['actionscript3', 'useNetwork', 'useDirectBlit', 'useGPU', 'hasMetaData']);
+		swfTags.set('setbackgroundcolor',['color']);
+		swfTags.set('scriptlimits',['maxRecursionDepth', 'scriptTimeoutSeconds']);
+		swfTags.set('definebitsjpeg2',['id', 'file']);
+		swfTags.set('defineshape',['id', 'bitmapId', 'x', 'y', 'scaleX', 'scaleY', 'rotate0', 'rotate1', 'repeat', 'smooth', 'width', 'height', 'fillColor', 'lineWidth', 'lineColor']);
+		swfTags.set('definesprite',['id', 'frameCount']);
+		swfTags.set('definebutton',['id']);
+		swfTags.set('buttonstate',['id', 'depth', 'hit', 'down', 'over', 'up', 'x', 'y', 'scaleX', 'scaleY', 'rotate0', 'rotate1']);
+		swfTags.set('definebinarydata',['id', 'file']);
+		swfTags.set('definesound',['id', 'file']);
+		swfTags.set('definefont',['id', 'file']);
+		swfTags.set('defineedittext',['id', 'initialText', 'fontID', 'useOutlines', 'width', 'height', 'wordWrap', 'multiline', 'password', 'input', 'autoSize', 'selectable', 'border', 'wasStatic', 'html', 'fontClass', 'fontHeight', 'textColor', 'maxLength', 'align', 'leftMargin', 'rightMargin', 'indent', 'leading', 'variableName', 'file']);
+		swfTags.set('defineabc',['file']);
+		swfTags.set('definescalinggrid',['id', 'x', 'width', 'y', 'height']);
+		swfTags.set('placeobject',['id', 'depth', 'name', 'move', 'x', 'y', 'scaleX', 'scaleY', 'rotate0', 'rotate1']);
+		swfTags.set('removeobject',['depth']);
+		swfTags.set('startsound',['id', 'stop', 'loopCount']);
+		swfTags.set('symbolclass',['id', 'class', 'base']);
+		swfTags.set('metadata',['file']);
+		swfTags.set("framelabel",['name', 'anchor']);
+		swfTags.set('showframe',[]);
+		swfTags.set('endframe',[]);
+		
 		//get xml
 		this.fileIn = fileIn;
-		checkFileExistence(fileIn);
 		var xml:Xml = Xml.parse(File.getContent(fileIn));
 		
 		//create SWF
 		swfBytesOutput = new BytesOutput();
 		swfWriter = new format.swf.Writer(swfBytesOutput);
 		createSWF(xml);
+		var swfBytes = swfBytesOutput.getBytes();
+		
+		
+		if(StringTools.endsWith(fileOut,'.swc'))
+		{
+			var date:Date = Date.now();
+			var mod:Float = date.getTime();
 
-		//save SWF
-		var file = File.write(fileOut,true);
-		file.write(swfBytesOutput.getBytes());
-		file.close();
+			//save swc
+			var xmlBytesOutput = new BytesOutput();
+			xmlBytesOutput.write(Bytes.ofString(createXML(mod)));
+			var xmlBytes = xmlBytesOutput.getBytes();
+			
+			var zipBytesOutput = new BytesOutput();
+			var zipWriter = new format.zip.Writer(zipBytesOutput);
+			
+			var data:List<Entry> = new List();
+			
+			data.push({
+			fileName : 'catalog.xml', 
+			fileSize : xmlBytes.length, 
+			fileTime : date, 
+			compressed : false, 
+			dataSize : xmlBytes.length,
+			data : xmlBytes,
+			crc32 : null,
+			extraFields : null});
+			
+			data.push({
+			fileName : 'library.swf', 
+			fileSize : swfBytes.length, 
+			fileTime : date, 
+			compressed : false, 
+			dataSize : swfBytes.length,
+			data : swfBytes,
+			crc32 : null,
+			extraFields : null});
+			
+			zipWriter.writeData( data );
+			
+			var file = File.write(fileOut,true);
+			file.write(zipBytesOutput.getBytes());
+			file.close();
+		}
+		else if(StringTools.endsWith(fileOut,'.swf'))
+		{
+			//save SWF
+			var file = File.write(fileOut,true);
+			file.write(swfBytes);
+			file.close();
+		}
+		else
+		{
+			Lib.println('!ERROR: Allowed file formats are swf and swc.');
+			neko.Sys.exit(1);
+		}
 	}
 	private function createSWF(xml:Xml):Void
 	{
 		var swfNode:Xml = xml.firstElement();
+		currentTagNode = swfNode;
+		checkUnknownAttributes();
 		for(tagNode in swfNode.elements())
 		{
 			currentTagNode = tagNode;
+			checkUnknownAttributes();
 			switch(currentTagNode.nodeName.toLowerCase())
 			{
 				case 'header' :  swfWriter.writeHeader(header());
@@ -93,9 +182,14 @@ class HXswfML
 				case 'definesound' : swfWriter.writeTag(defineSound());
 				case 'definefont' : swfWriter.writeTag(defineFont());
 				case 'defineedittext' : swfWriter.writeTag(defineEditText());
-				case 'defineabc' : swfWriter.writeTag(defineABC());
+				case 'defineabc' : 
+					var abcTags = defineABC();
+						if(abcTags.length==0)
+							Lib.println('!Warning: No ABC files were found inside the given file in TAG : ' + currentTagNode.toString()+'.');
+						else
+							for(t in abcTags)
+								swfWriter.writeTag(t);
 				case 'definescalinggrid' : swfWriter.writeTag(defineScalingGrid());
-				//case 'definevideo' : swfWriter.writeTag(defineVideo());
 					
 				case 'placeobject' : swfWriter.writeTag(placeObject2());
 				case 'removeobject' : swfWriter.writeTag(removeObject2());
@@ -114,7 +208,9 @@ class HXswfML
 					for(twt in tweentags)
 						swfWriter.writeTag(twt);
 				
-				default : throw 'Unsupported swf tag : '+ currentTagNode.nodeName + ', TAG: ' +currentTagNode.toString();
+				default:
+					Lib.println('!ERROR: Unsupported swf tag : '+ currentTagNode.nodeName + ', TAG: ' +currentTagNode.toString()+'.');
+					neko.Sys.exit(1);
 			}
 		}
 		swfWriter.writeEnd();
@@ -179,7 +275,10 @@ class HXswfML
 		{
 			var bitmapId = _getInt('bitmapId',null);
 			if(dictionary[bitmapId] != 'definebitsjpeg2')
-				throw 'The bitmapId : ' + bitmapId +' used in TAG: '+currentTagNode.toString() + 'must be a reference to a DefineBitsJPEG2 tag.';
+			{
+				Lib.println('!ERROR: The bitmapId : ' + bitmapId +' used in TAG: '+currentTagNode.toString() + ' must be a reference to a DefineBitsJPEG2 tag.');
+				neko.Sys.exit(1);
+			}
 			var width = bitmapIds[bitmapId][0]*20;
 			var height = bitmapIds[bitmapId][1]*20;
 			var scaleX = _getFloat('scaleX',1.0)*20;
@@ -288,7 +387,9 @@ class HXswfML
 					for(twt in tweentags)
 						tags.push(twt);
 				
-				default: throw 'Unsupported tag:' + currentTagNode.nodeName  + ' found inside DefineSprite with id: '+ id + ', TAG: '+currentTagNode.toString();
+				default: 
+				Lib.println('!ERROR: Unsupported tag: ' + currentTagNode.nodeName  + ' found inside DefineSprite with id: '+ id + ', TAG: '+currentTagNode.toString()+'.');
+				neko.Sys.exit(1);
 			}
 		}
 		return TClip(id, frames, tags);
@@ -307,8 +408,11 @@ class HXswfML
 				var down = _getBool('down', false);
 				var over = _getBool('over', false);
 				var up = _getBool('up', false);
-				if(hit==null && down==null && over==null && up==null) 
-					throw 'Missing button state in tag : ' + currentTagNode +'with id: ' + id +', TAG: '+currentTagNode.toString() +'You need to supply at least one button state.';
+				if(hit==null && down==null && over==null && up==null)
+				{
+					Lib.println('!ERROR: Missing button state in tag : ' + currentTagNode +', with id: ' + id +', TAG: '+currentTagNode.toString() +'. You need to supply at least one button state.');
+					neko.Sys.exit(1);
+				}
 				var id = _getInt('id',null);
 				checkAtt(id, 'id');
 				checkTargetId(id);
@@ -374,7 +478,7 @@ class HXswfML
 				case SR_11025: SR11k;
 				case SR_22050: SR22k;
 				case SR_44100: SR44k;
-				default: throw 'Unsupported MP3 SoundRate' + mp3Header.samplingRate + ' in '+ fileIn + ', TAG: '+ currentTagNode.toString();
+				default: throw '!ERROR: Unsupported MP3 SoundRate' + mp3Header.samplingRate + ' in '+ fileIn + ', TAG: '+ currentTagNode.toString()+'.';
 			},
 			is16bit : true,
 			isStereo : 
@@ -424,7 +528,7 @@ class HXswfML
 				default://do nothing
 			}
 		}
-		return throw 'No Font definitions were found inside swf: ' + file + ', TAG: ' +currentTagNode.toString();
+		return throw '!ERROR: No Font definitions were found inside swf: ' + file + ', TAG: ' +currentTagNode.toString()+'.';
 	}
 	private function defineEditText()
 	{
@@ -449,7 +553,10 @@ class HXswfML
 		
 		var fontID:Int = _getInt('fontID',null);
 		if(fontID!=null && dictionary[fontID]!='definefont')
-			throw 'The id:' + fontID + ' used in TAG: '+currentTagNode.toString() + ' must be a reference to a DefineFont tag';
+		{
+			Lib.println('!ERROR: The id: ' + fontID + ' used in TAG: '+currentTagNode.toString() + ' must be a reference to a DefineFont tag.');
+			neko.Sys.exit(1);
+		}
 		var fontClass:String =_getString('fontClass',"");
 		var fontHeight:Int = _getInt('fontHeight',12)*20;
 		var textColor:Int = _getInt('textColor',0x000000ff);
@@ -524,7 +631,7 @@ class HXswfML
 		var header = swfReader.readHeader();
 		var tags:Array<SWFTag> = swfReader.readTagList();
 		swfBytesInput.close();
-		
+		var abcTags:Array<SWFTag>=new Array();
 		var _lookupStrings = ["Boot", "Lib", "Type"];//expand? custom classnames?
 		for (tag in tags)
 		{
@@ -533,7 +640,7 @@ class HXswfML
 				case TActionScript3(data,ctx): 
 					if(remap=="")
 					{
-						return TActionScript3(data, ctx);
+						abcTags.push(TActionScript3(data, ctx));
 					}
 					else
 					{
@@ -561,13 +668,13 @@ class HXswfML
 						var abcOutput = new haxe.io.BytesOutput();
 						format.abc.Writer.write(abcOutput,abcFile);
 						var abcBytes = abcOutput.getBytes();
-						return TActionScript3(abcBytes);
+						abcTags.push(TActionScript3(abcBytes,ctx));
 					}
 					
 				default://do nothing
 			}
 		}
-		return throw 'No ABC files were found inside swf: ' + file + ', TAG : ' + currentTagNode.toString();
+		return abcTags;
 	}
 	private function defineScalingGrid()
 	{
@@ -745,7 +852,8 @@ class HXswfML
 					startRotate1 = start;
 					endRotate1 = end;
 				default : 
-					throw 'Unsupported tween tag : '+ currentTagNode.nodeName + 'using : ' + prop + ', TAG: '+currentTagNode.toString();
+					Lib.println('!ERROR: Unsupported tween tag : '+ currentTagNode.nodeName + 'using : ' + prop + ', TAG: '+currentTagNode.toString()+'.');
+					neko.Sys.exit(1);
 			}
 		}
 		var tags:Array<SWFTag> = new Array();
@@ -792,8 +900,11 @@ class HXswfML
 		if(baseClass!="")
 		{
 			var abcTag = createABC(className, baseClass);
-			if(abcTag == null)	
-				throw 'Unsupported base class: ' + baseClass + ', TAG: ' + currentTagNode.toString();
+			if(abcTag == null)
+			{
+				Lib.println('!ERROR: Unsupported base class: ' + baseClass + ', TAG: ' + currentTagNode.toString()+'.');
+				neko.Sys.exit(1);
+			}
 			tags = [abcTag, TSymbolClass(symbols)];
 		}
 		else 
@@ -837,7 +948,8 @@ class HXswfML
 		{
 			if (bytes.readByte() != 255 || bytes.readByte() != 216)
 			{
-				throw 'SOI (Start Of Image) marker 0xff 0xd8 missing , TAG: ' + currentTagNode.toString();
+				Lib.println('!ERROR: SOI (Start Of Image) marker 0xff 0xd8 missing , TAG: ' + currentTagNode.toString()+'.');
+				neko.Sys.exit(1);
 			}
 			var marker:Int;
 			var len:Int;
@@ -884,7 +996,7 @@ class HXswfML
 	{
 		var ctx = new format.abc.Context();
 		var abcOutput = new haxe.io.BytesOutput();
-		
+		swcClasses.push([className, baseClass]);
 		switch(baseClass)
 		{
 			case 'flash.display.MovieClip':
@@ -902,7 +1014,7 @@ class HXswfML
 				ctx.ops( [OThis,OConstructSuper(0), ORetVoid,] );
 				ctx.finalize();
 				format.abc.Writer.write(abcOutput, ctx.getData());
-				return TActionScript3(abcOutput.getBytes());
+				return TActionScript3(abcOutput.getBytes(), {id:1, label:className});
 				
 			case 'flash.display.Sprite':
 				var c = ctx.beginClass(className);
@@ -918,7 +1030,7 @@ class HXswfML
 				ctx.ops( [OThis,OConstructSuper(0), ORetVoid,] );
 				ctx.finalize();
 				format.abc.Writer.write(abcOutput, ctx.getData());
-				return TActionScript3(abcOutput.getBytes());
+				return TActionScript3(abcOutput.getBytes(), {id:1, label:className});
 				
 			case 'flash.display.SimpleButton':
 				var c = ctx.beginClass(className);
@@ -933,7 +1045,7 @@ class HXswfML
 				ctx.ops( [OThis,OConstructSuper(0), ORetVoid,] );
 				ctx.finalize();
 				format.abc.Writer.write(abcOutput, ctx.getData());
-				return TActionScript3(abcOutput.getBytes());
+				return TActionScript3(abcOutput.getBytes(), {id:1, label:className});
 			
 			case 'flash.display.Bitmap':
 				var c = ctx.beginClass(className);
@@ -947,7 +1059,7 @@ class HXswfML
 				ctx.ops( [OThis,OConstructSuper(0), ORetVoid,] );
 				ctx.finalize();
 				format.abc.Writer.write(abcOutput, ctx.getData());
-				return TActionScript3(abcOutput.getBytes());
+				return TActionScript3(abcOutput.getBytes(), {id:1, label:className});
 			
 			case 'flash.media.Sound':
 				var c = ctx.beginClass(className);
@@ -960,7 +1072,7 @@ class HXswfML
 				ctx.ops( [OThis,OConstructSuper(0), ORetVoid,] );
 				ctx.finalize();
 				format.abc.Writer.write(abcOutput, ctx.getData());
-				return TActionScript3(abcOutput.getBytes());
+				return TActionScript3(abcOutput.getBytes(), {id:1, label:className});
 				
 			case 'flash.text.Font':
 				var c = ctx.beginClass(className);
@@ -972,7 +1084,7 @@ class HXswfML
 				ctx.ops( [OThis,OConstructSuper(0), ORetVoid,] );
 				ctx.finalize();
 				format.abc.Writer.write(abcOutput, ctx.getData());
-				return TActionScript3(abcOutput.getBytes());
+				return TActionScript3(abcOutput.getBytes(), {id:1, label:className});
 			
 			case 'flash.utils.ByteArray':
 				var c = ctx.beginClass(className);
@@ -984,7 +1096,7 @@ class HXswfML
 				ctx.ops( [OThis,OConstructSuper(0), ORetVoid,] );
 				ctx.finalize();
 				format.abc.Writer.write(abcOutput, ctx.getData());
-				return TActionScript3(abcOutput.getBytes());
+				return TActionScript3(abcOutput.getBytes(), {id:1, label:className});
 				
 			default : 
 				return null;
@@ -1010,27 +1122,42 @@ class HXswfML
 
 	private function checkAtt(att:Dynamic , name):Void
 	{
-		if(att==null) throw 'Attribute ' + name + ' missing in tag: ' + currentTagNode;
+		if(att==null)
+		{
+			Lib.println('!ERROR: Mandatory attribute ' + name + ' missing in tag: ' + currentTagNode +'.');
+			neko.Sys.exit(1);
+		}
 	}
 	private function checkAttS(att, name):Void
 	{
-		if(att=="") throw 'Attribute ' + name + ' missing in tag: ' + currentTagNode;
+		if(att=="") 
+		{
+			Lib.println('!ERROR: Mandatory attribute ' + name + ' missing in tag: ' + currentTagNode +'.');
+			neko.Sys.exit(1);
+		}
 	}
 	private function checkDictionary(id:Int):Void
 	{
 		if(dictionary[id]!=null)
-			throw 'Overwriting an existing id: ' + id + ', with TAG: '+currentTagNode.toString(); 
+		{
+			Lib.println('!ERROR: Overwriting an existing id: ' + id + ', with TAG: '+currentTagNode.toString()+'.'); 
+			neko.Sys.exit(1);
+		}
 		if(id==0 && currentTagNode.nodeName.toLowerCase()!='symbolclass')
-			throw 'id 0 can only be used for the SymbolClass tag that references the DefineABC tag which holds your document class/main entry point';
+		{
+			Lib.println('!ERROR: id 0 used in TAG: ' + currentTagNode.toString() + ' can only be used for the SymbolClass tag that references the DefineABC tag which holds your document class/main entry point.');
+			neko.Sys.exit(1);
+		}
 		dictionary[id] = currentTagNode.nodeName.toLowerCase();
 	}
 	private function checkTargetId(id:Int):Void
 	{
 		if(id!=0 && dictionary[id]==null)
 		{
-			throw 'The target id: ' + id +' used in TAG: '+currentTagNode.toString() + 'does not exist.';
+			Lib.println('!ERROR: The target id: ' + id +' used in TAG: '+currentTagNode.toString() + ' does not exist.');
+			neko.Sys.exit(1);
 		}
-		else if(currentTagNode.nodeName.toLowerCase()=='placeobject' || currentTagNode.nodeName.toLowerCase()=='buttonrecord')
+		else if(currentTagNode.nodeName.toLowerCase()=='placeobject' || currentTagNode.nodeName.toLowerCase()=='buttonstate')
 		{
 			switch(dictionary[id])
 			{
@@ -1038,7 +1165,9 @@ class HXswfML
 				case'definebutton':
 				case'definesprite':
 				case'defineedittext':
-				default: throw 'The target id:' + id + ' used in TAG: '+currentTagNode.toString() + ' must be a reference to a DefineShape, DefineButton, DefineSprite or DefineEditText tag'; 
+				default: 
+					Lib.println('!ERROR: The target id: ' + id + ' used in TAG: '+currentTagNode.toString() + ' must be a reference to a DefineShape, DefineButton, DefineSprite or DefineEditText tag.'); 
+					neko.Sys.exit(1);
 			}
 		}
 		else if(currentTagNode.nodeName.toLowerCase()=='definescalinggrid')
@@ -1047,15 +1176,20 @@ class HXswfML
 			{
 				case'definebutton':
 				case'definesprite':
-				default: throw 'The target id:' + id + ' used in TAG: '+currentTagNode.toString() + ' must be a reference to a DefineButton or DefineSprite tag'; 
+				default: 
+					Lib.println('!ERROR: The target id: ' + id + ' used in TAG: '+currentTagNode.toString() + ' must be a reference to a DefineButton or DefineSprite tag.'); 
+					neko.Sys.exit(1);
 			}
 		}
 		else if(currentTagNode.nodeName.toLowerCase()=='startsound')
 		{
 			if(dictionary[id]!='definesound')
-				throw 'The target id:' + id + ' used in TAG: '+currentTagNode.toString() + ' must be a reference to a DefineSound tag'; 
+			{
+				Lib.println('!ERROR: The target id: ' + id + ' used in TAG: '+currentTagNode.toString() + ' must be a reference to a DefineSound tag.'); 
+				neko.Sys.exit(1);
+			}
 		}
-		else if(currentTagNode.nodeName.toLowerCase()=='symbolclass')
+		else if(id!=0 && currentTagNode.nodeName.toLowerCase()=='symbolclass')
 		{
 			switch(dictionary[id])
 			{
@@ -1066,13 +1200,48 @@ class HXswfML
 				case'defineabc':
 				case'definesound':
 				case'definebitsjpeg2':
-				default:throw 'The target id:' + id + ' used in TAG: '+currentTagNode.toString() + ' must be a reference to a DefineButton, DefineSprite, DefineBinaryData, DefineFont, DefineABC, DefineSound or DefineBitsJPEG2 tag'; 
+				default:
+					Lib.println('!ERROR: The target id: ' + id + ' used in TAG: '+currentTagNode.toString() + ' must be a reference to a DefineButton, DefineSprite, DefineBinaryData, DefineFont, DefineABC, DefineSound or DefineBitsJPEG2 tag.'); 
+					neko.Sys.exit(1);
 			}
 		}
 	}
 	private function checkFileExistence(file:String):Void
 	{
 		if(!neko.FileSystem.exists(file))
-			throw 'File: ' + file + ' does not exist or could not be found at the given location.';
+		{
+			Lib.println('!ERROR: File: ' + file + 'used in TAG: ' + currentTagNode.toString() + ' could not be found at the given location.');
+			neko.Sys.exit(1);
+		}
+	}
+
+	private function checkUnknownAttributes()
+	{
+		for(a in currentTagNode.attributes())
+		{
+			if(!checkValidAttribute(a))
+			Lib.println('!WARNING: Unknown attribute: ' + a + ' used in TAG: '+currentTagNode.toString() + '. Valid attributes are: '+swfTags.get(currentTagNode.nodeName.toLowerCase()).toString()+'.');
+		}
+	}
+	private function checkValidAttribute(a:String):Bool
+	{
+		var validAttributes = swfTags.get(currentTagNode.nodeName.toLowerCase());
+		for(i in validAttributes)
+		{
+			if(a==i)
+			return true;
+		}
+		return false;
+	}
+	private function createXML(mod:Float):String
+	{
+		var xmlString='<?xml version="1.0" encoding ="utf-8"?><swc xmlns="http://www.adobe.com/flash/swccatalog/9"><versions><swc version="1.2" /><flash version="10.0" build="d566" platform="WIN" /></versions><features><feature-script-deps /><feature-files /></features><libraries><library path="library.swf">';
+		for(i in swcClasses)
+		{
+			var dep= i[1].split('.');
+			xmlString+='<script name="'+i[0]+'" mod="' + Std.string(mod/1000) +'000" ><def id="'+i[0]+'" /><dep id="'+dep[0]+'.'+dep[1] + ':'+dep[2]+'" type="i" /><dep id="AS3" type="n" /></script>';
+		}
+		xmlString+='</library></libraries><files></files></swc>';
+		return xmlString;
 	}
 }
