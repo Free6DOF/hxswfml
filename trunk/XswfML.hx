@@ -19,6 +19,8 @@ import haxe.io.BytesOutput;
 import neko.Lib;
 import neko.io.File;
 
+import HxGraphix;
+
 /**
 * ...
 * @author jan j.
@@ -162,7 +164,7 @@ class HXswfML
 	{
 		var swfNode:Xml = xml.firstElement();
 		currentTagNode = swfNode;
-		checkUnknownAttributes();
+		//checkUnknownAttributes();
 		for(tagNode in swfNode.elements())
 		{
 			currentTagNode = tagNode;
@@ -320,47 +322,87 @@ class HXswfML
 					SHREnd 
 				]
 			}
+			return TShape(id, SHDShape1(bounds, shapeWithStyle));
 		}
 		else
 		{
-			var width = _getInt('width', null)*20;
-			checkAtt(width, 'width');
-			var height = _getInt('height', null)*20;
-			checkAtt(height, 'height');
-			var fillColor = _getInt('fillColor',0x000000);
-			var lineColor = _getInt('lineColor',0x000000);
-			var lineWidth = _getInt('lineWidth',0)*20;
-			var x = _getInt('x',0)*20;
-			var y = _getInt('y',0)*20;
-			bounds ={ left:x, right:x+width, top:y, bottom:y + height};
-			var fillStyles = 
-			[
-				FSSolid({r:(fillColor & 0xff0000) >> 16, g:(fillColor & 0x00ff00) >> 8, b:(fillColor & 0x0000ff)})
-			] ;
-			var lineStyles = (lineWidth==0)?[]:[{width:lineWidth, data:LSRGB({r:(lineColor & 0xff0000) >> 16, g:(lineColor & 0x00ff00) >> 8, b:lineColor & 0x0000ff})}];
-			shapeWithStyle = 
+			var hxg = new HxGraphix();
+			for(e in currentTagNode.elements())
 			{
-				fillStyles:fillStyles,				
-				lineStyles:lineStyles,
-				shapeRecords:
-				[
-					SHRChange(
-					{
-						moveTo:{dx:x+width, dy:y},
-						fillStyle0:{idx:1}, 
-						fillStyle1:null, 
-						lineStyle:{idx:1}, 
-						newStyles:null
-					}), 
-					SHREdge(x, y+height), 
-					SHREdge(x-width, y), 
-					SHREdge(x, y-height), 
-					SHREdge(x+width, y), 
-					SHREnd 
-				]
-			}	
+				currentTagNode = e;
+				switch(e.nodeName.toLowerCase())
+				{
+					case 'beginfill':
+						var color = _getInt('color',0x000000);
+						var alpha = _getFloat('alpha',1.0);
+						hxg.beginFill(color, alpha);
+			    case 'linestyle':
+						var width = _getFloat('width',1.0);
+						var color = _getInt('color',0x000000);
+						var alpha = _getFloat('alpha',1.0);
+						hxg.lineStyle(width, color, alpha);
+			    case 'moveto':
+						var x = _getFloat('x',0.0);
+						var y = _getFloat('y',0.0);
+						hxg.moveTo(x, y);
+			    case 'lineto':
+						var x = _getFloat('x',0.0);
+						var y = _getFloat('y',0.0);
+						hxg.lineTo(x,y);
+			    case 'curveto': 
+						var cx = _getFloat('cx',0.0);
+						var cy = _getFloat('cy',0.0);
+						var ax = _getFloat('ax',0.0);
+						var ay = _getFloat('ay',0.0);
+						hxg.curveTo( cx, cy, ax, ay );
+			    case 'endfill':
+						hxg.endFill();
+			    case 'endline':
+						hxg.endLine();
+			    case 'clear': 
+						hxg.clear();
+			    case 'drawcircle':
+						var x = _getFloat('x',0.0);
+						var y = _getFloat('y',0.0);
+						var r = _getFloat('r',0.0);
+						var sections = _getInt('sections',16);
+						hxg.drawCircle(x, y, r, sections);
+			    case 'drawellipse':
+						var x = _getFloat('x',0.0);
+						var y = _getFloat('y',0.0);
+						var w = _getFloat('width',0.0);
+						var h = _getFloat('height',0.0);
+						hxg.drawEllipse(x, y, w, h);
+			    case 'drawrect':
+						var x = _getFloat('x',0.0);
+						var y = _getFloat('y',0.0);
+						var w = _getFloat('width',0.0);
+						var h = _getFloat('height',0.0);
+						hxg.drawRect(x, y, w, h);
+			    case 'drawroundrect':
+						var x = _getFloat('x',0.0);
+						var y = _getFloat('y',0.0);
+						var w = _getFloat('width',0.0);
+						var h = _getFloat('height',0.0);
+						var r = _getFloat('r',0.0);
+						hxg.drawRoundRect(x, y, w, h, r);
+			    case 'drawroundrectcomplex':
+						var x = _getFloat('x',0.0);
+						var y = _getFloat('y',0.0);
+						var w = _getFloat('width',0.0);
+						var h = _getFloat('height',0.0);
+						var rtl = _getFloat('rtl',0.0);
+						var rtr = _getFloat('rtr',0.0);
+						var rbl = _getFloat('rbl',0.0);
+						var rbr = _getFloat('rbr',0.0);
+						hxg.drawRoundRectComplex(x, y, w, h, rtl, rtr, rbl, rbr);
+					default:
+						Lib.println('!ERROR: Unsupported tag: ' + currentTagNode.nodeName  + ' found inside TAG: '+currentTagNode.toString()+'.');
+						neko.Sys.exit(1);
+				}
+			}
+			return hxg.getTag(id);
 		}
-		return TShape(id, SHDShape1(bounds, shapeWithStyle));
 	}
 	private function defineSprite()
 	{
