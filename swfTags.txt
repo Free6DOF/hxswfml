@@ -55,21 +55,124 @@
 
 <DefineShape/>
         Parent: <swf>
-        Children: none
+        Children: if(bitmpapId is present) none
         Attributes: id, bitmapId, x, y, scaleX, scaleY, rotate0, rotate1
                 Mandatory: id, bitmapId
                 Default :  x=0, y=0, scaleX=1.0, scaleY=1.0, rotate0=0.0, rotate1=0, repeat=false, smooth=false
         Signature: <DefineShape id="?" bitmapId="?" x="0" y="0" scaleX="1.0" scaleY="1.0" rotate0="0.0" rotate1="0" repeat="false" smooth="false" />
         Usage: <DefineShape id="2" bitmapId="1/>
 
-<DefineShape/>  
+<DefineShape>  <DefineShape>
         Parent: <swf>
-        Children: none
-        Attributes: id, width, height, fillColor, lineWidth, lineColor
-                Mandatory: id, width, height
-                Default : fillColor=0x000000 lineWidth=0 lineColor=0x000000
-        Signature: <DefineShape id="?" width="?" height="?" fillColor="0x000000" lineWidth="0" lineColor="0x000000" />
-        Usage: <DefineShape id="1" width="100" height="200"/>
+        Children: if(bitmpapId is absent):<BeginFill />,<LineStyle/>,<MoveTo/>,<LineTo/>,<CurveTo/>,<EndFill/>,<EndLine/>,<DrawCircle/>,<DrawEllipse/>,<DrawRect/>,<DrawroundRect/>,<DrawRoundRectComplex/>
+        Attributes: id
+                Mandatory: id
+                Default :
+        Signature:	<DefineShape id="?" >
+										</DefineShape>
+        Usage:	<DefineShape id="1" >
+									<BeginFill color='0xFF0000'/>
+									<DrawCircle x="20" y="20" r="10"/>
+								</DefineShape>
+								
+		<BeginFill/>
+				Parent: <DefineShape>
+				Children: none
+				Attributes: color, alpha
+				Mandatory: none
+				Default: color=0x000000, alpha=1.0
+				Signature: <BeginFill />
+				Usage : <BeginFill color="0x00FF00" alpha="0.9"/>
+		<LineStyle />
+				Parent: <DefineShape>
+				Children: none
+				Attributes: width, color, alpha
+				Mandatory: none
+				Default: width=1.0, color=0x000000, alpha=1.0
+				Signature: <LineStyle />
+				Usage : <LineStyle width="2" color="0xFF0000" alpha="0.75"/>
+		<MoveTo />
+				Parent: <DefineShape>
+				Children: none
+				Attributes: x, y,
+				Mandatory: none
+				Default: x=0.0, y=0.0
+				Signature: <MoveTo />
+				Usage : <MoveTo x="10" y="10"/>	
+		<LineTo />
+				Parent: <DefineShape>
+				Children: none
+				Attributes: x, y,
+				Mandatory:none
+				Default: x=0.0, y=0.0
+				Signature: <LineTo />
+				Usage : <LineTo x="20" y="20"/>			
+		<curveTo />
+				Parent: <DefineShape>
+				Children: none
+				Attributes: cx, cy, ax, ay (c means control point, a means anchor point)
+				Mandatory: none
+				Default: cx=0.0, cy=0.0, ax=0.0, ay=0.0
+				Signature: <curveTo />
+				Usage : <curveTo cx="250" cy="50" ax="150" ay="100" />		
+		<drawCircle />
+				Parent: <DefineShape>
+				Children: none
+				Attributes: x, y, r, sections
+				Mandatory: none
+				Default: x=0.0 y=0.0 r=0.0 sections="16"
+				Signature: <drawCircle />
+				Usage : <drawCircle x="500" y="200" r="50" sections="16" />	
+		<drawEllipse  />
+				Parent: <DefineShape>
+				Children: none
+				Attributes: x, y, width, height
+				Mandatory: none
+				Default: x=0.0, y=0.0, width=0.0, height=0.0
+				Signature: <drawEllipse />
+				Usage : <drawEllipse x="600" y="300" width="100" height="75" />
+		<drawRect  />
+				Parent: <DefineShape>
+				Children: none
+				Attributes: x,y,width,height
+				Mandatory: none
+				Default: x=0.0, y=0.0, width=0.0, height=0.0
+				Signature: <drawEllipse />
+				Usage : <drawEllipse x="600" y="300" width="100" height="75" />
+		<drawRoundRect />
+				Parent: <DefineShape>
+				Children: none
+				Attributes: x, y, width, height, r (r is corner radius for all corners)
+				Mandatory: none
+				Default: x=0.0, y=0.0, width=0.0, height=0.0, r="0.0"
+				Signature: <drawRoundRect />
+				Usage : <drawRoundRect x="150" y="300" width="100" height="100" r="25"/>
+		<DrawRoundRectComplex />
+				Parent: <DefineShape>
+				Children: none
+				Attributes: x, y, width, height, rtl, rtr, rbl, rbr (conrner radius: rtl=radius top left, rtr=radius top right, rbl=radius bottom left, rbr=radius bottom right)
+				Mandatory: none
+				Default: x=0.0, y=0.0, width=0.0, height=0.0, rtl=0.0, rtr=0.0, rbl=0.0, rbr=0.0
+				Signature: <drawRoundRect />
+				Usage : <DrawRoundRectComplex x="300" y="300" width="100" height="100" rtl="25" rtr="0" rbl="0" rbr="25" />
+		<EndFill/>
+				Parent: <DefineShape>
+				Children: none
+				Attributes: none
+				Mandatory: none
+				Default: 
+				Signature: <EndFill />
+				Usage : <EndFill />
+		<EndLine/>
+				Parent: <DefineShape>
+				Children: none
+				Attributes: none
+				Mandatory: none
+				Default: 
+				Signature: <EndLine />
+				Usage : <EndLine />
+		<EndLine/>
+
 
 <DefineSprite></DefineSprite>
         Parent: <swf>
@@ -105,13 +208,31 @@
                 <ButtonState id="?" depth="?" up="false" over="false" down="false"  hit="false" x="0" y="0" scaleX="1.0" scaleY="1.0" rotate0="0.0" rotate1="0.0" />
         </DefineButton>
         Usage:
-        <DefineShape id="1" width="100" height="100"/>
+        <DefineShape id="1">
+					<BeginFill/>
+					<DrawRect width="100" height="100"/>
+				</DefineShape>
         <DefineButton id="2">
                 <ButtonState id="1" depth="1" up="true"/>
                 <ButtonState id="1" depth="1" over="true"/>
                 <ButtonState id="1" depth="1" down="true"/>
                 <ButtonState id="1" depth="1" hit="true"/>
         </DefineButton>
+				
+<ButtonState />
+				Parent: <DefineButton/>
+				Children : none
+				Attributes:
+								Mandatory: id, depth
+								Default: up=false, over=false, down=false,  hit=false, x=0, y=0, scaleX=1.0, scaleY=1.0, rotate0=0.0, rotate1=0.0
+				Signature: <ButtonState id="?" depth="?" up="false" over="false" down="false"  hit="false" x="0" y="0" scaleX="1.0" scaleY="1.0" rotate0="0.0" rotate1="0.0" />
+				Usage:
+				<DefineShape id="1">
+					<BeginFill/>
+					<DrawRect width="100" height="100"/>
+				</DefineShape>
+				<ButtonState id="1" depth="1" up="true"/> (must be inside a DefineButton element) 
+				
 
 <DefineBinaryData/>
         Parent: <swf>
@@ -255,7 +376,7 @@
         <ScriptLimits maxRecursionDepth="256" scriptTimeoutSeconds="15" />
 
         <MetaData file="path/to/file/containing/rdf_metadata *.txt, *.xml" />
-
+        
         <DefineBitsJPEG2 id="?" file="path/to/file *.jpg, *.png, *.gif" />
         
         <DefineBinaryData id="?" file="path/to/file *.any " />
@@ -268,7 +389,20 @@
 
         <DefineShape id="?" bitmapId="?" x="0" y="0" scaleX="1.0" scaleY="1.0" rotate0="0.0" rotate1="0" repeat="false" smooth="false" />
         
-        <DefineShape id="?" width="?" height="?" fillColor="0x000000" lineWidth="0" lineColor="0x000000" />
+        <DefineShape id="?">
+                <lineStyle width="0.0" color="0x000000" alpha="1.0"/>
+                <beginFill color="0x000000" alpha="1.0" />
+                <moveTo x="0.0" y="0.0" />
+                <lineTo x="0.0" y="0.0" />
+                <curveTo cx="0.0" cy="0.0" ax="0.0" ay="0.0" />
+                <drawCircle x="0.0" y="0.0" r="0.0" sections="16" />
+                <drawEllipse x="0.0" y="0.0" width="0.0" height="0.0" />
+                <drawRect x="0.0" y="0.0" width="0.0" height="0.0" />
+                <drawRoundRect x="0.0" y="0.0" width="0.0" height="0.0" r="0.0"/>
+                <DrawRoundRectComplex x="0.0" y="0.0" width="0.0" height="0.0" rtl="0.0" rtr="0.0" rbl="0.0" rbr="0.0" />
+                <EndLine />
+                <EndFill />
+        </DefineShape>
         
         <DefineSprite id="?" frameCount="1">
                 <PlaceObject id="?" depth="?" name="" move="false" x="0" y="0" scaleX="1.0" scaleY="1.0" rotate0="0.0" rotate1="0.0" />
@@ -276,11 +410,13 @@
                 <StartSound id="?" stop="false" loopCount="0" />
                 <FrameLabel name="?" anchor="false" />
                 <ShowFrame />
-                <EndFrame />
         </DefineSprite>
         
         <DefineButton id="?">
-                <ButtonState id="?" depth="?" up="false" over="false" down="false"  hit="false" x="0" y="0" scaleX="1.0" scaleY="1.0" rotate0="0.0" rotate1="0.0" />
+                <ButtonState id="?" depth="?" up="true" over="false" down="false"  hit="false" x="0" y="0" scaleX="1.0" scaleY="1.0" rotate0="0.0" rotate1="0.0" />
+                <ButtonState id="?" depth="?" up="false" over="true" down="false"  hit="false" x="0" y="0" scaleX="1.0" scaleY="1.0" rotate0="0.0" rotate1="0.0" />
+                <ButtonState id="?" depth="?" up="false" over="false" down="true"  hit="false" x="0" y="0" scaleX="1.0" scaleY="1.0" rotate0="0.0" rotate1="0.0" />
+                <ButtonState id="?" depth="?" up="false" over="false" down="false"  hit="true" x="0" y="0" scaleX="1.0" scaleY="1.0" rotate0="0.0" rotate1="0.0" />
         </DefineButton>
 
         <DefineScalingGrid id="?" x="?" width="?" y="?" height="?" />
@@ -293,11 +429,10 @@
         
         <StartSound id="?" stop="false" loopCount="0" />
         
-        <SymbolClass id="?" class="?" />
+        <SymbolClass id="?" class="?" base="" />
         
         <FrameLabel name="?" anchor="false" />
         
         <ShowFrame />
         
-        <EndFrame />
-<swf/>
+</swf>

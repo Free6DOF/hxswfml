@@ -10,17 +10,18 @@ http://www.adobe.com/devnet/swf/pdf/swf_file_format_spec_v10.pdf (see pages 26 t
 -If you set the attribute 'hasMetaData' to true in the <FileAttributes/> tag then the swf must contain a <MetaData /> tag.
 
 -A swf contains at least one <ShowFrame/> tag.
-The most basic swf (a movie with 1 empty frame) looks like:
+A basic swf (a movie with 3 empty frames) looks like:
 
 <swf>
         <Header />
         <ShowFrame />
-        <EndFrame />
+        <ShowFrame />
+        <ShowFrame />
 </swf>
 
 The FlashPlayer? will start parsing/playing the tags from the top till it reaches the <EndFrame/> tag.
 When it encounters a <ShowFrame/> it renders the previous tags to the screen.
-Note that although the <EndFrame/> tag is available for use, under normal circumstances you will never need it as it is added automatically by hXswfML.
+Note that although the <EndFrame/> tag is available for use, under normal circumstances you will never need it as it is added to the end of your file automatically by hXswfML.
 
 2)hXswfML syntax:
 -Element names are not case sensitive. <fileattributes/> is equally valid to <FileAttributes>
@@ -40,10 +41,12 @@ More information about the swf file format and the possible tags can be found he
     http://www.delphiflash.com/xml-tags-specification.htm#ShowFrame
 
 -Definition tags vs control/displaytags
-To define a character or symbol swf you use a definition tag.
+To define a character use a definition tag.
 Example:
 
-<DefineShape id="1" width="100" height="100" fillColor="0x000000" /> 
+<DefineShape id="1"> 
+    <DrawRect width="100" height="100"/> 
+</DefineShape>
 
 creates a black 100x100 rectangle.
 The id of this tag must be unique in the swf.
@@ -63,7 +66,9 @@ A movie with 1 frame, rendering a black rectangle on screen looks like:
 
 <swf>
         <Header/>
-        <DefineShape id="1" width="100" height="100" fillColor="0x000000" />
+        <DefineShape id="1"> 
+                <DrawRect width="100" height="100"/> 
+        </DefineShape>
         <PlaceObject id="1" depth="1" />
         <ShowFrame/>
 </swf>
@@ -73,8 +78,14 @@ To show a black rectangle in frame 1 and a red rectangle in frame 2 you use:
 
 <swf>
         <Header frameCount="2" />
-        <DefineShape id="1" width="100" height="100" fillColor="0x000000" />
-        <DefineShape id="2" width="100" height="100" fillColor="0xFF0000" />
+
+        <DefineShape id="1"> 
+                <DrawRect width="100" height="100"/> 
+        </DefineShape>
+                
+        <DefineShape id="2"> 
+                <DrawCircle width="200" height="200"/> 
+        </DefineShape>
         
         <PlaceObject id="1" depth="1" />
         <ShowFrame/>
@@ -86,17 +97,10 @@ To show a black rectangle in frame 1 and a red rectangle in frame 2 you use:
 
 You can omit the <RemoveObject/> tag by using the move attribute in the PlaceObject? tag:
 
-<swf>
-        <Header frameCount="2" />
-        <DefineShape id="1" width="100" height="100" fillColor="0x000000" />
-        <DefineShape id="2" width="100" height="100" fillColor="0xFF0000" />
-        
-        <PlaceObject id="1" depth="1" />
-        <ShowFrame/>
-        
+        <RemoveObject depth="1" />
+        <PlaceObject id="2" depth="1" />
+equivalent/shortcut:
         <PlaceObject id="2" depth="1" move="true" />
-        <ShowFrame/>
-</swf>
 
 A more complete explanation of the move attribute can be found in the swf file specs on page 35.
 Short summary:
@@ -115,10 +119,14 @@ Example of a 2 frame movieclip showing a black rectangle in frame 1 and a red re
 <swf>
         <Header/>
         
-        <DefineShape id="1" width="100" height="100" fillColor="0x000000" />
-        
-        <DefineShape id="2" width="100" height="100" fillColor="0xFF0000" />
-        
+        <DefineShape id="1"> 
+                <DrawRoundRect width="100" height="100" r="25"/> 
+        </DefineShape>
+                
+        <DefineShape id="2"> 
+                <DrawEllipse width="200" height="150"/> 
+        </DefineShape>
+
         <DefineSprite id="3" frameCount="2">
                 <PlaceObject id="1" depth="1" />
                 <ShowFrame/>
