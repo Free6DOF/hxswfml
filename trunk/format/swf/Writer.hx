@@ -30,7 +30,6 @@
 package format.swf;
 import format.swf.Data;
 import format.swf.Constants;
-import neko.Lib;
 
 /*
  *	Used during shape writing to keep track of the number of actual fill and line styles
@@ -95,7 +94,11 @@ class Writer {
 	}
 
 	public function writeHeader( h : SWFHeader ) {
+		#if (php || cpp)
+		compressed=false;
+		#else
 		compressed = h.compressed;
+		#end
 		output.writeString( compressed ? "CWS" : "FWS" );
 		output.writeByte(h.version);
 		o = new haxe.io.BytesOutput();
@@ -1514,7 +1517,9 @@ class Writer {
 		o.writeUInt16(0); // end tag
 		var bytes = o.getBytes();
 		var size = bytes.length;
+		#if (flash || neko) 
 		if( compressed ) bytes = format.tools.Deflate.run(bytes);
+		#end
 		output.writeUInt30(size + 8);
 		output.write(bytes);
 	}

@@ -1,5 +1,44 @@
-XswfML
--main XswfML
--neko hXswfML.n
+#swf9/swc
+HXswfML
+-swf9 ./bin/flash/HXswfML.swc
+-cmd echo swc(SWF) created
 
--cmd nekotools boot hXswfML.n
+#swf9/swc(AIR)
+--next
+HXswfML
+-swf9 ./bin/flash/HXswfML_AIR.swc
+-lib air
+-D air
+-cmd echo swc(AIR) created
+
+#neko
+--next
+Main
+HXswfML
+-main Main
+-neko ./bin/neko/hXswfML.n
+-cmd nekotools boot ./bin/neko/hXswfML.n
+-cmd echo neko created
+
+#php
+--next
+-main HXswfML
+HXswfML
+-php ./bin/php
+-cmd echo php created
+
+#cpp
+--next
+-main Main
+HXswfML
+-cpp ./bin/cpp
+-cmd echo cpp created
+
+#javasript
+--next
+-main HXswfML
+HXswfML
+-js ./bin/javascript/HXswfML.js
+-cmd echo javascript created
+
+-cmd pause

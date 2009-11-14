@@ -84,7 +84,7 @@ class Context {
                 data.classes = new Array();
                 data.functions = new Array();
                 emptyString = string("");
-                nsPublic = namespace(NPublic(emptyString));
+                nsPublic = _namespace(NPublic(emptyString));
                 arrayProp = name(NMultiLate(nsset([nsPublic])));
                 beginFunction([],null);
                 ops([OThis,OScope]);
@@ -117,7 +117,7 @@ class Context {
                 return Idx(n);
         }
 
-        public function namespace(n) {
+        public function _namespace(n) {
                 //return lookup(data.namespaces,n);
                 return elookup(data.namespaces,n);
         }
@@ -153,7 +153,7 @@ class Context {
                 var ns = patharr.join(".");
                 var pid = string(ns);
                 var nameid = string(cname);
-                var pid = namespace(NPublic(pid));
+                var pid = _namespace(NPublic(pid));
                 var tid = name(NName(nameid,pid));
                 return tid;
         }
@@ -161,7 +161,7 @@ class Context {
         public function property(pname, ?ns) {
                 var pid = string("");
                 var nameid = string(pname);
-                var pid = if( ns == null ) namespace(NPublic(pid)) else ns;
+                var pid = if( ns == null ) _namespace(NPublic(pid)) else ns;
                 var tid = name(NName(nameid,pid));
                 return tid;
         }
@@ -258,7 +258,7 @@ class Context {
                         isSealed : false,
                         isInterface : false,
                         isFinal : false,
-                        namespace : null,
+                        _namespace : null,
                         constructor : cst,
                         statics : st,
                         fields : [],

@@ -114,7 +114,7 @@ enum MethodKind {
 }
 
 enum FieldKind {
-	FVar( ?type : Null<IName>, ?value : Value, ?const : Bool );
+	FVar( ?type : Null<IName>, ?value : Value, ?_const : Bool );
 	FMethod( type : Index<MethodType>, k : MethodKind, ?isOverride : Bool, ?isFinal : Bool );
 	FClass( c : Index<ClassDef> );
 	FFunction( f : Index<MethodType> );
@@ -126,7 +126,7 @@ typedef ClassDef = {
 	var interfaces : Array<IName>;
 	var constructor : Index<MethodType>;
 	var fields : Array<Field>;
-	var namespace : Null<Index<Namespace>>;
+	var _namespace : Null<Index<Namespace>>;
 	var isSealed : Bool;
 	var isFinal : Bool;
 	var isInterface : Bool;

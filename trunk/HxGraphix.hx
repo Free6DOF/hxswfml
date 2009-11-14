@@ -41,7 +41,7 @@ class HxGraphix
 		_lastY = 0.0;
 	}
 	
-	public function beginFill(color:Int=0x000000, alpha:Float=1.0):Void
+	public function beginFill(?color:Int=0x000000, ?alpha:Float=1.0):Void
 	{
 		_stateFillStyle = true;
 		_fillStyles.push(FSSolidAlpha(hexToRgba(color, alpha)));
@@ -54,6 +54,69 @@ class HxGraphix
 			newStyles : null
 		}
 		_shapeRecords.push( SHRChange(_shapeChangeRec) );
+	}
+	public function beginGradientFill(type:String="linear", colors:Array<Dynamic>, alphas:Array<Dynamic>, ratios:Array<Dynamic>, x:Float, y:Float, scaleX:Float, scaleY:Float, ?rotate0:Float=0, ?rotate1:Float=0):Void
+	{
+		_stateFillStyle = true;
+		var data:Array<GradRecord> = new Array();
+		for(i in 0...colors.length)
+		{
+			var pos = Std.parseInt(ratios[i]);
+			var color =  Std.parseInt(colors[i]);
+			var alpha =  Std.parseFloat(alphas[i]);
+			data.push(GradRecord.GRRGBA(pos,hexToRgba(color,alpha)));
+		}
+		var matrix = 
+		{
+			scale:{x:scaleX, y:scaleY}, 
+			rotate:{rs0:rotate0, rs1:rotate1}, 
+			translate:{x:Std.int(toFloat5(x))*20, y:Std.int(toFloat5(y))*20} 
+		};
+		var gradient = 
+		{
+			spread:SpreadMode.SMPad, 
+			interpolate:InterpolationMode.IMNormalRGB, 
+			data:data
+		};
+		switch (type)
+		{
+			case 'linear':
+				_fillStyles.push(FSLinearGradient(matrix,gradient));
+			case 'radial':
+				_fillStyles.push(FSRadialGradient(matrix,gradient));
+			default:
+			throw 'Unsupported gradient type';
+		}
+		var _shapeChangeRec = 
+		{
+			moveTo : null,
+			fillStyle0 :{ idx:_fillStyles.length },
+			fillStyle1 : null,
+			lineStyle :_stateLineStyle? {idx:_lineStyles.length} : null,
+			newStyles : null
+		}
+		_shapeRecords.push( SHRChange(_shapeChangeRec) );
+	}
+	public function beginBitmapFill(bitmapId:Int, ?x:Float=0, ?y:Float=0, ?scaleX:Float=1.0, ?scaleY:Float=1.0, ?rotate0:Float=0.0, ?rotate1:Float=0.0, ?repeat:Bool=false, ?smooth:Bool=false):Void
+	{
+		_stateFillStyle = true;
+		var matrix = 
+		{
+			scale:{x:toFloat5(scaleX)*20, y:toFloat5(scaleY)*20}, 
+			rotate:{rs0:rotate0, rs1:rotate1}, 
+			translate:{x:Std.int(toFloat5(x))*20, y:Std.int(toFloat5(y))*20} 
+		};
+		_fillStyles.push(FSBitmap(bitmapId, matrix, repeat, smooth));
+		var _shapeChangeRec = 
+		{
+			moveTo : null,
+			fillStyle0 :{ idx:_fillStyles.length },
+			fillStyle1 : null,
+			lineStyle :_stateLineStyle? {idx:_lineStyles.length} : null,
+			newStyles : null
+		}
+		_shapeRecords.push( SHRChange(_shapeChangeRec) );
+		
 	}
 	public function lineStyle(width:Float=1.0, color:Int=0x000000, alpha:Float=1.0):Void 
 	{
@@ -120,24 +183,18 @@ class HxGraphix
 		var cy:Float = toFloat5(cy);
 		var ax:Float = toFloat5(ax);
 		var ay:Float = toFloat5(ay);
-		
+
 		var dcx:Float = cx - _lastX; 
 		var dcy:Float = cy - _lastY; 
-		
-		_lastX = cx;
-		_lastY = cy;
-		
-		var dax:Float = ax - _lastX; 
-		var day:Float = ay - _lastY; 
-		
+		var dax:Float = ax-cx; 
+		var day:Float = ay-cy;
 		_lastX = ax;
 		_lastY = ay;
-		
+
 		if(ax<_xMin) _xMin=ax;
 		if(ax>_xMax) _xMax=ax;
 		if(ay<_yMin) _yMin=ay;
 		if(ay>_yMax) _yMax=ay;
-
 		_shapeRecords.push(SHRCurvedEdge( Std.int(dcx*20), Std.int(dcy*20), Std.int(dax*20), Std.int(day*20)));
 	}
 	public function endFill():Void

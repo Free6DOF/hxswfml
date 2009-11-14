@@ -44,7 +44,8 @@ More information about the swf file format and the possible tags can be found he
 To define a character use a definition tag.
 Example:
 
-<DefineShape id="1"> 
+<DefineShape id="1">
+		<BeginFill color="0x000000" alpha="1.0" />
     <DrawRect width="100" height="100"/> 
 </DefineShape>
 
@@ -67,7 +68,8 @@ A movie with 1 frame, rendering a black rectangle on screen looks like:
 <swf>
         <Header/>
         <DefineShape id="1"> 
-                <DrawRect width="100" height="100"/> 
+					<BeginFill color="0x000000" alpha="1.0" />
+          <DrawRect width="100" height="100"/> 
         </DefineShape>
         <PlaceObject id="1" depth="1" />
         <ShowFrame/>
@@ -79,12 +81,14 @@ To show a black rectangle in frame 1 and a red rectangle in frame 2 you use:
 <swf>
         <Header frameCount="2" />
 
-        <DefineShape id="1"> 
-                <DrawRect width="100" height="100"/> 
+        <DefineShape id="1">
+					<BeginFill color="0x000000" alpha="1.0" />
+          <DrawRect width="100" height="100"/> 
         </DefineShape>
                 
         <DefineShape id="2"> 
-                <DrawCircle width="200" height="200"/> 
+					<BeginFill color="0x000000" alpha="1.0" />
+          <DrawCircle width="200" height="200"/> 
         </DefineShape>
         
         <PlaceObject id="1" depth="1" />
@@ -119,12 +123,14 @@ Example of a 2 frame movieclip showing a black rectangle in frame 1 and a red re
 <swf>
         <Header/>
         
-        <DefineShape id="1"> 
-                <DrawRoundRect width="100" height="100" r="25"/> 
+        <DefineShape id="1">
+					<BeginFill color="0x000000" alpha="1.0" />
+          <DrawRoundRect width="100" height="100" r="25"/> 
         </DefineShape>
                 
         <DefineShape id="2"> 
-                <DrawEllipse width="200" height="150"/> 
+					<BeginFill color="0x000000" alpha="1.0" />
+          <DrawEllipse width="200" height="150"/> 
         </DefineShape>
 
         <DefineSprite id="3" frameCount="2">

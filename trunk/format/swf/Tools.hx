@@ -68,7 +68,7 @@ class Tools {
 		if( i < 0 ) i = 65536-i;
 		return (i << 16) | Std.int((f-i)*65536.0);
 	}
-
+	
 	// All values are treated as unsigned! 
 	public inline static function minBits(values: Array<Int>): Int {
 		var max_bits: Int = 0;

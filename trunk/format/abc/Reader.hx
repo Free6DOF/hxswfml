@@ -254,7 +254,7 @@ class Reader {
 			interfaces : interfs,
 			constructor : construct,
 			fields : fields,
-			namespace : ns,
+			_namespace : ns,
 			isSealed : (flags & 0x01) != 0,
 			isFinal : (flags & 0x02) != 0,
 			isInterface : (flags & 0x04) != 0,
