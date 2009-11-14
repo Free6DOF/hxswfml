@@ -16,10 +16,10 @@
 							count(//hx:swf/hx:DefineSprite[@id = current()/@id]) +
 							count(//hx:swf/hx:DefineSound[@id = current()/@id]) +
 							count(//hx:swf/hx:DefineButton[@id = current()/@id]) +
-							count(//hx:swf/hx:DefineBitsJPEG2[@id = current()/@id]) +
+							count(//hx:swf/hx:DefineBitsJPEG[@id = current()/@id]) +
 							count(//hx:swf/hx:DefineBinaryData[@id = current()/@id]) +
 							count(//hx:swf/hx:DefineFont[@id = current()/@id]) = 1">
-							The id attribute in a SymbolClass element must reference an existing id in a DefineSound,DefineSprite,DefineButton,DefineBitsJPEG2,DefineBinaryData or DefineFont element.</sch:assert>
+							The id attribute in a SymbolClass element must reference an existing id in a DefineSound,DefineSprite,DefineButton,DefineBitsJPEG,DefineBinaryData or DefineFont element.</sch:assert>
 					</sch:rule>
 					<sch:rule context="hx:swf/hx:RemoveObject[@depth]">
 						<sch:assert test="count(//hx:swf/hx:PlaceObject[@depth=current()/@depth])>0">The depth attribute in a RemoveObject element must reference at least one PlaceObject element (within the same scope) that has put an object on that depth.</sch:assert>
@@ -39,7 +39,7 @@
 						<xs:element ref="SetBackgroundColor"/>
 						<xs:element ref="ScriptLimits"/>
 						<xs:element ref="MetaData"/>
-						<xs:element ref="DefineBitsJPEG2"/>
+						<xs:element ref="DefineBitsJPEG"/>
 						<xs:element ref="DefineBinaryData"/>
 						<xs:element ref="DefineSound"/>
 						<xs:element ref="DefineFont"/>
@@ -61,7 +61,7 @@
 		</xs:complexType>
 
 		<xs:unique name="DefinitionID">
-			<xs:selector xpath="hx:DefineSound|hx:DefineEditText|hx:DefineShape|hx:DefineSprite|hx:DefineButton|hx:DefineBitsJPEG2|hx:DefineBinaryData|hx:DefineFont"/>
+			<xs:selector xpath="hx:DefineSound|hx:DefineEditText|hx:DefineShape|hx:DefineSprite|hx:DefineButton|hx:DefineBitsJPEG|hx:DefineBinaryData|hx:DefineFont"/>
 			<xs:field xpath="@id"/>
 		</xs:unique>
 		<xs:unique name="DefineSoundID">
@@ -80,12 +80,12 @@
 			<xs:selector xpath="hx:PlaceObject|hx:DefineSprite/hx:PlaceObject|hx:DefineButton/hx:ButtonState"/>
 			<xs:field xpath="@id"/>
 		</xs:keyref>
-		<xs:unique name="DefineBitsJPEG2ID">
-			<xs:selector xpath="hx:DefineBitsJPEG2"/>
+		<xs:unique name="DefineBitsJPEGID">
+			<xs:selector xpath="hx:DefineBitsJPEG"/>
 			<xs:field xpath="@id"/>
 		</xs:unique>
-		<xs:keyref name="DefineShapeTarget" refer="DefineBitsJPEG2ID">
-			<xs:selector xpath="hx:DefineShape"/>
+		<xs:keyref name="DefineShapeTarget" refer="DefineBitsJPEGID">
+			<xs:selector xpath="hx:DefineShape|hx:DefineShape/hx:BeginBitmapFill"/>
 			<xs:field xpath="@bitmapId"/>
 		</xs:keyref>
 		<xs:unique name="DefineFontID">
@@ -187,7 +187,7 @@
 		</xs:complexType>
 	</xs:element>
 	<!--____________________________________________________________-->
-	<xs:element name="DefineBitsJPEG2">
+	<xs:element name="DefineBitsJPEG">
 		<xs:annotation>
 			<xs:documentation>This element will store the raw(compressed) image bytes. You can not display these bytes directly but you must use a DefineShape element where the bitmapId refers to this element (width and height will be read from the jpeg file). Supported file formats are jpg, png, gif. With a SymbolClass element you can link a class that extends flash.display.Bitmap to this element..</xs:documentation>
 		</xs:annotation>
@@ -277,26 +277,28 @@
 	</xs:element>
 	<xs:element name="DefineShape">
 		<xs:annotation>
-			<xs:documentation>This element will create a Shape object with a solid fill or a bitmap fill. The bitmapId for the bitmap fill must be a reference to the id in previously created DefineBitsJPEG2 element. 
+			<xs:documentation>This element will create a Shape object with a solid fill or a bitmap fill. The bitmapId for the bitmap fill must be a reference to the id in previously created DefineBitsJPEG element. 
 	The usage is as follows:
-	1) if you provide a bitmapId no other attributes are required and the attributes x, y, width, height, fillColor, lineColor, lineWidth will be ignored.
+	1) if you provide a bitmapId no other attributes are required.
 	2) if you do not provide a bitmapId then then you must use the drawing api in the child elements. Use a PlaceObject element to put  the shape on the display list.</xs:documentation>
 		</xs:annotation>
 		<xs:complexType>
 			<xs:sequence maxOccurs="unbounded">
 				<xs:choice minOccurs="0" maxOccurs="unbounded">
-					<xs:element ref="lineStyle"/>
-					<xs:element ref="beginFill"/>
-					<xs:element ref="moveTo"/>
-					<xs:element ref="lineTo"/>
-					<xs:element ref="curveTo"/>
-					<xs:element ref="drawCircle"/>
-					<xs:element ref="drawEllipse"/>
-					<xs:element ref="drawRect"/>
-					<xs:element ref="drawRoundRect"/>
-					<xs:element ref="drawRoundRectComplex"/>
-					<xs:element ref="endLine"/>
-					<xs:element ref="endFill"/>
+					<xs:element ref="LineStyle"/>
+					<xs:element ref="BeginFill"/>
+					<xs:element ref="BeginGradientFill"/>
+					<xs:element ref="BeginBitmapFill"/>
+					<xs:element ref="MoveTo"/>
+					<xs:element ref="LineTo"/>
+					<xs:element ref="CurveTo"/>
+					<xs:element ref="DrawCircle"/>
+					<xs:element ref="DrawEllipse"/>
+					<xs:element ref="DrawRect"/>
+					<xs:element ref="DrawRoundRect"/>
+					<xs:element ref="DrawRoundRectComplex"/>
+					<xs:element ref="EndLine"/>
+					<xs:element ref="EndFill"/>
 				</xs:choice>
 			</xs:sequence>
 			<xs:attribute name="bitmapId" type="xs:positiveInteger" use="optional"/>
@@ -309,27 +311,10 @@
 			<xs:attribute name="smooth" type="xs:boolean" use="optional" default="false"/>
 			<xs:attribute name="x" type="xs:integer" use="optional" default="0"/>
 			<xs:attribute name="y" type="xs:integer" use="optional" default="0"/>
-			<xs:attribute name="fillColor" use="optional" default="0x000000">
-				<xs:simpleType>
-					<xs:restriction base="xs:string">
-						<xs:pattern value="(0x[0-9A-Fa-f]{6})"/>
-					</xs:restriction>
-				</xs:simpleType>
-			</xs:attribute>
-			<xs:attribute name="height" type="xs:integer" use="optional"/>
-			<xs:attribute name="lineColor" use="optional" default="0x000000">
-				<xs:simpleType>
-					<xs:restriction base="xs:string">
-						<xs:pattern value="(0x[0-9A-Fa-f]{6})"/>
-					</xs:restriction>
-				</xs:simpleType>
-			</xs:attribute>
-			<xs:attribute name="lineWidth" type="xs:nonNegativeInteger" use="optional" default="0"/>
-			<xs:attribute name="width" type="xs:integer" use="optional"/>
 		</xs:complexType>
 	</xs:element>
 	<!--__________________________-->
-	<xs:element name="lineStyle">
+	<xs:element name="LineStyle">
 		<xs:annotation>
 			<xs:documentation> Sets up a lineStyle and starts line.</xs:documentation>
 		</xs:annotation>
@@ -346,9 +331,9 @@
 		</xs:complexType>
 	</xs:element>
 	<!--__________________________-->
-	<xs:element name="beginFill">
+	<xs:element name="BeginFill">
 		<xs:annotation>
-			<xs:documentation> Sets up a fillStyle and starts fill.</xs:documentation>
+			<xs:documentation> Sets up a solid fill and starts fill.</xs:documentation>
 		</xs:annotation>
 		<xs:complexType>
 			<xs:attribute name="alpha" type="xs:decimal" use="optional" default="1.0"/>
@@ -362,7 +347,49 @@
 		</xs:complexType>
 	</xs:element>
 	<!--__________________________-->
-	<xs:element name="moveTo">
+	<xs:element name="BeginBitmapFill">
+		<xs:annotation>
+			<xs:documentation> Sets up a bitmap fill and starts fill.</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:attribute name="bitmapId" type="xs:positiveInteger" use="required"/>
+			<xs:attribute name="x" type="xs:decimal" use="required" />
+			<xs:attribute name="y" type="xs:decimal" use="required" />
+			<xs:attribute name="scaleX" type="xs:decimal" use="required" />
+			<xs:attribute name="scaleY" type="xs:decimal" use="required" />
+			<xs:attribute name="rotate0" type="xs:decimal" use="required" />
+			<xs:attribute name="rotate1" type="xs:decimal" use="required" />
+			<xs:attribute name="repeat" type="xs:boolean" use="optional" default="false"/>
+			<xs:attribute name="smooth" type="xs:boolean" use="optional" default="false"/>
+		</xs:complexType>
+	</xs:element>
+	<!--__________________________-->
+	<xs:element name="BeginGradientFill">
+		<xs:annotation>
+			<xs:documentation> Sets up a gradient fill and starts fill.</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:attribute name="type" use="required" >
+				<xs:simpleType>
+					<xs:restriction base="xs:string">
+						<xs:enumeration value="linear"/>
+						<xs:enumeration value="radial"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:attribute>
+			<xs:attribute name="colors" type="xs:string" use="required" />
+			<xs:attribute name="alphas" type="xs:string" use="required" />
+			<xs:attribute name="ratios" type="xs:string" use="required" />
+			<xs:attribute name="x" type="xs:decimal" use="required" />
+			<xs:attribute name="y" type="xs:decimal" use="required" />
+			<xs:attribute name="scaleX" type="xs:decimal" use="required" />
+			<xs:attribute name="scaleY" type="xs:decimal" use="required" />
+			<xs:attribute name="rotate0" type="xs:decimal" use="required" />
+			<xs:attribute name="rotate1" type="xs:decimal" use="required" />
+		</xs:complexType>
+	</xs:element>
+	<!--__________________________-->
+	<xs:element name="MoveTo">
 		<xs:annotation>
 			<xs:documentation> Moves the drawing position.</xs:documentation>
 		</xs:annotation>
@@ -372,7 +399,7 @@
 		</xs:complexType>
 	</xs:element>
 	<!--__________________________-->
-	<xs:element name="lineTo">
+	<xs:element name="LineTo">
 		<xs:annotation>
 			<xs:documentation> Draws a line from the last drawing position to the given position.</xs:documentation>
 		</xs:annotation>
@@ -382,7 +409,7 @@
 		</xs:complexType>
 	</xs:element>
 	<!--__________________________-->
-	<xs:element name="curveTo">
+	<xs:element name="CurveTo">
 		<xs:annotation>
 			<xs:documentation> Draws a curved line from the last drawing position to the given position. ax=anchor point x, ay=anchor pointy, cx=control point x, cy= control point y</xs:documentation>
 		</xs:annotation>
@@ -394,7 +421,7 @@
 		</xs:complexType>
 	</xs:element>
 	<!--__________________________-->
-	<xs:element name="drawCircle">
+	<xs:element name="DrawCircle">
 		<xs:annotation>
 			<xs:documentation> Draws a circle with middle point set to the given position. The value of the sections attribute is the number of segments the circle is made of. Attribute r holds the radius value.</xs:documentation>
 		</xs:annotation>
@@ -406,7 +433,7 @@
 		</xs:complexType>
 	</xs:element>
 	<!--__________________________-->
-	<xs:element name="drawEllipse">
+	<xs:element name="DrawEllipse">
 		<xs:annotation>
 			<xs:documentation> Draws an ellipse</xs:documentation>
 		</xs:annotation>
@@ -418,7 +445,7 @@
 		</xs:complexType>
 	</xs:element>
 	<!--__________________________-->
-	<xs:element name="drawRect">
+	<xs:element name="DrawRect">
 		<xs:annotation>
 			<xs:documentation> Draws an ellipse</xs:documentation>
 		</xs:annotation>
@@ -430,7 +457,7 @@
 		</xs:complexType>
 	</xs:element>
 	<!--__________________________-->
-	<xs:element name="drawRoundRect">
+	<xs:element name="DrawRoundRect">
 		<xs:annotation>
 			<xs:documentation> Draws an rounded rectangle</xs:documentation>
 		</xs:annotation>
@@ -443,7 +470,7 @@
 		</xs:complexType>
 	</xs:element>
 	<!--__________________________-->
-	<xs:element name="drawRoundRectComplex">
+	<xs:element name="DrawRoundRectComplex">
 		<xs:annotation>
 			<xs:documentation> Draws a rounded rectangle with different corner radiuses.</xs:documentation>
 		</xs:annotation>
@@ -459,14 +486,14 @@
 		</xs:complexType>
 	</xs:element>
 	<!--__________________________-->
-	<xs:element name="endFill">
+	<xs:element name="EndFill">
 		<xs:annotation>
 			<xs:documentation> Ends the fill.</xs:documentation>
 		</xs:annotation>
 		<xs:complexType/>
 	</xs:element>
 	<!--__________________________-->
-	<xs:element name="endLine">
+	<xs:element name="EndLine">
 		<xs:annotation>
 			<xs:documentation> Ends the line.</xs:documentation>
 		</xs:annotation>
@@ -551,7 +578,7 @@
 	<!--____________________________________________________________-->
 	<xs:element name="SymbolClass">
 		<xs:annotation>
-			<xs:documentation>This element will provide the means to link a class name to a previously created symbol such as a DefineSound, DefineButton(flash.display.SimpleButton), DefineSprite(flash.display.Sprite, flash.display.MovieClip), DefineFont(flash.text.Font), DefineBinaryData(flash.utils.ByteArray), DefineBitsJPEG2(flash.display.Bitmap). If you supply a value for the base attribute then hXswfML will automatically generate and compile a class and will add it in DefineABC element below your SymbolClass element. If you do not supply a value for the base attribute then your script (which you add through a DefineABC element) must have a class with the correct name and that extends the correct base class. In order for the FlashPlayer to know what class should be use as the main entry point(the class that will run when the swf is loaded) you must supply a SymbolClass element with id=0 and the name=MyDocumentClass.	</xs:documentation>
+			<xs:documentation>This element will provide the means to link a class name to a previously created symbol such as a DefineSound, DefineButton(flash.display.SimpleButton), DefineSprite(flash.display.Sprite, flash.display.MovieClip), DefineFont(flash.text.Font), DefineBinaryData(flash.utils.ByteArray), DefineBitsJPEG(flash.display.Bitmap). If you supply a value for the base attribute then hXswfML will automatically generate and compile a class and will add it in DefineABC element below your SymbolClass element. If you do not supply a value for the base attribute then your script (which you add through a DefineABC element) must have a class with the correct name and that extends the correct base class. In order for the FlashPlayer to know what class should be use as the main entry point(the class that will run when the swf is loaded) you must supply a SymbolClass element with id=0 and the name=MyDocumentClass.	</xs:documentation>
 		</xs:annotation>
 		<xs:complexType>
 			<xs:attribute name="base" type="xs:string" use="optional"/>

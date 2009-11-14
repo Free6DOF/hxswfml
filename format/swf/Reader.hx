@@ -669,8 +669,7 @@ class Reader {
 			case FillStyleTypeId.Solid:
 				var startColor = readRGBA(i);
 				var endColor = readRGBA(i);
-
-				return MFSSolid(startColor, endColor);
+				MFSSolid(startColor, endColor);
 			case
 				FillStyleTypeId.LinearGradient,
 				FillStyleTypeId.RadialGradient,
@@ -1203,7 +1202,7 @@ class Reader {
 		var hasInPoint = bits.readBits(1);
 		var inPoint;
 		var outPoint;
-		var loopCount=null;
+		var loopCount:Dynamic=null;
 		var envPoints;
 		var envelopeRecords;
 		if(hasInPoint==1) 
