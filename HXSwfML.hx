@@ -408,8 +408,8 @@ class HXswfML
 				default : error('!ERROR: ' + currentTag.nodeName + ' is not allowed inside a DefineSprite element. Valid children are: ' + validChildren.get('definesprite').toString() + '. TAG: ' + currentTag.toString());
 			}
 		}
-		if(showFrameCount!=frames)
-			error('!ERROR: The number of ShowFrame element in the DefineSprite element does not match the value in the frameCount attribute. TAG: ' + spriteTag.toString());
+		//if(showFrameCount!=frames)
+			//error('!ERROR: The number of ShowFrame element in the DefineSprite element does not match the value in the frameCount attribute. TAG: ' + spriteTag.toString());
 		return TClip(id, frames, tags);
 	}
 
@@ -1067,6 +1067,9 @@ class HXswfML
 	}
 	private function getInt(att : String, defaultValue, ?required : Bool = false, ?uniqueId : Bool = false, ?targetId : Bool = false)
 	{
+		if(currentTag.exists(att))
+			if(Math.isNaN(Std.parseInt(currentTag.get(att))))
+				error('!ERROR: attribute ' + att + ' must be an integer: ' + currentTag.toString());
 		if(required)
 			if(!currentTag.exists(att))
 				error('!ERROR: Required attribute ' + att + ' is missing in tag: ' + currentTag.toString());
@@ -1085,6 +1088,9 @@ class HXswfML
 	}
 	private function getFloat(att : String, defaultValue : Null<Float>, ?required : Bool = false)
 	{
+		if(currentTag.exists(att))
+			if(Math.isNaN(Std.parseFloat(currentTag.get(att))))
+				error('!ERROR: attribute ' + att + ' must be a number: ' + currentTag.toString());
 		if(required)
 			if(!currentTag.exists(att))
 				error('!ERROR: Required attribute ' + att + ' is missing in tag: ' + currentTag.toString());
