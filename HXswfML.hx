@@ -50,7 +50,7 @@ class HXswfML
 
 	public function new()
 	{
-		#if (flash || air)
+		#if (swc || air)
 		new flash.Boot(new MovieClip());//for swc
 		#end
 		bitmapIds = new Array();
