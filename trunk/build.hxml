@@ -1,7 +1,9 @@
 #swf9/swc
 HXswfML
 -swf9 ./bin/flash/HXswfML.swc
+-D swc
 -cmd echo swc(SWF) created
+
 
 #swf9/swc(AIR)
 --next
