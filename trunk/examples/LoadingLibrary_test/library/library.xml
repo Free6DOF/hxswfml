@@ -1,0 +1,30 @@
+<?xml version="1.0" ?>
+<swf>
+	<Header/>
+	<FileAttributes/>
+	
+	<DefineBitsJPEG id="1" file="picture.png" />
+	<SymbolClass id="1" class="MyBitmap" />
+	<SymbolClass id="1" class="MyBitmapData" />
+	
+	<DefineShape id="2" bitmapId="1" />
+	<DefineShape id="22">
+		<BeginFill/>
+		<DrawRect width="60" height="20" />
+	</DefineShape>
+	
+	
+	<DefineSprite id="3" frameCount="1">
+		<PlaceObject id="2" depth="1" />
+		<ShowFrame />
+		<PlaceObject id="22" depth="1" move="true" />
+		<ShowFrame />
+	</DefineSprite>
+	<SymbolClass id="3" class="MyMovieClip" />
+	<SymbolClass id="3" class="MySprite" />
+	
+	<DefineBinaryData id="4" file="picture.png" />
+	<SymbolClass id="4" class="MyByteArray" />
+	<SymbolClass id="4" class="MyShape" />
+	<ShowFrame/>
+</swf>

@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<?oxygen SCHSchema="http://hxswfml.googlecode.com/svn/trunk/hXswfML.xsd"?>
+<swf xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://hxswfml.googlecode.com http://hxswfml.googlecode.com/svn/trunk/hXswfML.xsd" xmlns="http://hxswfml.googlecode.com">
+	<Header/>
+	<FileAttributes />
+	<DefineBitsJPEG id="1" file="haxe.png" />
+	<DefineShape id="2" >
+		<!--  (100/2) /1638.4 -->
+		<!-- 100 / 1638.4 -->
+		<BeginGradientFill type="linear" colors="0x00FF00,0x0000FF" alphas="1.0,1.0" ratios="0,255" x="50" y="50" scaleX="0.122" scaleY="0.061" rotate0="0.0152175781" rotate1="-0.0305175781"/>
+		<DrawRect x="0" y="0" width="200" height="100" />
+		<!-- (450/2)/20 -->
+		<BeginBitmapFill bitmapId="1" x="100" y="100" scaleX="1" scaleY="1" rotate0="11.25" rotate1="-11.25" repeat="false" smooth="false"/>
+		<DrawRect x="100" y="100" width="100" height="100" />
+		
+	</DefineShape>
+	<PlaceObject id="2" depth="1" x="0" y="0" scaleX="1.0" scaleY="1.0"/>
+	<ShowFrame/>
+</swf>

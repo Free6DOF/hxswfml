@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<swf>
+	<Header/>
+	<FileAttributes />
+	<SetBackgroundColor />
+	
+	<DefineBitsJPEG id="1" file="resources/button_play_off.png" />
+	<DefineBitsJPEG id="2" file="resources/button_play_hover.png" />
+	<DefineBitsJPEG id="3" file="resources/button_play_on.png" />
+	
+	<DefineShape id="4" bitmapId="1" />
+	<DefineShape id="5" bitmapId="2" />
+	<DefineShape id="6" bitmapId="3" />
+	
+	<DefineSprite id="7" frameCount="3">
+		<PlaceObject id="4" depth="1" name="mc01" />
+		<FrameLabel name='f01' />
+		<ShowFrame />
+									
+		<PlaceObject move="true" id="5" depth="1" name="mc02" />
+		<FrameLabel name='f02' />
+		<ShowFrame />
+		
+		<PlaceObject move="true" id="6" depth="1" name="mc03" />
+		<FrameLabel name='f03' />
+		<ShowFrame />		
+	</DefineSprite>
+
+	<SymbolClass id="7" class="MyButton" />
+	
+	<DefineABC file = "script.swf" />
+	<SymbolClass id="0" class="flash.Boot" />
+	
+	<showframe/>
+	
+</swf>
+

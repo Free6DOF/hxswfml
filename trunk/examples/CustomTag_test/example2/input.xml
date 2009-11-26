@@ -1,0 +1,13 @@
+<?xml version="1.0" ?>
+<swf >
+	<Header />
+	<FileAttributes />
+	<Custom file="tag4_DefineShape.bytes" comment="id:1"/>
+	<DefineSprite id="2" frameCount="1" >
+		<PlaceObject id="1" depth="1" />
+	</DefineSprite>
+	<SymbolClass id="2" class="MyArt" base="flash.display.Sprite" />
+	<DefineABC file="Main.abc" name="Main"/>
+	<SymbolClass id="113" class="Main" />	
+	<ShowFrame/>
+</swf>

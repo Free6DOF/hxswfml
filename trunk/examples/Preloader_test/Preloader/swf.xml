@@ -1,0 +1,18 @@
+<?xml version="1.0" ?>
+<swf>
+	<Header/>
+	<FileAttributes/>
+	<SetBackgroundColor color="0xaaaaaa" />
+
+	<DefineABC file="Preloader.swf"/>
+	<SymbolClass id="0" class="flash.Boot"/>
+
+	<ShowFrame/>
+	
+	<DefineBinaryData id="1" file="../Movie/Movie.swf" />
+	<SymbolClass id="1" class="MovieBytes" />
+	
+	<ShowFrame/>
+	
+</swf>
+

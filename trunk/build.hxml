@@ -1,46 +1,50 @@
 #swf9/swc
-HXswfML
--swf9 ./bin/flash/HXswfML.swc
+-cp src
+be.haxer.hxswfml.HXswfML
+-swf9 bin/flash/swf/HXswfML.swc
 -D swc
+-xml doc/api.xml
+-cmd echo swc documentation created
 -cmd echo swc(SWF) created
-
 
 #swf9/swc(AIR)
 --next
-HXswfML
--swf9 ./bin/flash/HXswfML_AIR.swc
+-cp src
+be.haxer.hxswfml.HXswfML
+-swf9 bin/flash/air/HXswfML_AIR.swc
 -lib air
 -D air
 -cmd echo swc(AIR) created
 
 #neko
 --next
-Main
-HXswfML
--main Main
--neko ./bin/neko/hXswfML.n
--cmd nekotools boot ./bin/neko/hXswfML.n
+-cp src
+be.haxer.hxswfml.Main
+-main be.haxer.hxswfml.Main
+-neko bin/neko/hXswfML.n
+-cmd nekotools boot bin/neko/hXswfML.n
 -cmd echo neko created
 
 #php
 --next
--main HXswfML
-HXswfML
--php ./bin/php
+-cp src
+be.haxer.hxswfml.HXswfML
+-php bin/php
 -cmd echo php created
-
-#cpp
---next
--main Main
-HXswfML
--cpp ./bin/cpp
--cmd echo cpp created
 
 #javasript
 --next
--main HXswfML
-HXswfML
--js ./bin/javascript/HXswfML.js
+-cp src
+be.haxer.hxswfml.HXswfML
+-js bin/javascript/HXswfML.js
 -cmd echo javascript created
+
+#cpp
+--next
+-cp src
+be.haxer.hxswfml.HXswfML
+-main be.haxer.hxswfml.Main
+-cpp bin/cpp
+-cmd echo cpp created
 
 -cmd pause

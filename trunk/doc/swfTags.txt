@@ -292,11 +292,12 @@
 <DefineABC/>
         Parent: <swf>
         Children: none
-        Attributes:file
+        Attributes:file, name (name will only be parsed and used for abc files)
                 Required: file
                 Default:
-        Signature: <DefineABC file="path/to/swf/containing/abc.swf" />
-        Usage: <DefineABC file="movie_with_abc.swf" />
+        Signature: <DefineABC file="path/to/file/containing/as3bytecode/.swf, .abc" />
+        Usage:	<DefineABC file="movie_with_abc.swf" />
+								<DefineABC file="Main.abc" name="Main"/>
 
 <DefineScalingGrid />
         Parent: <swf>
@@ -342,7 +343,7 @@
 <SymbolClass/>
         Parent: <swf>
         Children: none
-        Attributes:id, class
+        Attributes:id, class, base
                 Required: id, class
                 Default:
         Signature: <SymbolClass id="?" class="?" base=""/>
@@ -350,7 +351,16 @@
         <SymbolClass id="0" class="flash.boot" />
         <SymbolClass id="1" class="com.example.MyMovieClip" />
         <SymbolClass id="1" class="com.example.MyMovieClip" base="flash.display.MovieClip"/>
-
+				
+<ExportAssets/>
+        Parent: <swf>
+        Children: none
+        Attributes:id, class
+                Required: id, class
+                Default:
+        Signature: <SymbolClass id="?" class="?" />
+        Usage: 
+        <SymbolClass id="0" class="MyMovieClip" />
 
 <FrameLabel/>
         Parent: <swf> or <DefineSprite>
@@ -374,6 +384,18 @@
         Attributes:none
         Signature: <EndFrame />
         Usage: <EndFrame />
+				
+<Custom/>
+				Parent: can be in any element that allows children
+				Children: none
+				Attributes: tagId, data, file, comment (if tagId is absent, tagId AND tagLength must be present in the data or file)
+                Required: data or file
+                Default:
+        Signature: <Custom tagId="?" file="path/to/file/containing/tagbody bytes" data="?" comment=""/>
+        Usage: 
+				<Custom file="./assets/DoABC.bytes" comment="entire DoABC tag"/>
+        <Custom tagId="83" file="./assets/DefineShape4.bytes" comment="DefineShape4 tag with id:1 and contents:red square with black border"/>
+        <Custom tagId="12" data="0x07,0x00" comment="DoAction tag with following code: 0x07, 0x00 means stop(); in AS2"/>
 
 <swf></swf>
         Parent: none (root/document element)
@@ -453,6 +475,8 @@
         <SymbolClass id="?" class="?" base="" />
         
         <FrameLabel name="?" anchor="false" />
+				
+				<Custom data="?" />
         
         <ShowFrame />
         

@@ -1,0 +1,43 @@
+<?xml version="1.0" ?>
+<swf>
+	<Header/>
+
+	<DefineShape id="1">
+		<BeginFill color="0xff0000" />
+		<DrawRect width="100" height="100" />
+	</DefineShape>
+	
+	<DefineSprite id="6" frameCount="240">
+
+		<PlaceObject id="1" depth="1" x="0" y="0" />
+		
+		<Tween depth="1" frameCount="120">
+			<Tw prop="x" start="0" end="600" />
+			<Tw prop="y" start="0" end="600" />
+			<Tw prop="scaleX" start="1.0" end="2.5" />
+			<Tw prop="scaleY" start="1.0" end="2.5" />
+			<Tw prop="rotate0" start="0.0" end="1" />
+			<Tw prop="rotate1" start="0.0" end="-0.5" />
+		</Tween>
+		
+		<Tween depth="1" frameCount="120">
+			<Tw prop="x" start="600" end="0" />
+			<Tw prop="y" start="600" end="0" />
+			<Tw prop="scaleX" start="2.5" end="1" />
+			<Tw prop="scaleY" start="2.5" end="1" />
+			<Tw prop="rotate0" start="1" end="0" />
+			<Tw prop="rotate1" start="-0.5" end="0" />
+		</Tween>
+		
+		<EndFrame/>
+		
+	</DefineSprite>
+	
+	<PlaceObject id="6" depth="1"/>
+	
+	<ShowFrame/>
+	
+	<EndFrame/>
+	
+</swf>
+
