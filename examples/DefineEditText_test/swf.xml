@@ -1,0 +1,21 @@
+<?xml version="1.0" ?>
+<swf>
+	<Header width="800" height="600" fps="30" version="10" compressed="true" frameCount="1" />
+	
+	<FileAttributes actionscript3="true" useNetwork="false" useDirectBlit="false" useGPU="false" hasMetaData="false" />
+	
+	<SetBackgroundColor color="0xaaaaaa" />
+
+	<DefineFont id="1" file="zerohour.swf" />
+
+	<DefineEditText id="2" width="400" height="400" wordWrap="true" multiline="true" password="false" input="true" autoSize="false" selectable="true" border="true" wasStatic="false" html="false" useOutlines="true" fontID="1" fontClass="" fontHeight="12" textColor="0x000000ff" maxLength="0" align="0" leftMargin="0" rightMargin="0" indent="0" leading="0" variableName="hello world" initialText="hello world" file=""/>
+		
+	<PlaceObject name="tf" id="2" depth="1" x="200" y="200" />
+
+	<DefineABC file="Script.swf" />
+	<SymbolClass id="0" class="flash.Boot" />
+
+	<ShowFrame />
+	
+</swf>
+
