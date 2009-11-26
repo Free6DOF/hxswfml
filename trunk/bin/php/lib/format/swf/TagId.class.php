@@ -1,0 +1,71 @@
+<?php
+
+class format_swf_TagId {
+	public function __construct(){}
+	static $End = 0;
+	static $ShowFrame = 1;
+	static $DefineShape = 2;
+	static $PlaceObject = 4;
+	static $RemoveObject = 5;
+	static $DefineBits = 6;
+	static $DefineButton = 7;
+	static $JPEGTables = 8;
+	static $SetBackgroundColor = 9;
+	static $DefineFont = 10;
+	static $DefineText = 11;
+	static $DoAction = 12;
+	static $DefineFontInfo = 13;
+	static $DefineSound = 14;
+	static $StartSound = 15;
+	static $DefineButtonSound = 17;
+	static $SoundStreamHead = 18;
+	static $SoundStreamBlock = 19;
+	static $DefineBitsLossless = 20;
+	static $DefineBitsJPEG2 = 21;
+	static $DefineShape2 = 22;
+	static $DefineButtonCxform = 23;
+	static $Protect = 24;
+	static $PlaceObject2 = 26;
+	static $RemoveObject2 = 28;
+	static $DefineShape3 = 32;
+	static $DefineText2 = 33;
+	static $DefineButton2 = 34;
+	static $DefineBitsJPEG3 = 35;
+	static $DefineBitsLossless2 = 36;
+	static $DefineEditText = 37;
+	static $DefineSprite = 39;
+	static $FrameLabel = 43;
+	static $SoundStreamHead2 = 45;
+	static $DefineMorphShape = 46;
+	static $DefineFont2 = 48;
+	static $ExportAssets = 56;
+	static $ImportAssets = 57;
+	static $EnableDebugger = 58;
+	static $DoInitAction = 59;
+	static $DefineVideoStream = 60;
+	static $VideoFrame = 61;
+	static $DefineFontInfo2 = 62;
+	static $EnableDebugger2 = 64;
+	static $ScriptLimits = 65;
+	static $SetTabIndex = 66;
+	static $FileAttributes = 69;
+	static $PlaceObject3 = 70;
+	static $ImportAssets2 = 71;
+	static $RawABC = 72;
+	static $DefineFontAlignZones = 73;
+	static $CSMTextSettings = 74;
+	static $DefineFont3 = 75;
+	static $SymbolClass = 76;
+	static $Metadata = 77;
+	static $DefineScalingGrid = 78;
+	static $DoABC = 82;
+	static $DefineShape4 = 83;
+	static $DefineMorphShape2 = 84;
+	static $DefineSceneAndFrameLabelData = 86;
+	static $DefineBinaryData = 87;
+	static $DefineFontName = 88;
+	static $StartSound2 = 89;
+	static $DefineBitsJPEG4 = 90;
+	static $DefineFont4 = 91;
+	function __toString() { return 'format.swf.TagId'; }
+}
