@@ -2363,9 +2363,9 @@ class format_swf_Writer {
 		$color = $»t->params[0];
 		{
 			$this->writeTID(9, 3);
-			$this->o->writeByte(($color & 16711680) >> 16);
-			$this->o->writeByte(($color & 65280) >> 8);
-			$this->o->writeByte($color & 255);
+			$this->o->setEndian(true);
+			$this->o->writeUInt24($color);
+			$this->o->setEndian(false);
 		}break;
 		case 8:
 		$po = $»t->params[0];

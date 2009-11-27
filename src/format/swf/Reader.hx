@@ -203,7 +203,7 @@ class Reader {
 			case 0: LCRound;
 			case 1: LCNone;
 			case 2: LCSquare;
-			default: throw error();
+			default: throw error('invalid lineCap');
 		};
 	}
 	
@@ -212,7 +212,7 @@ class Reader {
 		var cnt = i.readByte();
 		if (cnt == 0xFF) {
 			if (ver == 1)
-				throw error();
+				throw error('invalid line count in line styles array');
 			cnt = i.readUInt16();
 		}
 
@@ -239,7 +239,7 @@ class Reader {
 					var pixelHinting = bits.read();
 					
 					if (bits.readBits(5) != 0)
-						throw error();
+						throw error('invalid nbits in line style');
 
 					var noClose = bits.read();
 					var endCap = getLineCap(bits.readBits(2));
@@ -248,7 +248,7 @@ class Reader {
 						case 0: LJRound;
 						case 1: LJBevel;
 						case 2: LJMiter(readFixed8());
-						default: throw error();
+						default: throw error('invalid joint style in line style');
 					};
 
 					var fill = switch (_fill) {
@@ -267,7 +267,7 @@ class Reader {
 						endCap: endCap
 					});
 				}
-				else throw error()
+				else throw error('invalid line style version')
 			});
 		}
 
@@ -298,7 +298,7 @@ class Reader {
 						FSLinearGradient(mat, grad);
 					case FillStyleTypeId.RadialGradient:
 						FSRadialGradient(mat, grad);
-					default: throw error();
+					default: throw error('invalid fill style type');
 				}
 			case 
 				FillStyleTypeId.RepeatingBitmap,
@@ -448,7 +448,7 @@ class Reader {
 	}
 
 	function readClipEvents() : Array<ClipEvent> {
-		if( i.readUInt16() != 0 ) throw error();
+		if( i.readUInt16() != 0 ) throw error('invalid clip events');
 		i.readUInt30(); // all events flags
 		var a = new Array();
 		while( true ) {
@@ -534,7 +534,7 @@ class Reader {
 			});
 			case 5:
 				// ConvolutionFilter
-				throw error();
+				throw error('convolution filter not supported');
 			case 4: FGradientGlow(readFilterGradient());
 			case 6:
 				var a = new Array();
@@ -543,7 +543,7 @@ class Reader {
 				FColorMatrix(a);
 			case 7: FGradientBevel(readFilterGradient());
 			default:
-				throw error();
+				throw error('unknown filter');
 				null;
 		}
 	}
@@ -555,8 +555,8 @@ class Reader {
 		return filters;
 	}
 
-	function error() {
-		return "Invalid SWF";
+	function error(msg:String="") {
+		return "Invalid SWF: " + msg;
 	}
 
 	public function readHeader() : SWFHeader {
@@ -567,19 +567,21 @@ class Reader {
 		else if( tag == "FWS" )
 			compressed = false;
 		else
-			throw error();
+			throw error('invalid file signature');
 		version = i.readByte();
 		var size = i.readUInt30();
 		if( compressed ) {
 			var bytes = format.tools.Inflate.run(i.readAll());
-			if( bytes.length + 8 != size ) throw error();
+			if( bytes.length + 8 != size ) throw error('wrong bytes length after decompression');
 			i = new haxe.io.BytesInput(bytes);
 		}
 		bits = new format.tools.BitsInput(i);
 		var r = readRect();
 		if( r.left != 0 || r.top != 0 || r.right % 20 != 0 || r.bottom % 20 != 0 )
-			throw error();
-		var fps = readFixed8();
+			throw error('invalid swf width or height');
+		i.readByte();
+		var fps = i.readByte();
+		//var fps = readFixed8();
 		var nframes = i.readUInt16();
 		return {
 			version : version,
@@ -613,7 +615,7 @@ class Reader {
 				case 1: SHDShape1(bounds, sws);
 				case 2: SHDShape2(bounds, sws);
 				case 3: SHDShape3(bounds, sws);
-				default: throw error();
+				default: throw error('invalid shape type');
 			});
 		}
 
@@ -684,7 +686,7 @@ class Reader {
 						MFSLinearGradient(startMatrix, endMatrix, grads);
 					case FillStyleTypeId.RadialGradient:
 						MFSRadialGradient(startMatrix, endMatrix, grads);
-					default: throw error();
+					default: throw error('invalid filltype in morphshape');
 				}
 			case 
 				FillStyleTypeId.RepeatingBitmap,
@@ -876,14 +878,14 @@ class Reader {
 		case 12: BErase;
 		case 13: BOverlay;
 		case 14: BHardLight;
-		default: throw error();
+		default: throw error('invalid blend mode');
 		}
 	}
 
 	function readPlaceObject(v3) : PlaceObject {
 		var f = i.readByte();
 		var f2 = if( v3 ) i.readByte() else 0;
-		if( f2 >> 3 != 0 ) throw error(); // unsupported bit flags
+		if( f2 >> 3 != 0 ) throw error('unsupported bit flags in place object'); // unsupported bit flags
 		var po = new PlaceObject();
 		po.depth = i.readUInt16();
 		if( f & 1 != 0 ) po.move = true;
@@ -911,7 +913,7 @@ class Reader {
 				case 3: CM8Bits(i.readByte());
 				case 4: CM15Bits;
 				case 5: if( v2 ) CM32Bits else CM24Bits;
-				default: throw error();
+				default: throw error('invalid lossless bits');
 			},
 			data : i.read(len - (if(bits == 3) 8 else 7)),
 		};
@@ -939,14 +941,14 @@ class Reader {
 			case 5: SFNellymoser8k;
 			case 6: SFNellymoser;
 			case 11: SFSpeex;
-			default: throw error();
+			default: throw error('invalid sound format');
 		};
 		var soundRate = switch( bits.readBits(2) ) {
 			case 0: SR5k;
 			case 1: SR11k;
 			case 2: SR22k;
 			case 3: SR44k;
-			default: throw error();
+			default: throw error('invalid sound rate');
 		};
 		var is16bit = bits.read();
 		var isStereo = bits.read();
@@ -1266,7 +1268,6 @@ class Reader {
 			readMorphShape(1);
 		case TagId.DefineMorphShape2:
 			readMorphShape(2);
-		
 		case TagId.DefineFont:
 			readFont(len, 1);
 		case TagId.DefineFont2:
@@ -1277,9 +1278,11 @@ class Reader {
 			readFontInfo(len, 1);
 		case TagId.DefineFontInfo2:
 			readFontInfo(len, 2);
-		
 		case TagId.SetBackgroundColor:
-			TBackgroundColor(i.readUInt24());
+			i.bigEndian = true;
+			var color = i.readUInt24();
+			i.bigEndian = false;
+			TBackgroundColor(color);
 		case TagId.DefineBitsLossless:
 			TBitsLossless(readLossless(len,false));
 		case TagId.DefineBitsLossless2:
@@ -1334,7 +1337,7 @@ class Reader {
 			TActionScript3(i.read(len),infos);
 		case TagId.DefineBinaryData:
 			var id = i.readUInt16();
-			if( i.readUInt30() != 0 ) throw error();
+			if( i.readUInt30() != 0 ) throw error('invalid binary data tag');
 			TBinaryData(id, i.read(len - 6));
 		case TagId.DefineSound:
 			readSound(len);

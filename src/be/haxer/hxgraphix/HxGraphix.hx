@@ -70,7 +70,7 @@ class HxGraphix
 		{
 			scale:{x:scaleX, y:scaleY}, 
 			rotate:{rs0:rotate0, rs1:rotate1}, 
-			translate:{x:Std.int(toFloat5(x))*20, y:Std.int(toFloat5(y))*20} 
+			translate:{x:Math.round(toFloat5(x)*20), y:Math.round(toFloat5(y)*20)} 
 		};
 		var gradient = 
 		{
@@ -104,7 +104,7 @@ class HxGraphix
 		{
 			scale:{x:toFloat5(scaleX)*20, y:toFloat5(scaleY)*20}, 
 			rotate:{rs0:rotate0, rs1:rotate1}, 
-			translate:{x:Std.int(toFloat5(x))*20, y:Std.int(toFloat5(y))*20} 
+			translate:{x:Math.round(toFloat5(x)*20), y:Math.round(toFloat5(y)*20)} 
 		};
 		_fillStyles.push(FSBitmap(bitmapId, matrix, repeat, smooth));
 		var _shapeChangeRec = 
@@ -124,7 +124,7 @@ class HxGraphix
 		if (width > 255.0) width = 255.0;
 		if (width <= 0.0) width = 0.05;
 
-		_lineStyles.push({ width:Std.int(toFloat5(width)*20), data:LSRGBA(hexToRgba(color, alpha)) });
+		_lineStyles.push({ width:Math.round(toFloat5(width)*20), data:LSRGBA(hexToRgba(color, alpha)) });
 		var _shapeChangeRec = 
 		{
 			moveTo : null,
@@ -151,7 +151,7 @@ class HxGraphix
 		if(y<_yMin) _yMin=y;
 		if(y>_yMax) _yMax=y;
 		
-		_shapeRecords.push( SHREdge(Std.int(dx*20), Std.int(dy*20)) );
+		_shapeRecords.push( SHREdge(Math.round(dx*20), Math.round(dy*20)) );
 	}
 	public function moveTo(x:Float, y:Float):Void 
 	{
@@ -168,7 +168,7 @@ class HxGraphix
 		
 		var _shapeChangeRec = 
 		{
-			moveTo : {dx:Std.int(x*20), dy:Std.int(y*20)},
+			moveTo : {dx:Math.round(x*20), dy:Math.round(y*20)},
 			fillStyle0 : _stateFillStyle? {idx:_fillStyles.length}:null,
 			fillStyle1 : null,
 			lineStyle : _stateLineStyle? {idx:_lineStyles.length} : null,
@@ -195,7 +195,7 @@ class HxGraphix
 		if(ax>_xMax) _xMax=ax;
 		if(ay<_yMin) _yMin=ay;
 		if(ay>_yMax) _yMax=ay;
-		_shapeRecords.push(SHRCurvedEdge( Std.int(dcx*20), Std.int(dcy*20), Std.int(dax*20), Std.int(day*20)));
+		_shapeRecords.push(SHRCurvedEdge( Math.round(dcx*20), Math.round(dcy*20), Math.round(dax*20), Math.round(day*20)));
 	}
 	public function endFill():Void
 	{
@@ -294,7 +294,7 @@ class HxGraphix
 	{
 		_shapeRecords.push(SHREnd);
 		//-------------DEFINESHAPE3
-		var _rect = { left:Std.int(_xMin * 20), right:Std.int(_xMax * 20), top:Std.int(_yMin * 20), bottom:Std.int(_yMax * 20) };
+		var _rect = { left:Math.round(_xMin * 20), right:Math.round(_xMax * 20), top:Math.round(_yMin * 20), bottom:Math.round(_yMax * 20) };
 		var _shapeWithStyleData = { fillStyles:_fillStyles, lineStyles:_lineStyles, shapeRecords:_shapeRecords };
 		return TShape(id, SHDShape3(_rect, _shapeWithStyleData));
 	}	
@@ -304,14 +304,14 @@ class HxGraphix
 		if (alpha < 0) alpha = 0.0;
 		if (alpha > 1) alpha = 1.0;
 		if (color > 0xffffff) color = 0xffffff;
-		return { r:(color & 0xff0000) >> 16,     g:(color & 0x00ff00) >> 8,     b:(color & 0x0000ff),     a:Std.int(alpha*255) }
+		return { r:(color & 0xff0000) >> 16,     g:(color & 0x00ff00) >> 8,     b:(color & 0x0000ff),     a:Math.round(alpha*255) }
 	}
 	private function toFloat5(float:Float):Float
 	{
-		var temp1:Int = Std.int(float * 100);
-		var diff:Int = temp1 % 5;
-		var temp2:Int = diff < 3? temp1 - diff : temp1 + (5 - diff);
-		var temp3:Float = temp2 / 100;
+		var temp1:Int = Math.round(float * 1000);
+		var diff:Int = temp1 % 50;
+		var temp2:Int = diff < 25? temp1 - diff : temp1 + (50 - diff);
+		var temp3:Float = temp2 / 1000;
 		return temp3;
 	}
 }

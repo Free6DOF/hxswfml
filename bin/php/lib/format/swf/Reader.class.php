@@ -167,7 +167,7 @@ class format_swf_Reader {
 				\$팿 = format_swf_LineCapStyle::\$LCSquare;
 			}break;
 			default:{
-				\$팿 = eval(\"if(isset(\\\$this)) \\\$퍁his =& \\\$this;throw new HException(\\\$퍁his->error());
+				\$팿 = eval(\"if(isset(\\\$this)) \\\$퍁his =& \\\$this;throw new HException(\\\$퍁his->error(\\\"invalid lineCap\\\"));
 					return \\\$팿2;
 				\");
 			}break;
@@ -179,7 +179,7 @@ class format_swf_Reader {
 		$cnt = $this->i->readByte();
 		if($cnt === 255) {
 			if($ver === 1) {
-				throw new HException($this->error());
+				throw new HException($this->error("invalid line count in line styles array"));
 			}
 			$cnt = $this->i->readUInt16();
 		}
@@ -197,7 +197,7 @@ class format_swf_Reader {
 					\$noVScale = \$퍁his->bits->read();
 					\$pixelHinting = \$퍁his->bits->read();
 					if(\$퍁his->bits->readBits(5) !== 0) {
-						throw new HException(\$퍁his->error());
+						throw new HException(\$퍁his->error(\"invalid nbits in line style\"));
 					}
 					\$noClose = \$퍁his->bits->read();
 					\$endCap = \$퍁his->getLineCap(\$퍁his->bits->readBits(2));
@@ -218,7 +218,7 @@ class format_swf_Reader {
 							\\\"));
 						}break;
 						default:{
-							\\\$팿2 = eval(\\\"if(isset(\\\\\$this)) \\\\\$퍁his =& \\\\\$this;throw new HException(\\\\\$퍁his->error());
+							\\\$팿2 = eval(\\\"if(isset(\\\\\$this)) \\\\\$퍁his =& \\\\\$this;throw new HException(\\\\\$퍁his->error(\\\\\"invalid joint style in line style\\\\\"));
 								return \\\\\$팿4;
 							\\\");
 						}break;
@@ -240,7 +240,7 @@ class format_swf_Reader {
 					\");
 					\$팿 = format_swf_LineStyleData::LS2(_hx_anonymous(array(\"startCap\" => \$startCap, \"join\" => \$join, \"fill\" => \$fill, \"noHScale\" => \$noHScale, \"noVScale\" => \$noVScale, \"pixelHinting\" => \$pixelHinting, \"noClose\" => \$noClose, \"endCap\" => \$endCap)));
 					return \$팿;
-				") : eval("if(isset(\$this)) \$퍁his =& \$this;throw new HException(\$퍁his->error());
+				") : eval("if(isset(\$this)) \$퍁his =& \$this;throw new HException(\$퍁his->error(\"invalid line style version\"));
 					return \$팿6;
 				")))))));
 				unset($팿6,$팿5,$팿4,$팿3,$팿2,$팿,$width,$startCap,$pixelHinting,$noVScale,$noHScale,$noClose,$join,$i,$fill,$endCap,$c,$_join,$_fill);
@@ -274,7 +274,7 @@ class format_swf_Reader {
 							\\\\\$팿3 = format_swf_FillStyle::FSRadialGradient(\\\\\$mat, \\\\\$grad);
 						}break;
 						default:{
-							\\\\\$팿3 = eval(\\\\\"if(isset(\\\\\\\$this)) \\\\\\\$퍁his =& \\\\\\\$this;throw new HException(\\\\\\\$퍁his->error());
+							\\\\\$팿3 = eval(\\\\\"if(isset(\\\\\\\$this)) \\\\\\\$퍁his =& \\\\\\\$this;throw new HException(\\\\\\\$퍁his->error(\\\\\\\"invalid fill style type\\\\\\\"));
 								return \\\\\\\$팿5;
 							\\\\\");
 						}break;
@@ -294,7 +294,7 @@ class format_swf_Reader {
 				\");
 			}break;
 			default:{
-				\$팿 = eval(\"if(isset(\\\$this)) \\\$퍁his =& \\\$this;throw new HException(\\\$퍁his->error() . \\\" code \\\" . \\\$type);
+				\$팿 = eval(\"if(isset(\\\$this)) \\\$퍁his =& \\\$this;throw new HException(\\\$퍁his->error(null) . \\\" code \\\" . \\\$type);
 					return \\\$팿7;
 				\");
 			}break;
@@ -391,7 +391,7 @@ class format_swf_Reader {
 	}
 	public function readClipEvents() {
 		if($this->i->readUInt16() !== 0) {
-			throw new HException($this->error());
+			throw new HException($this->error("invalid clip events"));
 		}
 		$this->i->readUInt30();
 		$a = new _hx_array(array());
@@ -473,7 +473,7 @@ class format_swf_Reader {
 				\"), \"flags\" => \$퍁his->readFilterFlags(true))));
 			}break;
 			case 5:{
-				\$팿 = eval(\"if(isset(\\\$this)) \\\$퍁his =& \\\$this;throw new HException(\\\$퍁his->error());
+				\$팿 = eval(\"if(isset(\\\$this)) \\\$퍁his =& \\\$this;throw new HException(\\\$퍁his->error(\\\"convolution filter not supported\\\"));
 					return \\\$팿5;
 				\");
 			}break;
@@ -498,7 +498,7 @@ class format_swf_Reader {
 				\$팿 = format_swf_Filter::FGradientBevel(\$퍁his->readFilterGradient());
 			}break;
 			default:{
-				\$팿 = eval(\"if(isset(\\\$this)) \\\$퍁his =& \\\$this;throw new HException(\\\$퍁his->error());
+				\$팿 = eval(\"if(isset(\\\$this)) \\\$퍁his =& \\\$this;throw new HException(\\\$퍁his->error(\\\"unknown filter\\\"));
 					\\\$팿7 = null;
 					return \\\$팿7;
 				\");
@@ -519,8 +519,11 @@ class format_swf_Reader {
 		}
 		return $filters;
 	}
-	public function error() {
-		return "Invalid SWF";
+	public function error($msg) {
+		if($msg === null) {
+			$msg = "";
+		}
+		return "Invalid SWF: " . $msg;
 	}
 	public function readHeader() {
 		$tag = $this->i->readString(3);
@@ -533,7 +536,7 @@ class format_swf_Reader {
 				$compressed = false;
 			}
 			else {
-				throw new HException($this->error());
+				throw new HException($this->error("invalid file signature"));
 			}
 		}
 		$this->version = $this->i->readByte();
@@ -541,22 +544,17 @@ class format_swf_Reader {
 		if($compressed) {
 			$bytes = format_tools_Inflate::run($this->i->readAll(null));
 			if($bytes->length + 8 !== $size) {
-				throw new HException($this->error());
+				throw new HException($this->error("wrong bytes length after decompression"));
 			}
 			$this->i = new haxe_io_BytesInput($bytes, null, null);
 		}
 		$this->bits = new format_tools_BitsInput($this->i);
 		$r = $this->readRect();
 		if($r->left !== 0 || $r->top !== 0 || $r->right % 20 !== 0 || $r->bottom % 20 !== 0) {
-			throw new HException($this->error());
+			throw new HException($this->error("invalid swf width or height"));
 		}
-		$fps = eval("if(isset(\$this)) \$퍁his =& \$this;\$i = null;
-			if(\$i === null) {
-				\$i = \$퍁his->i;
-			}
-			\$팿 = \$i->readUInt16();
-			return \$팿;
-		");
+		$this->i->readByte();
+		$fps = $this->i->readByte();
 		$nframes = $this->i->readUInt16();
 		return _hx_anonymous(array("version" => $this->version, "compressed" => $compressed, "width" => intval($r->right / 20), "height" => intval($r->bottom / 20), "fps" => $fps, "nframes" => $nframes));
 	}
@@ -588,7 +586,7 @@ class format_swf_Reader {
 					\$팿 = format_swf_ShapeData::SHDShape3(\$bounds, \$sws);
 				}break;
 				default:{
-					\$팿 = eval(\"if(isset(\\\$this)) \\\$퍁his =& \\\$this;throw new HException(\\\$퍁his->error());
+					\$팿 = eval(\"if(isset(\\\$this)) \\\$퍁his =& \\\$this;throw new HException(\\\$퍁his->error(\\\"invalid shape type\\\"));
 						return \\\$팿2;
 					\");
 				}break;
@@ -650,7 +648,7 @@ class format_swf_Reader {
 							\\\\\$팿4 = format_swf_MorphFillStyle::MFSRadialGradient(\\\\\$startMatrix, \\\\\$endMatrix, \\\\\$grads);
 						}break;
 						default:{
-							\\\\\$팿4 = eval(\\\\\"if(isset(\\\\\\\$this)) \\\\\\\$퍁his =& \\\\\\\$this;throw new HException(\\\\\\\$퍁his->error());
+							\\\\\$팿4 = eval(\\\\\"if(isset(\\\\\\\$this)) \\\\\\\$퍁his =& \\\\\\\$this;throw new HException(\\\\\\\$퍁his->error(\\\\\\\"invalid filltype in morphshape\\\\\\\"));
 								return \\\\\\\$팿5;
 							\\\\\");
 						}break;
@@ -671,7 +669,7 @@ class format_swf_Reader {
 				\");
 			}break;
 			default:{
-				\$팿 = eval(\"if(isset(\\\$this)) \\\$퍁his =& \\\$this;throw new HException(\\\$퍁his->error() . \\\" code \\\" . \\\$type);
+				\$팿 = eval(\"if(isset(\\\$this)) \\\$퍁his =& \\\$this;throw new HException(\\\$퍁his->error(null) . \\\" code \\\" . \\\$type);
 					return \\\$팿7;
 				\");
 			}break;
@@ -887,7 +885,7 @@ class format_swf_Reader {
 				\$팿 = format_swf_BlendMode::\$BHardLight;
 			}break;
 			default:{
-				\$팿 = eval(\"if(isset(\\\$this)) \\\$퍁his =& \\\$this;throw new HException(\\\$퍁his->error());
+				\$팿 = eval(\"if(isset(\\\$this)) \\\$퍁his =& \\\$this;throw new HException(\\\$퍁his->error(\\\"invalid blend mode\\\"));
 					return \\\$팿2;
 				\");
 			}break;
@@ -899,7 +897,7 @@ class format_swf_Reader {
 		$f = $this->i->readByte();
 		$f2 = ($v3 ? $this->i->readByte() : 0);
 		if($f2 >> 3 !== 0) {
-			throw new HException($this->error());
+			throw new HException($this->error("unsupported bit flags in place object"));
 		}
 		$po = new format_swf_PlaceObject();
 		$po->depth = $this->i->readUInt16();
@@ -952,7 +950,7 @@ class format_swf_Reader {
 				\$팿 = (\$v2 ? format_swf_ColorModel::\$CM32Bits : format_swf_ColorModel::\$CM24Bits);
 			}break;
 			default:{
-				\$팿 = eval(\"if(isset(\\\$this)) \\\$퍁his =& \\\$this;throw new HException(\\\$퍁his->error());
+				\$팿 = eval(\"if(isset(\\\$this)) \\\$퍁his =& \\\$this;throw new HException(\\\$퍁his->error(\\\"invalid lossless bits\\\"));
 					return \\\$팿2;
 				\");
 			}break;
@@ -1001,7 +999,7 @@ class format_swf_Reader {
 				\$팿 = format_swf_SoundFormat::\$SFSpeex;
 			}break;
 			default:{
-				\$팿 = eval(\"if(isset(\\\$this)) \\\$퍁his =& \\\$this;throw new HException(\\\$퍁his->error());
+				\$팿 = eval(\"if(isset(\\\$this)) \\\$퍁his =& \\\$this;throw new HException(\\\$퍁his->error(\\\"invalid sound format\\\"));
 					return \\\$팿2;
 				\");
 			}break;
@@ -1022,7 +1020,7 @@ class format_swf_Reader {
 				\$팿3 = format_swf_SoundRate::\$SR44k;
 			}break;
 			default:{
-				\$팿3 = eval(\"if(isset(\\\$this)) \\\$퍁his =& \\\$this;throw new HException(\\\$퍁his->error());
+				\$팿3 = eval(\"if(isset(\\\$this)) \\\$퍁his =& \\\$this;throw new HException(\\\$퍁his->error(\\\"invalid sound rate\\\"));
 					return \\\$팿4;
 				\");
 			}break;
@@ -1412,7 +1410,12 @@ class format_swf_Reader {
 				\$팿 = \$퍁his->readFontInfo(\$len, 2);
 			}break;
 			case 9:{
-				\$팿 = format_swf_SWFTag::TBackgroundColor(\$퍁his->i->readUInt24());
+				\$팿 = eval(\"if(isset(\\\$this)) \\\$퍁his =& \\\$this;\\\$퍁his->i->setEndian(true);
+					\\\$color = \\\$퍁his->i->readUInt24();
+					\\\$퍁his->i->setEndian(false);
+					\\\$팿2 = format_swf_SWFTag::TBackgroundColor(\\\$color);
+					return \\\$팿2;
+				\");
 			}break;
 			case 20:{
 				\$팿 = format_swf_SWFTag::TBitsLossless(\$퍁his->readLossless(\$len, false));
@@ -1425,14 +1428,14 @@ class format_swf_Reader {
 			}break;
 			case 6:{
 				\$팿 = eval(\"if(isset(\\\$this)) \\\$퍁his =& \\\$this;\\\$cid = \\\$퍁his->i->readUInt16();
-					\\\$팿2 = format_swf_SWFTag::TBitsJPEG(\\\$cid, format_swf_JPEGData::JDJPEG1(\\\$퍁his->i->read(\\\$len - 2)));
-					return \\\$팿2;
+					\\\$팿3 = format_swf_SWFTag::TBitsJPEG(\\\$cid, format_swf_JPEGData::JDJPEG1(\\\$퍁his->i->read(\\\$len - 2)));
+					return \\\$팿3;
 				\");
 			}break;
 			case 21:{
 				\$팿 = eval(\"if(isset(\\\$this)) \\\$퍁his =& \\\$this;\\\$cid2 = \\\$퍁his->i->readUInt16();
-					\\\$팿3 = format_swf_SWFTag::TBitsJPEG(\\\$cid2, format_swf_JPEGData::JDJPEG2(\\\$퍁his->i->read(\\\$len - 2)));
-					return \\\$팿3;
+					\\\$팿4 = format_swf_SWFTag::TBitsJPEG(\\\$cid2, format_swf_JPEGData::JDJPEG2(\\\$퍁his->i->read(\\\$len - 2)));
+					return \\\$팿4;
 				\");
 			}break;
 			case 35:{
@@ -1440,8 +1443,8 @@ class format_swf_Reader {
 					\\\$dataSize = \\\$퍁his->i->readUInt30();
 					\\\$data = \\\$퍁his->i->read(\\\$dataSize);
 					\\\$mask = \\\$퍁his->i->read(\\\$len - \\\$dataSize - 6);
-					\\\$팿4 = format_swf_SWFTag::TBitsJPEG(\\\$cid3, format_swf_JPEGData::JDJPEG3(\\\$data, \\\$mask));
-					return \\\$팿4;
+					\\\$팿5 = format_swf_SWFTag::TBitsJPEG(\\\$cid3, format_swf_JPEGData::JDJPEG3(\\\$data, \\\$mask));
+					return \\\$팿5;
 				\");
 			}break;
 			case 26:{
@@ -1457,21 +1460,21 @@ class format_swf_Reader {
 				\$팿 = eval(\"if(isset(\\\$this)) \\\$퍁his =& \\\$this;\\\$cid4 = \\\$퍁his->i->readUInt16();
 					\\\$fcount = \\\$퍁his->i->readUInt16();
 					\\\$tags = \\\$퍁his->readTagList();
-					\\\$팿5 = format_swf_SWFTag::TClip(\\\$cid4, \\\$fcount, \\\$tags);
-					return \\\$팿5;
+					\\\$팿6 = format_swf_SWFTag::TClip(\\\$cid4, \\\$fcount, \\\$tags);
+					return \\\$팿6;
 				\");
 			}break;
 			case 43:{
 				\$팿 = eval(\"if(isset(\\\$this)) \\\$퍁his =& \\\$this;\\\$label = \\\$퍁his->readUTF8Bytes();
 					\\\$anchor = (\\\$len === \\\$label->length + 2 ? \\\$퍁his->i->readByte() === 1 : false);
-					\\\$팿6 = format_swf_SWFTag::TFrameLabel(\\\$label->toString(), \\\$anchor);
-					return \\\$팿6;
+					\\\$팿7 = format_swf_SWFTag::TFrameLabel(\\\$label->toString(), \\\$anchor);
+					return \\\$팿7;
 				\");
 			}break;
 			case 59:{
 				\$팿 = eval(\"if(isset(\\\$this)) \\\$퍁his =& \\\$this;\\\$cid5 = \\\$퍁his->i->readUInt16();
-					\\\$팿7 = format_swf_SWFTag::TDoInitActions(\\\$cid5, \\\$퍁his->i->read(\\\$len - 2));
-					return \\\$팿7;
+					\\\$팿8 = format_swf_SWFTag::TDoInitActions(\\\$cid5, \\\$퍁his->i->read(\\\$len - 2));
+					return \\\$팿8;
 				\");
 			}break;
 			case 69:{
@@ -1489,17 +1492,17 @@ class format_swf_Reader {
 			case 82:{
 				\$팿 = eval(\"if(isset(\\\$this)) \\\$퍁his =& \\\$this;\\\$infos = _hx_anonymous(array(\\\"id\\\" => \\\$퍁his->i->readUInt30(), \\\"label\\\" => \\\$퍁his->i->readUntil(0)));
 					\\\$len -= 4 + strlen(\\\$infos->label) + 1;
-					\\\$팿8 = format_swf_SWFTag::TActionScript3(\\\$퍁his->i->read(\\\$len), \\\$infos);
-					return \\\$팿8;
+					\\\$팿9 = format_swf_SWFTag::TActionScript3(\\\$퍁his->i->read(\\\$len), \\\$infos);
+					return \\\$팿9;
 				\");
 			}break;
 			case 87:{
 				\$팿 = eval(\"if(isset(\\\$this)) \\\$퍁his =& \\\$this;\\\$id1 = \\\$퍁his->i->readUInt16();
 					if(\\\$퍁his->i->readUInt30() !== 0) {
-						throw new HException(\\\$퍁his->error());
+						throw new HException(\\\$퍁his->error(\\\"invalid binary data tag\\\"));
 					}
-					\\\$팿9 = format_swf_SWFTag::TBinaryData(\\\$id1, \\\$퍁his->i->read(\\\$len - 6));
-					return \\\$팿9;
+					\\\$팿10 = format_swf_SWFTag::TBinaryData(\\\$id1, \\\$퍁his->i->read(\\\$len - 6));
+					return \\\$팿10;
 				\");
 			}break;
 			case 14:{
@@ -1511,47 +1514,47 @@ class format_swf_Reader {
 			case 65:{
 				\$팿 = eval(\"if(isset(\\\$this)) \\\$퍁his =& \\\$this;\\\$maxRecursion = \\\$퍁his->i->readUInt16();
 					\\\$timeoutSeconds = \\\$퍁his->i->readUInt16();
-					\\\$팿10 = format_swf_SWFTag::TScriptLimits(\\\$maxRecursion, \\\$timeoutSeconds);
-					return \\\$팿10;
+					\\\$팿11 = format_swf_SWFTag::TScriptLimits(\\\$maxRecursion, \\\$timeoutSeconds);
+					return \\\$팿11;
 				\");
 			}break;
 			case 15:{
 				\$팿 = eval(\"if(isset(\\\$this)) \\\$퍁his =& \\\$this;\\\$id12 = \\\$퍁his->i->readUInt16();
-					\\\$팿11 = format_swf_SWFTag::TStartSound(\\\$id12, \\\$퍁his->readSoundInfo());
-					return \\\$팿11;
+					\\\$팿12 = format_swf_SWFTag::TStartSound(\\\$id12, \\\$퍁his->readSoundInfo());
+					return \\\$팿12;
 				\");
 			}break;
 			case 34:{
 				\$팿 = eval(\"if(isset(\\\$this)) \\\$퍁his =& \\\$this;\\\$cid6 = \\\$퍁his->i->readUInt16();
 					\\\$data2 = \\\$퍁his->i->read(\\\$len - 2);
-					\\\$팿12 = format_swf_SWFTag::TUnknown(\\\$id, \\\$data2);
-					return \\\$팿12;
+					\\\$팿13 = format_swf_SWFTag::TUnknown(\\\$id, \\\$data2);
+					return \\\$팿13;
 				\");
 			}break;
 			case 37:{
 				\$팿 = eval(\"if(isset(\\\$this)) \\\$퍁his =& \\\$this;\\\$cid7 = \\\$퍁his->i->readUInt16();
 					\\\$data3 = \\\$퍁his->i->read(\\\$len - 2);
-					\\\$팿13 = format_swf_SWFTag::TUnknown(\\\$id, \\\$data3);
-					return \\\$팿13;
+					\\\$팿14 = format_swf_SWFTag::TUnknown(\\\$id, \\\$data3);
+					return \\\$팿14;
 				\");
 			}break;
 			case 77:{
 				\$팿 = eval(\"if(isset(\\\$this)) \\\$퍁his =& \\\$this;\\\$data4 = \\\$퍁his->i->readString(\\\$len);
-					\\\$팿14 = format_swf_SWFTag::TMetadata(\\\$data4);
-					return \\\$팿14;
+					\\\$팿15 = format_swf_SWFTag::TMetadata(\\\$data4);
+					return \\\$팿15;
 				\");
 			}break;
 			case 78:{
 				\$팿 = eval(\"if(isset(\\\$this)) \\\$퍁his =& \\\$this;\\\$id13 = \\\$퍁his->i->readUInt16();
 					\\\$splitter = \\\$퍁his->readRect();
-					\\\$팿15 = format_swf_SWFTag::TDefineScalingGrid(\\\$id13, \\\$splitter);
-					return \\\$팿15;
+					\\\$팿16 = format_swf_SWFTag::TDefineScalingGrid(\\\$id13, \\\$splitter);
+					return \\\$팿16;
 				\");
 			}break;
 			default:{
 				\$팿 = eval(\"if(isset(\\\$this)) \\\$퍁his =& \\\$this;\\\$data5 = \\\$퍁his->i->read(\\\$len);
-					\\\$팿16 = format_swf_SWFTag::TUnknown(\\\$id, \\\$data5);
-					return \\\$팿16;
+					\\\$팿17 = format_swf_SWFTag::TUnknown(\\\$id, \\\$data5);
+					return \\\$팿17;
 				\");
 			}break;
 			}

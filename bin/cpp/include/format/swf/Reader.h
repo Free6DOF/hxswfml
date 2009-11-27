@@ -120,7 +120,7 @@ class Reader_obj : public virtual hxObject
 		virtual Array<format::swf::Filter > readFilters( );
 		Dynamic readFilters_dyn();
 
-		virtual String error( );
+		virtual String error( Dynamic msg);
 		Dynamic error_dyn();
 
 		virtual Dynamic readHeader( );

@@ -2354,9 +2354,9 @@ format.swf.Writer.prototype.writeTag = function(t) {
 	var color = $e[2];
 	{
 		this.writeTID(9,3);
-		this.o.writeByte((color & 16711680) >> 16);
-		this.o.writeByte((color & 65280) >> 8);
-		this.o.writeByte(color & 255);
+		this.o.setEndian(true);
+		this.o.writeUInt24(color);
+		this.o.setEndian(false);
 	}break;
 	case 8:
 	var po = $e[2];
@@ -3091,7 +3091,7 @@ be.haxer.hxgraphix.HxGraphix.prototype.beginBitmapFill = function(bitmapId,x,y,s
 	if(y == null) y = 0;
 	if(x == null) x = 0;
 	this._stateFillStyle = true;
-	var matrix = { scale : { x : this.toFloat5(scaleX) * 20, y : this.toFloat5(scaleY) * 20}, rotate : { rs0 : rotate0, rs1 : rotate1}, translate : { x : Std["int"](this.toFloat5(x)) * 20, y : Std["int"](this.toFloat5(y)) * 20}}
+	var matrix = { scale : { x : this.toFloat5(scaleX) * 20, y : this.toFloat5(scaleY) * 20}, rotate : { rs0 : rotate0, rs1 : rotate1}, translate : { x : Math.round(this.toFloat5(x) * 20), y : Math.round(this.toFloat5(y) * 20)}}
 	this._fillStyles.push(format.swf.FillStyle.FSBitmap(bitmapId,matrix,repeat,smooth));
 	var _shapeChangeRec = { moveTo : null, fillStyle0 : { idx : this._fillStyles.length}, fillStyle1 : null, lineStyle : (this._stateLineStyle?{ idx : this._lineStyles.length}:null), newStyles : null}
 	this._shapeRecords.push(format.swf.ShapeRecord.SHRChange(_shapeChangeRec));
@@ -3120,7 +3120,7 @@ be.haxer.hxgraphix.HxGraphix.prototype.beginGradientFill = function(type,colors,
 			data.push(format.swf.GradRecord.GRRGBA(pos,this.hexToRgba(color,alpha)));
 		}
 	}
-	var matrix = { scale : { x : scaleX, y : scaleY}, rotate : { rs0 : rotate0, rs1 : rotate1}, translate : { x : Std["int"](this.toFloat5(x)) * 20, y : Std["int"](this.toFloat5(y)) * 20}}
+	var matrix = { scale : { x : scaleX, y : scaleY}, rotate : { rs0 : rotate0, rs1 : rotate1}, translate : { x : Math.round(this.toFloat5(x) * 20), y : Math.round(this.toFloat5(y) * 20)}}
 	var gradient = { spread : format.swf.SpreadMode.SMPad, interpolate : format.swf.InterpolationMode.IMNormalRGB, data : data}
 	switch(type) {
 	case "linear":{
@@ -3154,7 +3154,7 @@ be.haxer.hxgraphix.HxGraphix.prototype.curveTo = function(cx,cy,ax,ay) {
 	if(ax1 > this._xMax) this._xMax = ax1;
 	if(ay1 < this._yMin) this._yMin = ay1;
 	if(ay1 > this._yMax) this._yMax = ay1;
-	this._shapeRecords.push(format.swf.ShapeRecord.SHRCurvedEdge(Std["int"](dcx * 20),Std["int"](dcy * 20),Std["int"](dax * 20),Std["int"](day * 20)));
+	this._shapeRecords.push(format.swf.ShapeRecord.SHRCurvedEdge(Math.round(dcx * 20),Math.round(dcy * 20),Math.round(dax * 20),Math.round(day * 20)));
 }
 be.haxer.hxgraphix.HxGraphix.prototype.drawCircle = function(x,y,r,sections) {
 	if(sections == null) sections = 16;
@@ -3219,7 +3219,7 @@ be.haxer.hxgraphix.HxGraphix.prototype.endLine = function() {
 }
 be.haxer.hxgraphix.HxGraphix.prototype.getTag = function(id) {
 	this._shapeRecords.push(format.swf.ShapeRecord.SHREnd);
-	var _rect = { left : Std["int"](this._xMin * 20), right : Std["int"](this._xMax * 20), top : Std["int"](this._yMin * 20), bottom : Std["int"](this._yMax * 20)}
+	var _rect = { left : Math.round(this._xMin * 20), right : Math.round(this._xMax * 20), top : Math.round(this._yMin * 20), bottom : Math.round(this._yMax * 20)}
 	var _shapeWithStyleData = { fillStyles : this._fillStyles, lineStyles : this._lineStyles, shapeRecords : this._shapeRecords}
 	return format.swf.SWFTag.TShape(id,format.swf.ShapeData.SHDShape3(_rect,_shapeWithStyleData));
 }
@@ -3227,7 +3227,7 @@ be.haxer.hxgraphix.HxGraphix.prototype.hexToRgba = function(color,alpha) {
 	if(alpha < 0) alpha = 0.0;
 	if(alpha > 1) alpha = 1.0;
 	if(color > 16777215) color = 16777215;
-	return { r : (color & 16711680) >> 16, g : (color & 65280) >> 8, b : (color & 255), a : Std["int"](alpha * 255)}
+	return { r : (color & 16711680) >> 16, g : (color & 65280) >> 8, b : (color & 255), a : Math.round(alpha * 255)}
 }
 be.haxer.hxgraphix.HxGraphix.prototype.lineStyle = function(width,color,alpha) {
 	if(alpha == null) alpha = 1.0;
@@ -3236,7 +3236,7 @@ be.haxer.hxgraphix.HxGraphix.prototype.lineStyle = function(width,color,alpha) {
 	this._stateLineStyle = true;
 	if(width > 255.0) width = 255.0;
 	if(width <= 0.0) width = 0.05;
-	this._lineStyles.push({ width : Std["int"](this.toFloat5(width) * 20), data : format.swf.LineStyleData.LSRGBA(this.hexToRgba(color,alpha))});
+	this._lineStyles.push({ width : Math.round(this.toFloat5(width) * 20), data : format.swf.LineStyleData.LSRGBA(this.hexToRgba(color,alpha))});
 	var _shapeChangeRec = { moveTo : null, fillStyle0 : (this._stateFillStyle?{ idx : this._fillStyles.length}:null), fillStyle1 : null, lineStyle : { idx : this._lineStyles.length}, newStyles : null}
 	this._shapeRecords.push(format.swf.ShapeRecord.SHRChange(_shapeChangeRec));
 }
@@ -3251,7 +3251,7 @@ be.haxer.hxgraphix.HxGraphix.prototype.lineTo = function(x,y) {
 	if(x1 > this._xMax) this._xMax = x1;
 	if(y1 < this._yMin) this._yMin = y1;
 	if(y1 > this._yMax) this._yMax = y1;
-	this._shapeRecords.push(format.swf.ShapeRecord.SHREdge(Std["int"](dx * 20),Std["int"](dy * 20)));
+	this._shapeRecords.push(format.swf.ShapeRecord.SHREdge(Math.round(dx * 20),Math.round(dy * 20)));
 }
 be.haxer.hxgraphix.HxGraphix.prototype.moveTo = function(x,y) {
 	var x1 = this.toFloat5(x);
@@ -3262,14 +3262,14 @@ be.haxer.hxgraphix.HxGraphix.prototype.moveTo = function(x,y) {
 	if(x1 > this._xMax) this._xMax = x1;
 	if(y1 < this._yMin) this._yMin = y1;
 	if(y1 > this._yMax) this._yMax = y1;
-	var _shapeChangeRec = { moveTo : { dx : Std["int"](x1 * 20), dy : Std["int"](y1 * 20)}, fillStyle0 : (this._stateFillStyle?{ idx : this._fillStyles.length}:null), fillStyle1 : null, lineStyle : (this._stateLineStyle?{ idx : this._lineStyles.length}:null), newStyles : null}
+	var _shapeChangeRec = { moveTo : { dx : Math.round(x1 * 20), dy : Math.round(y1 * 20)}, fillStyle0 : (this._stateFillStyle?{ idx : this._fillStyles.length}:null), fillStyle1 : null, lineStyle : (this._stateLineStyle?{ idx : this._lineStyles.length}:null), newStyles : null}
 	this._shapeRecords.push(format.swf.ShapeRecord.SHRChange(_shapeChangeRec));
 }
 be.haxer.hxgraphix.HxGraphix.prototype.toFloat5 = function($float) {
-	var temp1 = Std["int"]($float * 100);
-	var diff = temp1 % 5;
-	var temp2 = (diff < 3?temp1 - diff:temp1 + (5 - diff));
-	var temp3 = temp2 / 100;
+	var temp1 = Math.round($float * 1000);
+	var diff = temp1 % 50;
+	var temp2 = (diff < 25?temp1 - diff:temp1 + (50 - diff));
+	var temp3 = temp2 / 1000;
 	return temp3;
 }
 be.haxer.hxgraphix.HxGraphix.prototype.__class__ = be.haxer.hxgraphix.HxGraphix;
@@ -3931,8 +3931,9 @@ format.swf.Reader = function(i) { if( i === $_ ) return; {
 format.swf.Reader.__name__ = ["format","swf","Reader"];
 format.swf.Reader.prototype.bits = null;
 format.swf.Reader.prototype.bitsRead = null;
-format.swf.Reader.prototype.error = function() {
-	return "Invalid SWF";
+format.swf.Reader.prototype.error = function(msg) {
+	if(msg == null) msg = "";
+	return "Invalid SWF: " + msg;
 }
 format.swf.Reader.prototype.getLineCap = function(t) {
 	return (function($this) {
@@ -3950,7 +3951,7 @@ format.swf.Reader.prototype.getLineCap = function(t) {
 		default:{
 			$r = (function($this) {
 				var $r;
-				throw $this.error();
+				throw $this.error("invalid lineCap");
 				return $r;
 			}($this));
 		}break;
@@ -4011,7 +4012,7 @@ format.swf.Reader.prototype.readBlendMode = function() {
 		default:{
 			$r = (function($this) {
 				var $r;
-				throw $this.error();
+				throw $this.error("invalid blend mode");
 				return $r;
 			}($this));
 		}break;
@@ -4030,7 +4031,7 @@ format.swf.Reader.prototype.readCXAColor = function(nbits) {
 	return { r : this.bits.readBits(nbits), g : this.bits.readBits(nbits), b : this.bits.readBits(nbits), a : this.bits.readBits(nbits)}
 }
 format.swf.Reader.prototype.readClipEvents = function() {
-	if(this.i.readUInt16() != 0) throw this.error();
+	if(this.i.readUInt16() != 0) throw this.error("invalid clip events");
 	this.i.readUInt30();
 	var a = new Array();
 	while(true) {
@@ -4092,7 +4093,7 @@ format.swf.Reader.prototype.readFillStyle = function(ver) {
 					default:{
 						$r = (function($this) {
 							var $r;
-							throw $this.error();
+							throw $this.error("invalid fill style type");
 							return $r;
 						}($this));
 					}break;
@@ -4158,7 +4159,7 @@ format.swf.Reader.prototype.readFilter = function() {
 		case 5:{
 			$r = (function($this) {
 				var $r;
-				throw $this.error();
+				throw $this.error("convolution filter not supported");
 				return $r;
 			}($this));
 		}break;
@@ -4186,7 +4187,7 @@ format.swf.Reader.prototype.readFilter = function() {
 		default:{
 			$r = (function($this) {
 				var $r;
-				throw $this.error();
+				throw $this.error("unknown filter");
 				$r = null;
 				return $r;
 			}($this));
@@ -4515,18 +4516,19 @@ format.swf.Reader.prototype.readHeader = function() {
 	var compressed;
 	if(tag == "CWS") compressed = true;
 	else if(tag == "FWS") compressed = false;
-	else throw this.error();
+	else throw this.error("invalid file signature");
 	this.version = this.i.readByte();
 	var size = this.i.readUInt30();
 	if(compressed) {
 		var bytes = format.tools.Inflate.run(this.i.readAll());
-		if(bytes.length + 8 != size) throw this.error();
+		if(bytes.length + 8 != size) throw this.error("wrong bytes length after decompression");
 		this.i = new haxe.io.BytesInput(bytes);
 	}
 	this.bits = new format.tools.BitsInput(this.i);
 	var r = this.readRect();
-	if(r.left != 0 || r.top != 0 || r.right % 20 != 0 || r.bottom % 20 != 0) throw this.error();
-	var fps = this.readFixed8(null);
+	if(r.left != 0 || r.top != 0 || r.right % 20 != 0 || r.bottom % 20 != 0) throw this.error("invalid swf width or height");
+	this.i.readByte();
+	var fps = this.i.readByte();
 	var nframes = this.i.readUInt16();
 	return { version : this.version, compressed : compressed, width : Std["int"](r.right / 20), height : Std["int"](r.bottom / 20), fps : fps, nframes : nframes}
 }
@@ -4569,7 +4571,7 @@ format.swf.Reader.prototype.readLanguage = function() {
 format.swf.Reader.prototype.readLineStyles = function(ver) {
 	var cnt = this.i.readByte();
 	if(cnt == 255) {
-		if(ver == 1) throw this.error();
+		if(ver == 1) throw this.error("invalid line count in line styles array");
 		cnt = this.i.readUInt16();
 	}
 	var arr = new Array();
@@ -4587,7 +4589,7 @@ format.swf.Reader.prototype.readLineStyles = function(ver) {
 				var noHScale = $this.bits.read();
 				var noVScale = $this.bits.read();
 				var pixelHinting = $this.bits.read();
-				if($this.bits.readBits(5) != 0) throw $this.error();
+				if($this.bits.readBits(5) != 0) throw $this.error("invalid nbits in line style");
 				var noClose = $this.bits.read();
 				var endCap = $this.getLineCap($this.bits.readBits(2));
 				var join = (function($this) {
@@ -4605,7 +4607,7 @@ format.swf.Reader.prototype.readLineStyles = function(ver) {
 					default:{
 						$r = (function($this) {
 							var $r;
-							throw $this.error();
+							throw $this.error("invalid joint style in line style");
 							return $r;
 						}($this));
 					}break;
@@ -4631,7 +4633,7 @@ format.swf.Reader.prototype.readLineStyles = function(ver) {
 				return $r;
 			}(this)):(function($this) {
 				var $r;
-				throw $this.error();
+				throw $this.error("invalid line style version");
 				return $r;
 			}(this)))))});
 		}
@@ -4656,7 +4658,7 @@ format.swf.Reader.prototype.readLossless = function(len,v2) {
 		default:{
 			$r = (function($this) {
 				var $r;
-				throw $this.error();
+				throw $this.error("invalid lossless bits");
 				return $r;
 			}($this));
 		}break;
@@ -4824,7 +4826,7 @@ format.swf.Reader.prototype.readMorphFillStyle = function(ver) {
 					default:{
 						$r = (function($this) {
 							var $r;
-							throw $this.error();
+							throw $this.error("invalid filltype in morphshape");
 							return $r;
 						}($this));
 					}break;
@@ -4928,7 +4930,7 @@ format.swf.Reader.prototype.readMorphShape = function(ver) {
 format.swf.Reader.prototype.readPlaceObject = function(v3) {
 	var f = this.i.readByte();
 	var f2 = (v3?this.i.readByte():0);
-	if(f2 >> 3 != 0) throw this.error();
+	if(f2 >> 3 != 0) throw this.error("unsupported bit flags in place object");
 	var po = new format.swf.PlaceObject();
 	po.depth = this.i.readUInt16();
 	if((f & 1) != 0) po.move = true;
@@ -4977,7 +4979,7 @@ format.swf.Reader.prototype.readShape = function(len,ver) {
 			default:{
 				$r = (function($this) {
 					var $r;
-					throw $this.error();
+					throw $this.error("invalid shape type");
 					return $r;
 				}($this));
 			}break;
@@ -5096,7 +5098,7 @@ format.swf.Reader.prototype.readSound = function(len) {
 		default:{
 			$r = (function($this) {
 				var $r;
-				throw $this.error();
+				throw $this.error("invalid sound format");
 				return $r;
 			}($this));
 		}break;
@@ -5121,7 +5123,7 @@ format.swf.Reader.prototype.readSound = function(len) {
 		default:{
 			$r = (function($this) {
 				var $r;
-				throw $this.error();
+				throw $this.error("invalid sound rate");
 				return $r;
 			}($this));
 		}break;
@@ -5242,7 +5244,14 @@ format.swf.Reader.prototype.readTag = function() {
 			$r = $this.readFontInfo(len,2);
 		}break;
 		case 9:{
-			$r = format.swf.SWFTag.TBackgroundColor($this.i.readUInt24());
+			$r = (function($this) {
+				var $r;
+				$this.i.setEndian(true);
+				var color = $this.i.readUInt24();
+				$this.i.setEndian(false);
+				$r = format.swf.SWFTag.TBackgroundColor(color);
+				return $r;
+			}($this));
 		}break;
 		case 20:{
 			$r = format.swf.SWFTag.TBitsLossless($this.readLossless(len,false));
@@ -5341,7 +5350,7 @@ format.swf.Reader.prototype.readTag = function() {
 			$r = (function($this) {
 				var $r;
 				var id1 = $this.i.readUInt16();
-				if($this.i.readUInt30() != 0) throw $this.error();
+				if($this.i.readUInt30() != 0) throw $this.error("invalid binary data tag");
 				$r = format.swf.SWFTag.TBinaryData(id1,$this.i.read(len - 6));
 				return $r;
 			}($this));

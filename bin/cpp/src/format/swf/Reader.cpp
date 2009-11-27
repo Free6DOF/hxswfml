@@ -356,7 +356,7 @@ format::swf::LineCapStyle Reader_obj::getLineCap( int t){
 				}
 				break;
 				default: {
-					return hxThrow (__this->error());
+					return hxThrow (__this->error(STRING(L"invalid lineCap",15)));
 				}
 			}
 		}
@@ -371,7 +371,7 @@ Array<Dynamic > Reader_obj::readLineStyles( int ver){
 	int cnt = this->i->readByte();
 	if (cnt == 255){
 		if (ver == 1)
-			hxThrow (this->error());
+			hxThrow (this->error(STRING(L"invalid line count in line styles array",39)));
 		cnt = this->i->readUInt16();
 	}
 	Array<Dynamic > arr = Array_obj<Dynamic >::__new();
@@ -400,7 +400,7 @@ Array<Dynamic > Reader_obj::readLineStyles( int ver){
 					bool noVScale = __this->bits->read();
 					bool pixelHinting = __this->bits->read();
 					if (__this->bits->readBits(5) != 0)
-						hxThrow (__this->error());
+						hxThrow (__this->error(STRING(L"invalid nbits in line style",27)));
 					bool noClose = __this->bits->read();
 					format::swf::LineCapStyle endCap = __this->getLineCap(__this->bits->readBits(2));
 					struct _Function_4{
@@ -427,7 +427,7 @@ Array<Dynamic > Reader_obj::readLineStyles( int ver){
 								}
 								break;
 								default: {
-									return hxThrow (__this->error());
+									return hxThrow (__this->error(STRING(L"invalid joint style in line style",33)));
 								}
 							}
 						}
@@ -453,7 +453,7 @@ Array<Dynamic > Reader_obj::readLineStyles( int ver){
 					return format::swf::LineStyleData_obj::LS2(hxAnon_obj::Create()->Add( STRING(L"startCap",8) , startCap)->Add( STRING(L"join",4) , join)->Add( STRING(L"fill",4) , fill)->Add( STRING(L"noHScale",8) , noHScale)->Add( STRING(L"noVScale",8) , noVScale)->Add( STRING(L"pixelHinting",12) , pixelHinting)->Add( STRING(L"noClose",7) , noClose)->Add( STRING(L"endCap",6) , endCap));
 				}
 			};
-			arr->push(hxAnon_obj::Create()->Add( STRING(L"width",5) , width)->Add( STRING(L"data",4) , ver <= 2 ? format::swf::LineStyleData( _Function_1::Block(this) ) : format::swf::LineStyleData( ver == 3 ? format::swf::LineStyleData( _Function_2::Block(this) ) : format::swf::LineStyleData( ver == 4 ? format::swf::LineStyleData( _Function_3::Block(this,ver) ) : format::swf::LineStyleData( hxThrow (this->error()) ) ) )));
+			arr->push(hxAnon_obj::Create()->Add( STRING(L"width",5) , width)->Add( STRING(L"data",4) , ver <= 2 ? format::swf::LineStyleData( _Function_1::Block(this) ) : format::swf::LineStyleData( ver == 3 ? format::swf::LineStyleData( _Function_2::Block(this) ) : format::swf::LineStyleData( ver == 4 ? format::swf::LineStyleData( _Function_3::Block(this,ver) ) : format::swf::LineStyleData( hxThrow (this->error(STRING(L"invalid line style version",26))) ) ) )));
 		}
 	}
 	return arr;
@@ -498,7 +498,7 @@ format::swf::FillStyle Reader_obj::readFillStyle( int ver){
 								}
 								break;
 								default: {
-									return hxThrow (__this->error());
+									return hxThrow (__this->error(STRING(L"invalid fill style type",23)));
 								}
 							}
 						}
@@ -515,7 +515,7 @@ format::swf::FillStyle Reader_obj::readFillStyle( int ver){
 				}
 				break;
 				default: {
-					return hxThrow (__this->error() + STRING(L" code ",6) + type);
+					return hxThrow (__this->error(null()) + STRING(L" code ",6) + type);
 				}
 			}
 		}
@@ -629,7 +629,7 @@ DEFINE_DYNAMIC_FUNC1(Reader_obj,readShapeRecords,return )
 
 Array<Dynamic > Reader_obj::readClipEvents( ){
 	if (this->i->readUInt16() != 0)
-		hxThrow (this->error());
+		hxThrow (this->error(STRING(L"invalid clip events",19)));
 	this->i->readUInt30();
 	Array<Dynamic > a = Array_obj<Dynamic >::__new();
 	while(true){
@@ -732,7 +732,7 @@ format::swf::Filter Reader_obj::readFilter( ){
 				}
 				break;
 				case 5: {
-					return hxThrow (__this->error());
+					return hxThrow (__this->error(STRING(L"convolution filter not supported",32)));
 				}
 				break;
 				case 4: {
@@ -756,7 +756,7 @@ format::swf::Filter Reader_obj::readFilter( ){
 				}
 				break;
 				default: {
-					hxThrow (__this->error());
+					hxThrow (__this->error(STRING(L"unknown filter",14)));
 					return null();
 				}
 			}
@@ -784,12 +784,15 @@ Array<format::swf::Filter > Reader_obj::readFilters( ){
 
 DEFINE_DYNAMIC_FUNC0(Reader_obj,readFilters,return )
 
-String Reader_obj::error( ){
-	return STRING(L"Invalid SWF",11);
+String Reader_obj::error( Dynamic __o_msg){
+String msg = __o_msg.Default(STRING(L"",0));
+{
+		return STRING(L"Invalid SWF: ",13) + msg;
+	}
 }
 
 
-DEFINE_DYNAMIC_FUNC0(Reader_obj,error,return )
+DEFINE_DYNAMIC_FUNC1(Reader_obj,error,return )
 
 Dynamic Reader_obj::readHeader( ){
 	String tag = this->i->readString(3);
@@ -800,7 +803,7 @@ Dynamic Reader_obj::readHeader( ){
 		if (tag == STRING(L"FWS",3))
 		compressed = false;
 	else
-		hxThrow (this->error());
+		hxThrow (this->error(STRING(L"invalid file signature",22)));
 ;
 ;
 	this->version = this->i->readByte();
@@ -808,22 +811,15 @@ Dynamic Reader_obj::readHeader( ){
 	if (compressed){
 		haxe::io::Bytes bytes = format::tools::Inflate_obj::run(this->i->readAll(null()));
 		if (bytes->length + 8 != size)
-			hxThrow (this->error());
+			hxThrow (this->error(STRING(L"wrong bytes length after decompression",38)));
 		this->i = haxe::io::BytesInput_obj::__new(bytes,null(),null());
 	}
 	this->bits = format::tools::BitsInput_obj::__new(this->i);
 	Dynamic r = this->readRect();
 	if (bool(r->__Field(STRING(L"left",4)).Cast<int >() != 0) || bool(bool(r->__Field(STRING(L"top",3)).Cast<int >() != 0) || bool(bool(hxMod(r->__Field(STRING(L"right",5)).Cast<int >(),20) != 0) || bool(hxMod(r->__Field(STRING(L"bottom",6)).Cast<int >(),20) != 0))))
-		hxThrow (this->error());
-	struct _Function_1{
-		static int Block( format::swf::Reader_obj *__this)/* DEF (ret block)(not intern) */{
-			haxe::io::Input i = null();
-			if (i == null())
-				i = __this->i;
-			return i->readUInt16();
-		}
-	};
-	int fps = _Function_1::Block(this);
+		hxThrow (this->error(STRING(L"invalid swf width or height",27)));
+	this->i->readByte();
+	int fps = this->i->readByte();
 	int nframes = this->i->readUInt16();
 	return hxAnon_obj::Create()->Add( STRING(L"version",7) , this->version)->Add( STRING(L"compressed",10) , compressed)->Add( STRING(L"width",5) , Std_obj::toInt(double(r->__Field(STRING(L"right",5)).Cast<int >()) / double(20)))->Add( STRING(L"height",6) , Std_obj::toInt(double(r->__Field(STRING(L"bottom",6)).Cast<int >()) / double(20)))->Add( STRING(L"fps",3) , fps)->Add( STRING(L"nframes",7) , nframes);
 }
@@ -866,7 +862,7 @@ format::swf::SWFTag Reader_obj::readShape( int len,int ver){
 					}
 					break;
 					default: {
-						return hxThrow (__this->error());
+						return hxThrow (__this->error(STRING(L"invalid shape type",18)));
 					}
 				}
 			}
@@ -942,7 +938,7 @@ format::swf::MorphFillStyle Reader_obj::readMorphFillStyle( int ver){
 								}
 								break;
 								default: {
-									return hxThrow (__this->error());
+									return hxThrow (__this->error(STRING(L"invalid filltype in morphshape",30)));
 								}
 							}
 						}
@@ -960,7 +956,7 @@ format::swf::MorphFillStyle Reader_obj::readMorphFillStyle( int ver){
 				}
 				break;
 				default: {
-					return hxThrow (__this->error() + STRING(L" code ",6) + type);
+					return hxThrow (__this->error(null()) + STRING(L" code ",6) + type);
 				}
 			}
 		}
@@ -1234,7 +1230,7 @@ format::swf::BlendMode Reader_obj::readBlendMode( ){
 				}
 				break;
 				default: {
-					return hxThrow (__this->error());
+					return hxThrow (__this->error(STRING(L"invalid blend mode",18)));
 				}
 			}
 		}
@@ -1249,7 +1245,7 @@ format::swf::PlaceObject Reader_obj::readPlaceObject( bool v3){
 	int f = this->i->readByte();
 	int f2 = v3 ? int( this->i->readByte() ) : int( 0 );
 	if (int(f2) >> int(3) != 0)
-		hxThrow (this->error());
+		hxThrow (this->error(STRING(L"unsupported bit flags in place object",37)));
 	format::swf::PlaceObject po = format::swf::PlaceObject_obj::__new();
 	po->depth = this->i->readUInt16();
 	if (int(f) & int(1) != 0)
@@ -1299,7 +1295,7 @@ Dynamic Reader_obj::readLossless( int len,bool v2){
 				}
 				break;
 				default: {
-					return hxThrow (__this->error());
+					return hxThrow (__this->error(STRING(L"invalid lossless bits",21)));
 				}
 			}
 		}
@@ -1365,7 +1361,7 @@ format::swf::SWFTag Reader_obj::readSound( int len){
 				}
 				break;
 				default: {
-					return hxThrow (__this->error());
+					return hxThrow (__this->error(STRING(L"invalid sound format",20)));
 				}
 			}
 		}
@@ -1391,7 +1387,7 @@ format::swf::SWFTag Reader_obj::readSound( int len){
 				}
 				break;
 				default: {
-					return hxThrow (__this->error());
+					return hxThrow (__this->error(STRING(L"invalid sound rate",18)));
 				}
 			}
 		}
@@ -1846,7 +1842,10 @@ format::swf::SWFTag Reader_obj::readTag( ){
 				}
 				break;
 				case 9: {
-					return format::swf::SWFTag_obj::TBackgroundColor(__this->i->readUInt24());
+					__this->i->setEndian(true);
+					int color = __this->i->readUInt24();
+					__this->i->setEndian(false);
+					return format::swf::SWFTag_obj::TBackgroundColor(color);
 				}
 				break;
 				case 20: {
@@ -1934,7 +1933,7 @@ format::swf::SWFTag Reader_obj::readTag( ){
 				case 87: {
 					int id1 = __this->i->readUInt16();
 					if (__this->i->readUInt30() != 0)
-						hxThrow (__this->error());
+						hxThrow (__this->error(STRING(L"invalid binary data tag",23)));
 					return format::swf::SWFTag_obj::TBinaryData(id1,__this->i->read(len - 6));
 				}
 				break;

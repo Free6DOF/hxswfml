@@ -3119,7 +3119,7 @@
 	<e path="format.swf.SWFTag"/>
 	<e path="Void"/>
 </f></writeTag>
-		<writeEnd public="1" line="1524"><f a=""><e path="Void"/></f></writeEnd>
+		<writeEnd public="1" line="1523"><f a=""><e path="Void"/></f></writeEnd>
 		<new public="1" line="52"><f a="o">
 	<c path="haxe.io.Output"/>
 	<e path="Void"/>
@@ -5733,15 +5733,18 @@
 		<readFilterGradient line="474"><f a=""><t path="format.swf.GradientFilterData"/></f></readFilterGradient>
 		<readFilter line="497"><f a=""><e path="format.swf.Filter"/></f></readFilter>
 		<readFilters line="551"><f a=""><c path="Array"><e path="format.swf.Filter"/></c></f></readFilters>
-		<error line="558"><f a=""><c path="String"/></f></error>
+		<error line="558"><f a="?msg">
+	<c path="String"/>
+	<c path="String"/>
+</f></error>
 		<readHeader public="1" line="562"><f a=""><t path="format.swf.SWFHeader"/></f></readHeader>
-		<readTagList public="1" line="594"><f a=""><c path="Array"><e path="format.swf.SWFTag"/></c></f></readTagList>
-		<readShape line="605"><f a="len:ver">
+		<readTagList public="1" line="596"><f a=""><c path="Array"><e path="format.swf.SWFTag"/></c></f></readTagList>
+		<readShape line="607"><f a="len:ver">
 	<c path="Int"/>
 	<c path="Int"/>
 	<e path="format.swf.SWFTag"/>
 </f></readShape>
-		<readMorphGradient line="638"><f a="ver">
+		<readMorphGradient line="640"><f a="ver">
 	<c path="Int"/>
 	<a>
 		<startRatio><c path="Int"/></startRatio>
@@ -5750,37 +5753,37 @@
 		<endColor><t path="format.swf.RGBA"/></endColor>
 	</a>
 </f></readMorphGradient>
-		<readMorphGradients line="652"><f a="ver">
+		<readMorphGradients line="654"><f a="ver">
 	<c path="Int"/>
 	<c path="Array"><t path="format.swf.MorphGradient"/></c>
 </f></readMorphGradients>
-		<readMorphFillStyle line="665"><f a="ver">
+		<readMorphFillStyle line="667"><f a="ver">
 	<c path="Int"/>
 	<e path="format.swf.MorphFillStyle"/>
 </f></readMorphFillStyle>
-		<readMorphFillStyles line="706"><f a="ver">
+		<readMorphFillStyles line="708"><f a="ver">
 	<c path="Int"/>
 	<c path="Array"><e path="format.swf.MorphFillStyle"/></c>
 </f></readMorphFillStyles>
-		<readMorph1LineStyle line="719"><f a=""><a>
+		<readMorph1LineStyle line="721"><f a=""><a>
 	<startWidth><c path="Int"/></startWidth>
 	<startColor><t path="format.swf.RGBA"/></startColor>
 	<endWidth><c path="Int"/></endWidth>
 	<endColor><t path="format.swf.RGBA"/></endColor>
 </a></f></readMorph1LineStyle>
-		<readMorph2LineStyle line="733"><f a=""><e path="format.swf.Morph2LineStyle"/></f></readMorph2LineStyle>
-		<readMorph1LineStyles line="780"><f a=""><c path="Array"><t path="format.swf.Morph1LineStyle"/></c></f></readMorph1LineStyles>
-		<readMorph2LineStyles line="794"><f a=""><c path="Array"><e path="format.swf.Morph2LineStyle"/></c></f></readMorph2LineStyles>
-		<readMorphShape line="808"><f a="ver">
+		<readMorph2LineStyle line="735"><f a=""><e path="format.swf.Morph2LineStyle"/></f></readMorph2LineStyle>
+		<readMorph1LineStyles line="782"><f a=""><c path="Array"><t path="format.swf.Morph1LineStyle"/></c></f></readMorph1LineStyles>
+		<readMorph2LineStyles line="796"><f a=""><c path="Array"><e path="format.swf.Morph2LineStyle"/></c></f></readMorph2LineStyles>
+		<readMorphShape line="810"><f a="ver">
 	<c path="Int"/>
 	<e path="format.swf.SWFTag"/>
 </f></readMorphShape>
-		<readBlendMode line="863"><f a=""><e path="format.swf.BlendMode"/></f></readBlendMode>
-		<readPlaceObject line="883"><f a="v3">
+		<readBlendMode line="865"><f a=""><e path="format.swf.BlendMode"/></f></readBlendMode>
+		<readPlaceObject line="885"><f a="v3">
 	<e path="Bool"/>
 	<c path="format.swf.PlaceObject"/>
 </f></readPlaceObject>
-		<readLossless line="903"><f a="len:v2">
+		<readLossless line="905"><f a="len:v2">
 	<c path="Int"/>
 	<e path="Bool"/>
 	<a>
@@ -5791,18 +5794,18 @@
 		<cid><c path="Int"/></cid>
 	</a>
 </f></readLossless>
-		<readSymbols line="920"><f a=""><c path="Array"><t path="format.swf.SymData"/></c></f></readSymbols>
-		<readSound line="930"><f a="len">
+		<readSymbols line="922"><f a=""><c path="Array"><t path="format.swf.SymData"/></c></f></readSymbols>
+		<readSound line="932"><f a="len">
 	<c path="Int"/>
 	<e path="format.swf.SWFTag"/>
 </f></readSound>
-		<readLanguage line="974"><f a=""><e path="format.swf.LangCode"/></f></readLanguage>
-		<readGlyphs line="986"><f a="len:offsets">
+		<readLanguage line="976"><f a=""><e path="format.swf.LangCode"/></f></readLanguage>
+		<readGlyphs line="988"><f a="len:offsets">
 	<c path="Int"/>
 	<c path="Array"><c path="Int"/></c>
 	<c path="Array"><t path="format.swf.ShapeWithoutStyleData"/></c>
 </f></readGlyphs>
-		<readKerningRecord line="1008"><f a="hasWideCodes">
+		<readKerningRecord line="1010"><f a="hasWideCodes">
 	<e path="Bool"/>
 	<a>
 		<charCode2><c path="Int"/></charCode2>
@@ -5810,36 +5813,36 @@
 		<adjust><c path="Int"/></adjust>
 	</a>
 </f></readKerningRecord>
-		<readFont1Data line="1016"><f a="len">
+		<readFont1Data line="1018"><f a="len">
 	<c path="Int"/>
 	<e path="format.swf.FontData"/>
 </f></readFont1Data>
-		<readFont2Data line="1031"><f a="ver">
+		<readFont2Data line="1033"><f a="ver">
 	<c path="Int"/>
 	<e path="format.swf.FontData"/>
 </f></readFont2Data>
-		<readFont line="1138"><f a="len:ver">
+		<readFont line="1140"><f a="len:ver">
 	<c path="Int"/>
 	<c path="Int"/>
 	<e path="format.swf.SWFTag"/>
 </f></readFont>
-		<readFontInfo line="1153"><f a="len:ver">
+		<readFontInfo line="1155"><f a="len:ver">
 	<c path="Int"/>
 	<c path="Int"/>
 	<e path="format.swf.SWFTag"/>
 </f></readFontInfo>
-		<readSoundInfo line="1193"><f a=""><a>
+		<readSoundInfo line="1195"><f a=""><a>
 	<syncStop><e path="Bool"/></syncStop>
 	<loopCount><d/></loopCount>
 	<hasLoops><e path="Bool"/></hasLoops>
 </a></f></readSoundInfo>
-		<readEnvelopeRecords line="1221"><f a="count">
+		<readEnvelopeRecords line="1223"><f a="count">
 	<c path="Int"/>
 	<c path="Array"><t path="format.swf.SoundEnvelope"/></c>
 </f></readEnvelopeRecords>
-		<readFileAttributes line="1230"><f a=""><t path="format.swf.FileAttributes"/></f></readFileAttributes>
-		<readTag public="1" line="1244"><f a=""><e path="format.swf.SWFTag"/></f></readTag>
-		<read public="1" line="1371"><f a=""><t path="format.swf.SWF"/></f></read>
+		<readFileAttributes line="1232"><f a=""><t path="format.swf.FileAttributes"/></f></readFileAttributes>
+		<readTag public="1" line="1246"><f a=""><e path="format.swf.SWFTag"/></f></readTag>
+		<read public="1" line="1374"><f a=""><t path="format.swf.SWF"/></f></read>
 		<new public="1" line="43"><f a="i">
 	<c path="haxe.io.Input"/>
 	<e path="Void"/>
