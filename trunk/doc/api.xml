@@ -6589,6 +6589,7 @@
 		<_yMin><c path="Float"/></_yMin>
 		<_xMax><c path="Float"/></_xMax>
 		<_yMax><c path="Float"/></_yMax>
+		<_boundsInitialized><e path="Bool"/></_boundsInitialized>
 		<_fillStyles><c path="Array"><e path="format.swf.FillStyle"/></c></_fillStyles>
 		<_lineStyles><c path="Array"><t path="format.swf.LineStyle"/></c></_lineStyles>
 		<_shapeRecords><c path="Array"><e path="format.swf.ShapeRecord"/></c></_shapeRecords>
@@ -6596,12 +6597,12 @@
 		<_lastY><c path="Float"/></_lastY>
 		<_stateFillStyle><e path="Bool"/></_stateFillStyle>
 		<_stateLineStyle><e path="Bool"/></_stateLineStyle>
-		<beginFill public="1" line="44"><f a="?color:?alpha">
+		<beginFill public="1" line="46"><f a="?color:?alpha">
 	<c path="Int"/>
 	<c path="Float"/>
 	<e path="Void"/>
 </f></beginFill>
-		<beginGradientFill public="1" line="58"><f a="?type:colors:alphas:ratios:x:y:scaleX:scaleY:?rotate0:?rotate1">
+		<beginGradientFill public="1" line="60"><f a="?type:colors:alphas:ratios:x:y:scaleX:scaleY:?rotate0:?rotate1">
 	<c path="String"/>
 	<c path="Array"><d/></c>
 	<c path="Array"><d/></c>
@@ -6614,7 +6615,7 @@
 	<c path="Float"/>
 	<e path="Void"/>
 </f></beginGradientFill>
-		<beginBitmapFill public="1" line="100"><f a="bitmapId:?x:?y:?scaleX:?scaleY:?rotate0:?rotate1:?repeat:?smooth">
+		<beginBitmapFill public="1" line="102"><f a="bitmapId:?x:?y:?scaleX:?scaleY:?rotate0:?rotate1:?repeat:?smooth">
 	<c path="Int"/>
 	<c path="Float"/>
 	<c path="Float"/>
@@ -6626,40 +6627,40 @@
 	<e path="Bool"/>
 	<e path="Void"/>
 </f></beginBitmapFill>
-		<lineStyle public="1" line="121"><f a="?width:?color:?alpha">
+		<lineStyle public="1" line="123"><f a="?width:?color:?alpha">
 	<c path="Float"/>
 	<c path="Int"/>
 	<c path="Float"/>
 	<e path="Void"/>
 </f></lineStyle>
-		<lineTo public="1" line="138"><f a="x:y">
+		<lineTo public="1" line="140"><f a="x:y">
 	<c path="Float"/>
 	<c path="Float"/>
 	<e path="Void"/>
 </f></lineTo>
-		<moveTo public="1" line="156"><f a="x:y">
+		<moveTo public="1" line="160"><f a="x:y">
 	<c path="Float"/>
 	<c path="Float"/>
 	<e path="Void"/>
 </f></moveTo>
-		<curveTo public="1" line="180"><f a="cx:cy:ax:ay">
+		<curveTo public="1" line="186"><f a="cx:cy:ax:ay">
 	<c path="Float"/>
 	<c path="Float"/>
 	<c path="Float"/>
 	<c path="Float"/>
 	<e path="Void"/>
 </f></curveTo>
-		<endFill public="1" line="200"><f a=""><e path="Void"/></f></endFill>
-		<endLine public="1" line="216"><f a=""><e path="Void"/></f></endLine>
-		<clear public="1" line="232"><f a=""><e path="Void"/></f></clear>
-		<drawRect public="1" line="236"><f a="x:y:width:height">
+		<endFill public="1" line="207"><f a=""><e path="Void"/></f></endFill>
+		<endLine public="1" line="223"><f a=""><e path="Void"/></f></endLine>
+		<clear public="1" line="239"><f a=""><e path="Void"/></f></clear>
+		<drawRect public="1" line="243"><f a="x:y:width:height">
 	<c path="Float"/>
 	<c path="Float"/>
 	<c path="Float"/>
 	<c path="Float"/>
 	<e path="Void"/>
 </f></drawRect>
-		<drawRoundRect public="1" line="244"><f a="x:y:w:h:r">
+		<drawRoundRect public="1" line="251"><f a="x:y:w:h:r">
 	<c path="Float"/>
 	<c path="Float"/>
 	<c path="Float"/>
@@ -6667,7 +6668,7 @@
 	<c path="Float"/>
 	<e path="Void"/>
 </f></drawRoundRect>
-		<drawRoundRectComplex public="1" line="248"><f a="x:y:w:h:rtl:rtr:rbl:rbr">
+		<drawRoundRectComplex public="1" line="255"><f a="x:y:w:h:rtl:rtr:rbl:rbr">
 	<c path="Float"/>
 	<c path="Float"/>
 	<c path="Float"/>
@@ -6678,25 +6679,30 @@
 	<c path="Float"/>
 	<e path="Void"/>
 </f></drawRoundRectComplex>
-		<drawCircle public="1" line="260"><f a="x:y:r:?sections">
+		<drawCircle public="1" line="267"><f a="x:y:r:?sections">
 	<c path="Float"/>
 	<c path="Float"/>
 	<c path="Float"/>
 	<c path="Int"/>
 	<e path="Void"/>
 </f></drawCircle>
-		<drawEllipse public="1" line="285"><f a="x:y:w:h">
+		<drawEllipse public="1" line="292"><f a="x:y:w:h">
 	<c path="Float"/>
 	<c path="Float"/>
 	<c path="Float"/>
 	<c path="Float"/>
 	<e path="Void"/>
 </f></drawEllipse>
-		<getTag public="1" line="293"><f a="id">
+		<getTag public="1" line="300"><f a="id">
 	<c path="Int"/>
 	<e path="format.swf.SWFTag"/>
 </f></getTag>
-		<hexToRgba line="302"><f a="color:alpha">
+		<initBounds line="308"><f a="x:y">
+	<c path="Float"/>
+	<c path="Float"/>
+	<e path="Void"/>
+</f></initBounds>
+		<hexToRgba line="316"><f a="color:alpha">
 	<c path="Int"/>
 	<c path="Float"/>
 	<a>
@@ -6706,11 +6712,11 @@
 		<a><c path="Int"/></a>
 	</a>
 </f></hexToRgba>
-		<toFloat5 line="309"><f a="float">
+		<toFloat5 line="323"><f a="float">
 	<c path="Float"/>
 	<c path="Float"/>
 </f></toFloat5>
-		<new public="1" line="26"><f a=""><e path="Void"/></f></new>
+		<new public="1" line="27"><f a=""><e path="Void"/></f></new>
 		<haxe_doc>
  * ...
  * @author jan j.

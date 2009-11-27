@@ -3,10 +3,11 @@
 class be_haxer_hxgraphix_HxGraphix {
 	public function __construct() {
 		if( !php_Boot::$skip_constructor ) {
-		$this->_xMin = 0.0;
-		$this->_yMin = 0.0;
-		$this->_xMax = 0.0;
-		$this->_yMax = 0.0;
+		$this->_xMin = Math::$POSITIVE_INFINITY;
+		$this->_yMin = Math::$POSITIVE_INFINITY;
+		$this->_xMax = Math::$POSITIVE_INFINITY;
+		$this->_yMax = Math::$POSITIVE_INFINITY;
+		$this->_boundsInitialized = false;
 		$this->_fillStyles = new _hx_array(array());
 		$this->_lineStyles = new _hx_array(array());
 		$this->_shapeRecords = new _hx_array(array());
@@ -19,6 +20,7 @@ class be_haxer_hxgraphix_HxGraphix {
 	public $_yMin;
 	public $_xMax;
 	public $_yMax;
+	public $_boundsInitialized;
 	public $_fillStyles;
 	public $_lineStyles;
 	public $_shapeRecords;
@@ -130,10 +132,16 @@ class be_haxer_hxgraphix_HxGraphix {
 		$this->_shapeRecords->push(format_swf_ShapeRecord::SHRChange($_shapeChangeRec));
 	}
 	public function lineTo($x, $y) {
+		if(!$this->_boundsInitialized) {
+			$this->initBounds(0, 0);
+		}
 		$x1 = $this->toFloat5($x);
 		$y1 = $this->toFloat5($y);
 		$dx = $x1 - $this->_lastX;
 		$dy = $y1 - $this->_lastY;
+		if(_hx_equal($dx, 0) && _hx_equal($dy, 0)) {
+			return;
+		}
 		$this->_lastX = $x1;
 		$this->_lastY = $y1;
 		if($x1 < $this->_xMin) {
@@ -151,8 +159,14 @@ class be_haxer_hxgraphix_HxGraphix {
 		$this->_shapeRecords->push(format_swf_ShapeRecord::SHREdge(Math::round($dx * 20), Math::round($dy * 20)));
 	}
 	public function moveTo($x, $y) {
+		if(!$this->_boundsInitialized) {
+			$this->initBounds($x, $y);
+		}
 		$x1 = $this->toFloat5($x);
 		$y1 = $this->toFloat5($y);
+		if($x1 === $this->_lastX && $y1 === $this->_lastY) {
+			return;
+		}
 		$this->_lastX = $x1;
 		$this->_lastY = $y1;
 		if($x1 < $this->_xMin) {
@@ -171,6 +185,9 @@ class be_haxer_hxgraphix_HxGraphix {
 		$this->_shapeRecords->push(format_swf_ShapeRecord::SHRChange($_shapeChangeRec));
 	}
 	public function curveTo($cx, $cy, $ax, $ay) {
+		if(!$this->_boundsInitialized) {
+			$this->initBounds(0, 0);
+		}
 		$cx1 = $this->toFloat5($cx);
 		$cy1 = $this->toFloat5($cy);
 		$ax1 = $this->toFloat5($ax);
@@ -271,6 +288,21 @@ class be_haxer_hxgraphix_HxGraphix {
 		$_rect = _hx_anonymous(array("left" => Math::round($this->_xMin * 20), "right" => Math::round($this->_xMax * 20), "top" => Math::round($this->_yMin * 20), "bottom" => Math::round($this->_yMax * 20)));
 		$_shapeWithStyleData = _hx_anonymous(array("fillStyles" => $this->_fillStyles, "lineStyles" => $this->_lineStyles, "shapeRecords" => $this->_shapeRecords));
 		return format_swf_SWFTag::TShape($id, format_swf_ShapeData::SHDShape3($_rect, $_shapeWithStyleData));
+	}
+	public function initBounds($x, $y) {
+		if(Math::$POSITIVE_INFINITY === $this->_xMin) {
+			$this->_xMin = $x;
+		}
+		if(Math::$POSITIVE_INFINITY === $this->_xMax) {
+			$this->_xMax = $x;
+		}
+		if(Math::$POSITIVE_INFINITY === $this->_yMin) {
+			$this->_yMin = $y;
+		}
+		if(Math::$POSITIVE_INFINITY === $this->_yMax) {
+			$this->_yMax = $y;
+		}
+		$this->_boundsInitialized = true;
 	}
 	public function hexToRgba($color, $alpha) {
 		if($alpha < 0) {

@@ -40,10 +40,11 @@ namespace hxgraphix{
 Void HxGraphix_obj::__construct()
 {
 {
-	this->_xMin = 0.0;
-	this->_yMin = 0.0;
-	this->_xMax = 0.0;
-	this->_yMax = 0.0;
+	this->_xMin = Math_obj::POSITIVE_INFINITY;
+	this->_yMin = Math_obj::POSITIVE_INFINITY;
+	this->_xMax = Math_obj::POSITIVE_INFINITY;
+	this->_yMax = Math_obj::POSITIVE_INFINITY;
+	this->_boundsInitialized = false;
 	this->_fillStyles = Array_obj<format::swf::FillStyle >::__new();
 	this->_lineStyles = Array_obj<Dynamic >::__new();
 	this->_shapeRecords = Array_obj<format::swf::ShapeRecord >::__new();
@@ -169,10 +170,14 @@ DEFINE_DYNAMIC_FUNC3(HxGraphix_obj,lineStyle,(void))
 
 Void HxGraphix_obj::lineTo( double x,double y){
 {
+		if (!this->_boundsInitialized)
+			this->initBounds(0,0);
 		double x1 = this->toFloat5(x);
 		double y1 = this->toFloat5(y);
 		double dx = x1 - this->_lastX;
 		double dy = y1 - this->_lastY;
+		if (bool(dx == 0) && bool(dy == 0))
+			return null();
 		this->_lastX = x1;
 		this->_lastY = y1;
 		if (x1 < this->_xMin)
@@ -193,8 +198,12 @@ DEFINE_DYNAMIC_FUNC2(HxGraphix_obj,lineTo,(void))
 
 Void HxGraphix_obj::moveTo( double x,double y){
 {
+		if (!this->_boundsInitialized)
+			this->initBounds(x,y);
 		double x1 = this->toFloat5(x);
 		double y1 = this->toFloat5(y);
+		if (bool(x1 == this->_lastX) && bool(y1 == this->_lastY))
+			return null();
 		this->_lastX = x1;
 		this->_lastY = y1;
 		if (x1 < this->_xMin)
@@ -216,6 +225,8 @@ DEFINE_DYNAMIC_FUNC2(HxGraphix_obj,moveTo,(void))
 
 Void HxGraphix_obj::curveTo( double cx,double cy,double ax,double ay){
 {
+		if (!this->_boundsInitialized)
+			this->initBounds(0,0);
 		double cx1 = this->toFloat5(cx);
 		double cy1 = this->toFloat5(cy);
 		double ax1 = this->toFloat5(ax);
@@ -374,6 +385,24 @@ format::swf::SWFTag HxGraphix_obj::getTag( int id){
 
 DEFINE_DYNAMIC_FUNC1(HxGraphix_obj,getTag,return )
 
+Void HxGraphix_obj::initBounds( double x,double y){
+{
+		if (Math_obj::POSITIVE_INFINITY == this->_xMin)
+			this->_xMin = x;
+		if (Math_obj::POSITIVE_INFINITY == this->_xMax)
+			this->_xMax = x;
+		if (Math_obj::POSITIVE_INFINITY == this->_yMin)
+			this->_yMin = y;
+		if (Math_obj::POSITIVE_INFINITY == this->_yMax)
+			this->_yMax = y;
+		this->_boundsInitialized = true;
+	}
+return null();
+}
+
+
+DEFINE_DYNAMIC_FUNC2(HxGraphix_obj,initBounds,(void))
+
 Dynamic HxGraphix_obj::hexToRgba( int color,double alpha){
 	if (alpha < 0)
 		alpha = 0.0;
@@ -405,6 +434,7 @@ HxGraphix_obj::HxGraphix_obj()
 	InitMember(_yMin);
 	InitMember(_xMax);
 	InitMember(_yMax);
+	InitMember(_boundsInitialized);
 	InitMember(_fillStyles);
 	InitMember(_lineStyles);
 	InitMember(_shapeRecords);
@@ -420,6 +450,7 @@ void HxGraphix_obj::__Mark()
 	MarkMember(_yMin);
 	MarkMember(_xMax);
 	MarkMember(_yMax);
+	MarkMember(_boundsInitialized);
 	MarkMember(_fillStyles);
 	MarkMember(_lineStyles);
 	MarkMember(_shapeRecords);
@@ -462,6 +493,7 @@ Dynamic HxGraphix_obj::__Field(const String &inName)
 		break;
 	case 10:
 		if (!memcmp(inName.__s,L"drawCircle",sizeof(wchar_t)*10) ) { return drawCircle_dyn(); }
+		if (!memcmp(inName.__s,L"initBounds",sizeof(wchar_t)*10) ) { return initBounds_dyn(); }
 		break;
 	case 11:
 		if (!memcmp(inName.__s,L"_fillStyles",sizeof(wchar_t)*11) ) { return _fillStyles; }
@@ -480,6 +512,9 @@ Dynamic HxGraphix_obj::__Field(const String &inName)
 	case 17:
 		if (!memcmp(inName.__s,L"beginGradientFill",sizeof(wchar_t)*17) ) { return beginGradientFill_dyn(); }
 		break;
+	case 18:
+		if (!memcmp(inName.__s,L"_boundsInitialized",sizeof(wchar_t)*18) ) { return _boundsInitialized; }
+		break;
 	case 20:
 		if (!memcmp(inName.__s,L"drawRoundRectComplex",sizeof(wchar_t)*20) ) { return drawRoundRectComplex_dyn(); }
 	}
@@ -490,6 +525,7 @@ static int __id__xMin = __hxcpp_field_to_id("_xMin");
 static int __id__yMin = __hxcpp_field_to_id("_yMin");
 static int __id__xMax = __hxcpp_field_to_id("_xMax");
 static int __id__yMax = __hxcpp_field_to_id("_yMax");
+static int __id__boundsInitialized = __hxcpp_field_to_id("_boundsInitialized");
 static int __id__fillStyles = __hxcpp_field_to_id("_fillStyles");
 static int __id__lineStyles = __hxcpp_field_to_id("_lineStyles");
 static int __id__shapeRecords = __hxcpp_field_to_id("_shapeRecords");
@@ -513,6 +549,7 @@ static int __id_drawRoundRectComplex = __hxcpp_field_to_id("drawRoundRectComplex
 static int __id_drawCircle = __hxcpp_field_to_id("drawCircle");
 static int __id_drawEllipse = __hxcpp_field_to_id("drawEllipse");
 static int __id_getTag = __hxcpp_field_to_id("getTag");
+static int __id_initBounds = __hxcpp_field_to_id("initBounds");
 static int __id_hexToRgba = __hxcpp_field_to_id("hexToRgba");
 static int __id_toFloat5 = __hxcpp_field_to_id("toFloat5");
 
@@ -523,6 +560,7 @@ Dynamic HxGraphix_obj::__IField(int inFieldID)
 	if (inFieldID==__id__yMin) return _yMin;
 	if (inFieldID==__id__xMax) return _xMax;
 	if (inFieldID==__id__yMax) return _yMax;
+	if (inFieldID==__id__boundsInitialized) return _boundsInitialized;
 	if (inFieldID==__id__fillStyles) return _fillStyles;
 	if (inFieldID==__id__lineStyles) return _lineStyles;
 	if (inFieldID==__id__shapeRecords) return _shapeRecords;
@@ -546,6 +584,7 @@ Dynamic HxGraphix_obj::__IField(int inFieldID)
 	if (inFieldID==__id_drawCircle) return drawCircle_dyn();
 	if (inFieldID==__id_drawEllipse) return drawEllipse_dyn();
 	if (inFieldID==__id_getTag) return getTag_dyn();
+	if (inFieldID==__id_initBounds) return initBounds_dyn();
 	if (inFieldID==__id_hexToRgba) return hexToRgba_dyn();
 	if (inFieldID==__id_toFloat5) return toFloat5_dyn();
 	return super::__IField(inFieldID);
@@ -574,6 +613,9 @@ Dynamic HxGraphix_obj::__SetField(const String &inName,const Dynamic &inValue)
 	case 15:
 		if (!memcmp(inName.__s,L"_stateFillStyle",sizeof(wchar_t)*15) ) { _stateFillStyle=inValue.Cast<bool >();return inValue; }
 		if (!memcmp(inName.__s,L"_stateLineStyle",sizeof(wchar_t)*15) ) { _stateLineStyle=inValue.Cast<bool >();return inValue; }
+		break;
+	case 18:
+		if (!memcmp(inName.__s,L"_boundsInitialized",sizeof(wchar_t)*18) ) { _boundsInitialized=inValue.Cast<bool >();return inValue; }
 	}
 	return super::__SetField(inName,inValue);
 }
@@ -584,6 +626,7 @@ void HxGraphix_obj::__GetFields(Array<String> &outFields)
 	outFields->push(STRING(L"_yMin",5));
 	outFields->push(STRING(L"_xMax",5));
 	outFields->push(STRING(L"_yMax",5));
+	outFields->push(STRING(L"_boundsInitialized",18));
 	outFields->push(STRING(L"_fillStyles",11));
 	outFields->push(STRING(L"_lineStyles",11));
 	outFields->push(STRING(L"_shapeRecords",13));
@@ -602,6 +645,7 @@ static String sMemberFields[] = {
 	STRING(L"_yMin",5),
 	STRING(L"_xMax",5),
 	STRING(L"_yMax",5),
+	STRING(L"_boundsInitialized",18),
 	STRING(L"_fillStyles",11),
 	STRING(L"_lineStyles",11),
 	STRING(L"_shapeRecords",13),
@@ -625,6 +669,7 @@ static String sMemberFields[] = {
 	STRING(L"drawCircle",10),
 	STRING(L"drawEllipse",11),
 	STRING(L"getTag",6),
+	STRING(L"initBounds",10),
 	STRING(L"hexToRgba",9),
 	STRING(L"toFloat5",8),
 	String(null()) };
