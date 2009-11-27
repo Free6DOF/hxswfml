@@ -3048,9 +3048,9 @@ Void Writer_obj::writeTag( format::swf::SWFTag t){
 				int color = _switch_35->__Param(0);
 {
 					this->writeTID(9,3);
-					this->o->writeByte(int((int(color) & int(16711680))) >> int(16));
-					this->o->writeByte(int((int(color) & int(65280))) >> int(8));
-					this->o->writeByte(int(color) & int(255));
+					this->o->setEndian(true);
+					this->o->writeUInt24(color);
+					this->o->setEndian(false);
 				}
 			}
 			break;

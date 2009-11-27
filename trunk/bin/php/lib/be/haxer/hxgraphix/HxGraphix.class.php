@@ -61,7 +61,7 @@ class be_haxer_hxgraphix_HxGraphix {
 				unset($pos,$i,$color,$alpha);
 			}
 		}
-		$matrix = _hx_anonymous(array("scale" => _hx_anonymous(array("x" => $scaleX, "y" => $scaleY)), "rotate" => _hx_anonymous(array("rs0" => $rotate0, "rs1" => $rotate1)), "translate" => _hx_anonymous(array("x" => intval($this->toFloat5($x)) * 20, "y" => intval($this->toFloat5($y)) * 20))));
+		$matrix = _hx_anonymous(array("scale" => _hx_anonymous(array("x" => $scaleX, "y" => $scaleY)), "rotate" => _hx_anonymous(array("rs0" => $rotate0, "rs1" => $rotate1)), "translate" => _hx_anonymous(array("x" => Math::round($this->toFloat5($x) * 20), "y" => Math::round($this->toFloat5($y) * 20)))));
 		$gradient = _hx_anonymous(array("spread" => format_swf_SpreadMode::$SMPad, "interpolate" => format_swf_InterpolationMode::$IMNormalRGB, "data" => $data));
 		switch($type) {
 		case "linear":{
@@ -103,7 +103,7 @@ class be_haxer_hxgraphix_HxGraphix {
 			$x = 0;
 		}
 		$this->_stateFillStyle = true;
-		$matrix = _hx_anonymous(array("scale" => _hx_anonymous(array("x" => $this->toFloat5($scaleX) * 20, "y" => $this->toFloat5($scaleY) * 20)), "rotate" => _hx_anonymous(array("rs0" => $rotate0, "rs1" => $rotate1)), "translate" => _hx_anonymous(array("x" => intval($this->toFloat5($x)) * 20, "y" => intval($this->toFloat5($y)) * 20))));
+		$matrix = _hx_anonymous(array("scale" => _hx_anonymous(array("x" => $this->toFloat5($scaleX) * 20, "y" => $this->toFloat5($scaleY) * 20)), "rotate" => _hx_anonymous(array("rs0" => $rotate0, "rs1" => $rotate1)), "translate" => _hx_anonymous(array("x" => Math::round($this->toFloat5($x) * 20), "y" => Math::round($this->toFloat5($y) * 20)))));
 		$this->_fillStyles->push(format_swf_FillStyle::FSBitmap($bitmapId, $matrix, $repeat, $smooth));
 		$_shapeChangeRec = _hx_anonymous(array("moveTo" => null, "fillStyle0" => _hx_anonymous(array("idx" => $this->_fillStyles->length)), "fillStyle1" => null, "lineStyle" => ($this->_stateLineStyle ? _hx_anonymous(array("idx" => $this->_lineStyles->length)) : null), "newStyles" => null));
 		$this->_shapeRecords->push(format_swf_ShapeRecord::SHRChange($_shapeChangeRec));
@@ -125,7 +125,7 @@ class be_haxer_hxgraphix_HxGraphix {
 		if($width <= 0.0) {
 			$width = 0.05;
 		}
-		$this->_lineStyles->push(_hx_anonymous(array("width" => intval($this->toFloat5($width) * 20), "data" => format_swf_LineStyleData::LSRGBA($this->hexToRgba($color, $alpha)))));
+		$this->_lineStyles->push(_hx_anonymous(array("width" => Math::round($this->toFloat5($width) * 20), "data" => format_swf_LineStyleData::LSRGBA($this->hexToRgba($color, $alpha)))));
 		$_shapeChangeRec = _hx_anonymous(array("moveTo" => null, "fillStyle0" => ($this->_stateFillStyle ? _hx_anonymous(array("idx" => $this->_fillStyles->length)) : null), "fillStyle1" => null, "lineStyle" => _hx_anonymous(array("idx" => $this->_lineStyles->length)), "newStyles" => null));
 		$this->_shapeRecords->push(format_swf_ShapeRecord::SHRChange($_shapeChangeRec));
 	}
@@ -148,7 +148,7 @@ class be_haxer_hxgraphix_HxGraphix {
 		if($y1 > $this->_yMax) {
 			$this->_yMax = $y1;
 		}
-		$this->_shapeRecords->push(format_swf_ShapeRecord::SHREdge(intval($dx * 20), intval($dy * 20)));
+		$this->_shapeRecords->push(format_swf_ShapeRecord::SHREdge(Math::round($dx * 20), Math::round($dy * 20)));
 	}
 	public function moveTo($x, $y) {
 		$x1 = $this->toFloat5($x);
@@ -167,7 +167,7 @@ class be_haxer_hxgraphix_HxGraphix {
 		if($y1 > $this->_yMax) {
 			$this->_yMax = $y1;
 		}
-		$_shapeChangeRec = _hx_anonymous(array("moveTo" => _hx_anonymous(array("dx" => intval($x1 * 20), "dy" => intval($y1 * 20))), "fillStyle0" => ($this->_stateFillStyle ? _hx_anonymous(array("idx" => $this->_fillStyles->length)) : null), "fillStyle1" => null, "lineStyle" => ($this->_stateLineStyle ? _hx_anonymous(array("idx" => $this->_lineStyles->length)) : null), "newStyles" => null));
+		$_shapeChangeRec = _hx_anonymous(array("moveTo" => _hx_anonymous(array("dx" => Math::round($x1 * 20), "dy" => Math::round($y1 * 20))), "fillStyle0" => ($this->_stateFillStyle ? _hx_anonymous(array("idx" => $this->_fillStyles->length)) : null), "fillStyle1" => null, "lineStyle" => ($this->_stateLineStyle ? _hx_anonymous(array("idx" => $this->_lineStyles->length)) : null), "newStyles" => null));
 		$this->_shapeRecords->push(format_swf_ShapeRecord::SHRChange($_shapeChangeRec));
 	}
 	public function curveTo($cx, $cy, $ax, $ay) {
@@ -193,7 +193,7 @@ class be_haxer_hxgraphix_HxGraphix {
 		if($ay1 > $this->_yMax) {
 			$this->_yMax = $ay1;
 		}
-		$this->_shapeRecords->push(format_swf_ShapeRecord::SHRCurvedEdge(intval($dcx * 20), intval($dcy * 20), intval($dax * 20), intval($day * 20)));
+		$this->_shapeRecords->push(format_swf_ShapeRecord::SHRCurvedEdge(Math::round($dcx * 20), Math::round($dcy * 20), Math::round($dax * 20), Math::round($day * 20)));
 	}
 	public function endFill() {
 		$this->_stateFillStyle = false;
@@ -268,7 +268,7 @@ class be_haxer_hxgraphix_HxGraphix {
 	}
 	public function getTag($id) {
 		$this->_shapeRecords->push(format_swf_ShapeRecord::$SHREnd);
-		$_rect = _hx_anonymous(array("left" => intval($this->_xMin * 20), "right" => intval($this->_xMax * 20), "top" => intval($this->_yMin * 20), "bottom" => intval($this->_yMax * 20)));
+		$_rect = _hx_anonymous(array("left" => Math::round($this->_xMin * 20), "right" => Math::round($this->_xMax * 20), "top" => Math::round($this->_yMin * 20), "bottom" => Math::round($this->_yMax * 20)));
 		$_shapeWithStyleData = _hx_anonymous(array("fillStyles" => $this->_fillStyles, "lineStyles" => $this->_lineStyles, "shapeRecords" => $this->_shapeRecords));
 		return format_swf_SWFTag::TShape($id, format_swf_ShapeData::SHDShape3($_rect, $_shapeWithStyleData));
 	}
@@ -282,13 +282,13 @@ class be_haxer_hxgraphix_HxGraphix {
 		if($color > 16777215) {
 			$color = 16777215;
 		}
-		return _hx_anonymous(array("r" => ($color & 16711680) >> 16, "g" => ($color & 65280) >> 8, "b" => ($color & 255), "a" => intval($alpha * 255)));
+		return _hx_anonymous(array("r" => ($color & 16711680) >> 16, "g" => ($color & 65280) >> 8, "b" => ($color & 255), "a" => Math::round($alpha * 255)));
 	}
 	public function toFloat5($float) {
-		$temp1 = intval($float * 100);
-		$diff = $temp1 % 5;
-		$temp2 = ($diff < 3 ? $temp1 - $diff : $temp1 + (5 - $diff));
-		$temp3 = $temp2 / 100;
+		$temp1 = Math::round($float * 1000);
+		$diff = $temp1 % 50;
+		$temp2 = ($diff < 25 ? $temp1 - $diff : $temp1 + (50 - $diff));
+		$temp3 = $temp2 / 1000;
 		return $temp3;
 	}
 	public function __call($m, $a) {

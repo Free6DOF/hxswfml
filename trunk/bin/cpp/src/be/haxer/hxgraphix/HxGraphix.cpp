@@ -102,7 +102,7 @@ double rotate1 = __o_rotate1.Default(0);
 				data->push(format::swf::GradRecord_obj::GRRGBA(pos,this->hexToRgba(color,alpha)));
 			}
 		}
-		Dynamic matrix = hxAnon_obj::Create()->Add( STRING(L"scale",5) , hxAnon_obj::Create()->Add( STRING(L"x",1) , scaleX)->Add( STRING(L"y",1) , scaleY))->Add( STRING(L"rotate",6) , hxAnon_obj::Create()->Add( STRING(L"rs0",3) , rotate0)->Add( STRING(L"rs1",3) , rotate1))->Add( STRING(L"translate",9) , hxAnon_obj::Create()->Add( STRING(L"x",1) , Std_obj::toInt(this->toFloat5(x)) * 20)->Add( STRING(L"y",1) , Std_obj::toInt(this->toFloat5(y)) * 20));
+		Dynamic matrix = hxAnon_obj::Create()->Add( STRING(L"scale",5) , hxAnon_obj::Create()->Add( STRING(L"x",1) , scaleX)->Add( STRING(L"y",1) , scaleY))->Add( STRING(L"rotate",6) , hxAnon_obj::Create()->Add( STRING(L"rs0",3) , rotate0)->Add( STRING(L"rs1",3) , rotate1))->Add( STRING(L"translate",9) , hxAnon_obj::Create()->Add( STRING(L"x",1) , Math_obj::round(this->toFloat5(x) * 20))->Add( STRING(L"y",1) , Math_obj::round(this->toFloat5(y) * 20)));
 		Dynamic gradient = hxAnon_obj::Create()->Add( STRING(L"spread",6) , format::swf::SpreadMode_obj::SMPad)->Add( STRING(L"interpolate",11) , format::swf::InterpolationMode_obj::IMNormalRGB)->Add( STRING(L"data",4) , data);
 		String _switch_1 = (type);
 		if (  ( _switch_1==STRING(L"linear",6))){
@@ -136,7 +136,7 @@ bool repeat = __o_repeat.Default(false);
 bool smooth = __o_smooth.Default(false);
 {
 		this->_stateFillStyle = true;
-		Dynamic matrix = hxAnon_obj::Create()->Add( STRING(L"scale",5) , hxAnon_obj::Create()->Add( STRING(L"x",1) , this->toFloat5(scaleX) * 20)->Add( STRING(L"y",1) , this->toFloat5(scaleY) * 20))->Add( STRING(L"rotate",6) , hxAnon_obj::Create()->Add( STRING(L"rs0",3) , rotate0)->Add( STRING(L"rs1",3) , rotate1))->Add( STRING(L"translate",9) , hxAnon_obj::Create()->Add( STRING(L"x",1) , Std_obj::toInt(this->toFloat5(x)) * 20)->Add( STRING(L"y",1) , Std_obj::toInt(this->toFloat5(y)) * 20));
+		Dynamic matrix = hxAnon_obj::Create()->Add( STRING(L"scale",5) , hxAnon_obj::Create()->Add( STRING(L"x",1) , this->toFloat5(scaleX) * 20)->Add( STRING(L"y",1) , this->toFloat5(scaleY) * 20))->Add( STRING(L"rotate",6) , hxAnon_obj::Create()->Add( STRING(L"rs0",3) , rotate0)->Add( STRING(L"rs1",3) , rotate1))->Add( STRING(L"translate",9) , hxAnon_obj::Create()->Add( STRING(L"x",1) , Math_obj::round(this->toFloat5(x) * 20))->Add( STRING(L"y",1) , Math_obj::round(this->toFloat5(y) * 20)));
 		this->_fillStyles->push(format::swf::FillStyle_obj::FSBitmap(bitmapId,matrix,repeat,smooth));
 		Dynamic _shapeChangeRec = hxAnon_obj::Create()->Add( STRING(L"moveTo",6) , null())->Add( STRING(L"fillStyle0",10) , hxAnon_obj::Create()->Add( STRING(L"idx",3) , this->_fillStyles->length))->Add( STRING(L"fillStyle1",10) , null())->Add( STRING(L"lineStyle",9) , this->_stateLineStyle ? Dynamic( hxAnon_obj::Create()->Add( STRING(L"idx",3) , this->_lineStyles->length) ) : Dynamic( null() ))->Add( STRING(L"newStyles",9) , null());
 		this->_shapeRecords->push(format::swf::ShapeRecord_obj::SHRChange(_shapeChangeRec));
@@ -157,7 +157,7 @@ double alpha = __o_alpha.Default(1.0);
 			width = 255.0;
 		if (width <= 0.0)
 			width = 0.05;
-		this->_lineStyles->push(hxAnon_obj::Create()->Add( STRING(L"width",5) , Std_obj::toInt(this->toFloat5(width) * 20))->Add( STRING(L"data",4) , format::swf::LineStyleData_obj::LSRGBA(this->hexToRgba(color,alpha))));
+		this->_lineStyles->push(hxAnon_obj::Create()->Add( STRING(L"width",5) , Math_obj::round(this->toFloat5(width) * 20))->Add( STRING(L"data",4) , format::swf::LineStyleData_obj::LSRGBA(this->hexToRgba(color,alpha))));
 		Dynamic _shapeChangeRec = hxAnon_obj::Create()->Add( STRING(L"moveTo",6) , null())->Add( STRING(L"fillStyle0",10) , this->_stateFillStyle ? Dynamic( hxAnon_obj::Create()->Add( STRING(L"idx",3) , this->_fillStyles->length) ) : Dynamic( null() ))->Add( STRING(L"fillStyle1",10) , null())->Add( STRING(L"lineStyle",9) , hxAnon_obj::Create()->Add( STRING(L"idx",3) , this->_lineStyles->length))->Add( STRING(L"newStyles",9) , null());
 		this->_shapeRecords->push(format::swf::ShapeRecord_obj::SHRChange(_shapeChangeRec));
 	}
@@ -183,7 +183,7 @@ Void HxGraphix_obj::lineTo( double x,double y){
 			this->_yMin = y1;
 		if (y1 > this->_yMax)
 			this->_yMax = y1;
-		this->_shapeRecords->push(format::swf::ShapeRecord_obj::SHREdge(Std_obj::toInt(dx * 20),Std_obj::toInt(dy * 20)));
+		this->_shapeRecords->push(format::swf::ShapeRecord_obj::SHREdge(Math_obj::round(dx * 20),Math_obj::round(dy * 20)));
 	}
 return null();
 }
@@ -205,7 +205,7 @@ Void HxGraphix_obj::moveTo( double x,double y){
 			this->_yMin = y1;
 		if (y1 > this->_yMax)
 			this->_yMax = y1;
-		Dynamic _shapeChangeRec = hxAnon_obj::Create()->Add( STRING(L"moveTo",6) , hxAnon_obj::Create()->Add( STRING(L"dx",2) , Std_obj::toInt(x1 * 20))->Add( STRING(L"dy",2) , Std_obj::toInt(y1 * 20)))->Add( STRING(L"fillStyle0",10) , this->_stateFillStyle ? Dynamic( hxAnon_obj::Create()->Add( STRING(L"idx",3) , this->_fillStyles->length) ) : Dynamic( null() ))->Add( STRING(L"fillStyle1",10) , null())->Add( STRING(L"lineStyle",9) , this->_stateLineStyle ? Dynamic( hxAnon_obj::Create()->Add( STRING(L"idx",3) , this->_lineStyles->length) ) : Dynamic( null() ))->Add( STRING(L"newStyles",9) , null());
+		Dynamic _shapeChangeRec = hxAnon_obj::Create()->Add( STRING(L"moveTo",6) , hxAnon_obj::Create()->Add( STRING(L"dx",2) , Math_obj::round(x1 * 20))->Add( STRING(L"dy",2) , Math_obj::round(y1 * 20)))->Add( STRING(L"fillStyle0",10) , this->_stateFillStyle ? Dynamic( hxAnon_obj::Create()->Add( STRING(L"idx",3) , this->_fillStyles->length) ) : Dynamic( null() ))->Add( STRING(L"fillStyle1",10) , null())->Add( STRING(L"lineStyle",9) , this->_stateLineStyle ? Dynamic( hxAnon_obj::Create()->Add( STRING(L"idx",3) , this->_lineStyles->length) ) : Dynamic( null() ))->Add( STRING(L"newStyles",9) , null());
 		this->_shapeRecords->push(format::swf::ShapeRecord_obj::SHRChange(_shapeChangeRec));
 	}
 return null();
@@ -234,7 +234,7 @@ Void HxGraphix_obj::curveTo( double cx,double cy,double ax,double ay){
 			this->_yMin = ay1;
 		if (ay1 > this->_yMax)
 			this->_yMax = ay1;
-		this->_shapeRecords->push(format::swf::ShapeRecord_obj::SHRCurvedEdge(Std_obj::toInt(dcx * 20),Std_obj::toInt(dcy * 20),Std_obj::toInt(dax * 20),Std_obj::toInt(day * 20)));
+		this->_shapeRecords->push(format::swf::ShapeRecord_obj::SHRCurvedEdge(Math_obj::round(dcx * 20),Math_obj::round(dcy * 20),Math_obj::round(dax * 20),Math_obj::round(day * 20)));
 	}
 return null();
 }
@@ -366,7 +366,7 @@ DEFINE_DYNAMIC_FUNC4(HxGraphix_obj,drawEllipse,(void))
 
 format::swf::SWFTag HxGraphix_obj::getTag( int id){
 	this->_shapeRecords->push(format::swf::ShapeRecord_obj::SHREnd);
-	Dynamic _rect = hxAnon_obj::Create()->Add( STRING(L"left",4) , Std_obj::toInt(this->_xMin * 20))->Add( STRING(L"right",5) , Std_obj::toInt(this->_xMax * 20))->Add( STRING(L"top",3) , Std_obj::toInt(this->_yMin * 20))->Add( STRING(L"bottom",6) , Std_obj::toInt(this->_yMax * 20));
+	Dynamic _rect = hxAnon_obj::Create()->Add( STRING(L"left",4) , Math_obj::round(this->_xMin * 20))->Add( STRING(L"right",5) , Math_obj::round(this->_xMax * 20))->Add( STRING(L"top",3) , Math_obj::round(this->_yMin * 20))->Add( STRING(L"bottom",6) , Math_obj::round(this->_yMax * 20));
 	Dynamic _shapeWithStyleData = hxAnon_obj::Create()->Add( STRING(L"fillStyles",10) , this->_fillStyles)->Add( STRING(L"lineStyles",10) , this->_lineStyles)->Add( STRING(L"shapeRecords",12) , this->_shapeRecords);
 	return format::swf::SWFTag_obj::TShape(id,format::swf::ShapeData_obj::SHDShape3(_rect,_shapeWithStyleData));
 }
@@ -381,17 +381,17 @@ Dynamic HxGraphix_obj::hexToRgba( int color,double alpha){
 		alpha = 1.0;
 	if (color > 16777215)
 		color = 16777215;
-	return hxAnon_obj::Create()->Add( STRING(L"r",1) , int((int(color) & int(16711680))) >> int(16))->Add( STRING(L"g",1) , int((int(color) & int(65280))) >> int(8))->Add( STRING(L"b",1) , (int(color) & int(255)))->Add( STRING(L"a",1) , Std_obj::toInt(alpha * 255));
+	return hxAnon_obj::Create()->Add( STRING(L"r",1) , int((int(color) & int(16711680))) >> int(16))->Add( STRING(L"g",1) , int((int(color) & int(65280))) >> int(8))->Add( STRING(L"b",1) , (int(color) & int(255)))->Add( STRING(L"a",1) , Math_obj::round(alpha * 255));
 }
 
 
 DEFINE_DYNAMIC_FUNC2(HxGraphix_obj,hexToRgba,return )
 
 double HxGraphix_obj::toFloat5( double _float){
-	int temp1 = Std_obj::toInt(_float * 100);
-	int diff = hxMod(temp1,5);
-	int temp2 = diff < 3 ? int( temp1 - diff ) : int( temp1 + (5 - diff) );
-	double temp3 = double(temp2) / double(100);
+	int temp1 = Math_obj::round(_float * 1000);
+	int diff = hxMod(temp1,50);
+	int temp2 = diff < 25 ? int( temp1 - diff ) : int( temp1 + (50 - diff) );
+	double temp3 = double(temp2) / double(1000);
 	return temp3;
 }
 

@@ -452,6 +452,15 @@
                 <RemoveObject depth="?" />
                 <StartSound id="?" stop="false" loopCount="0" />
                 <FrameLabel name="?" anchor="false" />
+								<Custom tagId="?" file="path/to/file/containing/tagbody bytes" data="?" comment=""/>
+								<Tween depth="?" frameCount="?">
+									<Tw prop="x" start="?" end="?" />
+									<Tw prop="y" start="?" end="?" />
+									<Tw prop="scaleX" start="?" end="?" />
+									<Tw prop="scaleY" start="?" end="?" />
+									<Tw prop="rotate0" start="?" end="?" />
+									<Tw prop="rotate1" start="?" end="?" />
+                </Tween>
                 <ShowFrame />
         </DefineSprite>
         
@@ -476,7 +485,7 @@
         
         <FrameLabel name="?" anchor="false" />
 				
-				<Custom data="?" />
+				<Custom tagId="?" file="path/to/file/containing/tagbody bytes" data="?" comment=""/>
         
         <ShowFrame />
         
