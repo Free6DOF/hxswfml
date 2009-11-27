@@ -3057,10 +3057,11 @@ be = {}
 be.haxer = {}
 be.haxer.hxgraphix = {}
 be.haxer.hxgraphix.HxGraphix = function(p) { if( p === $_ ) return; {
-	this._xMin = 0.0;
-	this._yMin = 0.0;
-	this._xMax = 0.0;
-	this._yMax = 0.0;
+	this._xMin = Math.POSITIVE_INFINITY;
+	this._yMin = Math.POSITIVE_INFINITY;
+	this._xMax = Math.POSITIVE_INFINITY;
+	this._yMax = Math.POSITIVE_INFINITY;
+	this._boundsInitialized = false;
 	this._fillStyles = new Array();
 	this._lineStyles = new Array();
 	this._shapeRecords = new Array();
@@ -3070,6 +3071,7 @@ be.haxer.hxgraphix.HxGraphix = function(p) { if( p === $_ ) return; {
 	this._lastY = 0.0;
 }}
 be.haxer.hxgraphix.HxGraphix.__name__ = ["be","haxer","hxgraphix","HxGraphix"];
+be.haxer.hxgraphix.HxGraphix.prototype._boundsInitialized = null;
 be.haxer.hxgraphix.HxGraphix.prototype._fillStyles = null;
 be.haxer.hxgraphix.HxGraphix.prototype._lastX = null;
 be.haxer.hxgraphix.HxGraphix.prototype._lastY = null;
@@ -3140,6 +3142,7 @@ be.haxer.hxgraphix.HxGraphix.prototype.clear = function() {
 	this._shapeRecords = new Array();
 }
 be.haxer.hxgraphix.HxGraphix.prototype.curveTo = function(cx,cy,ax,ay) {
+	if(!this._boundsInitialized) this.initBounds(0,0);
 	var cx1 = this.toFloat5(cx);
 	var cy1 = this.toFloat5(cy);
 	var ax1 = this.toFloat5(ax);
@@ -3229,6 +3232,13 @@ be.haxer.hxgraphix.HxGraphix.prototype.hexToRgba = function(color,alpha) {
 	if(color > 16777215) color = 16777215;
 	return { r : (color & 16711680) >> 16, g : (color & 65280) >> 8, b : (color & 255), a : Math.round(alpha * 255)}
 }
+be.haxer.hxgraphix.HxGraphix.prototype.initBounds = function(x,y) {
+	if(Math.POSITIVE_INFINITY == this._xMin) this._xMin = x;
+	if(Math.POSITIVE_INFINITY == this._xMax) this._xMax = x;
+	if(Math.POSITIVE_INFINITY == this._yMin) this._yMin = y;
+	if(Math.POSITIVE_INFINITY == this._yMax) this._yMax = y;
+	this._boundsInitialized = true;
+}
 be.haxer.hxgraphix.HxGraphix.prototype.lineStyle = function(width,color,alpha) {
 	if(alpha == null) alpha = 1.0;
 	if(color == null) color = 0;
@@ -3241,10 +3251,12 @@ be.haxer.hxgraphix.HxGraphix.prototype.lineStyle = function(width,color,alpha) {
 	this._shapeRecords.push(format.swf.ShapeRecord.SHRChange(_shapeChangeRec));
 }
 be.haxer.hxgraphix.HxGraphix.prototype.lineTo = function(x,y) {
+	if(!this._boundsInitialized) this.initBounds(0,0);
 	var x1 = this.toFloat5(x);
 	var y1 = this.toFloat5(y);
 	var dx = x1 - this._lastX;
 	var dy = y1 - this._lastY;
+	if(dx == 0 && dy == 0) return;
 	this._lastX = x1;
 	this._lastY = y1;
 	if(x1 < this._xMin) this._xMin = x1;
@@ -3254,8 +3266,10 @@ be.haxer.hxgraphix.HxGraphix.prototype.lineTo = function(x,y) {
 	this._shapeRecords.push(format.swf.ShapeRecord.SHREdge(Math.round(dx * 20),Math.round(dy * 20)));
 }
 be.haxer.hxgraphix.HxGraphix.prototype.moveTo = function(x,y) {
+	if(!this._boundsInitialized) this.initBounds(x,y);
 	var x1 = this.toFloat5(x);
 	var y1 = this.toFloat5(y);
+	if(x1 == this._lastX && y1 == this._lastY) return;
 	this._lastX = x1;
 	this._lastY = y1;
 	if(x1 < this._xMin) this._xMin = x1;

@@ -13,6 +13,7 @@ class HxGraphix
 	var _yMin:Float;
 	var _xMax:Float;
 	var _yMax:Float;
+	var _boundsInitialized:Bool;
 	
 	var _fillStyles:Array<FillStyle>;
 	var _lineStyles:Array<LineStyle>;
@@ -25,10 +26,11 @@ class HxGraphix
 	
 	public function new()
 	{
-		_xMin= 0.0;
-		_yMin= 0.0;
-		_xMax= 0.0;
-		_yMax= 0.0;
+		_xMin= Math.POSITIVE_INFINITY;
+		_yMin= Math.POSITIVE_INFINITY;
+		_xMax= Math.POSITIVE_INFINITY;
+		_yMax= Math.POSITIVE_INFINITY;
+		_boundsInitialized=false;
 		
 		_fillStyles = new Array();
 		_lineStyles = new Array();
@@ -137,11 +139,13 @@ class HxGraphix
 	}
 	public function lineTo(x:Float, y:Float):Void 
 	{
+		if(!_boundsInitialized)initBounds(0,0);
 		var x:Float = toFloat5(x);
 		var y:Float = toFloat5(y);
 		
 		var dx:Float = x - _lastX;
 		var dy:Float = y - _lastY; 
+		if(dx==0 && dy==0) return;
 		
 		_lastX = x;
 		_lastY = y;
@@ -155,9 +159,11 @@ class HxGraphix
 	}
 	public function moveTo(x:Float, y:Float):Void 
 	{
+		
+		if(!_boundsInitialized)initBounds(x,y);
 		var x:Float = toFloat5(x);
 		var y:Float = toFloat5(y);
-		
+		if(x==_lastX && y==_lastY) return;
 		_lastX = x;
 		_lastY = y;
 		
@@ -179,6 +185,7 @@ class HxGraphix
 
 	public function curveTo( cx : Float, cy : Float, ax : Float, ay : Float ):Void
 	{
+		if(!_boundsInitialized)initBounds(0,0);
 		var cx:Float = toFloat5(cx);
 		var cy:Float = toFloat5(cy);
 		var ax:Float = toFloat5(ax);
@@ -298,7 +305,14 @@ class HxGraphix
 		var _shapeWithStyleData = { fillStyles:_fillStyles, lineStyles:_lineStyles, shapeRecords:_shapeRecords };
 		return TShape(id, SHDShape3(_rect, _shapeWithStyleData));
 	}	
-	
+	private function initBounds(x,y):Void
+	{
+		if(Math.POSITIVE_INFINITY == _xMin)_xMin=x;
+		if(Math.POSITIVE_INFINITY == _xMax)_xMax=x;
+		if(Math.POSITIVE_INFINITY == _yMin)_yMin=y;
+		if(Math.POSITIVE_INFINITY == _yMax)_yMax=y;
+		_boundsInitialized=true;
+	}
 	private function hexToRgba(color:Int, alpha:Float) 
 	{
 		if (alpha < 0) alpha = 0.0;

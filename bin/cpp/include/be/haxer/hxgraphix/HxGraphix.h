@@ -38,6 +38,7 @@ class HxGraphix_obj : public virtual hxObject
 		double _yMin;
 		double _xMax;
 		double _yMax;
+		bool _boundsInitialized;
 		Array<format::swf::FillStyle > _fillStyles;
 		Array<Dynamic > _lineStyles;
 		Array<format::swf::ShapeRecord > _shapeRecords;
@@ -92,6 +93,9 @@ class HxGraphix_obj : public virtual hxObject
 
 		virtual format::swf::SWFTag getTag( int id);
 		Dynamic getTag_dyn();
+
+		virtual Void initBounds( double x,double y);
+		Dynamic initBounds_dyn();
 
 		virtual Dynamic hexToRgba( int color,double alpha);
 		Dynamic hexToRgba_dyn();
