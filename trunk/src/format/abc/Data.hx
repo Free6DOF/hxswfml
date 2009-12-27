@@ -114,8 +114,8 @@ enum MethodKind {
 }
 
 enum FieldKind {
-	FVar( ?type : Null<IName>, ?value : Value, ?_const : Bool );
-	FMethod( type : Index<MethodType>, k : MethodKind, ?isOverride : Bool, ?isFinal : Bool );
+	FVar( ?type : Null<IName>, ?value : Value, ?const : Bool );
+	FMethod( type : Index<MethodType>, k : MethodKind, ?isFinal : Bool, ?isOverride : Bool );
 	FClass( c : Index<ClassDef> );
 	FFunction( f : Index<MethodType> );
 }
@@ -124,13 +124,13 @@ typedef ClassDef = {
 	var name : IName;
 	var superclass : Null<IName>;
 	var interfaces : Array<IName>;
-	var constructor : Index<MethodType>;
+	var constructor :  Null<Index<MethodType>>;//Index<MethodType>;//
 	var fields : Array<Field>;
-	var _namespace : Null<Index<Namespace>>;
+	var namespace : Null<Index<Namespace>>;
 	var isSealed : Bool;
 	var isFinal : Bool;
 	var isInterface : Bool;
-	var statics : Index<MethodType>;
+	var statics : Null<Index<MethodType>>;//Index<MethodType>;//
 	var staticFields : Array<Field>;
 }
 
@@ -149,14 +149,17 @@ class ABCData {
 	public var uints : Array<haxe.Int32>;
 	public var floats : Array<Float>;
 	public var strings : Array<String>;
+	
 	public var namespaces : Array<Namespace>;
 	public var nssets : Array<NamespaceSet>;
 	public var names : Array<Name>;
+	
 	public var methodTypes : Array<MethodType>;
 	public var metadatas : Array<Metadata>;
-	public var classes : Array<ClassDef>;
-	public var inits : Array<Init>;
-	public var functions : Array<Function>;
+	
+	public var classes : Array<ClassDef>;//instance_info, class_info(fields),
+	public var inits : Array<Init>;//script_info
+	public var functions : Array<Function>;//method_body_info:
 
 	public function get<T>( t : Array<T>, i : Index<T> ) : T {
 		return switch( i ) { case Idx(n): t[n-1]; };
@@ -180,7 +183,10 @@ enum OpCode {
 	ODxNsLate;
 	ORegKill( r : Register );
 	OLabel;
+	OLabel2(name:String);
 	OJump( j : JumpStyle, delta : Int );
+	OJump2( j : JumpStyle, landingName : String, delta:Int );
+	OJump3( landingName : String );
 	OSwitch( def : Int, deltas : Array<Int> );
 	OPushWith;
 	OPopScope;
@@ -239,6 +245,8 @@ enum OpCode {
 	ODeleteProp( p : IName );
 	OGetSlot( s : Slot );
 	OSetSlot( s : Slot );
+	OGetGlobalSlot( s : Slot );
+	OSetGlobalSlot( s : Slot );
 	OToString;
 	OToXml;
 	OToXmlAttr;

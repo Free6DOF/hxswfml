@@ -27,6 +27,7 @@
  */
  package format.abc;
 import format.abc.Data;
+import haxe.Int32;
 
 private class NullOutput extends haxe.io.Output {
 
@@ -52,7 +53,7 @@ class Context {
         var data : ABCData;
         var hstrings : Hash<Int>;
         var curClass : ClassDef;
-        var curFunction : { f : Function, ops : Array<OpCode> };
+		public var curFunction : { f : Function, ops : Array<OpCode> };
         var classes : Array<Field>;
         var init : { f : Function, ops : Array<OpCode> };
         var fieldSlot : Int;
@@ -64,13 +65,14 @@ class Context {
 
         public var emptyString(default,null) : Index<String>;
         public var nsPublic(default,null) : Index<Namespace>;
-        public var arrayProp(default,null) : Index<Name>;
+        public var arrayProp(default, null) : Index<Name>;
 
         public function new() {
                 classSupers = new List();
                 bytepos = new NullOutput();
                 opw = new OpWriter(bytepos);
                 hstrings = new Hash();
+				
                 data = new ABCData();
                 data.ints = new Array();
                 data.uints = new Array();
@@ -84,19 +86,15 @@ class Context {
                 data.classes = new Array();
                 data.functions = new Array();
                 emptyString = string("");
-                nsPublic = _namespace(NPublic(emptyString));
+                nsPublic = namespace(NPublic(emptyString));
                 arrayProp = name(NMultiLate(nsset([nsPublic])));
-                beginFunction([],null);
-                ops([OThis,OScope]);
-                init = curFunction;
-                init.f.maxStack = 2;
-                init.f.maxScope = 2;
+
                 classes = new Array();
-                data.inits = [{ method : init.f.type, fields : classes }];
+				data.inits = [];
         }
 
         public function int(i) {
-                return lookup(data.ints,i);
+			return lookup(data.ints, i, Int32);//Int32 added
         }
 
         public function uint(i) {
@@ -117,9 +115,9 @@ class Context {
                 return Idx(n);
         }
 
-        public function _namespace(n) {
-                return lookup(data.namespaces,n);
-                //return elookup(data.namespaces,n);
+        public function namespace(n) {
+                //return lookup(data.namespaces,n);
+               return elookup(data.namespaces,n);
         }
 
         public function nsset( ns : NamespaceSet ) : Index<NamespaceSet> {
@@ -141,45 +139,87 @@ class Context {
         }
 
         public function name(n) {
-                return lookup(data.names,n);
-                //return elookup(data.names,n);
+                //return lookup(data.names,n);
+               return elookup(data.names,n);
+        }
+		public function getClass(n) {
+			for ( i in 0...data.classes.length ) 
+					if (data.classes[i] == n) 
+						return Idx(i);
+			throw('unknown class: '+n);
         }
 
-        public function type(path) : Null<Index<Name>> {
-                if( path == "*" )
+
+        public function type(path:String) /*: Null < Index < Name >>*/ {
+				if (path != null && path.indexOf(' params:') != -1)
+					return typeParams(path);
+                if( path == "*")
                         return null;
                 var patharr = path.split(".");
                 var cname = patharr.pop();
                 var ns = patharr.join(".");
                 var pid = string(ns);
                 var nameid = string(cname);
-                var pid = _namespace(NPublic(pid));
+                var pid = namespace(NPublic(pid));
                 var tid = name(NName(nameid,pid));
                 return tid;
         }
+		public function typeParams(path:String) /*: Null < Index < Name >>*/ {
+                if( path == "*")
+                        return null;
+				var parts:Array<String> = path.split(' params:');
+				
+				var _path = parts[0];
+				var __path = this.type(_path);
+				
+				var _params:Array<String> = parts[1].split(',');
+				var __params: Array<IName>= new Array();
+				for (i in 0..._params.length)
+					__params.push(this.type(_params[i]));
 
-        public function property(pname, ?ns) {
+                var tid = name(NParams(__path, __params));
+                return tid;
+        }
+
+        public function property(pname:String, ?ns) {
+			var tid;
+			if (pname.indexOf(".") != -1)
+			{
+				tid = this.type(pname);
+			}
+			else
+			{
                 var pid = string("");
                 var nameid = string(pname);
-                var pid = if( ns == null ) _namespace(NPublic(pid)) else ns;
-                var tid = name(NName(nameid,pid));
-                return tid;
+                var pid = if ( ns == null ) namespace(NPublic(pid)) else ns;
+				tid = name(NName(nameid,pid));
+			}	
+			return tid;
         }
 
         public function methodType(m) : Index<MethodType> {
                 data.methodTypes.push(m);
                 return Idx(data.methodTypes.length - 1);
         }
+		function lookup<T>(arr:Array<T>, n:T, ?type):Index<T> 
+		{
+			if (type == Int32)
+			{
+				for ( i in 0...arr.length ) 
+					if (Int32.compare(cast arr[i], Int32.ofInt(cast n)) == 0) 
+						return Idx(i + 1);
+			}			
+			else 
+			{
+				for ( i in 0...arr.length ) 
+					if (arr[i] == n) 
+						return Idx(i + 1);
+			}
+			arr.push(n);
+			return Idx(arr.length);
+		}
 
-        function lookup<T>( arr : Array<T>, n : T ) : Index<T> {
-                for( i in 0...arr.length )
-                        if( arr[i] == n )
-                                return Idx(i + 1);
-                arr.push(n);
-                return Idx(arr.length);
-        }
-
-        function elookup<T>( arr : Array<T>, n : T ) : Index<T> {
+        function elookup < T > ( arr : Array < T > , n : T ) : Index < T > {
                 for( i in 0...arr.length )
                         if( Type.enumEq(arr[i],n) )
                                 return Idx(i + 1);
@@ -190,8 +230,22 @@ class Context {
         public function getData() {
                 return data;
         }
-
-        function beginFunction(args,ret,?extra) : Index<Function> {
+		public function beginInterfaceFunction(args, ret, ?extra) {
+                endFunction();
+                var f = {
+                        type : methodType({ args : args, ret : ret, extra : extra }),
+                        nRegs : args.length + 1,
+                        initScope : 0,
+                        maxScope : 0,
+                        maxStack : 0,
+                        code : null,
+                        trys : [],
+                        locals : [],
+                };
+                curFunction = { f : f, ops : [] };
+                return Idx(data.methodTypes.length - 1);
+        }
+        public function beginFunction(args, ret, ?extra) : Index < Function > {
                 endFunction();
                 var f = {
                         type : methodType({ args : args, ret : ret, extra : extra }),
@@ -211,7 +265,7 @@ class Context {
                 return Idx(data.functions.length - 1);
         }
 
-        function endFunction() {
+        public function endFunction() {
                 if( curFunction == null )
                         return;
                 var old = opw.o;
@@ -239,18 +293,39 @@ class Context {
                 registers[i] = false;
         }
 
-        public function beginClass( path : String ) {
+        public function beginClass( path : String, ?isInterface:Bool ) {
+				
+				classSupers = new List();
+				if(!isInterface)
+				{
+					beginFunction([],null);
+				}
+				else
+				{
+					beginInterfaceFunction([],null);
+				}
+                ops([OThis,OScope]);
+                init = curFunction;
+                init.f.maxStack = 2;
+                init.f.maxScope = 2;
+				var script = { method : init.f.type, fields : new Array() };
+				data.inits.push(script);// = [{method : init.f.type, fields : classes}];
+				classes = script.fields;
+				
                 endClass();
                 var tpath = this.type(path);
-                beginFunction([],null);
-                var st = curFunction.f.type;
-                op(ORetVoid);
-                endFunction();
-                beginFunction([],null);
-                var cst = curFunction.f.type;
-                op(ORetVoid);
-                endFunction();
+				/*
+				beginFunction([],null);
+				var st = curFunction.f.type;
+				op(ORetVoid);
+				endFunction();
+				beginFunction([],null);
+				var cst = curFunction.f.type;
+				op(ORetVoid);
+				endFunction();
+				*/
                 fieldSlot = 1;
+
                 curClass = {
                         name : tpath,
                         superclass : this.type("Object"),
@@ -258,70 +333,113 @@ class Context {
                         isSealed : false,
                         isInterface : false,
                         isFinal : false,
-                        _namespace : null,
+                        namespace : null,
+						
+						constructor : null,
+						statics : null,
+						 /*
                         constructor : cst,
-                        statics : st,
+                        statics : st,*/
                         fields : [],
                         staticFields : [],
                 };
                 data.classes.push(curClass);
                 classes.push({
                         name: tpath,
-                        slot: 0,
+                        slot: classes.length+1,//0,
                         kind: FClass(Idx(data.classes.length - 1)),
-            metadatas: null,
+						metadatas: null,
                 });
                 curFunction = null;
                 return curClass;
         }
-
-        public function endClass() {
+		
+        public function endClass(?makeInit:Bool=true) {
                 if( curClass == null )
                         return;
                 endFunction();
-                curFunction = init;
-                ops([
-                        OGetGlobalScope,
-                        OGetLex( this.type("Object") ),
-                ]);
-                // Add all class supers (if any)
-                for (sup in classSupers)
-                        ops([OScope, OGetLex(sup)]);
-                // Add final super class
-                ops([
-                        OScope,
-                        OGetLex( curClass.superclass ),
-                        OClassDef( Idx(data.classes.length - 1) ),
-                        OPopScope,
-                ]);
-                // Restore the scope
-                for (sup in classSupers)
-                        op(OPopScope);
-                // Add additional ops
-                ops([
-                        OInitProp( curClass.name ),
-                ]);
-                // Update our maxScope
-                curFunction.f.maxScope += classSupers.length;
-                curFunction = null;
+				if (makeInit)
+				{
+					curFunction = init;
+					ops([
+							OGetGlobalScope,
+							OGetLex( this.type("Object") ),
+					]);
+					// Add all class supers (if any)
+					for (sup in classSupers)
+							ops([OScope, OGetLex(sup)]);
+					// Add final super class
+					ops([
+							OScope,
+							OGetLex( curClass.superclass ),
+							OClassDef( Idx(data.classes.length - 1) ),
+							OPopScope,
+					]);
+					// Restore the scope
+					for (sup in classSupers)
+							op(OPopScope);
+					// Add additional ops
+					ops([
+							OInitProp( curClass.name ),
+					]);
+					// Update our maxScope
+					curFunction.f.maxScope += classSupers.length;
+					op(ORetVoid);
+					endFunction();
+				}
+				else
+				{
+					curFunction = init;
+					op(ORetVoid);
+					endFunction();
+				}
+               
+				if (curClass.statics == null)
+				{
+					beginFunction([], null);//class initializer (static members)
+					var st = curFunction.f.type;
+					curClass.statics = st;
+					curFunction.f.maxStack = 1;
+					curFunction.f.maxScope = 1;
+					op(OThis);
+					op(OScope);
+					op(ORetVoid);
+					endFunction();
+				} 
+				curFunction = null;
                 curClass = null;
         }
-
         public function addClassSuper(sup: String): Void {
                 if (curClass == null)
                         return;
                 classSupers.add(this.type(sup));
         }
-
-        public function beginMethod( mname : String, targs, tret, ?isStatic, ?isOverride, ?isFinal, ?willAddLater ) {
-                var m = beginFunction(targs,tret);
+		public function beginInterfaceMethod( mname : String, targs, tret, ?isStatic, ?isOverride, ?isFinal, ?willAddLater,  ?kind:MethodKind, ?extra,?ns:Index< Namespace > )
+		{
+			trace('beginInterfaceMethod mname: '+ mname);
+                var m = beginInterfaceFunction(targs, tret, extra);
                 if (willAddLater != true)
                 {
                         var fl = if( isStatic ) curClass.staticFields else curClass.fields;
                         fl.push({
-                                name : property(mname),
-                                slot : 0,
-                                kind : FMethod(curFunction.f.type,KNormal,isFinal,isOverride),
+                                name : property(mname, ns),
+                                slot : fl.length+1,//0,
+                                kind : FMethod(curFunction.f.type,kind,isFinal,isOverride),
+                                metadatas : null,
+                        });
+                }
+                return curFunction.f;
+        }
+        public function beginMethod( mname : String, targs, tret, ?isStatic, ?isOverride, ?isFinal, ?willAddLater,  ?kind:MethodKind, ?extra,?ns:Index< Namespace > )
+		{
+                var m = beginFunction(targs, tret, extra);
+                if (willAddLater != true)
+                {
+                        var fl = if( isStatic ) curClass.staticFields else curClass.fields;
+                        fl.push({
+                                name : property(mname, ns),
+                                slot : fl.length+1,//0,
+                                kind : FMethod(curFunction.f.type,kind,isFinal,isOverride),
                                 metadatas : null,
                         });
                 }
@@ -331,19 +449,26 @@ class Context {
         public function endMethod() {
                 endFunction();
         }
-
-        public function defineField( fname : String, t, ?isStatic ) : Slot {
+		
+        public function defineField( fname : String, t:Null < IName > , ?isStatic, ?value : Value, ?const : Bool,?ns:Index< Namespace >) : Slot// ?value : Value, ?const : Bool added,?ns:Index< Namespace >,
+		{
                 var fl = if( isStatic ) curClass.staticFields else curClass.fields;
                 var slot = fieldSlot++;
+				var kind = FVar(t);
+				if (value != null)
+				{
+					kind = FVar(t, value);
+					if (const)
+						kind = FVar(t, value, const);
+				}
                 fl.push({
-                        name : property(fname),
-                        slot : slot,
-                        kind : FVar(t),
+                        name : property(fname , ns),//ns added
+                        slot : fl.length+1,//slot,
+                        kind : kind,//value, const added
                         metadatas : null,
                 });
-                return slot;
+                return fl.length;// slot;
         }
-
         public function op(o) {
                 curFunction.ops.push(o);
                 opw.write(o);
@@ -381,5 +506,4 @@ class Context {
                 endFunction();
                 curClass = null;
         }
-
 }

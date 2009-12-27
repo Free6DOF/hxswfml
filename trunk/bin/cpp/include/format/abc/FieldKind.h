@@ -28,9 +28,9 @@ class FieldKind_obj : public hxEnumBase_obj
 		static Dynamic FClass_dyn();
 		static FieldKind FFunction(format::abc::Index f);
 		static Dynamic FFunction_dyn();
-		static FieldKind FMethod(format::abc::Index type,format::abc::MethodKind k,Dynamic isOverride,Dynamic isFinal);
+		static FieldKind FMethod(format::abc::Index type,format::abc::MethodKind k,Dynamic isFinal,Dynamic isOverride);
 		static Dynamic FMethod_dyn();
-		static FieldKind FVar(format::abc::Index type,format::abc::Value value,Dynamic _const);
+		static FieldKind FVar(format::abc::Index type,format::abc::Value value,Dynamic const);
 		static Dynamic FVar_dyn();
 };
 

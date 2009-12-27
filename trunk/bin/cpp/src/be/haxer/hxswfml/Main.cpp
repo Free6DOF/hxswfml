@@ -3,6 +3,9 @@
 #ifndef INCLUDED_be_haxer_hxswfml_HXswfML
 #include <be/haxer/hxswfml/HXswfML.h>
 #endif
+#ifndef INCLUDED_be_haxer_hxswfml_Hxvml
+#include <be/haxer/hxswfml/Hxvml.h>
+#endif
 #ifndef INCLUDED_be_haxer_hxswfml_Main
 #include <be/haxer/hxswfml/Main.h>
 #endif
@@ -53,26 +56,45 @@ Void Main_obj::main( ){
 {
 		Array<String > args = cpp::Sys_obj::args();
 		if (args->length < 2){
-			cpp::Lib_obj::println(STRING(L"Usage : hXswfML inputfile outputfile [true|false]",49));
-			cpp::Lib_obj::println(STRING(L"inputfile : text file containing xml",36));
-			cpp::Lib_obj::println(STRING(L"outputfile : swf or swc file",28));
-			cpp::Lib_obj::println(STRING(L"[true|false] : set to false to bypass checks. Default is true",61));
-			cpp::Sys_obj::exit(1);
-		}
-		else{
-			if (cpp::FileSystem_obj::exists(args->__get(0))){
-				bool strict = true;
-				if (bool(args->__get(2) != null()) && bool(args->__get(2) != STRING(L"true",4)))
-					strict = false;
-				be::haxer::hxswfml::HXswfML hxswfml = be::haxer::hxswfml::HXswfML_obj::__new(strict);
-				haxe::io::Bytes swf = hxswfml->xml2swf(cpp::io::File_obj::getContent(args->__get(0)),args->__get(1));
-				cpp::io::FileOutput file = cpp::io::File_obj::write(args->__get(1),true);
-				file->write(swf);
-				file->close();
+			if (args->__get(0) == STRING(L"abc2xml",7)){
+				cpp::Lib_obj::println(STRING(L"Usage : hxswfml abc2xml inputfile outputfile",44));
+				cpp::Lib_obj::println(STRING(L"inputfile : swf file containing actionscript bytecode",53));
+				cpp::Lib_obj::println(STRING(L"outputfile : xml file",21));
+				cpp::Sys_obj::exit(1);
 			}
 			else{
-				cpp::Lib_obj::println(STRING(L"!ERROR: File ",13) + args->__get(0) + STRING(L" could not be found at the given location.",42));
+				cpp::Lib_obj::println(STRING(L"Usage : hxswfml inputfile outputfile [true|false]",49));
+				cpp::Lib_obj::println(STRING(L"inputfile : text file containing xml",36));
+				cpp::Lib_obj::println(STRING(L"outputfile : swf or swc file",28));
+				cpp::Lib_obj::println(STRING(L"[true|false] : set to false to bypass checks. Default is true",61));
 				cpp::Sys_obj::exit(1);
+			}
+		}
+		else{
+			if (args->__get(0) == STRING(L"abc2xml",7)){
+				if (!cpp::FileSystem_obj::exists(args->__get(1))){
+					cpp::Lib_obj::println(STRING(L"!ERROR: File ",13) + args->__get(1) + STRING(L" could not be found at the given location.",42));
+					cpp::Sys_obj::exit(1);
+				}
+				else{
+					be::haxer::hxswfml::Hxvml_obj::__new(Array_obj<String >::__new().Add(args->__get(1)).Add(args->__get(2)));
+				}
+			}
+			else{
+				if (cpp::FileSystem_obj::exists(args->__get(0))){
+					bool strict = true;
+					if (bool(args->__get(2) != null()) && bool(args->__get(2) != STRING(L"true",4)))
+						strict = false;
+					be::haxer::hxswfml::HXswfML hxswfml = be::haxer::hxswfml::HXswfML_obj::__new(strict);
+					haxe::io::Bytes swf = hxswfml->xml2swf(cpp::io::File_obj::getContent(args->__get(0)),args->__get(1));
+					cpp::io::FileOutput file = cpp::io::File_obj::write(args->__get(1),true);
+					file->write(swf);
+					file->close();
+				}
+				else{
+					cpp::Lib_obj::println(STRING(L"!ERROR: File ",13) + args->__get(0) + STRING(L" could not be found at the given location.",42));
+					cpp::Sys_obj::exit(1);
+				}
 			}
 		}
 	}

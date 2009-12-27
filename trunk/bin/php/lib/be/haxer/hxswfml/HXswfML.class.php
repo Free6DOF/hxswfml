@@ -227,7 +227,7 @@ class be_haxer_hxswfml_HXswfML {
 			return format_swf_SWFTag::TShape($id, format_swf_ShapeData::SHDShape1($bounds, $shapeWithStyle));
 		}
 		else {
-			$hxg = new be_haxer_hxgraphix_HxGraphix();
+			$hxg = new be_haxer_hxswfml_HxGraphix(null);
 			$»it = $this->currentTag->elements();
 			while($»it->hasNext()) {
 			$cmd = $»it->next();
@@ -284,7 +284,13 @@ class be_haxer_hxswfml_HXswfML {
 					$width2 = $this->getFloat("width", 1.0, null);
 					$color2 = $this->getInt("color", 0, null, null, null);
 					$alpha2 = $this->getFloat("alpha", 1.0, null);
-					$hxg->lineStyle($width2, $color2, $alpha2);
+					$pixelHinting = $this->getBool("pixelHinting", null, null);
+					$scaleMode = $this->getString("scaleMode", null, null);
+					$caps = $this->getString("caps", null, null);
+					$joints = $this->getString("joints", null, null);
+					$miterLimit = $this->getInt("miterLimit", null, null, null, null);
+					$noClose = $this->getBool("noClose", null, null);
+					$hxg->lineStyle($width2, $color2, $alpha2, $pixelHinting, $scaleMode, $caps, $joints, $miterLimit, $noClose);
 				}break;
 				case "moveto":{
 					$x4 = $this->getFloat("x", 0.0, null);
@@ -356,10 +362,10 @@ class be_haxer_hxswfml_HXswfML {
 					$this->error("!ERROR: " . $this->currentTag->getNodeName() . " is not allowed inside a DefineShape element. Valid children are: " . $this->validChildren->get("defineshape")->toString() . ". TAG: " . $this->currentTag->toString());
 				}break;
 				}
-				unset($y9,$y8,$y7,$y6,$y5,$y4,$y3,$y2,$y10,$x9,$x8,$x7,$x6,$x5,$x4,$x3,$x2,$x10,$width2,$w4,$w3,$w2,$w,$type,$translate2,$smooth2,$sections,$scaleY3,$scaleY2,$scaleX3,$scaleX2,$scale2,$rtr,$rtl,$rotate2,$rotate13,$rotate12,$rotate03,$rotate02,$repeat2,$rbr,$rbl,$ratios,$r2,$r,$h4,$h3,$h2,$h,$cy,$cx,$colors,$color2,$color,$bitmapId2,$ay,$ax,$alphas,$alpha2,$alpha);
+				unset($y9,$y8,$y7,$y6,$y5,$y4,$y3,$y2,$y10,$x9,$x8,$x7,$x6,$x5,$x4,$x3,$x2,$x10,$width2,$w4,$w3,$w2,$w,$type,$translate2,$smooth2,$sections,$scaleY3,$scaleY2,$scaleX3,$scaleX2,$scaleMode,$scale2,$rtr,$rtl,$rotate2,$rotate13,$rotate12,$rotate03,$rotate02,$repeat2,$rbr,$rbl,$ratios,$r2,$r,$pixelHinting,$noClose,$miterLimit,$joints,$h4,$h3,$h2,$h,$cy,$cx,$colors,$color2,$color,$caps,$bitmapId2,$ay,$ax,$alphas,$alpha2,$alpha);
 			}
 			}
-			return $hxg->getTag($id);
+			return $hxg->getTag($id, null, null, null);
 		}
 	}
 	public function defineSprite() {
@@ -560,74 +566,93 @@ class be_haxer_hxswfml_HXswfML {
 	}
 	public function defineABC() {
 		$abcTags = new _hx_array(array());
-		$remap = $this->getString("remap", "", null);
-		$file = $this->getString("file", "", true);
 		$name = $this->getString("name", null, false);
-		$swf = $this->getBytes($file);
-		if(StringTools::endsWith($file, ".abc")) {
-			$abcTags->push(format_swf_SWFTag::TActionScript3($swf, ($name === null ? null : _hx_anonymous(array("id" => 1, "label" => $name)))));
+		$remap = $this->getString("remap", "", null);
+		$file = null;
+		if($this->currentTag->elements()->hasNext()) {
+			$hxavm2 = new be_haxer_hxswfml_Hxavm2();
+			$hxavm2->name = $name;
+			$abcTags = $hxavm2->xml2abc($this->currentTag->elements()->next()->toString());
 		}
 		else {
-			$swfBytesInput = new haxe_io_BytesInput($swf, null, null);
-			$swfReader = new format_swf_Reader($swfBytesInput);
-			$header = $swfReader->readHeader();
-			$tags = $swfReader->readTagList();
-			$swfBytesInput->close();
-			$lookupStrings = new _hx_array(array("Boot", "Lib", "Type"));
-			{
-				$_g = 0;
-				while($_g < $tags->length) {
-					$tag = $tags[$_g];
-					++$_g;
-					$»t = ($tag);
-					switch($»t->index) {
-					case 13:
-					$ctx = $»t->params[1]; $data = $»t->params[0];
+			$file = $this->getString("file", "", true);
+			if(StringTools::endsWith($file, ".abc")) {
+				$abc = $this->getBytes($file);
+				$abcTags->push(format_swf_SWFTag::TActionScript3($abc, ($name === null ? null : _hx_anonymous(array("id" => 1, "label" => $name)))));
+			}
+			else {
+				if(StringTools::endsWith($file, ".swf")) {
+					$swf = $this->getBytes($file);
+					$swfBytesInput = new haxe_io_BytesInput($swf, null, null);
+					$swfReader = new format_swf_Reader($swfBytesInput);
+					$header = $swfReader->readHeader();
+					$tags = $swfReader->readTagList();
+					$swfBytesInput->close();
+					$lookupStrings = new _hx_array(array("Boot", "Lib", "Type"));
 					{
-						if($remap == "") {
-							$abcTags->push(format_swf_SWFTag::TActionScript3($data, $ctx));
-						}
-						else {
-							$abcReader = new format_abc_Reader(new haxe_io_BytesInput($data, null, null));
-							$abcFile = $abcReader->read();
-							$cpoolStrings = $abcFile->strings;
+						$_g = 0;
+						while($_g < $tags->length) {
+							$tag = $tags[$_g];
+							++$_g;
+							$»t = ($tag);
+							switch($»t->index) {
+							case 13:
+							$ctx = $»t->params[1]; $data = $»t->params[0];
 							{
-								$_g2 = 0; $_g1 = $cpoolStrings->length;
-								while($_g2 < $_g1) {
-									$i = $_g2++;
+								if($remap == "") {
+									$abcTags->push(format_swf_SWFTag::TActionScript3($data, $ctx));
+								}
+								else {
+									$abcReader = new format_abc_Reader(new haxe_io_BytesInput($data, null, null));
+									$abcFile = $abcReader->read();
+									$cpoolStrings = $abcFile->strings;
 									{
-										$_g3 = 0;
-										while($_g3 < $lookupStrings->length) {
-											$s = $lookupStrings[$_g3];
-											++$_g3;
-											$regex = new EReg("\\b" . $s . "\\b", "");
-											$str = $cpoolStrings[$i];
-											if($regex->match($str)) {
-												$this->inform("<-" . $cpoolStrings[$i]);
-												$cpoolStrings[$i] = $regex->replace($str, $s . $remap);
-												$this->inform("->" . $cpoolStrings[$i]);
+										$_g2 = 0; $_g1 = $cpoolStrings->length;
+										while($_g2 < $_g1) {
+											$i = $_g2++;
+											{
+												$_g3 = 0;
+												while($_g3 < $lookupStrings->length) {
+													$s = $lookupStrings[$_g3];
+													++$_g3;
+													$regex = new EReg("\\b" . $s . "\\b", "");
+													$str = $cpoolStrings[$i];
+													if($regex->match($str)) {
+														$this->inform("<-" . $cpoolStrings[$i]);
+														$cpoolStrings[$i] = $regex->replace($str, $s . $remap);
+														$this->inform("->" . $cpoolStrings[$i]);
+													}
+													unset($str,$s,$regex);
+												}
 											}
-											unset($str,$s,$regex);
+											unset($str,$s,$regex,$i,$_g3);
 										}
 									}
-									unset($str,$s,$regex,$i,$_g3);
+									$abcOutput = new haxe_io_BytesOutput();
+									format_abc_Writer::write($abcOutput, $abcFile);
+									$abcBytes = $abcOutput->getBytes();
+									$abcTags->push(format_swf_SWFTag::TActionScript3($abcBytes, $ctx));
 								}
+							}break;
+							default:{
+								;
+							}break;
 							}
-							$abcOutput = new haxe_io_BytesOutput();
-							format_abc_Writer::write($abcOutput, $abcFile);
-							$abcBytes = $abcOutput->getBytes();
-							$abcTags->push(format_swf_SWFTag::TActionScript3($abcBytes, $ctx));
+							unset($»t,$tag,$str,$s,$regex,$i,$data,$ctx,$cpoolStrings,$abcReader,$abcOutput,$abcFile,$abcBytes,$_g3,$_g2,$_g1);
 						}
-					}break;
-					default:{
-						;
-					}break;
 					}
-					unset($»t,$tag,$str,$s,$regex,$i,$data,$ctx,$cpoolStrings,$abcReader,$abcOutput,$abcFile,$abcBytes,$_g3,$_g2,$_g1);
+					if($abcTags->length === 0) {
+						$this->error("!ERROR: No ABC files were found inside the given file " . $file . ". TAG : " . $this->currentTag->toString());
+					}
 				}
-			}
-			if($abcTags->length === 0) {
-				$this->error("!ERROR: No ABC files were found inside the given file " . $file . ". TAG : " . $this->currentTag->toString());
+				else {
+					if(StringTools::endsWith($file, ".xml")) {
+						$xml = $this->getContent($file);
+						$hxavm22 = new be_haxer_hxswfml_Hxavm2();
+						$hxavm22->name = $name;
+						$abcTags = $hxavm22->xml2abc($xml);
+					}
+				}
 			}
 		}
 		return $abcTags;
@@ -911,7 +936,7 @@ class be_haxer_hxswfml_HXswfML {
 			}
 		}
 		else {
-			if(strtolower($extension) == "png") {
+			if($extension == "png") {
 				$bytes->setEndian(true);
 				$bytes->readInt32();
 				$bytes->readInt32();
@@ -921,7 +946,7 @@ class be_haxer_hxswfml_HXswfML {
 				$height = $bytes->readUInt30();
 			}
 			else {
-				if(strtolower($extension) == "gif") {
+				if($extension == "gif") {
 					$bytes->setEndian(false);
 					$bytes->readInt32();
 					$bytes->readUInt16();
@@ -934,7 +959,7 @@ class be_haxer_hxswfml_HXswfML {
 	}
 	public function createABC($className, $baseClass) {
 		$ctx = new format_abc_Context();
-		$c = $ctx->beginClass($className);
+		$c = $ctx->beginClass($className, null);
 		$c->superclass = $ctx->type($baseClass);
 		switch($baseClass) {
 		case "flash.display.MovieClip":{
@@ -974,7 +999,7 @@ class be_haxer_hxswfml_HXswfML {
 			$ctx->addClassSuper("flash.utils.ByteArray");
 		}break;
 		}
-		$m = $ctx->beginMethod($className, new _hx_array(array()), null, false, false, false, true);
+		$m = $ctx->beginMethod($className, new _hx_array(array()), null, false, false, false, true, null, null, null);
 		$m->maxStack = 2;
 		$c->constructor = $m->type;
 		$ctx->ops(new _hx_array(array(format_abc_OpCode::$OThis, format_abc_OpCode::OConstructSuper(0), format_abc_OpCode::$ORetVoid)));

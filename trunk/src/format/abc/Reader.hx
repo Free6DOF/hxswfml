@@ -254,7 +254,7 @@ class Reader {
 			interfaces : interfs,
 			constructor : construct,
 			fields : fields,
-			_namespace : ns,
+			namespace : ns,
 			isSealed : (flags & 0x01) != 0,
 			isFinal : (flags & 0x02) != 0,
 			isInterface : (flags & 0x04) != 0,
@@ -318,6 +318,7 @@ class Reader {
 		data.classes = readList2(readClass);
 		for( c in data.classes ) {
 			c.statics = readIndex();
+			//trace(c.statics);
 			c.staticFields = readList2(readField);
 		}
 		data.inits = readList2(readInit);

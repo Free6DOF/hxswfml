@@ -12,10 +12,12 @@ DECLARE_CLASS2(format,abc,ABCData)
 DECLARE_CLASS2(format,abc,Context)
 DECLARE_CLASS2(format,abc,Index)
 DECLARE_CLASS2(format,abc,JumpStyle)
+DECLARE_CLASS2(format,abc,MethodKind)
 DECLARE_CLASS2(format,abc,Name)
 DECLARE_CLASS2(format,abc,Namespace)
 DECLARE_CLASS2(format,abc,OpCode)
 DECLARE_CLASS2(format,abc,OpWriter)
+DECLARE_CLASS2(format,abc,Value)
 DECLARE_CLASS3(format,abc,_Context,NullOutput)
 DECLARE_CLASS2(haxe,io,Output)
 namespace format{
@@ -70,8 +72,8 @@ class Context_obj : public virtual hxObject
 		virtual format::abc::Index string( String s);
 		Dynamic string_dyn();
 
-		virtual format::abc::Index _namespace( format::abc::Namespace n);
-		Dynamic _namespace_dyn();
+		virtual format::abc::Index namespace( format::abc::Namespace n);
+		Dynamic namespace_dyn();
 
 		virtual format::abc::Index nsset( Array<format::abc::Index > ns);
 		Dynamic nsset_dyn();
@@ -79,8 +81,14 @@ class Context_obj : public virtual hxObject
 		virtual format::abc::Index name( format::abc::Name n);
 		Dynamic name_dyn();
 
+		virtual format::abc::Index getClass( Dynamic n);
+		Dynamic getClass_dyn();
+
 		virtual format::abc::Index type( String path);
 		Dynamic type_dyn();
+
+		virtual format::abc::Index typeParams( String path);
+		Dynamic typeParams_dyn();
 
 		virtual format::abc::Index property( String pname,format::abc::Index ns);
 		Dynamic property_dyn();
@@ -88,7 +96,7 @@ class Context_obj : public virtual hxObject
 		virtual format::abc::Index methodType( Dynamic m);
 		Dynamic methodType_dyn();
 
-		virtual format::abc::Index lookup( Array<Dynamic > arr,Dynamic n);
+		virtual format::abc::Index lookup( Array<Dynamic > arr,Dynamic n,Dynamic type);
 		Dynamic lookup_dyn();
 
 		virtual format::abc::Index elookup( Array<Dynamic > arr,Dynamic n);
@@ -96,6 +104,9 @@ class Context_obj : public virtual hxObject
 
 		virtual format::abc::ABCData getData( );
 		Dynamic getData_dyn();
+
+		virtual format::abc::Index beginInterfaceFunction( Array<format::abc::Index > args,format::abc::Index ret,Dynamic extra);
+		Dynamic beginInterfaceFunction_dyn();
 
 		virtual format::abc::Index beginFunction( Array<format::abc::Index > args,format::abc::Index ret,Dynamic extra);
 		Dynamic beginFunction_dyn();
@@ -109,22 +120,25 @@ class Context_obj : public virtual hxObject
 		virtual Void freeRegister( int i);
 		Dynamic freeRegister_dyn();
 
-		virtual Dynamic beginClass( String path);
+		virtual Dynamic beginClass( String path,Dynamic isInterface);
 		Dynamic beginClass_dyn();
 
-		virtual Void endClass( );
+		virtual Void endClass( Dynamic makeInit);
 		Dynamic endClass_dyn();
 
 		virtual Void addClassSuper( String sup);
 		Dynamic addClassSuper_dyn();
 
-		virtual Dynamic beginMethod( String mname,Array<format::abc::Index > targs,format::abc::Index tret,Dynamic isStatic,Dynamic isOverride,Dynamic isFinal,Dynamic willAddLater);
+		virtual Dynamic beginInterfaceMethod( String mname,Array<format::abc::Index > targs,format::abc::Index tret,Dynamic isStatic,Dynamic isOverride,Dynamic isFinal,Dynamic willAddLater,format::abc::MethodKind kind,Dynamic extra,format::abc::Index ns);
+		Dynamic beginInterfaceMethod_dyn();
+
+		virtual Dynamic beginMethod( String mname,Array<format::abc::Index > targs,format::abc::Index tret,Dynamic isStatic,Dynamic isOverride,Dynamic isFinal,Dynamic willAddLater,format::abc::MethodKind kind,Dynamic extra,format::abc::Index ns);
 		Dynamic beginMethod_dyn();
 
 		virtual Void endMethod( );
 		Dynamic endMethod_dyn();
 
-		virtual int defineField( String fname,format::abc::Index t,Dynamic isStatic);
+		virtual int defineField( String fname,format::abc::Index t,Dynamic isStatic,format::abc::Value value,Dynamic const,format::abc::Index ns);
 		Dynamic defineField_dyn();
 
 		virtual Void op( format::abc::OpCode o);

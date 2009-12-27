@@ -288,9 +288,9 @@ class format_abc_Writer {
 		$퍁 = ($f->kind);
 		switch($퍁->index) {
 		case 0:
-		$_const = $퍁->params[2]; $v = $퍁->params[1]; $t = $퍁->params[0];
+		$const = $퍁->params[2]; $v = $퍁->params[1]; $t = $퍁->params[0];
 		{
-			$this->o->writeByte((($_const ? 6 : 0)) | $flags);
+			$this->o->writeByte((($const ? 6 : 0)) | $flags);
 			$this->opw->writeInt($f->slot);
 			$this->writeIndexOpt($t);
 			$this->writeValue(false, $v);
@@ -320,7 +320,12 @@ class format_abc_Writer {
 			}break;
 			}
 			$this->o->writeByte($flags);
-			$this->opw->writeInt($f->slot);
+			if($isOverride) {
+				$this->opw->writeInt(0);
+			}
+			else {
+				$this->opw->writeInt($f->slot);
+			}
 			$this->writeIndex($t2);
 		}break;
 		case 2:
@@ -449,12 +454,12 @@ class format_abc_Writer {
 		if($c->isInterface) {
 			$flags |= 4;
 		}
-		if($c->_namespace !== null) {
+		if($c->namespace !== null) {
 			$flags |= 8;
 		}
 		$this->o->writeByte($flags);
-		if($c->_namespace !== null) {
-			$this->writeIndex($c->_namespace);
+		if($c->namespace !== null) {
+			$this->writeIndex($c->namespace);
 		}
 		$this->writeList2($c->interfaces, isset($this->writeIndex) ? $this->writeIndex: array($this, "writeIndex"));
 		$this->writeIndex($c->constructor);

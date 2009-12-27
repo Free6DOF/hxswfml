@@ -97,6 +97,8 @@ class OpCode_obj : public hxEnumBase_obj
 		static OpCode OGetDescendants(format::abc::Index c);
 		static Dynamic OGetDescendants_dyn();
 		static OpCode OGetGlobalScope;
+		static OpCode OGetGlobalSlot(int s);
+		static Dynamic OGetGlobalSlot_dyn();
 		static OpCode OGetLex(format::abc::Index p);
 		static Dynamic OGetLex_dyn();
 		static OpCode OGetProp(format::abc::Index p);
@@ -123,7 +125,13 @@ class OpCode_obj : public hxEnumBase_obj
 		static Dynamic OIsType_dyn();
 		static OpCode OJump(format::abc::JumpStyle j,int delta);
 		static Dynamic OJump_dyn();
+		static OpCode OJump2(format::abc::JumpStyle j,String landingName,int delta);
+		static Dynamic OJump2_dyn();
+		static OpCode OJump3(String landingName);
+		static Dynamic OJump3_dyn();
 		static OpCode OLabel;
+		static OpCode OLabel2(String name);
+		static Dynamic OLabel2_dyn();
 		static OpCode ONaN;
 		static OpCode ONamespace(format::abc::Index v);
 		static Dynamic ONamespace_dyn();
@@ -146,6 +154,8 @@ class OpCode_obj : public hxEnumBase_obj
 		static OpCode ORet;
 		static OpCode ORetVoid;
 		static OpCode OScope;
+		static OpCode OSetGlobalSlot(int s);
+		static Dynamic OSetGlobalSlot_dyn();
 		static OpCode OSetProp(format::abc::Index p);
 		static Dynamic OSetProp_dyn();
 		static OpCode OSetReg(int r);

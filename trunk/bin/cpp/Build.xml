@@ -9,12 +9,15 @@
    <depend name="include/format/tools/BitsOutput.h"/>
    <depend name="include/haxe/io/Output.h"/>
   </file>
-  <file name="src/be/haxer/hxgraphix/HxGraphix.cpp">
+  <file name="src/be/haxer/hxswfml/HxGraphix.cpp">
    <depend name="include/Std.h"/>
-   <depend name="include/be/haxer/hxgraphix/HxGraphix.h"/>
+   <depend name="include/be/haxer/hxswfml/HxGraphix.h"/>
    <depend name="include/format/swf/FillStyle.h"/>
    <depend name="include/format/swf/GradRecord.h"/>
    <depend name="include/format/swf/InterpolationMode.h"/>
+   <depend name="include/format/swf/LS2Fill.h"/>
+   <depend name="include/format/swf/LineCapStyle.h"/>
+   <depend name="include/format/swf/LineJoinStyle.h"/>
    <depend name="include/format/swf/LineStyleData.h"/>
    <depend name="include/format/swf/SWFTag.h"/>
    <depend name="include/format/swf/ShapeData.h"/>
@@ -37,6 +40,7 @@
   </file>
   <file name="src/be/haxer/hxswfml/Main.cpp">
    <depend name="include/be/haxer/hxswfml/HXswfML.h"/>
+   <depend name="include/be/haxer/hxswfml/Hxvml.h"/>
    <depend name="include/be/haxer/hxswfml/Main.h"/>
    <depend name="include/cpp/FileSystem.h"/>
    <depend name="include/cpp/Lib.h"/>
@@ -69,6 +73,30 @@
    <depend name="include/format/swf/Tools.h"/>
    <depend name="include/haxe/io/Bytes.h"/>
    <depend name="include/haxe/io/Error.h"/>
+  </file>
+  <file name="src/be/haxer/hxswfml/Hxavm2.cpp">
+   <depend name="include/Hash.h"/>
+   <depend name="include/Std.h"/>
+   <depend name="include/StringTools.h"/>
+   <depend name="include/Type.h"/>
+   <depend name="include/be/haxer/hxswfml/Hxavm2.h"/>
+   <depend name="include/cpp/CppXml__.h"/>
+   <depend name="include/format/abc/ABCData.h"/>
+   <depend name="include/format/abc/Context.h"/>
+   <depend name="include/format/abc/FieldKind.h"/>
+   <depend name="include/format/abc/Index.h"/>
+   <depend name="include/format/abc/JumpStyle.h"/>
+   <depend name="include/format/abc/MethodKind.h"/>
+   <depend name="include/format/abc/Namespace.h"/>
+   <depend name="include/format/abc/OpCode.h"/>
+   <depend name="include/format/abc/Operation.h"/>
+   <depend name="include/format/abc/Value.h"/>
+   <depend name="include/format/abc/Writer.h"/>
+   <depend name="include/format/swf/SWFTag.h"/>
+   <depend name="include/haxe/Log.h"/>
+   <depend name="include/haxe/io/Bytes.h"/>
+   <depend name="include/haxe/io/BytesOutput.h"/>
+   <depend name="include/haxe/io/Output.h"/>
   </file>
   <file name="src/format/zip/Writer.cpp">
    <depend name="include/List.h"/>
@@ -169,6 +197,7 @@
    <depend name="include/format/abc/OpWriter.h"/>
    <depend name="include/format/abc/Value.h"/>
    <depend name="include/format/abc/_Context/NullOutput.h"/>
+   <depend name="include/haxe/Log.h"/>
    <depend name="include/haxe/io/Bytes.h"/>
    <depend name="include/haxe/io/BytesOutput.h"/>
    <depend name="include/haxe/io/Output.h"/>
@@ -178,12 +207,12 @@
    <depend name="include/haxe/io/Bytes.h"/>
    <depend name="include/haxe/io/Output.h"/>
   </file>
-  <file name="src/format/tools/CRC32.cpp">
-   <depend name="include/format/tools/CRC32.h"/>
-   <depend name="include/haxe/io/Bytes.h"/>
-  </file>
   <file name="src/format/tools/Deflate.cpp">
    <depend name="include/format/tools/Deflate.h"/>
+   <depend name="include/haxe/io/Bytes.h"/>
+  </file>
+  <file name="src/format/tools/CRC32.cpp">
+   <depend name="include/format/tools/CRC32.h"/>
    <depend name="include/haxe/io/Bytes.h"/>
   </file>
   <file name="src/format/mp3/Writer.cpp">
@@ -207,8 +236,9 @@
    <depend name="include/List.h"/>
    <depend name="include/Std.h"/>
    <depend name="include/StringTools.h"/>
-   <depend name="include/be/haxer/hxgraphix/HxGraphix.h"/>
    <depend name="include/be/haxer/hxswfml/HXswfML.h"/>
+   <depend name="include/be/haxer/hxswfml/HxGraphix.h"/>
+   <depend name="include/be/haxer/hxswfml/Hxavm2.h"/>
    <depend name="include/cpp/CppDate__.h"/>
    <depend name="include/cpp/CppXml__.h"/>
    <depend name="include/cpp/FileSystem.h"/>
@@ -217,6 +247,7 @@
    <depend name="include/format/abc/ABCData.h"/>
    <depend name="include/format/abc/Context.h"/>
    <depend name="include/format/abc/Index.h"/>
+   <depend name="include/format/abc/MethodKind.h"/>
    <depend name="include/format/abc/OpCode.h"/>
    <depend name="include/format/abc/Writer.h"/>
    <depend name="include/format/mp3/ChannelMode.h"/>
@@ -267,6 +298,32 @@
   </file>
   <file name="src/StringBuf.cpp">
    <depend name="include/StringBuf.h"/>
+  </file>
+  <file name="src/be/haxer/hxswfml/Hxvml.cpp">
+   <depend name="include/Std.h"/>
+   <depend name="include/StringTools.h"/>
+   <depend name="include/Type.h"/>
+   <depend name="include/be/haxer/hxswfml/Hxvml.h"/>
+   <depend name="include/cpp/io/File.h"/>
+   <depend name="include/cpp/io/FileOutput.h"/>
+   <depend name="include/format/abc/ABCData.h"/>
+   <depend name="include/format/abc/FieldKind.h"/>
+   <depend name="include/format/abc/Index.h"/>
+   <depend name="include/format/abc/JumpStyle.h"/>
+   <depend name="include/format/abc/MethodKind.h"/>
+   <depend name="include/format/abc/Name.h"/>
+   <depend name="include/format/abc/Namespace.h"/>
+   <depend name="include/format/abc/OpCode.h"/>
+   <depend name="include/format/abc/OpReader.h"/>
+   <depend name="include/format/abc/Operation.h"/>
+   <depend name="include/format/abc/Reader.h"/>
+   <depend name="include/format/abc/Value.h"/>
+   <depend name="include/format/swf/Reader.h"/>
+   <depend name="include/format/swf/SWFTag.h"/>
+   <depend name="include/haxe/io/Bytes.h"/>
+   <depend name="include/haxe/io/BytesInput.h"/>
+   <depend name="include/haxe/io/Input.h"/>
+   <depend name="include/haxe/io/Output.h"/>
   </file>
   <file name="src/format/zip/ExtraField.cpp">
    <depend name="include/format/zip/ExtraField.h"/>
@@ -458,6 +515,16 @@
    <depend name="include/format/mp3/MPEGVersion.h"/>
    <depend name="include/format/mp3/SamplingRate.h"/>
    <depend name="include/format/mp3/Tools.h"/>
+  </file>
+  <file name="src/format/abc/OpReader.cpp">
+   <depend name="include/format/abc/Index.h"/>
+   <depend name="include/format/abc/JumpStyle.h"/>
+   <depend name="include/format/abc/OpCode.h"/>
+   <depend name="include/format/abc/OpReader.h"/>
+   <depend name="include/format/abc/Operation.h"/>
+   <depend name="include/haxe/io/Eof.h"/>
+   <depend name="include/haxe/io/Error.h"/>
+   <depend name="include/haxe/io/Input.h"/>
   </file>
   <file name="src/cpp/Sys.cpp">
    <depend name="include/Hash.h"/>
@@ -661,6 +728,19 @@
    <depend name="include/format/tools/Adler32.h"/>
    <depend name="include/format/tools/_InflateImpl/Window.h"/>
    <depend name="include/haxe/io/Bytes.h"/>
+  </file>
+  <file name="src/format/abc/Reader.cpp">
+   <depend name="include/format/abc/ABCData.h"/>
+   <depend name="include/format/abc/FieldKind.h"/>
+   <depend name="include/format/abc/Index.h"/>
+   <depend name="include/format/abc/MethodKind.h"/>
+   <depend name="include/format/abc/Name.h"/>
+   <depend name="include/format/abc/Namespace.h"/>
+   <depend name="include/format/abc/OpReader.h"/>
+   <depend name="include/format/abc/Reader.h"/>
+   <depend name="include/format/abc/Value.h"/>
+   <depend name="include/haxe/io/Bytes.h"/>
+   <depend name="include/haxe/io/Input.h"/>
   </file>
   <file name="src/haxe/io/BytesBuffer.cpp">
    <depend name="include/haxe/io/Bytes.h"/>

@@ -406,12 +406,27 @@ class format_abc_OpWriter {
 			$this->o->writeByte(9);
 		}break;
 		case 9:
+		$landingName = $퍁->params[0];
+		{
+			return;
+		}break;
+		case 10:
 		$delta = $퍁->params[1]; $j = $퍁->params[0];
 		{
 			$this->o->writeByte($this->jumpCode($j));
 			$this->o->writeInt24($delta);
 		}break;
-		case 10:
+		case 11:
+		$delta2 = $퍁->params[2]; $landingName2 = $퍁->params[1]; $j2 = $퍁->params[0];
+		{
+			return;
+		}break;
+		case 12:
+		$landingName3 = $퍁->params[0];
+		{
+			return;
+		}break;
+		case 13:
 		$deltas = $퍁->params[1]; $def = $퍁->params[0];
 		{
 			$this->o->writeByte(27);
@@ -427,270 +442,270 @@ class format_abc_OpWriter {
 				}
 			}
 		}break;
-		case 11:
+		case 14:
 		{
 			$this->o->writeByte(28);
 		}break;
-		case 12:
+		case 15:
 		{
 			$this->o->writeByte(29);
 		}break;
-		case 13:
+		case 16:
 		{
 			$this->o->writeByte(30);
 		}break;
-		case 14:
+		case 17:
 		{
 			$this->o->writeByte(31);
 		}break;
-		case 15:
+		case 18:
 		{
 			$this->o->writeByte(32);
 		}break;
-		case 16:
+		case 19:
 		{
 			$this->o->writeByte(33);
 		}break;
-		case 17:
+		case 20:
 		{
 			$this->o->writeByte(35);
 		}break;
-		case 18:
+		case 21:
 		$v3 = $퍁->params[0];
 		{
 			$this->o->writeByte(36);
 			$this->o->writeInt8($v3);
 		}break;
-		case 19:
+		case 22:
 		$v4 = $퍁->params[0];
 		{
 			$this->o->writeByte(37);
 			$this->int($v4);
 		}break;
-		case 20:
+		case 23:
 		{
 			$this->o->writeByte(38);
 		}break;
-		case 21:
+		case 24:
 		{
 			$this->o->writeByte(39);
 		}break;
-		case 22:
+		case 25:
 		{
 			$this->o->writeByte(40);
 		}break;
-		case 23:
+		case 26:
 		{
 			$this->o->writeByte(41);
 		}break;
-		case 24:
+		case 27:
 		{
 			$this->o->writeByte(42);
 		}break;
-		case 25:
+		case 28:
 		{
 			$this->o->writeByte(43);
 		}break;
-		case 26:
+		case 29:
 		$v5 = $퍁->params[0];
 		{
 			$this->o->writeByte(44);
 			$this->idx($v5);
 		}break;
-		case 27:
+		case 30:
 		$v6 = $퍁->params[0];
 		{
 			$this->o->writeByte(45);
 			$this->idx($v6);
 		}break;
-		case 28:
+		case 31:
 		$v7 = $퍁->params[0];
 		{
 			$this->o->writeByte(46);
 			$this->idx($v7);
 		}break;
-		case 29:
+		case 32:
 		$v8 = $퍁->params[0];
 		{
 			$this->o->writeByte(47);
 			$this->idx($v8);
 		}break;
-		case 30:
+		case 33:
 		{
 			$this->o->writeByte(48);
 		}break;
-		case 31:
+		case 34:
 		$v9 = $퍁->params[0];
 		{
 			$this->o->writeByte(49);
 			$this->idx($v9);
 		}break;
-		case 32:
+		case 35:
 		$r2 = $퍁->params[1]; $r1 = $퍁->params[0];
 		{
 			$this->o->writeByte(50);
 			$this->int($r1);
 			$this->int($r2);
 		}break;
-		case 33:
+		case 36:
 		$f = $퍁->params[0];
 		{
 			$this->o->writeByte(64);
 			$this->idx($f);
 		}break;
-		case 34:
+		case 37:
 		$n = $퍁->params[0];
 		{
 			$this->o->writeByte(65);
 			$this->int($n);
 		}break;
-		case 35:
+		case 38:
 		$n2 = $퍁->params[0];
 		{
 			$this->o->writeByte(66);
 			$this->int($n2);
 		}break;
-		case 36:
+		case 39:
 		$n3 = $퍁->params[1]; $s = $퍁->params[0];
 		{
 			$this->o->writeByte(67);
 			$this->int($s);
 			$this->int($n3);
 		}break;
-		case 37:
+		case 40:
 		$n4 = $퍁->params[1]; $m = $퍁->params[0];
 		{
 			$this->o->writeByte(68);
 			$this->idx($m);
 			$this->int($n4);
 		}break;
-		case 38:
+		case 41:
 		$n5 = $퍁->params[1]; $p = $퍁->params[0];
 		{
 			$this->o->writeByte(69);
 			$this->idx($p);
 			$this->int($n5);
 		}break;
-		case 39:
+		case 42:
 		$n6 = $퍁->params[1]; $p2 = $퍁->params[0];
 		{
 			$this->o->writeByte(70);
 			$this->idx($p2);
 			$this->int($n6);
 		}break;
-		case 40:
+		case 43:
 		{
 			$this->o->writeByte(71);
 		}break;
-		case 41:
+		case 44:
 		{
 			$this->o->writeByte(72);
 		}break;
-		case 42:
+		case 45:
 		$n7 = $퍁->params[0];
 		{
 			$this->o->writeByte(73);
 			$this->int($n7);
 		}break;
-		case 43:
+		case 46:
 		$n8 = $퍁->params[1]; $p3 = $퍁->params[0];
 		{
 			$this->o->writeByte(74);
 			$this->idx($p3);
 			$this->int($n8);
 		}break;
-		case 44:
+		case 47:
 		$n9 = $퍁->params[1]; $p4 = $퍁->params[0];
 		{
 			$this->o->writeByte(76);
 			$this->idx($p4);
 			$this->int($n9);
 		}break;
-		case 45:
+		case 48:
 		$n10 = $퍁->params[1]; $p5 = $퍁->params[0];
 		{
 			$this->o->writeByte(78);
 			$this->idx($p5);
 			$this->int($n10);
 		}break;
-		case 46:
+		case 49:
 		$n11 = $퍁->params[1]; $p6 = $퍁->params[0];
 		{
 			$this->o->writeByte(79);
 			$this->idx($p6);
 			$this->int($n11);
 		}break;
-		case 47:
+		case 50:
 		$n12 = $퍁->params[0];
 		{
 			$this->o->writeByte(83);
 			$this->int($n12);
 		}break;
-		case 48:
+		case 51:
 		$n13 = $퍁->params[0];
 		{
 			$this->o->writeByte(85);
 			$this->int($n13);
 		}break;
-		case 49:
+		case 52:
 		$n14 = $퍁->params[0];
 		{
 			$this->o->writeByte(86);
 			$this->int($n14);
 		}break;
-		case 50:
+		case 53:
 		{
 			$this->o->writeByte(87);
 		}break;
-		case 51:
+		case 54:
 		$c = $퍁->params[0];
 		{
 			$this->o->writeByte(88);
 			$this->idx($c);
 		}break;
-		case 52:
+		case 55:
 		$i2 = $퍁->params[0];
 		{
 			$this->o->writeByte(89);
 			$this->idx($i2);
 		}break;
-		case 53:
+		case 56:
 		$c2 = $퍁->params[0];
 		{
 			$this->o->writeByte(90);
 			$this->int($c2);
 		}break;
-		case 54:
+		case 57:
 		$p7 = $퍁->params[0];
 		{
 			$this->o->writeByte(93);
 			$this->idx($p7);
 		}break;
-		case 55:
+		case 58:
 		$p8 = $퍁->params[0];
 		{
 			$this->o->writeByte(94);
 			$this->idx($p8);
 		}break;
-		case 56:
+		case 59:
 		$d2 = $퍁->params[0];
 		{
 			$this->o->writeByte(95);
 			$this->idx($d2);
 		}break;
-		case 57:
+		case 60:
 		$p9 = $퍁->params[0];
 		{
 			$this->o->writeByte(96);
 			$this->idx($p9);
 		}break;
-		case 58:
+		case 61:
 		$p10 = $퍁->params[0];
 		{
 			$this->o->writeByte(97);
 			$this->idx($p10);
 		}break;
-		case 59:
+		case 62:
 		$r3 = $퍁->params[0];
 		{
 			switch($r3) {
@@ -712,7 +727,7 @@ class format_abc_OpWriter {
 			}break;
 			}
 		}break;
-		case 60:
+		case 63:
 		$r4 = $퍁->params[0];
 		{
 			switch($r4) {
@@ -734,153 +749,165 @@ class format_abc_OpWriter {
 			}break;
 			}
 		}break;
-		case 61:
+		case 64:
 		{
 			$this->o->writeByte(100);
 		}break;
-		case 62:
+		case 65:
 		$n15 = $퍁->params[0];
 		{
 			$this->o->writeByte(101);
 			$this->o->writeByte($n15);
 		}break;
-		case 63:
+		case 66:
 		$p11 = $퍁->params[0];
 		{
 			$this->o->writeByte(102);
 			$this->idx($p11);
 		}break;
-		case 64:
+		case 67:
 		$p12 = $퍁->params[0];
 		{
 			$this->o->writeByte(104);
 			$this->idx($p12);
 		}break;
-		case 65:
+		case 68:
 		$p13 = $퍁->params[0];
 		{
 			$this->o->writeByte(106);
 			$this->idx($p13);
 		}break;
-		case 66:
+		case 69:
 		$s2 = $퍁->params[0];
 		{
 			$this->o->writeByte(108);
 			$this->int($s2);
 		}break;
-		case 67:
+		case 70:
 		$s3 = $퍁->params[0];
 		{
 			$this->o->writeByte(109);
 			$this->int($s3);
 		}break;
-		case 68:
-		{
-			$this->o->writeByte(112);
-		}break;
-		case 69:
-		{
-			$this->o->writeByte(113);
-		}break;
-		case 70:
-		{
-			$this->o->writeByte(114);
-		}break;
 		case 71:
+		$s4 = $퍁->params[0];
 		{
-			$this->o->writeByte(115);
+			$this->o->writeByte(110);
+			$this->int($s4);
 		}break;
 		case 72:
+		$s5 = $퍁->params[0];
 		{
-			$this->o->writeByte(116);
+			$this->o->writeByte(111);
+			$this->int($s5);
 		}break;
 		case 73:
 		{
-			$this->o->writeByte(117);
+			$this->o->writeByte(112);
 		}break;
 		case 74:
 		{
-			$this->o->writeByte(118);
+			$this->o->writeByte(113);
 		}break;
 		case 75:
 		{
-			$this->o->writeByte(119);
+			$this->o->writeByte(114);
 		}break;
 		case 76:
 		{
-			$this->o->writeByte(120);
+			$this->o->writeByte(115);
 		}break;
 		case 77:
+		{
+			$this->o->writeByte(116);
+		}break;
+		case 78:
+		{
+			$this->o->writeByte(117);
+		}break;
+		case 79:
+		{
+			$this->o->writeByte(118);
+		}break;
+		case 80:
+		{
+			$this->o->writeByte(119);
+		}break;
+		case 81:
+		{
+			$this->o->writeByte(120);
+		}break;
+		case 82:
 		$t = $퍁->params[0];
 		{
 			$this->o->writeByte(128);
 			$this->idx($t);
 		}break;
-		case 78:
+		case 83:
 		{
 			$this->o->writeByte(130);
 		}break;
-		case 79:
+		case 84:
 		{
 			$this->o->writeByte(133);
 		}break;
-		case 80:
+		case 85:
 		$t2 = $퍁->params[0];
 		{
 			$this->o->writeByte(134);
 			$this->idx($t2);
 		}break;
-		case 81:
+		case 86:
 		{
 			$this->o->writeByte(137);
 		}break;
-		case 82:
+		case 87:
 		$r5 = $퍁->params[0];
 		{
 			$this->o->writeByte(146);
 			$this->reg($r5);
 		}break;
-		case 83:
+		case 88:
 		$r6 = $퍁->params[0];
 		{
 			$this->o->writeByte(148);
 			$this->reg($r6);
 		}break;
-		case 84:
+		case 89:
 		{
 			$this->o->writeByte(149);
 		}break;
-		case 85:
+		case 90:
 		{
 			$this->o->writeByte(177);
 		}break;
-		case 86:
+		case 91:
 		$t3 = $퍁->params[0];
 		{
 			$this->o->writeByte(178);
 			$this->idx($t3);
 		}break;
-		case 87:
+		case 92:
 		$r7 = $퍁->params[0];
 		{
 			$this->o->writeByte(194);
 			$this->reg($r7);
 		}break;
-		case 88:
+		case 93:
 		$r8 = $퍁->params[0];
 		{
 			$this->o->writeByte(195);
 			$this->reg($r8);
 		}break;
-		case 89:
+		case 94:
 		{
 			$this->o->writeByte(208);
 		}break;
-		case 90:
+		case 95:
 		{
 			$this->o->writeByte(212);
 		}break;
-		case 91:
+		case 96:
 		$line = $퍁->params[2]; $r9 = $퍁->params[1]; $name = $퍁->params[0];
 		{
 			$this->o->writeByte(239);
@@ -889,34 +916,34 @@ class format_abc_OpWriter {
 			$this->reg($r9);
 			$this->int($line);
 		}break;
-		case 92:
+		case 97:
 		$line2 = $퍁->params[0];
 		{
 			$this->o->writeByte(240);
 			$this->int($line2);
 		}break;
-		case 93:
+		case 98:
 		$file = $퍁->params[0];
 		{
 			$this->o->writeByte(241);
 			$this->idx($file);
 		}break;
-		case 94:
+		case 99:
 		$n16 = $퍁->params[0];
 		{
 			$this->o->writeByte(242);
 			$this->int($n16);
 		}break;
-		case 95:
+		case 100:
 		{
 			$this->o->writeByte(243);
 		}break;
-		case 96:
+		case 101:
 		$op1 = $퍁->params[0];
 		{
 			$this->o->writeByte($this->operationCode($op1));
 		}break;
-		case 97:
+		case 102:
 		$byte = $퍁->params[0];
 		{
 			$this->o->writeByte($byte);

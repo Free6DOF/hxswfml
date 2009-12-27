@@ -15,11 +15,14 @@
 #ifndef INCLUDED_StringTools
 #include <StringTools.h>
 #endif
-#ifndef INCLUDED_be_haxer_hxgraphix_HxGraphix
-#include <be/haxer/hxgraphix/HxGraphix.h>
-#endif
 #ifndef INCLUDED_be_haxer_hxswfml_HXswfML
 #include <be/haxer/hxswfml/HXswfML.h>
+#endif
+#ifndef INCLUDED_be_haxer_hxswfml_HxGraphix
+#include <be/haxer/hxswfml/HxGraphix.h>
+#endif
+#ifndef INCLUDED_be_haxer_hxswfml_Hxavm2
+#include <be/haxer/hxswfml/Hxavm2.h>
 #endif
 #ifndef INCLUDED_cpp_CppDate__
 #include <cpp/CppDate__.h>
@@ -47,6 +50,9 @@
 #endif
 #ifndef INCLUDED_format_abc_Index
 #include <format/abc/Index.h>
+#endif
+#ifndef INCLUDED_format_abc_MethodKind
+#include <format/abc/MethodKind.h>
 #endif
 #ifndef INCLUDED_format_abc_OpCode
 #include <format/abc/OpCode.h>
@@ -401,7 +407,7 @@ format::swf::SWFTag HXswfML_obj::defineShape( ){
 		return format::swf::SWFTag_obj::TShape(id,format::swf::ShapeData_obj::SHDShape1(bounds,shapeWithStyle));
 	}
 	else{
-		be::haxer::hxgraphix::HxGraphix hxg = be::haxer::hxgraphix::HxGraphix_obj::__new();
+		be::haxer::hxswfml::HxGraphix hxg = be::haxer::hxswfml::HxGraphix_obj::__new(null());
 		for(Dynamic __it = this->currentTag->elements();  __it->__Field(STRING(L"hasNext",7))(); ){
 cpp::CppXml__ cmd = __it->__Field(STRING(L"next",4))();
 			{
@@ -458,7 +464,13 @@ cpp::CppXml__ cmd = __it->__Field(STRING(L"next",4))();
 					Dynamic width = this->getFloat(STRING(L"width",5),1.0,null());
 					Dynamic color = this->getInt(STRING(L"color",5),0,null(),null(),null());
 					Dynamic alpha = this->getFloat(STRING(L"alpha",5),1.0,null());
-					hxg->lineStyle(width,color,alpha);
+					Dynamic pixelHinting = this->getBool(STRING(L"pixelHinting",12),null(),null());
+					String scaleMode = this->getString(STRING(L"scaleMode",9),null(),null());
+					String caps = this->getString(STRING(L"caps",4),null(),null());
+					String joints = this->getString(STRING(L"joints",6),null(),null());
+					Dynamic miterLimit = this->getInt(STRING(L"miterLimit",10),null(),null(),null(),null());
+					Dynamic noClose = this->getBool(STRING(L"noClose",7),null(),null());
+					hxg->lineStyle(width,color,alpha,pixelHinting,scaleMode,caps,joints,miterLimit,noClose);
 				}
 				else if (  ( _switch_2==STRING(L"moveto",6))){
 					Dynamic x = this->getFloat(STRING(L"x",1),0.0,null());
@@ -534,7 +546,7 @@ cpp::CppXml__ cmd = __it->__Field(STRING(L"next",4))();
 			}
 ;
 		}
-		return hxg->getTag(id);
+		return hxg->getTag(id,null(),null(),null());
 	}
 }
 
@@ -607,10 +619,10 @@ cpp::CppXml__ buttonRecord = __it->__Field(STRING(L"next",4))();
 			this->checkUnknownAttributes();
 			String _switch_5 = (this->currentTag->getNodeName().toLowerCase());
 			if (  ( _switch_5==STRING(L"buttonstate",11))){
-				bool hit = this->getBool(STRING(L"hit",3),false,null());
-				bool down = this->getBool(STRING(L"down",4),false,null());
-				bool over = this->getBool(STRING(L"over",4),false,null());
-				bool up = this->getBool(STRING(L"up",2),false,null());
+				Dynamic hit = this->getBool(STRING(L"hit",3),false,null());
+				Dynamic down = this->getBool(STRING(L"down",4),false,null());
+				Dynamic over = this->getBool(STRING(L"over",4),false,null());
+				Dynamic up = this->getBool(STRING(L"up",2),false,null());
 				if (bool(hit == false) && bool(bool(down == false) && bool(bool(over == false) && bool(up == false)))){
 					this->error(STRING(L"!ERROR: You need to set at least one button state to true. TAG: ",64) + this->currentTag->toString());
 				}
@@ -766,46 +778,66 @@ DEFINE_DYNAMIC_FUNC0(HXswfML_obj,defineEditText,return )
 
 Array<format::swf::SWFTag > HXswfML_obj::defineABC( ){
 	Array<format::swf::SWFTag > abcTags = Array_obj<format::swf::SWFTag >::__new();
-	String remap = this->getString(STRING(L"remap",5),STRING(L"",0),null());
-	String file = this->getString(STRING(L"file",4),STRING(L"",0),true);
 	String name = this->getString(STRING(L"name",4),null(),false);
-	haxe::io::Bytes swf = this->getBytes(file);
-	if (StringTools_obj::endsWith(file,STRING(L".abc",4))){
-		abcTags->push(format::swf::SWFTag_obj::TActionScript3(swf,name == null() ? Dynamic( null() ) : Dynamic( hxAnon_obj::Create()->Add( STRING(L"id",2) , 1)->Add( STRING(L"label",5) , name) )));
+	String remap = this->getString(STRING(L"remap",5),STRING(L"",0),null());
+	String file;
+	if (this->currentTag->elements()->__Field(STRING(L"hasNext",7))()){
+		be::haxer::hxswfml::Hxavm2 hxavm2 = be::haxer::hxswfml::Hxavm2_obj::__new();
+		hxavm2->name = name;
+		abcTags = hxavm2->xml2abc(this->currentTag->elements()->__Field(STRING(L"next",4))()->toString());
 	}
 	else{
-		haxe::io::BytesInput swfBytesInput = haxe::io::BytesInput_obj::__new(swf,null(),null());
-		format::swf::Reader swfReader = format::swf::Reader_obj::__new(swfBytesInput);
-		Dynamic header = swfReader->readHeader();
-		Array<format::swf::SWFTag > tags = swfReader->readTagList();
-		swfBytesInput->close();
-		Array<String > lookupStrings = Array_obj<String >::__new().Add(STRING(L"Boot",4)).Add(STRING(L"Lib",3)).Add(STRING(L"Type",4));
-		{
-			int _g = 0;
-			while(_g < tags->length){
-				format::swf::SWFTag tag = tags->__get(_g);
-				++_g;
-				format::swf::SWFTag _switch_9 = (tag);
-				switch((_switch_9)->GetIndex()){
-					case 13: {
-						Dynamic ctx = _switch_9->__Param(1);
-						haxe::io::Bytes data = _switch_9->__Param(0);
+		file = this->getString(STRING(L"file",4),STRING(L"",0),true);
+		if (StringTools_obj::endsWith(file,STRING(L".abc",4))){
+			haxe::io::Bytes abc = this->getBytes(file);
+			abcTags->push(format::swf::SWFTag_obj::TActionScript3(abc,name == null() ? Dynamic( null() ) : Dynamic( hxAnon_obj::Create()->Add( STRING(L"id",2) , 1)->Add( STRING(L"label",5) , name) )));
+		}
+		else
+			if (StringTools_obj::endsWith(file,STRING(L".swf",4))){
+			haxe::io::Bytes swf = this->getBytes(file);
+			haxe::io::BytesInput swfBytesInput = haxe::io::BytesInput_obj::__new(swf,null(),null());
+			format::swf::Reader swfReader = format::swf::Reader_obj::__new(swfBytesInput);
+			Dynamic header = swfReader->readHeader();
+			Array<format::swf::SWFTag > tags = swfReader->readTagList();
+			swfBytesInput->close();
+			Array<String > lookupStrings = Array_obj<String >::__new().Add(STRING(L"Boot",4)).Add(STRING(L"Lib",3)).Add(STRING(L"Type",4));
+			{
+				int _g = 0;
+				while(_g < tags->length){
+					format::swf::SWFTag tag = tags->__get(_g);
+					++_g;
+					format::swf::SWFTag _switch_9 = (tag);
+					switch((_switch_9)->GetIndex()){
+						case 13: {
+							Dynamic ctx = _switch_9->__Param(1);
+							haxe::io::Bytes data = _switch_9->__Param(0);
 {
-							if (remap == STRING(L"",0)){
-								abcTags->push(format::swf::SWFTag_obj::TActionScript3(data,ctx));
-							}
-							else{
+								if (remap == STRING(L"",0)){
+									abcTags->push(format::swf::SWFTag_obj::TActionScript3(data,ctx));
+								}
+								else{
+								}
 							}
 						}
-					}
-					break;
-					default: {
+						break;
+						default: {
+						}
 					}
 				}
 			}
+			if (abcTags->length == 0)
+				this->error(STRING(L"!ERROR: No ABC files were found inside the given file ",54) + file + STRING(L". TAG : ",8) + this->currentTag->toString());
 		}
-		if (abcTags->length == 0)
-			this->error(STRING(L"!ERROR: No ABC files were found inside the given file ",54) + file + STRING(L". TAG : ",8) + this->currentTag->toString());
+		else
+			if (StringTools_obj::endsWith(file,STRING(L".xml",4))){
+			String xml = this->getContent(file);
+			be::haxer::hxswfml::Hxavm2 hxavm2 = be::haxer::hxswfml::Hxavm2_obj::__new();
+			hxavm2->name = name;
+			abcTags = hxavm2->xml2abc(xml);
+		}
+;
+;
+;
 	}
 	return abcTags;
 }
@@ -832,7 +864,7 @@ format::swf::SWFTag HXswfML_obj::placeObject2( ){
 		this->checkTargetId(id);
 	int depth = this->getInt(STRING(L"depth",5),null(),true,null(),null());
 	String name = this->getString(STRING(L"name",4),STRING(L"",0),null());
-	bool move = this->getBool(STRING(L"move",4),false,null());
+	Dynamic move = this->getBool(STRING(L"move",4),false,null());
 	format::swf::PlaceObject placeObject = format::swf::PlaceObject_obj::__new();
 	placeObject->depth = depth;
 	placeObject->move = !move ? Dynamic( null() ) : Dynamic( true );
@@ -1064,7 +1096,7 @@ DEFINE_DYNAMIC_FUNC0(HXswfML_obj,metadata,return )
 
 format::swf::SWFTag HXswfML_obj::frameLabel( ){
 	String label = this->getString(STRING(L"name",4),STRING(L"",0),true);
-	bool anchor = this->getBool(STRING(L"anchor",6),false,null());
+	Dynamic anchor = this->getBool(STRING(L"anchor",6),false,null());
 	return format::swf::SWFTag_obj::TFrameLabel(label,anchor);
 }
 
@@ -1137,7 +1169,7 @@ Void HXswfML_obj::storeWidthHeight( int id,String fileName,haxe::io::Bytes b){
 			}
 		}
 		else
-			if (extension.toLowerCase() == STRING(L"png",3)){
+			if (extension == STRING(L"png",3)){
 			bytes->setEndian(true);
 			bytes->readInt32();
 			bytes->readInt32();
@@ -1147,7 +1179,7 @@ Void HXswfML_obj::storeWidthHeight( int id,String fileName,haxe::io::Bytes b){
 			height = bytes->readUInt30();
 		}
 		else
-			if (extension.toLowerCase() == STRING(L"gif",3)){
+			if (extension == STRING(L"gif",3)){
 			bytes->setEndian(false);
 			bytes->readInt32();
 			bytes->readUInt16();
@@ -1167,7 +1199,7 @@ DEFINE_DYNAMIC_FUNC3(HXswfML_obj,storeWidthHeight,(void))
 
 format::swf::SWFTag HXswfML_obj::createABC( String className,String baseClass){
 	format::abc::Context ctx = format::abc::Context_obj::__new();
-	Dynamic c = ctx->beginClass(className);
+	Dynamic c = ctx->beginClass(className,null());
 	c.FieldRef(STRING(L"superclass",10)) = ctx->type(baseClass);
 	String _switch_12 = (baseClass);
 	if (  ( _switch_12==STRING(L"flash.display.MovieClip",23))){
@@ -1206,7 +1238,7 @@ format::swf::SWFTag HXswfML_obj::createABC( String className,String baseClass){
 	else if (  ( _switch_12==STRING(L"flash.utils.ByteArray",21))){
 		ctx->addClassSuper(STRING(L"flash.utils.ByteArray",21));
 	}
-	Dynamic m = ctx->beginMethod(className,Array_obj<format::abc::Index >::__new(),null(),false,false,false,true);
+	Dynamic m = ctx->beginMethod(className,Array_obj<format::abc::Index >::__new(),null(),false,false,false,true,null(),null(),null());
 	m.FieldRef(STRING(L"maxStack",8)) = 2;
 	c.FieldRef(STRING(L"constructor",11)) = m->__Field(STRING(L"type",4)).Cast<format::abc::Index >();
 	ctx->ops(Array_obj<format::abc::OpCode >::__new().Add(format::abc::OpCode_obj::OThis).Add(format::abc::OpCode_obj::OConstructSuper(0)).Add(format::abc::OpCode_obj::ORetVoid));
@@ -1257,13 +1289,13 @@ bool targetId = __o_targetId.Default(false);
 
 DEFINE_DYNAMIC_FUNC5(HXswfML_obj,getInt,return )
 
-bool HXswfML_obj::getBool( String att,bool defaultValue,Dynamic __o_required){
+Dynamic HXswfML_obj::getBool( String att,Dynamic defaultValue,Dynamic __o_required){
 bool required = __o_required.Default(false);
 {
 		if (required)
 			if (!this->currentTag->exists(att))
 			this->error(STRING(L"!ERROR: Required attribute ",27) + att + STRING(L" is missing in tag: ",20) + this->currentTag);
-		return this->currentTag->exists(att) ? bool( (this->currentTag->get(att) == STRING(L"true",4) ? bool( true ) : bool( false )) ) : bool( defaultValue );
+		return this->currentTag->exists(att) ? Dynamic( (this->currentTag->get(att) == STRING(L"true",4) ? bool( true ) : bool( false )) ) : Dynamic( defaultValue );
 	}
 }
 

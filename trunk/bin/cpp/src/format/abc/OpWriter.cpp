@@ -501,6 +501,13 @@ Void OpWriter_obj::write( format::abc::OpCode op){
 			}
 			break;
 			case 9: {
+				String landingName = _switch_4->__Param(0);
+{
+					return null();
+				}
+			}
+			break;
+			case 10: {
 				int delta = _switch_4->__Param(1);
 				format::abc::JumpStyle j = _switch_4->__Param(0);
 {
@@ -509,7 +516,23 @@ Void OpWriter_obj::write( format::abc::OpCode op){
 				}
 			}
 			break;
-			case 10: {
+			case 11: {
+				int delta = _switch_4->__Param(2);
+				String landingName = _switch_4->__Param(1);
+				format::abc::JumpStyle j = _switch_4->__Param(0);
+{
+					return null();
+				}
+			}
+			break;
+			case 12: {
+				String landingName = _switch_4->__Param(0);
+{
+					return null();
+				}
+			}
+			break;
+			case 13: {
 				Array<int > deltas = _switch_4->__Param(1);
 				int def = _switch_4->__Param(0);
 {
@@ -527,35 +550,35 @@ Void OpWriter_obj::write( format::abc::OpCode op){
 				}
 			}
 			break;
-			case 11: {
+			case 14: {
 				this->o->writeByte(28);
 			}
 			break;
-			case 12: {
+			case 15: {
 				this->o->writeByte(29);
 			}
 			break;
-			case 13: {
+			case 16: {
 				this->o->writeByte(30);
 			}
 			break;
-			case 14: {
+			case 17: {
 				this->o->writeByte(31);
 			}
 			break;
-			case 15: {
+			case 18: {
 				this->o->writeByte(32);
 			}
 			break;
-			case 16: {
+			case 19: {
 				this->o->writeByte(33);
 			}
 			break;
-			case 17: {
+			case 20: {
 				this->o->writeByte(35);
 			}
 			break;
-			case 18: {
+			case 21: {
 				int v = _switch_4->__Param(0);
 {
 					this->o->writeByte(36);
@@ -563,7 +586,7 @@ Void OpWriter_obj::write( format::abc::OpCode op){
 				}
 			}
 			break;
-			case 19: {
+			case 22: {
 				int v = _switch_4->__Param(0);
 {
 					this->o->writeByte(37);
@@ -571,31 +594,31 @@ Void OpWriter_obj::write( format::abc::OpCode op){
 				}
 			}
 			break;
-			case 20: {
+			case 23: {
 				this->o->writeByte(38);
 			}
 			break;
-			case 21: {
+			case 24: {
 				this->o->writeByte(39);
 			}
 			break;
-			case 22: {
+			case 25: {
 				this->o->writeByte(40);
 			}
 			break;
-			case 23: {
+			case 26: {
 				this->o->writeByte(41);
 			}
 			break;
-			case 24: {
+			case 27: {
 				this->o->writeByte(42);
 			}
 			break;
-			case 25: {
+			case 28: {
 				this->o->writeByte(43);
 			}
 			break;
-			case 26: {
+			case 29: {
 				format::abc::Index v = _switch_4->__Param(0);
 {
 					this->o->writeByte(44);
@@ -603,7 +626,7 @@ Void OpWriter_obj::write( format::abc::OpCode op){
 				}
 			}
 			break;
-			case 27: {
+			case 30: {
 				format::abc::Index v = _switch_4->__Param(0);
 {
 					this->o->writeByte(45);
@@ -611,7 +634,7 @@ Void OpWriter_obj::write( format::abc::OpCode op){
 				}
 			}
 			break;
-			case 28: {
+			case 31: {
 				format::abc::Index v = _switch_4->__Param(0);
 {
 					this->o->writeByte(46);
@@ -619,7 +642,7 @@ Void OpWriter_obj::write( format::abc::OpCode op){
 				}
 			}
 			break;
-			case 29: {
+			case 32: {
 				format::abc::Index v = _switch_4->__Param(0);
 {
 					this->o->writeByte(47);
@@ -627,11 +650,11 @@ Void OpWriter_obj::write( format::abc::OpCode op){
 				}
 			}
 			break;
-			case 30: {
+			case 33: {
 				this->o->writeByte(48);
 			}
 			break;
-			case 31: {
+			case 34: {
 				format::abc::Index v = _switch_4->__Param(0);
 {
 					this->o->writeByte(49);
@@ -639,7 +662,7 @@ Void OpWriter_obj::write( format::abc::OpCode op){
 				}
 			}
 			break;
-			case 32: {
+			case 35: {
 				int r2 = _switch_4->__Param(1);
 				int r1 = _switch_4->__Param(0);
 {
@@ -649,7 +672,7 @@ Void OpWriter_obj::write( format::abc::OpCode op){
 				}
 			}
 			break;
-			case 33: {
+			case 36: {
 				format::abc::Index f = _switch_4->__Param(0);
 {
 					this->o->writeByte(64);
@@ -657,7 +680,7 @@ Void OpWriter_obj::write( format::abc::OpCode op){
 				}
 			}
 			break;
-			case 34: {
+			case 37: {
 				int n = _switch_4->__Param(0);
 {
 					this->o->writeByte(65);
@@ -665,7 +688,7 @@ Void OpWriter_obj::write( format::abc::OpCode op){
 				}
 			}
 			break;
-			case 35: {
+			case 38: {
 				int n = _switch_4->__Param(0);
 {
 					this->o->writeByte(66);
@@ -673,7 +696,7 @@ Void OpWriter_obj::write( format::abc::OpCode op){
 				}
 			}
 			break;
-			case 36: {
+			case 39: {
 				int n = _switch_4->__Param(1);
 				int s = _switch_4->__Param(0);
 {
@@ -683,7 +706,7 @@ Void OpWriter_obj::write( format::abc::OpCode op){
 				}
 			}
 			break;
-			case 37: {
+			case 40: {
 				int n = _switch_4->__Param(1);
 				format::abc::Index m = _switch_4->__Param(0);
 {
@@ -693,7 +716,7 @@ Void OpWriter_obj::write( format::abc::OpCode op){
 				}
 			}
 			break;
-			case 38: {
+			case 41: {
 				int n = _switch_4->__Param(1);
 				format::abc::Index p = _switch_4->__Param(0);
 {
@@ -703,7 +726,7 @@ Void OpWriter_obj::write( format::abc::OpCode op){
 				}
 			}
 			break;
-			case 39: {
+			case 42: {
 				int n = _switch_4->__Param(1);
 				format::abc::Index p = _switch_4->__Param(0);
 {
@@ -713,15 +736,15 @@ Void OpWriter_obj::write( format::abc::OpCode op){
 				}
 			}
 			break;
-			case 40: {
+			case 43: {
 				this->o->writeByte(71);
 			}
 			break;
-			case 41: {
+			case 44: {
 				this->o->writeByte(72);
 			}
 			break;
-			case 42: {
+			case 45: {
 				int n = _switch_4->__Param(0);
 {
 					this->o->writeByte(73);
@@ -729,7 +752,7 @@ Void OpWriter_obj::write( format::abc::OpCode op){
 				}
 			}
 			break;
-			case 43: {
+			case 46: {
 				int n = _switch_4->__Param(1);
 				format::abc::Index p = _switch_4->__Param(0);
 {
@@ -739,7 +762,7 @@ Void OpWriter_obj::write( format::abc::OpCode op){
 				}
 			}
 			break;
-			case 44: {
+			case 47: {
 				int n = _switch_4->__Param(1);
 				format::abc::Index p = _switch_4->__Param(0);
 {
@@ -749,7 +772,7 @@ Void OpWriter_obj::write( format::abc::OpCode op){
 				}
 			}
 			break;
-			case 45: {
+			case 48: {
 				int n = _switch_4->__Param(1);
 				format::abc::Index p = _switch_4->__Param(0);
 {
@@ -759,7 +782,7 @@ Void OpWriter_obj::write( format::abc::OpCode op){
 				}
 			}
 			break;
-			case 46: {
+			case 49: {
 				int n = _switch_4->__Param(1);
 				format::abc::Index p = _switch_4->__Param(0);
 {
@@ -769,7 +792,7 @@ Void OpWriter_obj::write( format::abc::OpCode op){
 				}
 			}
 			break;
-			case 47: {
+			case 50: {
 				int n = _switch_4->__Param(0);
 {
 					this->o->writeByte(83);
@@ -777,7 +800,7 @@ Void OpWriter_obj::write( format::abc::OpCode op){
 				}
 			}
 			break;
-			case 48: {
+			case 51: {
 				int n = _switch_4->__Param(0);
 {
 					this->o->writeByte(85);
@@ -785,7 +808,7 @@ Void OpWriter_obj::write( format::abc::OpCode op){
 				}
 			}
 			break;
-			case 49: {
+			case 52: {
 				int n = _switch_4->__Param(0);
 {
 					this->o->writeByte(86);
@@ -793,11 +816,11 @@ Void OpWriter_obj::write( format::abc::OpCode op){
 				}
 			}
 			break;
-			case 50: {
+			case 53: {
 				this->o->writeByte(87);
 			}
 			break;
-			case 51: {
+			case 54: {
 				format::abc::Index c = _switch_4->__Param(0);
 {
 					this->o->writeByte(88);
@@ -805,7 +828,7 @@ Void OpWriter_obj::write( format::abc::OpCode op){
 				}
 			}
 			break;
-			case 52: {
+			case 55: {
 				format::abc::Index i = _switch_4->__Param(0);
 {
 					this->o->writeByte(89);
@@ -813,7 +836,7 @@ Void OpWriter_obj::write( format::abc::OpCode op){
 				}
 			}
 			break;
-			case 53: {
+			case 56: {
 				int c = _switch_4->__Param(0);
 {
 					this->o->writeByte(90);
@@ -821,7 +844,7 @@ Void OpWriter_obj::write( format::abc::OpCode op){
 				}
 			}
 			break;
-			case 54: {
+			case 57: {
 				format::abc::Index p = _switch_4->__Param(0);
 {
 					this->o->writeByte(93);
@@ -829,7 +852,7 @@ Void OpWriter_obj::write( format::abc::OpCode op){
 				}
 			}
 			break;
-			case 55: {
+			case 58: {
 				format::abc::Index p = _switch_4->__Param(0);
 {
 					this->o->writeByte(94);
@@ -837,7 +860,7 @@ Void OpWriter_obj::write( format::abc::OpCode op){
 				}
 			}
 			break;
-			case 56: {
+			case 59: {
 				format::abc::Index d = _switch_4->__Param(0);
 {
 					this->o->writeByte(95);
@@ -845,7 +868,7 @@ Void OpWriter_obj::write( format::abc::OpCode op){
 				}
 			}
 			break;
-			case 57: {
+			case 60: {
 				format::abc::Index p = _switch_4->__Param(0);
 {
 					this->o->writeByte(96);
@@ -853,7 +876,7 @@ Void OpWriter_obj::write( format::abc::OpCode op){
 				}
 			}
 			break;
-			case 58: {
+			case 61: {
 				format::abc::Index p = _switch_4->__Param(0);
 {
 					this->o->writeByte(97);
@@ -861,7 +884,7 @@ Void OpWriter_obj::write( format::abc::OpCode op){
 				}
 			}
 			break;
-			case 59: {
+			case 62: {
 				int r = _switch_4->__Param(0);
 {
 					switch( (int)(r)){
@@ -889,7 +912,7 @@ Void OpWriter_obj::write( format::abc::OpCode op){
 				}
 			}
 			break;
-			case 60: {
+			case 63: {
 				int r = _switch_4->__Param(0);
 {
 					switch( (int)(r)){
@@ -917,11 +940,11 @@ Void OpWriter_obj::write( format::abc::OpCode op){
 				}
 			}
 			break;
-			case 61: {
+			case 64: {
 				this->o->writeByte(100);
 			}
 			break;
-			case 62: {
+			case 65: {
 				int n = _switch_4->__Param(0);
 {
 					this->o->writeByte(101);
@@ -929,7 +952,7 @@ Void OpWriter_obj::write( format::abc::OpCode op){
 				}
 			}
 			break;
-			case 63: {
+			case 66: {
 				format::abc::Index p = _switch_4->__Param(0);
 {
 					this->o->writeByte(102);
@@ -937,7 +960,7 @@ Void OpWriter_obj::write( format::abc::OpCode op){
 				}
 			}
 			break;
-			case 64: {
+			case 67: {
 				format::abc::Index p = _switch_4->__Param(0);
 {
 					this->o->writeByte(104);
@@ -945,7 +968,7 @@ Void OpWriter_obj::write( format::abc::OpCode op){
 				}
 			}
 			break;
-			case 65: {
+			case 68: {
 				format::abc::Index p = _switch_4->__Param(0);
 {
 					this->o->writeByte(106);
@@ -953,7 +976,7 @@ Void OpWriter_obj::write( format::abc::OpCode op){
 				}
 			}
 			break;
-			case 66: {
+			case 69: {
 				int s = _switch_4->__Param(0);
 {
 					this->o->writeByte(108);
@@ -961,7 +984,7 @@ Void OpWriter_obj::write( format::abc::OpCode op){
 				}
 			}
 			break;
-			case 67: {
+			case 70: {
 				int s = _switch_4->__Param(0);
 {
 					this->o->writeByte(109);
@@ -969,43 +992,59 @@ Void OpWriter_obj::write( format::abc::OpCode op){
 				}
 			}
 			break;
-			case 68: {
-				this->o->writeByte(112);
-			}
-			break;
-			case 69: {
-				this->o->writeByte(113);
-			}
-			break;
-			case 70: {
-				this->o->writeByte(114);
-			}
-			break;
 			case 71: {
-				this->o->writeByte(115);
+				int s = _switch_4->__Param(0);
+{
+					this->o->writeByte(110);
+					this->toInt(s);
+				}
 			}
 			break;
 			case 72: {
-				this->o->writeByte(116);
+				int s = _switch_4->__Param(0);
+{
+					this->o->writeByte(111);
+					this->toInt(s);
+				}
 			}
 			break;
 			case 73: {
-				this->o->writeByte(117);
+				this->o->writeByte(112);
 			}
 			break;
 			case 74: {
-				this->o->writeByte(118);
+				this->o->writeByte(113);
 			}
 			break;
 			case 75: {
-				this->o->writeByte(119);
+				this->o->writeByte(114);
 			}
 			break;
 			case 76: {
-				this->o->writeByte(120);
+				this->o->writeByte(115);
 			}
 			break;
 			case 77: {
+				this->o->writeByte(116);
+			}
+			break;
+			case 78: {
+				this->o->writeByte(117);
+			}
+			break;
+			case 79: {
+				this->o->writeByte(118);
+			}
+			break;
+			case 80: {
+				this->o->writeByte(119);
+			}
+			break;
+			case 81: {
+				this->o->writeByte(120);
+			}
+			break;
+			case 82: {
 				format::abc::Index t = _switch_4->__Param(0);
 {
 					this->o->writeByte(128);
@@ -1013,15 +1052,15 @@ Void OpWriter_obj::write( format::abc::OpCode op){
 				}
 			}
 			break;
-			case 78: {
+			case 83: {
 				this->o->writeByte(130);
 			}
 			break;
-			case 79: {
+			case 84: {
 				this->o->writeByte(133);
 			}
 			break;
-			case 80: {
+			case 85: {
 				format::abc::Index t = _switch_4->__Param(0);
 {
 					this->o->writeByte(134);
@@ -1029,11 +1068,11 @@ Void OpWriter_obj::write( format::abc::OpCode op){
 				}
 			}
 			break;
-			case 81: {
+			case 86: {
 				this->o->writeByte(137);
 			}
 			break;
-			case 82: {
+			case 87: {
 				int r = _switch_4->__Param(0);
 {
 					this->o->writeByte(146);
@@ -1041,7 +1080,7 @@ Void OpWriter_obj::write( format::abc::OpCode op){
 				}
 			}
 			break;
-			case 83: {
+			case 88: {
 				int r = _switch_4->__Param(0);
 {
 					this->o->writeByte(148);
@@ -1049,15 +1088,15 @@ Void OpWriter_obj::write( format::abc::OpCode op){
 				}
 			}
 			break;
-			case 84: {
+			case 89: {
 				this->o->writeByte(149);
 			}
 			break;
-			case 85: {
+			case 90: {
 				this->o->writeByte(177);
 			}
 			break;
-			case 86: {
+			case 91: {
 				format::abc::Index t = _switch_4->__Param(0);
 {
 					this->o->writeByte(178);
@@ -1065,7 +1104,7 @@ Void OpWriter_obj::write( format::abc::OpCode op){
 				}
 			}
 			break;
-			case 87: {
+			case 92: {
 				int r = _switch_4->__Param(0);
 {
 					this->o->writeByte(194);
@@ -1073,7 +1112,7 @@ Void OpWriter_obj::write( format::abc::OpCode op){
 				}
 			}
 			break;
-			case 88: {
+			case 93: {
 				int r = _switch_4->__Param(0);
 {
 					this->o->writeByte(195);
@@ -1081,15 +1120,15 @@ Void OpWriter_obj::write( format::abc::OpCode op){
 				}
 			}
 			break;
-			case 89: {
+			case 94: {
 				this->o->writeByte(208);
 			}
 			break;
-			case 90: {
+			case 95: {
 				this->o->writeByte(212);
 			}
 			break;
-			case 91: {
+			case 96: {
 				int line = _switch_4->__Param(2);
 				int r = _switch_4->__Param(1);
 				format::abc::Index name = _switch_4->__Param(0);
@@ -1102,7 +1141,7 @@ Void OpWriter_obj::write( format::abc::OpCode op){
 				}
 			}
 			break;
-			case 92: {
+			case 97: {
 				int line = _switch_4->__Param(0);
 {
 					this->o->writeByte(240);
@@ -1110,7 +1149,7 @@ Void OpWriter_obj::write( format::abc::OpCode op){
 				}
 			}
 			break;
-			case 93: {
+			case 98: {
 				format::abc::Index file = _switch_4->__Param(0);
 {
 					this->o->writeByte(241);
@@ -1118,7 +1157,7 @@ Void OpWriter_obj::write( format::abc::OpCode op){
 				}
 			}
 			break;
-			case 94: {
+			case 99: {
 				int n = _switch_4->__Param(0);
 {
 					this->o->writeByte(242);
@@ -1126,18 +1165,18 @@ Void OpWriter_obj::write( format::abc::OpCode op){
 				}
 			}
 			break;
-			case 95: {
+			case 100: {
 				this->o->writeByte(243);
 			}
 			break;
-			case 96: {
+			case 101: {
 				format::abc::Operation op1 = _switch_4->__Param(0);
 {
 					this->o->writeByte(this->operationCode(op1));
 				}
 			}
 			break;
-			case 97: {
+			case 102: {
 				int byte = _switch_4->__Param(0);
 {
 					this->o->writeByte(byte);

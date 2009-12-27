@@ -2947,11 +2947,17 @@ Void Writer_obj::writeDefineEditText( Dynamic data){
 		this->bits->writeBit(data->__Field(STRING(L"wasStatic",9)).Cast<bool >());
 		this->bits->writeBit(data->__Field(STRING(L"html",4)).Cast<bool >());
 		this->bits->writeBit(data->__Field(STRING(L"useOutlines",11)).Cast<bool >());
-		if (data->__Field(STRING(L"hasFont",7)).Cast<bool >())
+		if (data->__Field(STRING(L"hasFont",7)).Cast<bool >()){
 			this->o->writeUInt16(data->__Field(STRING(L"fontID",6)).Cast<int >());
-		if (data->__Field(STRING(L"hasFontClass",12)).Cast<bool >())
+			this->o->writeUInt16(data->__Field(STRING(L"fontHeight",10)).Cast<int >());
+		}
+		else
+			if (data->__Field(STRING(L"hasFontClass",12)).Cast<bool >()){
 			this->o->writeString(data->__Field(STRING(L"fontClass",9)).Cast<String >());
-		this->o->writeUInt16(data->__Field(STRING(L"fontHeight",10)).Cast<int >());
+			this->o->writeByte(0);
+		}
+;
+;
 		if (data->__Field(STRING(L"hasTextColor",12)).Cast<bool >())
 			this->writeRGBA(data->__Field(STRING(L"textColor",9)));
 		if (data->__Field(STRING(L"hasMaxLength",12)).Cast<bool >())
@@ -2965,9 +2971,10 @@ Void Writer_obj::writeDefineEditText( Dynamic data){
 		}
 		this->o->writeString(data->__Field(STRING(L"variableName",12)).Cast<String >());
 		this->o->writeByte(0);
-		if (data->__Field(STRING(L"hasText",7)).Cast<bool >())
+		if (data->__Field(STRING(L"hasText",7)).Cast<bool >()){
 			this->o->writeString(data->__Field(STRING(L"initialText",11)).Cast<String >());
-		this->o->writeByte(0);
+			this->o->writeByte(0);
+		}
 	}
 return null();
 }
