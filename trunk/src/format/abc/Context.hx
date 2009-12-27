@@ -201,7 +201,7 @@ class Context {
                 data.methodTypes.push(m);
                 return Idx(data.methodTypes.length - 1);
         }
-		function lookup<T>(arr:Array<T>, n:T, ?type):Index<T> 
+		function lookup<T>(arr:Array<T>, n:T, ?type:Class<Int32>):Index<T> 
 		{
 			if (type == Int32)
 			{

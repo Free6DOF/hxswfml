@@ -305,7 +305,6 @@
    <depend name="include/Type.h"/>
    <depend name="include/be/haxer/hxswfml/Hxvml.h"/>
    <depend name="include/cpp/io/File.h"/>
-   <depend name="include/cpp/io/FileOutput.h"/>
    <depend name="include/format/abc/ABCData.h"/>
    <depend name="include/format/abc/FieldKind.h"/>
    <depend name="include/format/abc/Index.h"/>
@@ -323,7 +322,6 @@
    <depend name="include/haxe/io/Bytes.h"/>
    <depend name="include/haxe/io/BytesInput.h"/>
    <depend name="include/haxe/io/Input.h"/>
-   <depend name="include/haxe/io/Output.h"/>
   </file>
   <file name="src/format/zip/ExtraField.cpp">
    <depend name="include/format/zip/ExtraField.h"/>

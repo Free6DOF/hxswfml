@@ -96,7 +96,7 @@ class Context_obj : public virtual hxObject
 		virtual format::abc::Index methodType( Dynamic m);
 		Dynamic methodType_dyn();
 
-		virtual format::abc::Index lookup( Array<Dynamic > arr,Dynamic n,Dynamic type);
+		virtual format::abc::Index lookup( Array<Dynamic > arr,Dynamic n,Class type);
 		Dynamic lookup_dyn();
 
 		virtual format::abc::Index elookup( Array<Dynamic > arr,Dynamic n);

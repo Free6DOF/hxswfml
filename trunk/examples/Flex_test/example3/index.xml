@@ -1,0 +1,11 @@
+<?xml version="1.0" ?>
+<swf>
+	<Header/>
+	<FileAttributes />
+	<SetBackgroundColor/>
+	<DefineBitsJPEG id="1" file="haxe.png" />
+	<SymbolClass id="1" class="MyPNG" base="flash.display.Bitmap" />
+	<DefineABC file="Main.swf" />
+	<SymbolClass id="0" class="Main" />
+	<ShowFrame/>
+</swf>
