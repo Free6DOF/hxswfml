@@ -11822,6 +11822,7 @@ format.zip.Writer.prototype.writeZipDate = function(date) {
 }
 format.zip.Writer.prototype.__class__ = format.zip.Writer;
 be.haxer.hxswfml.Hxavm2 = function(p) { if( p === $_ ) return; {
+	this.throwsErrors = false;
 	this.log = true;
 }}
 be.haxer.hxswfml.Hxavm2.__name__ = ["be","haxer","hxswfml","Hxavm2"];
@@ -11964,7 +11965,7 @@ be.haxer.hxswfml.Hxavm2.prototype.jumps = null;
 be.haxer.hxswfml.Hxavm2.prototype.labels = null;
 be.haxer.hxswfml.Hxavm2.prototype.log = null;
 be.haxer.hxswfml.Hxavm2.prototype.logStack = function(msg) {
-	haxe.Log.trace(msg,{ fileName : "Hxavm2.hx", lineNumber : 556, className : "be.haxer.hxswfml.Hxavm2", methodName : "logStack"});
+	haxe.Log.trace(msg,{ fileName : "Hxavm2.hx", lineNumber : 564, className : "be.haxer.hxswfml.Hxavm2", methodName : "logStack"});
 }
 be.haxer.hxswfml.Hxavm2.prototype.maxScopeStack = null;
 be.haxer.hxswfml.Hxavm2.prototype.maxStack = null;
@@ -12002,7 +12003,7 @@ be.haxer.hxswfml.Hxavm2.prototype.namespaceType = function(ns) {
 	}(this)));
 }
 be.haxer.hxswfml.Hxavm2.prototype.nonEmptyStack = function(fname) {
-	var msg = "!Error: Function " + fname + " did not end with empty stack. current stack: " + this.currentStack;
+	var msg = "!Possible error: Function " + fname + " did not end with empty stack. current stack: " + this.currentStack;
 	if(this.throwsErrors) throw (msg);
 	if(this.log) this.logStack(msg);
 }
@@ -12027,13 +12028,13 @@ be.haxer.hxswfml.Hxavm2.prototype.parseLocals = function(locals) {
 }
 be.haxer.hxswfml.Hxavm2.prototype.scopeStackError = function(op,type) {
 	var o = Type.getEnum(op);
-	var msg = (type == 0?"!Error scopeStack underflow: " + op:"!Error scopeStack overflow: " + op);
+	var msg = (type == 0?"!Possible error: scopeStack underflow: " + op:"!Possible error: scopeStack overflow: " + op);
 	if(this.throwsErrors) throw (msg);
 	if(this.log) this.logStack(msg);
 }
 be.haxer.hxswfml.Hxavm2.prototype.stackError = function(op,type) {
 	var o = Type.getEnum(op);
-	var msg = (type == 0?"!Error stack underflow: " + op:"!Error stack overflow: " + op);
+	var msg = (type == 0?"!Possible error: stack underflow: " + op:"!Possible error: stack overflow: " + op);
 	if(this.throwsErrors) throw (msg);
 	if(this.log) this.logStack(msg);
 }
@@ -13020,12 +13021,17 @@ be.haxer.hxswfml.Hxavm2.prototype.writeCodeBlock = function(member,f) {
 be.haxer.hxswfml.Hxavm2.prototype.xml2abc = function(xml) {
 	var swfTags = [];
 	var abcfiles = Xml.parse(xml).firstElement();
-	{ var $it31 = abcfiles.elements();
-	while( $it31.hasNext() ) { var abcfile = $it31.next();
-	{
-		swfTags.push(this.xmlToabc(abcfile));
+	if(abcfiles.getNodeName().toLowerCase() == "abcfile") {
+		swfTags.push(this.xmlToabc(abcfiles));
 	}
-	}}
+	else {
+		{ var $it31 = abcfiles.elements();
+		while( $it31.hasNext() ) { var abcfile = $it31.next();
+		{
+			swfTags.push(this.xmlToabc(abcfile));
+		}
+		}}
+	}
 	return swfTags;
 }
 be.haxer.hxswfml.Hxavm2.prototype.xmlToabc = function(xml) {
@@ -13056,7 +13062,7 @@ be.haxer.hxswfml.Hxavm2.prototype.xmlToabc = function(xml) {
 	{ var $it33 = ctx_xml.elements();
 	while( $it33.hasNext() ) { var _classNode = $it33.next();
 	{
-		switch(_classNode.getNodeName()) {
+		switch(_classNode.getNodeName().toLowerCase()) {
 		case "function":{
 			null;
 		}break;
@@ -13124,16 +13130,7 @@ be.haxer.hxswfml.Hxavm2.prototype.xmlToabc = function(xml) {
 							$r = format.abc.Value.VBool(value == "true");
 						}break;
 						default:{
-							$r = (function($this) {
-								var $r;
-								null;
-								$r = (function($this) {
-									var $r;
-									throw ("You must provide a datatype for: " + name + " if you provide a value here.(Supported types for predefined values are String, int, uint, Number, Boolean)");
-									return $r;
-								}($this));
-								return $r;
-							}($this));
+							$r = null;
 						}break;
 						}
 						return $r;

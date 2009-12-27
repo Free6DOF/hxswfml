@@ -267,7 +267,7 @@ format::abc::Index Context_obj::methodType( Dynamic m){
 
 DEFINE_DYNAMIC_FUNC1(Context_obj,methodType,return )
 
-format::abc::Index Context_obj::lookup( Array<Dynamic > arr,Dynamic n,Dynamic type){
+format::abc::Index Context_obj::lookup( Array<Dynamic > arr,Dynamic n,Class type){
 	if (type == hxClassOf<cpp::CppInt32__ >()){
 		{
 			int _g1 = 0;

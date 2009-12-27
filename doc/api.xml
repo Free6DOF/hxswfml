@@ -5377,7 +5377,7 @@
 		<lookup params="T" line="204"><f a="arr:n:?type">
 	<c path="Array"><c path="lookup.T"/></c>
 	<c path="lookup.T"/>
-	<t path="haxe.#Int32"/>
+	<c path="Class"><c path="haxe.Int32"/></c>
 	<e path="format.abc.Index"><c path="lookup.T"/></e>
 </f></lookup>
 		<elookup params="T" line="222"><f a="arr:n">
@@ -6264,21 +6264,21 @@
 	<e path="format.abc.JumpStyle"/>
 	<e path="Void"/>
 </f></c></labels>
-		<xml2abc public="1" line="31"><f a="xml">
+		<xml2abc public="1" line="33"><f a="xml">
 	<c path="String"/>
 	<c path="Array"><e path="format.swf.SWFTag"/></c>
 </f></xml2abc>
-		<xmlToabc public="1" line="41"><f a="xml">
+		<xmlToabc public="1" line="50"><f a="xml">
 	<c path="Xml"/>
 	<e path="format.swf.SWFTag"/>
 </f></xmlToabc>
-		<createFunction line="168"><f a="node:functionType:?isInterface">
+		<createFunction line="176"><f a="node:functionType:?isInterface">
 	<c path="Xml"/>
 	<c path="String"/>
 	<e path="Bool"/>
 	<t path="format.abc.Function"/>
 </f></createFunction>
-		<writeCodeBlock line="292"><f a="member:f">
+		<writeCodeBlock line="300"><f a="member:f">
 	<c path="Xml"/>
 	<a><trys><a>
 	<push><f a="">
@@ -6295,19 +6295,19 @@
 </a></trys></a>
 	<e path="Bool"/>
 </f></writeCodeBlock>
-		<abc2xml public="1" line="454"><f a="abc">
+		<abc2xml public="1" line="462"><f a="abc">
 	<unknown/>
 	<c path="String"/>
 </f></abc2xml>
-		<getImport line="458"><f a="name">
+		<getImport line="466"><f a="name">
 	<c path="String"/>
 	<c path="String"/>
 </f></getImport>
-		<namespaceType line="465"><f a="ns">
+		<namespaceType line="473"><f a="ns">
 	<c path="String"/>
 	<e path="format.abc.Index"><e path="format.abc.Namespace"/></e>
 </f></namespaceType>
-		<getAnyAttribute line="481"><f a="element:arr">
+		<getAnyAttribute line="489"><f a="element:arr">
 	<a><get><f a="">
 	<c path="String"/>
 	<c path="String"/>
@@ -6315,37 +6315,41 @@
 	<c path="Array"><c path="String"/></c>
 	<c path="String"/>
 </f></getAnyAttribute>
-		<parseLocals line="491"><f a="locals">
+		<parseLocals line="499"><f a="locals">
 	<c path="String"/>
 	<t path="Null"><c path="Array"><t path="format.abc.Field"/></c></t>
 </f></parseLocals>
-		<parseFieldKind line="511"><f a="fld">
+		<parseFieldKind line="519"><f a="fld">
 	<c path="String"/>
 	<e path="format.abc.FieldKind"/>
 </f></parseFieldKind>
-		<nonEmptyStack line="528"><f a="fname">
+		<nonEmptyStack line="536"><f a="fname">
 	<c path="String"/>
 	<e path="Void"/>
 </f></nonEmptyStack>
-		<stackError line="536"><f a="op:type">
+		<stackError line="544"><f a="op:type">
 	<e path="format.abc.OpCode"/>
 	<c path="Int"/>
 	<e path="Void"/>
 </f></stackError>
-		<scopeStackError line="545"><f a="op:type">
+		<scopeStackError line="553"><f a="op:type">
 	<e path="format.abc.OpCode"/>
 	<c path="Int"/>
 	<e path="Void"/>
 </f></scopeStackError>
-		<logStack line="554"><f a="msg">
+		<logStack line="562"><f a="msg">
 	<d/>
 	<e path="Void"/>
 </f></logStack>
-		<updateStacks line="558"><f a="opc">
+		<updateStacks line="566"><f a="opc">
 	<e path="format.abc.OpCode"/>
 	<e path="Void"/>
 </f></updateStacks>
-		<new public="1" line="26"><f a=""><e path="Void"/></f></new>
+		<new public="1" line="28"><f a=""><e path="Void"/></f></new>
+		<haxe_doc>
+ * ...
+ * @author Jan J. Flanders
+ </haxe_doc>
 	</class>
 	<class path="flash.geom.Matrix" params="" file="C:\Program Files\Motion-Twin\haxe/std/flash9/geom/Matrix.hx" extern="1">
 		<a public="1"><c path="Float"/></a>
@@ -6835,7 +6839,7 @@
 </f></new>
 		<haxe_doc>
  * ...
- * @author jan j.
+ * @author Jan J. Flanders
  </haxe_doc>
 	</class>
 	<class path="haxe.Int32" params="" file="C:\Program Files\Motion-Twin\haxe/std/haxe/Int32.hx">

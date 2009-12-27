@@ -77,7 +77,11 @@ Void Main_obj::main( ){
 					cpp::Sys_obj::exit(1);
 				}
 				else{
-					be::haxer::hxswfml::Hxvml_obj::__new(Array_obj<String >::__new().Add(args->__get(1)).Add(args->__get(2)));
+					be::haxer::hxswfml::Hxvml hxvml = be::haxer::hxswfml::Hxvml_obj::__new();
+					String xml = hxvml->abc2xml(args->__get(1));
+					cpp::io::FileOutput file = cpp::io::File_obj::write(args->__get(2),false);
+					file->writeString(xml);
+					file->close();
 				}
 			}
 			else{
