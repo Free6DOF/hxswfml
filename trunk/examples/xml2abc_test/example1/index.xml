@@ -1,0 +1,274 @@
+<!--
+package
+{
+	class Main extends MovieClip()
+	{
+		var mc1:MovieClip;
+		
+		var mc2:MovieClip;
+		
+		public class Main()
+		{
+			public function Main()
+			{
+				super();
+				
+				//mc1 is on the stage (red square)
+				mc1.buttonMode = true;
+				mc1.addEventListener(MouseEvent.CLICK, onClick);
+				
+				mc2 = new MovieClip();
+				mc2.graphics.beginFill(0x00FF00);
+				mc2.drawRect(0, 0, 100, 100); 
+				addChild(mc2);
+				mc2.buttonMode=true;
+				mc2.addEventListener(MouseEvent.CLICK, onClick); 
+				
+				//mc is a local variable (blue square);
+				var mc : MovieClip = new MovieClip();
+				mc.graphics.beginFill(0x0000FF);
+				mc.graphics. drawRect(0, 0, 100, 100);
+				addChild(mc);
+				mc.buttonMode = true;
+				mc.addEventListener(MouseEvent.CLICK, onClick);
+					
+				trace(mc1, mc1, mc2, mc2, mc);
+				
+				return;
+			}
+			private function onClick(event : MouseEvent)
+			{
+				event.currentTarget.x = event.currentTarget.x + 10; 
+				event.currentTarget.y = event.currentTarget.y + 10;
+			}
+		}
+	}
+}
+-->
+<swf>
+
+	<Header/>
+	
+	<FileAttributes/>
+	
+	<DefineShape id="1" >
+		<Beginfill color="0xFF0000" alpha="1.0" />
+		<DrawRect x="0" y="0" width="100" height="100" />
+	</DefineShape>
+	
+	<DefineSprite id="2" frameCount="1">
+		<PlaceObject id="1" depth="1"/>
+	</DefineSprite>
+	
+	<PlaceObject id="2" name="mc1" depth="1"/>
+
+	<DefineABC name="Main">
+		<abcfiles>
+			<abcfile>
+			<import class="flash.display.MovieClip" />
+			<import class="flash.events.MouseEvent" />
+			<!-- class Main extends MovieClip{ -->
+			<class name="Main" extends="MovieClip" >
+				
+				<!-- var mc1 : MovieClip; -->
+				<var name="mc1" type="MovieClip"/>
+				
+				<!-- var mc2 : MovieClip; -->
+				<var name="mc2" type="MovieClip" />
+
+				<!--public function Main() -->
+				<function name="Main" >
+					<OThis/>
+					<OScope/>
+					
+					<!-- super(); -->
+					<OThis/><OConstructSuper nargs="0" />
+					
+					<!-- mc1.buttonMode = true; -->
+					<OGetLex p="mc1"/>
+					<OTrue/>
+					<OSetProp p="buttonMode"/>
+					
+					<!-- mc1.addEventListener(flash.events.MouseEvent.CLICK, onClick); -->
+					<OGetLex p="mc1" />
+					<OGetLex p="MouseEvent"/>
+					<OGetProp p="CLICK"/>
+					<OGetLex p="onClick"/>
+					<OCallPropVoid name="addEventListener" nargs="2"/>
+
+					<!-- mc2 = new MovieClip(); -->
+					<OThis/>	
+					<OFindPropStrict p="MovieClip"/>
+					<OConstructProperty p="MovieClip" nargs="0"/>
+					<OInitProp p="mc2" />
+					
+					<!-- mc2.graphics.beginFill(0x00FF00); -->
+					<OThis/>
+					<OGetProp p="mc2" />
+					<OGetProp  p="graphics" />
+					<OIntRef v="0x00FF00" />
+					<OCallPropVoid name="beginFill" nargs="1"/>
+
+					<!-- mc2.drawRect(0, 0, 100, 100); -->
+					<OThis/>
+					<OGetProp p="mc2" />
+					<OGetProp  p="graphics" />
+					<OSmallInt v="50" />
+					<ODup/>
+					<OSmallInt v="100" />
+					<ODup/>
+					<OCallPropVoid name="drawRect" nargs="4"/>
+
+					<!-- addChild(mc2); -->
+					<OFindPropStrict p="addChild"/>
+					<OThis/>
+					<OGetProp p="mc2" />
+					<OCallPropVoid name="addChild" nargs="1"/>
+					
+					<!-- mc2.buttonMode=true; -->
+					<OThis/>
+					<OGetProp p="mc2" />
+					<OTrue/>
+					<OSetProp p="buttonMode"/>
+
+					<!-- mc2.addEventListener(flash.events.MouseEvent.CLICK, onClick); -->
+					<OThis/><OGetProp p="mc2" />
+					<OGetLex p="MouseEvent"/>
+					<OGetProp p="CLICK"/>
+					<OGetLex p="onClick" />
+					<OCallPropVoid name="addEventListener" nargs="2"/>
+					
+					<!-- var mc : MovieClip = new MovieClip(); -->
+					<OFindPropStrict p="MovieClip"/>
+					<OConstructProperty p="MovieClip" nargs="0"/>
+					<OCast t="MovieClip"/>
+					<OSetReg r="1"/>
+					
+					<!-- mc.graphics.beginFill(0x0000FF); -->
+					<OReg r="1" />
+					<OGetProp  p="graphics" />
+					<OIntRef v="0x000FF" />
+					<OCallPropVoid name="beginFill" nargs="1"/>
+
+					<!-- mc.graphics. drawRect(0, 0, 100, 100); -->
+					<OReg r="1" />
+					<OGetProp  p="graphics" />
+					<OSmallInt v="100" />
+					<ODup/>
+					<OSmallInt v="100" />
+					<ODup/>
+					<OCallPropVoid name="drawRect" nargs="4"/>
+
+					<!-- addChild(mc); -->
+					<!--<OFindPropStrict p="addChild"/>-->
+					<OThis/>
+					<OReg r="1" />
+					<OCallPropVoid name="addChild" nargs="1"/>
+
+					<!-- mc.buttonMode = true; -->
+					<OReg r="1" />
+					<OTrue/>
+					<OSetProp p="buttonMode"/>
+
+					<!-- mc.addEventListener(flash.events.MouseEvent.CLICK, onClick) -->
+					<OReg r="1" />
+					<OGetLex p="MouseEvent"/>
+					<OGetProp p="CLICK"/>
+					<OGetLex p="onClick" />
+					<OCallPropVoid name="addEventListener" nargs="2"/>
+
+					<!-- trace(mc1, mc1, mc2, mc2, mc); -->
+					<OFindPropStrict p="trace"/>
+					<OThis/>
+					<OGetProp p="mc1"/>
+					<OGetLex p="mc1"/>
+					<OThis/>
+					<OGetProp p="mc2" />
+					<OGetLex p="mc2" />
+					<OReg r="1" />
+					<OCallPropVoid name="trace" nargs="5"/>
+					
+					<!-- return; -->
+					<ORetVoid/>
+				</function>
+
+				<!--public function onClick(event : flash.events.MouseEvent){ -->
+				<function name="onClick"  args="MouseEvent" >
+					<OThis/>
+					<OScope/>
+					
+					<!-- event.currentTarget.x = event.currentTarget.x + 10; -->
+					<OReg r="1"/><OGetProp p="currentTarget"/>
+					<OReg r="1"/><OGetProp p="currentTarget"/><OGetProp p="x"/>
+					<OSmallInt v="10" />
+					<OpAdd/>
+					<OSetProp p="x" />
+					
+					<!-- event.currentTarget.y = event.currentTarget.y + 10; -->
+					<OReg r="1"/><OGetProp p="currentTarget"/>
+					<OReg r="1"/><OGetProp p="currentTarget"/><OGetProp p="y"/>
+					<OSmallInt v="10" />
+					<OpAdd/>
+					<OSetProp p="y" />
+					
+					<!-- return; -->
+					<ORetVoid/>
+				</function>
+				
+			</class>
+			</abcfile>
+		</abcfiles>
+	</DefineABC>
+	
+	<SymbolClass id="0" class="Main"/>
+	
+	<ShowFrame/>
+	
+</swf>
+
+<!--
+package
+{
+	class Main extends flash.displayMovieClip()
+	{
+		public var mc1:flash.displayMovieClip;
+		private var mc2:flash.displayMovieClip;
+		
+		public class Main()
+		{
+			public function Main()
+			{
+				super();
+				//mc1 is on the stage (red square)
+				mc1.buttonMode = true;
+				mc1.addEventListener(flash.events.MouseEvent.CLICK, onClick);
+				
+				//mc2 is a private member of Main (green square);
+				mc2 = new MovieClip();
+				mc2.graphics.beginFill(0x00FF00);
+				mc2.drawRect(0, 0, 100, 100); 
+				addChild(mc2);
+				mc2.buttonMode=true;
+				mc2.addEventListener(flash.events.MouseEvent.CLICK, onClick); 
+				
+				//mc is a local variable (blue square);
+				var mc : MovieClip = new MovieClip();
+				mc.graphics.beginFill(0x0000FF);
+				mc.graphics. drawRect(0, 0, 100, 100);
+				addChild(mc);
+				mc.buttonMode = true;
+				mc.addEventListener(flash.events.MouseEvent.CLICK, onClick);
+					
+				trace(mc1, mc1, mc2, mc2, mc);
+				
+				return;
+			}
+			public function onClick(event : flash.events.MouseEvent)
+			{
+				event.currentTarget.x = event.currentTarget.x + 10; 
+				event.currentTarget.y = event.currentTarget.y + 10;
+			}
+		}
+	}
+}
+-->

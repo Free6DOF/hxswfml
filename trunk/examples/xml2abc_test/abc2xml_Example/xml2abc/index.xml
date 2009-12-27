@@ -1,0 +1,8 @@
+<swf>
+	<header/>
+	<fileattributes/>
+	<Setbackgroundcolor color="0xFFFFFF" />
+	<defineabc file="script.xml" />
+	<symbolclass id="0" class="flash.Boot"/>
+	<Showframe/>
+</swf>
