@@ -1,0 +1,186 @@
+Hxavm2.hx:556: ------------------------------------------------
+current class= Main, method= Main
+currentStack= 0, maxStack= 0
+currentScopeStack= 0, maxScopeStack= 0
+
+
+Hxavm2.hx:556: OThis
+Hxavm2.hx:556: currentStack= 1, maxStack= 1
+currentScopeStack= 0, maxScopeStack= 0
+
+
+Hxavm2.hx:556: OScope
+Hxavm2.hx:556: currentStack= 0, maxStack= 1
+currentScopeStack= 1, maxScopeStack= 1
+
+
+Hxavm2.hx:556: OThis
+Hxavm2.hx:556: currentStack= 1, maxStack= 1
+currentScopeStack= 1, maxScopeStack= 1
+
+
+Hxavm2.hx:556: OConstructSuper(0)
+Hxavm2.hx:556: currentStack= 0, maxStack= 1
+currentScopeStack= 1, maxScopeStack= 1
+
+
+Hxavm2.hx:556: OFindPropStrict(Idx(8))
+Hxavm2.hx:556: currentStack= 1, maxStack= 1
+currentScopeStack= 1, maxScopeStack= 1
+
+
+Hxavm2.hx:556: OGetGlobalScope
+Hxavm2.hx:556: currentStack= 2, maxStack= 2
+currentScopeStack= 1, maxScopeStack= 1
+
+
+Hxavm2.hx:556: OGetScope(0)
+Hxavm2.hx:556: currentStack= 3, maxStack= 3
+currentScopeStack= 1, maxScopeStack= 1
+
+
+Hxavm2.hx:556: OReg(0)
+Hxavm2.hx:556: currentStack= 4, maxStack= 4
+currentScopeStack= 1, maxScopeStack= 1
+
+
+Hxavm2.hx:556: OThis
+Hxavm2.hx:556: currentStack= 5, maxStack= 5
+currentScopeStack= 1, maxScopeStack= 1
+
+
+Hxavm2.hx:556: OFindPropStrict(Idx(6))
+Hxavm2.hx:556: currentStack= 6, maxStack= 6
+currentScopeStack= 1, maxScopeStack= 1
+
+
+Hxavm2.hx:556: OFindProp(Idx(6))
+Hxavm2.hx:556: currentStack= 7, maxStack= 7
+currentScopeStack= 1, maxScopeStack= 1
+
+
+Hxavm2.hx:556: OFindPropStrict(Idx(8))
+Hxavm2.hx:556: currentStack= 8, maxStack= 8
+currentScopeStack= 1, maxScopeStack= 1
+
+
+Hxavm2.hx:556: OCallPropVoid(Idx(8),7)
+Hxavm2.hx:556: currentStack= 0, maxStack= 8
+currentScopeStack= 1, maxScopeStack= 1
+
+
+Hxavm2.hx:556: OFindPropStrict(Idx(8))
+Hxavm2.hx:556: currentStack= 1, maxStack= 8
+currentScopeStack= 1, maxScopeStack= 1
+
+
+Hxavm2.hx:556: OGetScope(0)
+Hxavm2.hx:556: currentStack= 2, maxStack= 8
+currentScopeStack= 1, maxScopeStack= 1
+
+
+Hxavm2.hx:556: OGetProp(Idx(6))
+Hxavm2.hx:556: currentStack= 2, maxStack= 8
+currentScopeStack= 1, maxScopeStack= 1
+
+
+Hxavm2.hx:556: OThis
+Hxavm2.hx:556: currentStack= 3, maxStack= 8
+currentScopeStack= 1, maxScopeStack= 1
+
+
+Hxavm2.hx:556: OGetProp(Idx(6))
+Hxavm2.hx:556: currentStack= 3, maxStack= 8
+currentScopeStack= 1, maxScopeStack= 1
+
+
+Hxavm2.hx:556: OFindProp(Idx(6))
+Hxavm2.hx:556: currentStack= 4, maxStack= 8
+currentScopeStack= 1, maxScopeStack= 1
+
+
+Hxavm2.hx:556: OGetProp(Idx(6))
+Hxavm2.hx:556: currentStack= 4, maxStack= 8
+currentScopeStack= 1, maxScopeStack= 1
+
+
+Hxavm2.hx:556: OFindPropStrict(Idx(6))
+Hxavm2.hx:556: currentStack= 5, maxStack= 8
+currentScopeStack= 1, maxScopeStack= 1
+
+
+Hxavm2.hx:556: OGetProp(Idx(6))
+Hxavm2.hx:556: currentStack= 5, maxStack= 8
+currentScopeStack= 1, maxScopeStack= 1
+
+
+Hxavm2.hx:556: OGetLex(Idx(6))
+Hxavm2.hx:556: currentStack= 6, maxStack= 8
+currentScopeStack= 1, maxScopeStack= 1
+
+
+Hxavm2.hx:556: OThis
+Hxavm2.hx:556: currentStack= 7, maxStack= 8
+currentScopeStack= 1, maxScopeStack= 1
+
+
+Hxavm2.hx:556: OGetSlot(1)
+Hxavm2.hx:556: currentStack= 7, maxStack= 8
+currentScopeStack= 1, maxScopeStack= 1
+
+
+Hxavm2.hx:556: OThis
+Hxavm2.hx:556: currentStack= 8, maxStack= 8
+currentScopeStack= 1, maxScopeStack= 1
+
+
+Hxavm2.hx:556: OString(Idx(12))
+Hxavm2.hx:556: currentStack= 9, maxStack= 9
+currentScopeStack= 1, maxScopeStack= 1
+
+
+Hxavm2.hx:556: OSetProp(Idx(6))
+Hxavm2.hx:556: currentStack= 7, maxStack= 9
+currentScopeStack= 1, maxScopeStack= 1
+
+
+Hxavm2.hx:556: OThis
+Hxavm2.hx:556: currentStack= 8, maxStack= 9
+currentScopeStack= 1, maxScopeStack= 1
+
+
+Hxavm2.hx:556: OString(Idx(12))
+Hxavm2.hx:556: currentStack= 9, maxStack= 9
+currentScopeStack= 1, maxScopeStack= 1
+
+
+Hxavm2.hx:556: OInitProp(Idx(6))
+Hxavm2.hx:556: currentStack= 7, maxStack= 9
+currentScopeStack= 1, maxScopeStack= 1
+
+
+Hxavm2.hx:556: OThis
+Hxavm2.hx:556: currentStack= 8, maxStack= 9
+currentScopeStack= 1, maxScopeStack= 1
+
+
+Hxavm2.hx:556: OString(Idx(12))
+Hxavm2.hx:556: currentStack= 9, maxStack= 9
+currentScopeStack= 1, maxScopeStack= 1
+
+
+Hxavm2.hx:556: OSetSlot(1)
+Hxavm2.hx:556: currentStack= 7, maxStack= 9
+currentScopeStack= 1, maxScopeStack= 1
+
+
+Hxavm2.hx:556: OCallPropVoid(Idx(8),6)
+Hxavm2.hx:556: currentStack= 0, maxStack= 9
+currentScopeStack= 1, maxScopeStack= 1
+
+
+Hxavm2.hx:556: ORetVoid
+Hxavm2.hx:556: currentStack= 0, maxStack= 9
+currentScopeStack= 1, maxScopeStack= 1
+
+

@@ -1,0 +1,1473 @@
+<abcfiles>
+	<abcfile>
+		<init name="flash.Lib" return="void" >
+			<OThis />
+			<OScope />
+			<OGetGlobalScope />
+			<OGetLex p="Object" />
+			<OScope />
+			<OGetLex p="Object" />
+			<OClassDef c="flash.Lib" />
+			<OPopScope />
+			<OInitProp p="flash.Lib" />
+			<ORetVoid />
+		</init>
+		<class  name="flash.Lib" extends="Object" sealed="true">
+			<var name="current" type="flash.display.MovieClip" static="true"/>
+			<function name="flash.Lib" args="" return="void" >
+				<OThis />
+				<OScope />
+				<ORetVoid />
+			</function>
+
+			<function name="flash.Lib" static="true" return="void" >
+				<ORetVoid />
+			</function>
+
+			<function  name="getTimer" static="true" final="true" args="" return="int" >
+				<OFindPropStrict p="flash.utils.getTimer" />
+				<OCallProperty p="flash.utils.getTimer" nargs="0"/>
+				<ORet />
+			</function>
+
+			<function  name="eval" static="true" final="true" args="String" return="*" newBlock="true" >
+				<OThis />
+				<OScope />
+				<ONewBlock />
+				<ODup />
+				<OSetReg v="2" />
+				<OScope />
+				<ONull />
+				<OAsAny />
+				<OSetReg v="6" />
+				<ONull />
+				<OAsType p="String" />
+				<OSetReg v="8" />
+				<OReg v="1" />
+				<OString v="." />
+				<OCallProperty p="http://adobe.com/AS3/2006/builtin.split" nargs="1"/>
+				<OCast p="Array" />
+				<OCast p="Array" />
+				<OSetReg v="3" />
+				<OArray v="0" />
+				<OCast p="Array" />
+				<OSetReg v="4" />
+				<ONull />
+				<OAsAny />
+				<OAsAny />
+				<OSetReg v="5" />
+				<!--<OJump jump="JAlways" offset="65"/>-->
+				<JAlways jump="j1"/>
+				<!--<OLabel/>-->
+				<OLabel name="label1"/>
+				<OFindPropStrict p="flash.utils.getDefinitionByName" />
+				<OReg v="3" />
+				<OString v="." />
+				<OCallProperty p="http://adobe.com/AS3/2006/builtin.join" nargs="1"/>
+				<OCast p="String" />
+				<OCallProperty p="flash.utils.getDefinitionByName" nargs="1"/>
+				<OAsAny />
+				<OSetReg v="5" />
+				<!--<OJump jump="JAlways" offset="32"/>-->
+				<JAlways jump="j2"/>
+				<OThis />
+				<OScope />
+				<OReg v="2" />
+				<OScope />
+				<OAsAny />
+				<OSetReg v="6" />
+				<OReg v="6" />
+				<OAsType p="Error" />
+				<!--<OJump jump="JFalse" offset="6"/>-->
+				<JFalse jump="j3"/>
+				<OGetLex p="flash.Boot" />
+				<OReg v="6" />
+				<OInitProp p="lastError" />
+				<OJump name="j3"/>
+				<OReg v="4" />
+				<OReg v="3" />
+				<OCallProperty p="http://adobe.com/AS3/2006/builtin.pop" nargs="0"/>
+				<OCast p="String" />
+				<OCallPropVoid p="http://adobe.com/AS3/2006/builtin.unshift" nargs="1"/>
+				<OJump name="j2"/>
+				<OReg v="5" />
+				<ONull />
+				<OAsAny />
+				<!--<OJump jump="JEq" offset="4"/>-->
+				<JEq jump="j4"/>
+				<!--<OJump jump="JAlways" offset="10"/>-->
+				<JAlways jump="j5"/>
+				<OJump name="j1"/>
+				<OJump name="j4"/>
+				<OReg v="3" />
+				<OGetProp p="length" />
+				<OToInt />
+				<OSmallInt v="0" />
+				<!--<OJump jump="JGt" offset="-75"/>-->
+				<JGt label="label1"/>
+				<OJump name="j5"/>
+				<OSmallInt v="0" />
+				<OToInt />
+				<OSetReg v="7" />
+				<!--<OJump jump="JAlways" offset="36"/>-->
+				<JAlways jump="j7"/>
+				<!--<OLabel/>-->
+				<OLabel name="label2"/>
+				<OReg v="4" />
+				<OReg v="7" />
+				<OGetProp p="#arrayProp" />
+				<OCast p="String" />
+				<OCast p="String" />
+				<OSetReg v="8" />
+				<OIncrIReg v="7" />
+				<OReg v="5" />
+				<ONull />
+				<OAsAny />
+				<!--<OJump jump="JNeq" offset="3"/>-->
+				<JNeq jump="j8"/>
+				<ONull />
+				<OAsAny />
+				<ORet />
+				<OJump name="j8"/>
+				<OReg v="5" />
+				<OReg v="8" />
+				<OGetProp p="#arrayProp" />
+				<OAsAny />
+				<OAsAny />
+				<OSetReg v="5" />
+				<OJump name="j7"/>
+				<OReg v="7" />
+				<OReg v="4" />
+				<OGetProp p="length" />
+				<OToInt />
+				<!--<OJump jump="JLt" offset="-47"/>-->
+				<JLt label="label2"/>
+				<OReg v="5" />
+				<ORet />
+			</function>
+
+			<function  name="getURL" static="true" final="true" args="flash.net.URLRequest,String" return="void" defaultParameters="null" >
+				<OGetLex p="flash.net.navigateToURL" />
+				<OCast p="Function" />
+				<OCast p="Function" />
+				<OSetReg v="3" />
+				<OReg v="2" />
+				<ONull />
+				<OCast p="String" />
+				<!--<OJump jump="JNeq" offset="11"/>-->
+				<JNeq jump="j1"/>
+				<OReg v="3" />
+				<OGetGlobalScope />
+				<OReg v="1" />
+				<OCallStack v="1" />
+				<OAsAny />
+				<OPop />
+				<!--<OJump jump="JAlways" offset="8"/>-->
+				<JAlways jump="j2"/>
+				<OJump name="j1"/>
+				<OReg v="3" />
+				<OGetGlobalScope />
+				<OReg v="1" />
+				<OReg v="2" />
+				<OCallStack v="2" />
+				<OAsAny />
+				<OPop />
+				<OJump name="j2"/>
+				<ORetVoid />
+			</function>
+
+			<function  name="fscommand" static="true" final="true" args="String,String" return="void" defaultParameters="null" >
+				<OFindPropStrict p="flash.system.fscommand" />
+				<OReg v="1" />
+				<OReg v="2" />
+				<ONull />
+				<OCast p="String" />
+				<!--<OJump jump="JNeq" offset="6"/>-->
+				<JNeq jump="j1"/>
+				<OString v="" />
+				<!--<OJump jump="JAlways" offset="1"/>-->
+				<JAlways jump="j2"/>
+				<OJump name="j1"/>
+				<OReg v="2" />
+				<OJump name="j2"/>
+				<OCallProperty p="flash.system.fscommand" nargs="2"/>
+				<OPop />
+				<ORetVoid />
+			</function>
+
+			<function  name="trace" static="true" final="true" args="*" return="void" >
+				<OFindPropStrict p="trace" />
+				<OReg v="1" />
+				<OCallProperty p="trace" nargs="1"/>
+				<OPop />
+				<ORetVoid />
+			</function>
+
+			<function  name="attach" static="true" final="true" args="String" return="flash.display.MovieClip" >
+				<OFindPropStrict p="flash.utils.getDefinitionByName" />
+				<OReg v="1" />
+				<OCallProperty p="flash.utils.getDefinitionByName" nargs="1"/>
+				<OGetLex p="Class" />
+				<OOp op="OpAs"/>
+				<OAsAny />
+				<OSetReg v="2" />
+				<OReg v="2" />
+				<OConstruct v="0" />
+				<ORet />
+			</function>
+
+			<function  name="as" static="true" final="true" args="*,Class" return="Object" >
+				<OReg v="1" />
+				<OReg v="2" />
+				<OOp op="OpAs"/>
+				<ORet />
+			</function>
+
+		</class>
+		<!--_________________________________________________________________-->
+		<init name="Void" return="void" >
+			<OThis />
+			<OScope />
+			<OGetGlobalScope />
+			<OGetLex p="Object" />
+			<OScope />
+			<OGetLex p="Object" />
+			<OClassDef c="Void" />
+			<OPopScope />
+			<ODup />
+			<OSetReg v="1" />
+			<OInitProp p="Void" />
+			<OReg v="1" />
+			<OArray v="0" />
+			<OSetProp p="__constructs__" />
+			<ORetVoid />
+		</init>
+		<class  name="Void" extends="Object" sealed="true" final="true">
+			<var name="tag" type="String"/>
+			<var name="index" type="int"/>
+			<var name="params" type="Array"/>
+			<var name="__enum__" type="Boolean" value="true" const="true"/>
+			<var name="__isenum" type="Boolean" value="true" const="true" static="true"/>
+			<var name="__constructs__" static="true"/>
+			<function name="Void" args="String,int,*" return="void" >
+				<OThis />
+				<OScope />
+				<OFindProp p="tag" />
+				<OReg v="1" />
+				<OInitProp p="tag" />
+				<OFindProp p="index" />
+				<OReg v="2" />
+				<OInitProp p="index" />
+				<OFindProp p="params" />
+				<OReg v="3" />
+				<OInitProp p="params" />
+				<ORetVoid />
+			</function>
+
+			<function name="Void" static="true" return="void" >
+				<ORetVoid />
+			</function>
+
+			<function name="toString" final="true" args="" return="String" >
+				<OGetLex p="flash.Boot" />
+				<OThis />
+				<OCallProperty p="enum_to_string" nargs="1"/>
+				<ORet />
+			</function>
+
+		</class>
+		<!--_________________________________________________________________-->
+		<init name="Dynamic" return="void" >
+			<OThis />
+			<OScope />
+			<OGetGlobalScope />
+			<OGetLex p="Object" />
+			<OScope />
+			<OGetLex p="Object" />
+			<OClassDef c="Dynamic" />
+			<OPopScope />
+			<OInitProp p="Dynamic" />
+			<ORetVoid />
+		</init>
+		<class  name="Dynamic" extends="Object" sealed="true">
+			<function name="Dynamic" args="" return="void" >
+				<OThis />
+				<OScope />
+				<ORetVoid />
+			</function>
+
+			<function name="Dynamic" static="true" return="void" >
+				<ORetVoid />
+			</function>
+
+		</class>
+		<!--_________________________________________________________________-->
+		<init name="IntIter" return="void" >
+			<OThis />
+			<OScope />
+			<OGetGlobalScope />
+			<OGetLex p="Object" />
+			<OScope />
+			<OGetLex p="Object" />
+			<OClassDef c="IntIter" />
+			<OPopScope />
+			<OInitProp p="IntIter" />
+			<ORetVoid />
+		</init>
+		<class  name="IntIter" extends="Object" sealed="true">
+			<var name="min" type="int"/>
+			<var name="max" type="int"/>
+			<function name="IntIter" args="int,int" return="void" defaultParameters="null,null" >
+				<OThis />
+				<OScope />
+				<OGetLex p="flash.Boot" />
+				<OGetProp p="skip_constructor" />
+				<!--<OJump jump="JFalse" offset="1"/>-->
+				<JFalse jump="j1"/>
+				<ORetVoid />
+				<OJump name="j1"/>
+				<OFindProp p="min" />
+				<OReg v="1" />
+				<OInitProp p="min" />
+				<OFindProp p="max" />
+				<OReg v="2" />
+				<OInitProp p="max" />
+				<ORetVoid />
+			</function>
+
+			<function name="IntIter" static="true" return="void" >
+				<ORetVoid />
+			</function>
+
+			<function name="next" args="" return="int" >
+				<OThis />
+				<OScope />
+				<OFindProp p="min" />
+				<OFindProp p="min" />
+				<OGetProp p="min" />
+				<ODup />
+				<OToInt />
+				<OSetReg v="1" />
+				<OOp op="OpIIncr"/>
+				<OInitProp p="min" />
+				<OReg v="1" />
+				<ORet />
+			</function>
+
+			<function name="hasNext" args="" return="Boolean" >
+				<OThis />
+				<OScope />
+				<OFindProp p="min" />
+				<OGetProp p="min" />
+				<OFindProp p="max" />
+				<OGetProp p="max" />
+				<OOp op="OpLt"/>
+				<ORet />
+			</function>
+
+		</class>
+		<!--_________________________________________________________________-->
+		<init name="haxe.Log" return="void" >
+			<OThis />
+			<OScope />
+			<OGetGlobalScope />
+			<OGetLex p="Object" />
+			<OScope />
+			<OGetLex p="Object" />
+			<OClassDef c="haxe.Log" />
+			<ODup />
+			<OFunction f="functionClosure_25" />
+			<OInitProp p="trace" />
+			<ODup />
+			<OFunction f="functionClosure_26" />
+			<OInitProp p="clear" />
+			<ODup />
+			<OFunction f="functionClosure_27" />
+			<OInitProp p="setColor" />
+			<OPopScope />
+			<OInitProp p="haxe.Log" />
+			<ORetVoid />
+		</init>
+		<class  name="haxe.Log" extends="Object" sealed="true">
+			<var name="trace" type="Function" static="true"/>
+			<var name="clear" type="Function" static="true"/>
+			<var name="setColor" type="Function" static="true"/>
+			<function name="haxe.Log" args="" return="void" >
+				<OThis />
+				<OScope />
+				<ORetVoid />
+			</function>
+
+			<function name="haxe.Log" static="true" return="void" >
+				<ORetVoid />
+			</function>
+
+		</class>
+		<!--_________________________________________________________________-->
+		<init name="Std" return="void" >
+			<OThis />
+			<OScope />
+			<OGetGlobalScope />
+			<OGetLex p="Object" />
+			<OScope />
+			<OGetLex p="Object" />
+			<OClassDef c="Std" />
+			<OPopScope />
+			<OInitProp p="Std" />
+			<ORetVoid />
+		</init>
+		<class  name="Std" extends="Object" sealed="true">
+			<function name="Std" args="" return="void" >
+				<OThis />
+				<OScope />
+				<ORetVoid />
+			</function>
+
+			<function name="Std" static="true" return="void" >
+				<ORetVoid />
+			</function>
+
+			<function  name="is" static="true" final="true" args="*,*" return="Boolean" >
+				<OGetLex p="flash.Boot" />
+				<OReg v="1" />
+				<OReg v="2" />
+				<OCallProperty p="__instanceof" nargs="2"/>
+				<OToBool />
+				<ORet />
+			</function>
+
+			<function  name="string" static="true" final="true" args="*" return="String" >
+				<OGetLex p="flash.Boot" />
+				<OReg v="1" />
+				<OString v="" />
+				<OCallProperty p="__string_rec" nargs="2"/>
+				<OCast p="String" />
+				<ORet />
+			</function>
+
+			<function  name="_int" static="true" final="true" args="Number" return="int" >
+				<OReg v="1" />
+				<OToInt />
+				<ORet />
+			</function>
+
+			<function  name="parseInt" static="true" final="true" args="String" return="Object" >
+				<OFindPropStrict p="parseInt" />
+				<OReg v="1" />
+				<OCallProperty p="parseInt" nargs="1"/>
+				<OAsAny />
+				<OSetReg v="2" />
+				<OFindPropStrict p="isNaN" />
+				<OReg v="2" />
+				<OCallProperty p="isNaN" nargs="1"/>
+				<!--<OJump jump="JFalse" offset="3"/>-->
+				<JFalse jump="j1"/>
+				<ONull />
+				<OAsAny />
+				<ORet />
+				<OJump name="j1"/>
+				<OReg v="2" />
+				<ORet />
+			</function>
+
+			<function  name="parseFloat" static="true" final="true" args="String" return="Number" >
+				<OFindPropStrict p="parseFloat" />
+				<OReg v="1" />
+				<OCallProperty p="parseFloat" nargs="1"/>
+				<ORet />
+			</function>
+
+			<function  name="random" static="true" final="true" args="int" return="int" >
+				<OGetLex p="Math" />
+				<OGetLex p="Math" />
+				<OCallProperty p="random" nargs="0"/>
+				<OToNumber />
+				<OReg v="1" />
+				<OOp op="OpMul"/>
+				<OCallProperty p="floor" nargs="1"/>
+				<OToInt />
+				<ORet />
+			</function>
+
+		</class>
+		<!--_________________________________________________________________-->
+		<init name="Main" return="void" >
+			<OThis />
+			<OScope />
+			<OGetGlobalScope />
+			<OGetLex p="flash.display.MovieClip" />
+			<OScope />
+			<OGetLex p="flash.display.MovieClip" />
+			<OClassDef c="Main" />
+			<OPopScope />
+			<OInitProp p="Main" />
+			<ORetVoid />
+		</init>
+		<class  name="Main" extends="flash.display.MovieClip">
+			<function name="Main" args="" return="void" >
+				<OThis />
+				<OScope />
+				<OGetLex p="flash.Boot" />
+				<OGetProp p="skip_constructor" />
+				<!--<OJump jump="JFalse" offset="1"/>-->
+				<JFalse jump="j1"/>
+				<ORetVoid />
+				<OJump name="j1"/>
+				<OThis />
+				<OConstructSuper v="0" />
+				<OFindPropStrict p="flash.text.TextField" />
+				<OConstructProperty p="flash.text.TextField" nargs="0"/>
+				<OCast p="flash.text.TextField" />
+				<OSetReg v="1" />
+				<OReg v="1" />
+				<OTrue />
+				<OInitProp p="border" />
+				<OReg v="1" />
+				<OString v="hello%20world" />
+				<OInitProp p="text" />
+				<OReg v="1" />
+				<OReg v="1" />
+				<OSmallInt v="100" />
+				<ODup />
+				<OToNumber />
+				<OSetReg v="2" />
+				<OInitProp p="y" />
+				<OReg v="2" />
+				<OInitProp p="x" />
+				<OFindProp p="addChild" />
+				<OReg v="1" />
+				<OCallPropVoid p="addChild" nargs="1"/>
+				<OGetLex p="haxe.Log" />
+				<OString v="test" />
+				<OString v="fileName" />
+				<OString v="Main.hx" />
+				<OString v="lineNumber" />
+				<OSmallInt v="19" />
+				<OString v="className" />
+				<OString v="Main" />
+				<OString v="methodName" />
+				<OString v="new" />
+				<OObject v="4" />
+				<OCallPropVoid p="trace" nargs="2"/>
+				<OFindPropStrict p="trace" />
+				<OString v="test" />
+				<OCallProperty p="trace" nargs="1"/>
+				<OPop />
+				<ORetVoid />
+			</function>
+
+			<function name="Main" static="true" return="void" >
+				<ORetVoid />
+			</function>
+
+			<function  name="main" static="true" final="true" args="" return="void" >
+				<OGetLex p="flash.Lib" />
+				<OGetProp p="current" />
+				<OFindPropStrict p="Main" />
+				<OConstructProperty p="Main" nargs="0"/>
+				<OCallPropVoid p="addChild" nargs="1"/>
+				<ORetVoid />
+			</function>
+
+		</class>
+		<!--_________________________________________________________________-->
+		<init name="flash.Boot" return="void" >
+			<OThis />
+			<OScope />
+			<OGetGlobalScope />
+			<OGetLex p="flash.display.MovieClip" />
+			<OScope />
+			<OGetLex p="flash.display.MovieClip" />
+			<OClassDef c="flash.Boot" />
+			<OPopScope />
+			<OInitProp p="flash.Boot" />
+			<OGetGlobalScope />
+			<OGetProp p="flash.Boot" />
+			<OFunction f="functionClosure_59" />
+			<OInitProp p="init" />
+			<ORetVoid />
+		</init>
+		<class  name="flash.Boot" extends="flash.display.MovieClip">
+			<var name="init" type="Function" static="true"/>
+			<var name="tf" type="flash.text.TextField" static="true"/>
+			<var name="lines" type="Array" static="true"/>
+			<var name="lastError" type="Error" static="true"/>
+			<var name="skip_constructor" type="Boolean" static="true"/>
+			<function name="flash.Boot" args="flash.display.MovieClip" return="void" newBlock="true" defaultParameters="null" locals="cca:Object::false" >
+				<OThis />
+				<OScope />
+				<ONewBlock />
+				<ODup />
+				<OSetReg v="2" />
+				<OScope />
+				<ONull />
+				<OAsAny />
+				<OSetReg v="3" />
+				<OGetLex p="flash.Boot" />
+				<OGetProp p="skip_constructor" />
+				<!--<OJump jump="JFalse" offset="1"/>-->
+				<JFalse jump="j1"/>
+				<ORetVoid />
+				<OJump name="j1"/>
+				<OThis />
+				<OConstructSuper v="0" />
+				<OGetLex p="Array" />
+				<OGetProp p="prototype" />
+				<OAsAny />
+				<OSetReg v="3" />
+				<OReg v="3" />
+				<OFunction f="functionClosure_42" />
+				<OInitProp p="copy" />
+				<OReg v="3" />
+				<OFunction f="functionClosure_43" />
+				<OInitProp p="insert" />
+				<OReg v="3" />
+				<OFunction f="functionClosure_44" />
+				<OInitProp p="remove" />
+				<OReg v="3" />
+				<OFunction f="functionClosure_45" />
+				<OInitProp p="iterator" />
+				<OReg v="3" />
+				<OString v="copy" />
+				<OFalse />
+				<OCallPropVoid p="setPropertyIsEnumerable" nargs="2"/>
+				<OReg v="3" />
+				<OString v="insert" />
+				<OFalse />
+				<OCallPropVoid p="setPropertyIsEnumerable" nargs="2"/>
+				<OReg v="3" />
+				<OString v="remove" />
+				<OFalse />
+				<OCallPropVoid p="setPropertyIsEnumerable" nargs="2"/>
+				<OReg v="3" />
+				<OString v="iterator" />
+				<OFalse />
+				<OCallPropVoid p="setPropertyIsEnumerable" nargs="2"/>
+				<OGetScope v="1" />
+				<OGetLex p="String" />
+				<OGetProp p="prototype" />
+				<OGetProp p="charCodeAt" />
+				<OAsAny />
+				<OSetSlot v="1" />
+				<OGetLex p="String" />
+				<OGetProp p="prototype" />
+				<OFunction f="functionClosure_48" />
+				<OInitProp p="charCodeAt" />
+				<OGetLex p="flash.Boot" />
+				<OArray v="0" />
+				<OInitProp p="lines" />
+				<OReg v="1" />
+				<ONull />
+				<OCast p="flash.display.MovieClip" />
+				<!--<OJump jump="JNeq" offset="7"/>-->
+				<JNeq jump="j2"/>
+				<OThis />
+				<OCast p="flash.display.MovieClip" />
+				<!--<OJump jump="JAlways" offset="1"/>-->
+				<JAlways jump="j3"/>
+				<OJump name="j2"/>
+				<OReg v="1" />
+				<OJump name="j3"/>
+				<OCast p="flash.display.MovieClip" />
+				<OSetReg v="4" />
+				<OGetLex p="flash.Lib" />
+				<OReg v="4" />
+				<OInitProp p="current" />
+				<OFalse />
+				<OReg v="4" />
+				<OGetProp p="stage" />
+				<ONull />
+				<OCast p="flash.display.Stage" />
+				<!--<OJump jump="JEq" offset="11"/>-->
+				<JEq jump="j4"/>
+				<OPop />
+				<OReg v="4" />
+				<OGetProp p="stage" />
+				<OGetProp p="align" />
+				<OString v="" />
+				<OOp op="OpEq"/>
+				<OToBool />
+				<OJump name="j4"/>
+				<!--<OJump jump="JFalse" offset="13"/>-->
+				<JFalse jump="j5"/>
+				<OReg v="4" />
+				<OGetProp p="stage" />
+				<OString v="TOP_LEFT" />
+				<OInitProp p="align" />
+				<!--<OJump jump="JAlways" offset="4"/>-->
+				<JAlways jump="j6"/>
+				<OJump name="j5"/>
+				<ONull />
+				<OCast p="String" />
+				<OPop />
+				<OJump name="j6"/>
+				<!--<OJump jump="JAlways" offset="6"/>-->
+				<JAlways jump="j7"/>
+				<OThis />
+				<OScope />
+				<OReg v="2" />
+				<OScope />
+				<OAsAny />
+				<OSetReg v="3" />
+				<OJump name="j7"/>
+				<OGetLex p="flash.Boot" />
+				<OGetProp p="init" />
+				<OCast p="Function" />
+				<ONull />
+				<OCast p="Function" />
+				<!--<OJump jump="JEq" offset="5"/>-->
+				<JEq jump="j8"/>
+				<OGetLex p="flash.Boot" />
+				<OCallPropVoid p="init" nargs="0"/>
+				<OJump name="j8"/>
+				<ORetVoid />
+			</function>
+
+			<function name="flash.Boot" static="true" return="void" >
+				<ORetVoid />
+			</function>
+
+			<function  name="enum_to_string" static="true" final="true" args="Object" return="String" >
+				<OReg v="1" />
+				<OGetProp p="params" />
+				<OCast p="Array" />
+				<ONull />
+				<OCast p="Array" />
+				<!--<OJump jump="JNeq" offset="6"/>-->
+				<JNeq jump="j1"/>
+				<OReg v="1" />
+				<OGetProp p="tag" />
+				<OCast p="String" />
+				<ORet />
+				<OJump name="j1"/>
+				<OReg v="1" />
+				<OGetProp p="tag" />
+				<OCast p="String" />
+				<OString v="%28" />
+				<OOp op="OpAdd"/>
+				<OCast p="String" />
+				<OReg v="1" />
+				<OGetProp p="params" />
+				<OCast p="Array" />
+				<OString v="%2C" />
+				<OCallProperty p="http://adobe.com/AS3/2006/builtin.join" nargs="1"/>
+				<OCast p="String" />
+				<OOp op="OpAdd"/>
+				<OCast p="String" />
+				<OString v="%29" />
+				<OOp op="OpAdd"/>
+				<OCast p="String" />
+				<ORet />
+			</function>
+
+			<function  name="__instanceof" static="true" final="true" args="*,*" return="Boolean" newBlock="true" >
+				<OThis />
+				<OScope />
+				<ONewBlock />
+				<ODup />
+				<OSetReg v="3" />
+				<OScope />
+				<ONull />
+				<OAsAny />
+				<OSetReg v="4" />
+				<OReg v="2" />
+				<OGetLex p="Dynamic" />
+				<!--<OJump jump="JNeq" offset="2"/>-->
+				<JNeq jump="j1"/>
+				<OTrue />
+				<ORet />
+				<OJump name="j1"/>
+				<OReg v="1" />
+				<OReg v="2" />
+				<OOp op="OpIs"/>
+				<ORet />
+				<!--<OJump jump="JAlways" offset="7"/>-->
+				<JAlways jump="j2"/>
+				<OThis />
+				<OScope />
+				<OReg v="3" />
+				<OScope />
+				<OAsAny />
+				<OSetReg v="4" />
+				<OJump name="j2"/>
+				<OFalse />
+				<ORet />
+			</function>
+
+			<function  name="__clear_trace" static="true" final="true" args="" return="void" >
+				<OGetLex p="flash.Boot" />
+				<OGetProp p="tf" />
+				<ONull />
+				<OCast p="flash.text.TextField" />
+				<!--<OJump jump="JNeq" offset="1"/>-->
+				<JNeq jump="j1"/>
+				<ORetVoid />
+				<OJump name="j1"/>
+				<OGetLex p="flash.Lib" />
+				<OGetProp p="current" />
+				<OGetLex p="flash.Boot" />
+				<OGetProp p="tf" />
+				<OCallPropVoid p="removeChild" nargs="1"/>
+				<OGetLex p="flash.Boot" />
+				<ONull />
+				<OCast p="flash.text.TextField" />
+				<OInitProp p="tf" />
+				<OGetLex p="flash.Boot" />
+				<OArray v="0" />
+				<OInitProp p="lines" />
+				<ORetVoid />
+			</function>
+
+			<function  name="__set_trace_color" static="true" final="true" args="uint" return="void" >
+				<OGetLex p="flash.Boot" />
+				<OCallProperty p="getTrace" nargs="0"/>
+				<OCast p="flash.text.TextField" />
+				<OReg v="1" />
+				<OInitProp p="textColor" />
+				<ORetVoid />
+			</function>
+
+			<function  name="getTrace" static="true" final="true" args="" return="flash.text.TextField" >
+				<ONull />
+				<OAsType p="flash.text.TextFormat" />
+				<OSetReg v="2" />
+				<OGetLex p="flash.Lib" />
+				<OGetProp p="current" />
+				<OCast p="flash.display.MovieClip" />
+				<OSetReg v="1" />
+				<OGetLex p="flash.Boot" />
+				<OGetProp p="tf" />
+				<ONull />
+				<OCast p="flash.text.TextField" />
+				<!--<OJump jump="JNeq" offset="84"/>-->
+				<JNeq jump="j1"/>
+				<OGetLex p="flash.Boot" />
+				<OFindPropStrict p="flash.text.TextField" />
+				<OConstructProperty p="flash.text.TextField" nargs="0"/>
+				<OInitProp p="tf" />
+				<OGetLex p="flash.Boot" />
+				<OGetProp p="tf" />
+				<OCallProperty p="getTextFormat" nargs="0"/>
+				<OCast p="flash.text.TextFormat" />
+				<OCast p="flash.text.TextFormat" />
+				<OSetReg v="2" />
+				<OReg v="2" />
+				<OString v="_sans" />
+				<OInitProp p="font" />
+				<OGetLex p="flash.Boot" />
+				<OGetProp p="tf" />
+				<OReg v="2" />
+				<OInitProp p="defaultTextFormat" />
+				<OGetLex p="flash.Boot" />
+				<OGetProp p="tf" />
+				<OFalse />
+				<OInitProp p="selectable" />
+				<OGetLex p="flash.Boot" />
+				<OGetProp p="tf" />
+				<OReg v="1" />
+				<OGetProp p="stage" />
+				<ONull />
+				<OCast p="flash.display.Stage" />
+				<!--<OJump jump="JNeq" offset="6"/>-->
+				<JNeq jump="j2"/>
+				<OIntRef v="800" />
+				<!--<OJump jump="JAlways" offset="5"/>-->
+				<JAlways jump="j3"/>
+				<OJump name="j2"/>
+				<OReg v="1" />
+				<OGetProp p="stage" />
+				<OGetProp p="stageWidth" />
+				<OJump name="j3"/>
+				<OInitProp p="width" />
+				<OGetLex p="flash.Boot" />
+				<OGetProp p="tf" />
+				<OGetLex p="flash.text.TextFieldAutoSize" />
+				<OGetProp p="LEFT" />
+				<OInitProp p="autoSize" />
+				<OGetLex p="flash.Boot" />
+				<OGetProp p="tf" />
+				<OFalse />
+				<OInitProp p="mouseEnabled" />
+				<OJump name="j1"/>
+				<OReg v="1" />
+				<OGetLex p="flash.Boot" />
+				<OGetProp p="tf" />
+				<OCallPropVoid p="addChild" nargs="1"/>
+				<OGetLex p="flash.Boot" />
+				<OGetProp p="tf" />
+				<ORet />
+			</function>
+
+			<function  name="__trace" static="true" final="true" args="*,Object" return="void" >
+				<OGetLex p="flash.Boot" />
+				<OCallProperty p="getTrace" nargs="0"/>
+				<OCast p="flash.text.TextField" />
+				<OCast p="flash.text.TextField" />
+				<OSetReg v="3" />
+				<OReg v="2" />
+				<ONull />
+				<OAsAny />
+				<!--<OJump jump="JNeq" offset="6"/>-->
+				<JNeq jump="j1"/>
+				<OString v="%28null%29" />
+				<!--<OJump jump="JAlways" offset="17"/>-->
+				<JAlways jump="j2"/>
+				<OJump name="j1"/>
+				<OReg v="2" />
+				<OGetProp p="fileName" />
+				<OCast p="String" />
+				<OString v="%3A" />
+				<OOp op="OpAdd"/>
+				<OCast p="String" />
+				<OReg v="2" />
+				<OGetProp p="lineNumber" />
+				<OToInt />
+				<OOp op="OpAdd"/>
+				<OCast p="String" />
+				<OJump name="j2"/>
+				<OCast p="String" />
+				<OSetReg v="4" />
+				<OGetLex p="flash.Boot" />
+				<OGetLex p="flash.Boot" />
+				<OGetProp p="lines" />
+				<OReg v="4" />
+				<OString v="%3A%20" />
+				<OOp op="OpAdd"/>
+				<OCast p="String" />
+				<OGetLex p="flash.Boot" />
+				<OReg v="1" />
+				<OString v="" />
+				<OCallProperty p="__string_rec" nargs="2"/>
+				<OCast p="String" />
+				<OOp op="OpAdd"/>
+				<OCast p="String" />
+				<OString v="%0A" />
+				<OCallProperty p="http://adobe.com/AS3/2006/builtin.split" nargs="1"/>
+				<OCast p="Array" />
+				<OCallProperty p="http://adobe.com/AS3/2006/builtin.concat" nargs="1"/>
+				<OCast p="Array" />
+				<OInitProp p="lines" />
+				<OReg v="3" />
+				<OGetLex p="flash.Boot" />
+				<OGetProp p="lines" />
+				<OString v="%0A" />
+				<OCallProperty p="http://adobe.com/AS3/2006/builtin.join" nargs="1"/>
+				<OCast p="String" />
+				<OInitProp p="text" />
+				<OGetLex p="flash.Lib" />
+				<OGetProp p="current" />
+				<OGetProp p="stage" />
+				<OCast p="flash.display.Stage" />
+				<OSetReg v="5" />
+				<OReg v="5" />
+				<ONull />
+				<OCast p="flash.display.Stage" />
+				<!--<OJump jump="JNeq" offset="1"/>-->
+				<JNeq jump="j3"/>
+				<ORetVoid />
+				<OJump name="j3"/>
+				<!--<OJump jump="JAlways" offset="22"/>-->
+				<JAlways jump="j4"/>
+				<!--<OLabel/>-->
+				<OLabel name="label1"/>
+				<OGetLex p="flash.Boot" />
+				<OGetProp p="lines" />
+				<OCallPropVoid p="http://adobe.com/AS3/2006/builtin.shift" nargs="0"/>
+				<OReg v="3" />
+				<OGetLex p="flash.Boot" />
+				<OGetProp p="lines" />
+				<OString v="%0A" />
+				<OCallProperty p="http://adobe.com/AS3/2006/builtin.join" nargs="1"/>
+				<OCast p="String" />
+				<OInitProp p="text" />
+				<OJump name="j4"/>
+				<OFalse />
+				<OGetLex p="flash.Boot" />
+				<OGetProp p="lines" />
+				<OGetProp p="length" />
+				<OToInt />
+				<OSmallInt v="1" />
+				<!--<OJump jump="JNotGt" offset="10"/>-->
+				<JNotGt jump="j5"/>
+				<OPop />
+				<OReg v="3" />
+				<OGetProp p="height" />
+				<OReg v="5" />
+				<OGetProp p="stageHeight" />
+				<OOp op="OpGt"/>
+				<OToBool />
+				<OJump name="j5"/>
+				<!--<OJump jump="JTrue" offset="-50"/>-->
+				<JTrue label="label1"/>
+				<ORetVoid />
+			</function>
+
+			<function  name="__string_rec" static="true" final="true" args="*,String" return="String" >
+				<ONull />
+				<OAsType p="String" />
+				<OSetReg v="4" />
+				<ONull />
+				<OAsType p="Array" />
+				<OSetReg v="5" />
+				<ONull />
+				<OAsType p="Array" />
+				<OSetReg v="6" />
+				<OSmallInt v="0" />
+				<OSetReg v="7" />
+				<ONull />
+				<OAsAny />
+				<OSetReg v="8" />
+				<ONull />
+				<OAsType p="String" />
+				<OSetReg v="9" />
+				<OFalse />
+				<OSetReg v="10" />
+				<OSmallInt v="0" />
+				<OSetReg v="11" />
+				<OSmallInt v="0" />
+				<OSetReg v="12" />
+				<ONull />
+				<OAsType p="String" />
+				<OSetReg v="13" />
+				<OFindPropStrict p="flash.utils.getQualifiedClassName" />
+				<OReg v="1" />
+				<OCallProperty p="flash.utils.getQualifiedClassName" nargs="1"/>
+				<OCast p="String" />
+				<OSetReg v="3" />
+				<OReg v="3" />
+				<OCast p="String" />
+				<OSetReg v="4" />
+				<OReg v="4" />
+				<OString v="Object" />
+				<!--<OJump jump="JNeq" offset="198"/>-->
+				<JNeq jump="j1"/>
+				<OSmallInt v="0" />
+				<OToInt />
+				<OSetReg v="7" />
+				<OArray v="0" />
+				<OCast p="Array" />
+				<OSetReg v="6" />
+				<OReg v="1" />
+				<OAsAny />
+				<OSetReg v="8" />
+				<!--<OJump jump="JAlways" offset="11"/>-->
+				<JAlways jump="j2"/>
+				<!--<OLabel/>-->
+				<OLabel name="label1"/>
+				<OReg v="6" />
+				<OReg v="8" />
+				<OReg v="7" />
+				<OForIn />
+				<OCallPropVoid p="http://adobe.com/AS3/2006/builtin.push" nargs="1"/>
+				<OJump name="j2"/>
+				<ONext r1="8" r2="7"/>
+				<!--<OJump jump="JTrue" offset="-18"/>-->
+				<JTrue label="label1"/>
+				<OReg v="6" />
+				<OCast p="Array" />
+				<OSetReg v="5" />
+				<OString v="%7B" />
+				<OCast p="String" />
+				<OSetReg v="9" />
+				<OTrue />
+				<OToBool />
+				<OSetReg v="10" />
+				<OSmallInt v="0" />
+				<OToInt />
+				<OSetReg v="7" />
+				<OReg v="5" />
+				<OGetProp p="length" />
+				<OToInt />
+				<OToInt />
+				<OSetReg v="11" />
+				<!--<OJump jump="JAlways" offset="83"/>-->
+				<JAlways jump="j4"/>
+				<!--<OLabel/>-->
+				<OLabel name="label2"/>
+				<OReg v="7" />
+				<OIncrIReg v="7" />
+				<OToInt />
+				<OSetReg v="12" />
+				<OReg v="5" />
+				<OReg v="12" />
+				<OGetProp p="#arrayProp" />
+				<OCast p="String" />
+				<OCast p="String" />
+				<OSetReg v="13" />
+				<OReg v="10" />
+				<!--<OJump jump="JFalse" offset="8"/>-->
+				<JFalse jump="j5"/>
+				<OFalse />
+				<OToBool />
+				<OSetReg v="10" />
+				<!--<OJump jump="JAlways" offset="11"/>-->
+				<JAlways jump="j6"/>
+				<OJump name="j5"/>
+				<OReg v="9" />
+				<OString v="%2C" />
+				<OOp op="OpAdd"/>
+				<OCast p="String" />
+				<OCast p="String" />
+				<OSetReg v="9" />
+				<OJump name="j6"/>
+				<OReg v="9" />
+				<OString v="%20" />
+				<OReg v="13" />
+				<OOp op="OpAdd"/>
+				<OCast p="String" />
+				<OString v="%20%3A%20" />
+				<OOp op="OpAdd"/>
+				<OCast p="String" />
+				<OGetLex p="flash.Boot" />
+				<OReg v="1" />
+				<OReg v="13" />
+				<OGetProp p="#arrayProp" />
+				<OAsAny />
+				<OReg v="2" />
+				<OCallProperty p="__string_rec" nargs="2"/>
+				<OCast p="String" />
+				<OOp op="OpAdd"/>
+				<OCast p="String" />
+				<OOp op="OpAdd"/>
+				<OCast p="String" />
+				<OCast p="String" />
+				<OSetReg v="9" />
+				<OJump name="j4"/>
+				<OReg v="7" />
+				<OReg v="11" />
+				<!--<OJump jump="JLt" offset="-91"/>-->
+				<JLt label="label2"/>
+				<OReg v="10" />
+				<OOp op="OpNot"/>
+				<!--<OJump jump="JFalse" offset="11"/>-->
+				<JFalse jump="j8"/>
+				<OReg v="9" />
+				<OString v="%20" />
+				<OOp op="OpAdd"/>
+				<OCast p="String" />
+				<OCast p="String" />
+				<OSetReg v="9" />
+				<OJump name="j8"/>
+				<OReg v="9" />
+				<OString v="%7D" />
+				<OOp op="OpAdd"/>
+				<OCast p="String" />
+				<OCast p="String" />
+				<OSetReg v="9" />
+				<OReg v="9" />
+				<ORet />
+				<!--<OJump jump="JAlways" offset="142"/>-->
+				<JAlways jump="j9"/>
+				<OJump name="j1"/>
+				<OReg v="4" />
+				<OString v="Array" />
+				<!--<OJump jump="JNeq" offset="111"/>-->
+				<JNeq jump="j10"/>
+				<OString v="%5B" />
+				<OCast p="String" />
+				<OSetReg v="9" />
+				<OTrue />
+				<OToBool />
+				<OSetReg v="10" />
+				<OReg v="1" />
+				<OCast p="Array" />
+				<OSetReg v="5" />
+				<OSmallInt v="0" />
+				<OToInt />
+				<OSetReg v="7" />
+				<OReg v="5" />
+				<OGetProp p="length" />
+				<OToInt />
+				<OToInt />
+				<OSetReg v="11" />
+				<!--<OJump jump="JAlways" offset="57"/>-->
+				<JAlways jump="j11"/>
+				<!--<OLabel/>-->
+				<OLabel name="label3"/>
+				<OReg v="7" />
+				<OIncrIReg v="7" />
+				<OToInt />
+				<OSetReg v="12" />
+				<OReg v="10" />
+				<!--<OJump jump="JFalse" offset="8"/>-->
+				<JFalse jump="j12"/>
+				<OFalse />
+				<OToBool />
+				<OSetReg v="10" />
+				<!--<OJump jump="JAlways" offset="11"/>-->
+				<JAlways jump="j13"/>
+				<OJump name="j12"/>
+				<OReg v="9" />
+				<OString v="%2C" />
+				<OOp op="OpAdd"/>
+				<OCast p="String" />
+				<OCast p="String" />
+				<OSetReg v="9" />
+				<OJump name="j13"/>
+				<OReg v="9" />
+				<OGetLex p="flash.Boot" />
+				<OReg v="5" />
+				<OReg v="12" />
+				<OGetProp p="#arrayProp" />
+				<OAsAny />
+				<OReg v="2" />
+				<OCallProperty p="__string_rec" nargs="2"/>
+				<OCast p="String" />
+				<OOp op="OpAdd"/>
+				<OCast p="String" />
+				<OCast p="String" />
+				<OSetReg v="9" />
+				<OJump name="j11"/>
+				<OReg v="7" />
+				<OReg v="11" />
+				<!--<OJump jump="JLt" offset="-65"/>-->
+				<JLt label="label3"/>
+				<OReg v="9" />
+				<OString v="%5D" />
+				<OOp op="OpAdd"/>
+				<OCast p="String" />
+				<ORet />
+				<!--<OJump jump="JAlways" offset="23"/>-->
+				<JAlways jump="j15"/>
+				<OJump name="j10"/>
+				<OReg v="1" />
+				<OTypeof />
+				<OCast p="String" />
+				<OSetReg v="4" />
+				<OReg v="4" />
+				<OString v="function" />
+				<!--<OJump jump="JNeq" offset="8"/>-->
+				<JNeq jump="j16"/>
+				<OString v="%3Cfunction%3E" />
+				<ORet />
+				<!--<OJump jump="JAlways" offset="0"/>-->
+				<JAlways jump="j17"/>
+				<OJump name="j9"/>
+				<OJump name="j15"/>
+				<OJump name="j16"/>
+				<OJump name="j17"/>
+				<OFindPropStrict p="String" />
+				<OReg v="1" />
+				<OConstructProperty p="String" nargs="1"/>
+				<ORet />
+			</function>
+
+			<function  name="__unprotect__" static="true" final="true" args="String" return="String" >
+				<OReg v="1" />
+				<ORet />
+			</function>
+
+		</class>
+		<!--_________________________________________________________________-->
+		<init name="@Main" return="void" >
+			<OThis />
+			<OScope />
+			<OGetGlobalScope />
+			<OGetLex p="Object" />
+			<OScope />
+			<OGetLex p="Object" />
+			<OClassDef c="@Main" />
+			<OPopScope />
+			<OInitProp p="@Main" />
+			<ORetVoid />
+		</init>
+		<class  name="@Main" extends="Object" sealed="true">
+			<var name="init" type="Object" static="true"/>
+			<function name="@Main" args="" return="void" >
+				<OThis />
+				<OScope />
+				<ORetVoid />
+			</function>
+
+			<function name="@Main" static="true" return="void" >
+				<ORetVoid />
+			</function>
+
+		</class>
+		<!--_________________________________________________________________-->
+			<function name="functionClosure_25" kind="KFunction" args="*,Object" return="void" defaultParameters="null" >
+				<OGetLex p="flash.Boot" />
+				<OReg v="1" />
+				<OReg v="2" />
+				<OCallPropVoid p="__trace" nargs="2"/>
+				<ORetVoid />
+			</function>
+
+			<function name="functionClosure_26" kind="KFunction" args="" return="void" >
+				<OGetLex p="flash.Boot" />
+				<OCallPropVoid p="__clear_trace" nargs="0"/>
+				<ORetVoid />
+			</function>
+
+			<function name="functionClosure_27" kind="KFunction" args="int" return="void" >
+				<OGetLex p="flash.Boot" />
+				<OReg v="1" />
+				<OCallPropVoid p="__set_trace_color" nargs="1"/>
+				<ORetVoid />
+			</function>
+
+				<function name="functionClosure_60" kind="KFunction" args="Number" return="Boolean" >
+					<OFindPropStrict p="isFinite" />
+					<OReg v="1" />
+					<OCallProperty p="isFinite" nargs="1"/>
+					<ORet />
+				</function>
+
+				<function name="functionClosure_61" kind="KFunction" args="Number" return="Boolean" >
+					<OFindPropStrict p="isNaN" />
+					<OReg v="1" />
+					<OCallProperty p="isNaN" nargs="1"/>
+					<ORet />
+				</function>
+
+			<function name="functionClosure_59" kind="KFunction" args="" return="void" >
+				<OGetLex p="Math" />
+				<OGetLex p="Number" />
+				<OAsAny />
+				<OGetProp p="NaN" />
+				<OToNumber />
+				<OInitProp p="NaN" />
+				<OGetLex p="Math" />
+				<OGetLex p="Number" />
+				<OAsAny />
+				<OGetProp p="NEGATIVE_INFINITY" />
+				<OToNumber />
+				<OInitProp p="NEGATIVE_INFINITY" />
+				<OGetLex p="Math" />
+				<OGetLex p="Number" />
+				<OAsAny />
+				<OGetProp p="POSITIVE_INFINITY" />
+				<OToNumber />
+				<OInitProp p="POSITIVE_INFINITY" />
+				<OGetLex p="Math" />
+				<OFunction f="functionClosure_60" />
+				<OInitProp p="isFinite" />
+				<OGetLex p="Math" />
+				<OFunction f="functionClosure_61" />
+				<OInitProp p="isNaN" />
+				<ONull />
+				<OAsAny />
+				<OPop />
+				<OGetLex p="flash.Boot" />
+				<OFalse />
+				<OInitProp p="skip_constructor" />
+				<OGetLex p="@Main" />
+				<OGetLex p="Main" />
+				<OCallProperty p="main" nargs="0"/>
+				<OCast p="Object" />
+				<OInitProp p="init" />
+				<ORetVoid />
+			</function>
+
+				<function name="functionClosure_42" kind="KFunction" args="" return="*" >
+					<OThis />
+					<OScope />
+					<OThis />
+					<OCallProperty p="slice" nargs="0"/>
+					<OAsAny />
+					<ORet />
+				</function>
+
+				<function name="functionClosure_43" kind="KFunction" args="*,*" return="void" >
+					<OThis />
+					<OScope />
+					<OThis />
+					<OReg v="1" />
+					<OSmallInt v="0" />
+					<OReg v="2" />
+					<OCallPropVoid p="splice" nargs="3"/>
+					<ORetVoid />
+				</function>
+
+				<function name="functionClosure_44" kind="KFunction" args="*" return="Boolean" >
+					<OThis />
+					<OScope />
+					<OThis />
+					<OReg v="1" />
+					<OCallProperty p="indexOf" nargs="1"/>
+					<OAsAny />
+					<OToInt />
+					<OSetReg v="2" />
+					<OReg v="2" />
+					<OSmallInt v="-1" />
+					<!--<OJump jump="JNeq" offset="2"/>-->
+					<JNeq jump="j1"/>
+					<OFalse />
+					<ORet />
+					<OJump name="j1"/>
+					<OThis />
+					<OReg v="2" />
+					<OSmallInt v="1" />
+					<OCallPropVoid p="splice" nargs="2"/>
+					<OTrue />
+					<ORet />
+				</function>
+
+					<function name="functionClosure_46" kind="KFunction" args="" return="Boolean" >
+						<OGetLex p="cur" />
+						<OGetLex p="arr" />
+						<OGetProp p="length" />
+						<OToInt />
+						<OOp op="OpLt"/>
+						<ORet />
+					</function>
+
+					<function name="functionClosure_47" kind="KFunction" args="" return="*" >
+						<OGetLex p="arr" />
+						<OFindProp p="cur" />
+						<OGetLex p="cur" />
+						<ODup />
+						<OToInt />
+						<OSetReg v="1" />
+						<OOp op="OpIIncr"/>
+						<OSetProp p="cur" />
+						<OReg v="1" />
+						<OGetProp p="#arrayProp" />
+						<OAsAny />
+						<ORet />
+					</function>
+
+				<function name="functionClosure_45" kind="KFunction" args="" return="Object" newBlock="true" locals="arr:Array::false,cur:int::false" >
+					<OThis />
+					<OScope />
+					<ONewBlock />
+					<OScope />
+					<OGetScope v="1" />
+					<OSmallInt v="0" />
+					<OSetSlot v="1" />
+					<OGetScope v="1" />
+					<OThis />
+					<OSetSlot v="2" />
+					<OString v="hasNext" />
+					<OFunction f="functionClosure_46" />
+					<OString v="next" />
+					<OFunction f="functionClosure_47" />
+					<OObject v="2" />
+					<ORet />
+				</function>
+
+				<function name="functionClosure_48" kind="KFunction" args="*" return="*" >
+					<OThis />
+					<OScope />
+					<OGetLex p="cca" />
+					<OThis />
+					<OReg v="1" />
+					<OCallProperty p="call" nargs="2"/>
+					<OAsAny />
+					<OAsAny />
+					<OSetReg v="2" />
+					<OFindPropStrict p="isNaN" />
+					<OReg v="2" />
+					<OCallProperty p="isNaN" nargs="1"/>
+					<!--<OJump jump="JFalse" offset="3"/>-->
+					<JFalse jump="j1"/>
+					<ONull />
+					<OAsAny />
+					<ORet />
+					<OJump name="j1"/>
+					<OReg v="2" />
+					<ORet />
+				</function>
+
+	</abcfile>
+</abcfiles>
