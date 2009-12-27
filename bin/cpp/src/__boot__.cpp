@@ -2,13 +2,14 @@
 
 #include <StringTools.h>
 #include <format/tools/BitsOutput.h>
-#include <be/haxer/hxgraphix/HxGraphix.h>
+#include <be/haxer/hxswfml/HxGraphix.h>
 #include <haxe/io/Bytes.h>
 #include <haxe/io/BytesOutput.h>
 #include <haxe/io/Error.h>
 #include <be/haxer/hxswfml/Main.h>
 #include <format/tools/Adler32.h>
 #include <format/swf/Tools.h>
+#include <be/haxer/hxswfml/Hxavm2.h>
 #include <format/zip/Writer.h>
 #include <Std.h>
 #include <cpp/CppDate__.h>
@@ -20,13 +21,14 @@
 #include <cpp/io/FileSeek.h>
 #include <format/abc/Context.h>
 #include <format/abc/_Context/NullOutput.h>
-#include <format/tools/CRC32.h>
 #include <format/tools/Deflate.h>
+#include <format/tools/CRC32.h>
 #include <format/mp3/Writer.h>
 #include <be/haxer/hxswfml/HXswfML.h>
 #include <format/tools/IO.h>
 #include <format/abc/Writer.h>
 #include <StringBuf.h>
+#include <be/haxer/hxswfml/Hxvml.h>
 #include <format/zip/ExtraField.h>
 #include <IntHash.h>
 #include <cpp/io/FileOutput.h>
@@ -62,6 +64,7 @@
 #include <haxe/io/Eof.h>
 #include <haxe/io/BytesInput.h>
 #include <format/mp3/Tools.h>
+#include <format/abc/OpReader.h>
 #include <cpp/Sys.h>
 #include <cpp/io/FileInput.h>
 #include <haxe/io/Input.h>
@@ -108,6 +111,7 @@
 #include <format/tools/InflateImpl.h>
 #include <format/tools/_InflateImpl/State.h>
 #include <format/tools/_InflateImpl/Window.h>
+#include <format/abc/Reader.h>
 #include <haxe/io/BytesBuffer.h>
 #include <format/swf/FillStyleTypeId.h>
 #include <format/swf/TagId.h>
@@ -117,13 +121,14 @@ void __boot_all()
 RegisterResources( GetResources() );
 StringTools_obj::__register();
 format::tools::BitsOutput_obj::__register();
-be::haxer::hxgraphix::HxGraphix_obj::__register();
+be::haxer::hxswfml::HxGraphix_obj::__register();
 haxe::io::Bytes_obj::__register();
 haxe::io::BytesOutput_obj::__register();
 haxe::io::Error_obj::__register();
 be::haxer::hxswfml::Main_obj::__register();
 format::tools::Adler32_obj::__register();
 format::swf::Tools_obj::__register();
+be::haxer::hxswfml::Hxavm2_obj::__register();
 format::zip::Writer_obj::__register();
 Std_obj::__register();
 cpp::CppDate___obj::__register();
@@ -135,13 +140,14 @@ cpp::io::File_obj::__register();
 cpp::io::FileSeek_obj::__register();
 format::abc::Context_obj::__register();
 format::abc::_Context::NullOutput_obj::__register();
-format::tools::CRC32_obj::__register();
 format::tools::Deflate_obj::__register();
+format::tools::CRC32_obj::__register();
 format::mp3::Writer_obj::__register();
 be::haxer::hxswfml::HXswfML_obj::__register();
 format::tools::IO_obj::__register();
 format::abc::Writer_obj::__register();
 StringBuf_obj::__register();
+be::haxer::hxswfml::Hxvml_obj::__register();
 format::zip::ExtraField_obj::__register();
 IntHash_obj::__register();
 cpp::io::FileOutput_obj::__register();
@@ -177,6 +183,7 @@ Reflect_obj::__register();
 haxe::io::Eof_obj::__register();
 haxe::io::BytesInput_obj::__register();
 format::mp3::Tools_obj::__register();
+format::abc::OpReader_obj::__register();
 cpp::Sys_obj::__register();
 cpp::io::FileInput_obj::__register();
 haxe::io::Input_obj::__register();
@@ -223,6 +230,7 @@ cpp::Lib_obj::__register();
 format::tools::InflateImpl_obj::__register();
 format::tools::_InflateImpl::State_obj::__register();
 format::tools::_InflateImpl::Window_obj::__register();
+format::abc::Reader_obj::__register();
 haxe::io::BytesBuffer_obj::__register();
 format::swf::FillStyleTypeId_obj::__register();
 format::swf::TagId_obj::__register();
@@ -231,6 +239,7 @@ Std_obj::__init__();
 format::swf::TagId_obj::__boot();
 format::swf::FillStyleTypeId_obj::__boot();
 haxe::io::BytesBuffer_obj::__boot();
+format::abc::Reader_obj::__boot();
 format::tools::_InflateImpl::Window_obj::__boot();
 format::tools::_InflateImpl::State_obj::__boot();
 format::tools::InflateImpl_obj::__boot();
@@ -277,6 +286,7 @@ List_obj::__boot();
 haxe::io::Input_obj::__boot();
 cpp::io::FileInput_obj::__boot();
 cpp::Sys_obj::__boot();
+format::abc::OpReader_obj::__boot();
 format::mp3::Tools_obj::__boot();
 haxe::io::BytesInput_obj::__boot();
 haxe::io::Eof_obj::__boot();
@@ -312,13 +322,14 @@ haxe::io::Output_obj::__boot();
 cpp::io::FileOutput_obj::__boot();
 IntHash_obj::__boot();
 format::zip::ExtraField_obj::__boot();
+be::haxer::hxswfml::Hxvml_obj::__boot();
 StringBuf_obj::__boot();
 format::abc::Writer_obj::__boot();
 format::tools::IO_obj::__boot();
 be::haxer::hxswfml::HXswfML_obj::__boot();
 format::mp3::Writer_obj::__boot();
-format::tools::Deflate_obj::__boot();
 format::tools::CRC32_obj::__boot();
+format::tools::Deflate_obj::__boot();
 format::abc::_Context::NullOutput_obj::__boot();
 format::abc::Context_obj::__boot();
 cpp::io::FileSeek_obj::__boot();
@@ -330,13 +341,14 @@ format::swf::Reader_obj::__boot();
 cpp::CppDate___obj::__boot();
 Std_obj::__boot();
 format::zip::Writer_obj::__boot();
+be::haxer::hxswfml::Hxavm2_obj::__boot();
 format::swf::Tools_obj::__boot();
 format::tools::Adler32_obj::__boot();
 be::haxer::hxswfml::Main_obj::__boot();
 haxe::io::Error_obj::__boot();
 haxe::io::BytesOutput_obj::__boot();
 haxe::io::Bytes_obj::__boot();
-be::haxer::hxgraphix::HxGraphix_obj::__boot();
+be::haxer::hxswfml::HxGraphix_obj::__boot();
 format::tools::BitsOutput_obj::__boot();
 StringTools_obj::__boot();
 }

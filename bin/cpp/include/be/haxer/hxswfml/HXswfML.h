@@ -143,7 +143,7 @@ class HXswfML_obj : public virtual hxObject
 		virtual Dynamic getInt( String att,Dynamic defaultValue,Dynamic required,Dynamic uniqueId,Dynamic targetId);
 		Dynamic getInt_dyn();
 
-		virtual bool getBool( String att,bool defaultValue,Dynamic required);
+		virtual Dynamic getBool( String att,Dynamic defaultValue,Dynamic required);
 		Dynamic getBool_dyn();
 
 		virtual Dynamic getFloat( String att,Dynamic defaultValue,Dynamic required);

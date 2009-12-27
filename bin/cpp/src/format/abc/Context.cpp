@@ -48,6 +48,9 @@
 #ifndef INCLUDED_format_abc__Context_NullOutput
 #include <format/abc/_Context/NullOutput.h>
 #endif
+#ifndef INCLUDED_haxe_Log
+#include <haxe/Log.h>
+#endif
 #ifndef INCLUDED_haxe_io_Bytes
 #include <haxe/io/Bytes.h>
 #endif
@@ -80,15 +83,10 @@ Void Context_obj::__construct()
 	this->data->classes = Array_obj<Dynamic >::__new();
 	this->data->functions = Array_obj<Dynamic >::__new();
 	this->emptyString = this->string(STRING(L"",0));
-	this->nsPublic = this->_namespace(format::abc::Namespace_obj::NPublic(this->emptyString));
+	this->nsPublic = this->namespace(format::abc::Namespace_obj::NPublic(this->emptyString));
 	this->arrayProp = this->name(format::abc::Name_obj::NMultiLate(this->nsset(Array_obj<format::abc::Index >::__new().Add(this->nsPublic))));
-	this->beginFunction(Array_obj<format::abc::Index >::__new(),null(),null());
-	this->ops(Array_obj<format::abc::OpCode >::__new().Add(format::abc::OpCode_obj::OThis).Add(format::abc::OpCode_obj::OScope));
-	this->init = this->curFunction;
-	this->init->__Field(STRING(L"f",1)).FieldRef(STRING(L"maxStack",8)) = 2;
-	this->init->__Field(STRING(L"f",1)).FieldRef(STRING(L"maxScope",8)) = 2;
 	this->classes = Array_obj<Dynamic >::__new();
-	this->data->inits = Array_obj<Dynamic >::__new().Add(hxAnon_obj::Create()->Add( STRING(L"method",6) , this->init->__Field(STRING(L"f",1))->__Field(STRING(L"type",4)).Cast<format::abc::Index >())->Add( STRING(L"fields",6) , this->classes));
+	this->data->inits = Array_obj<Dynamic >::__new();
 }
 ;
 	return null();
@@ -108,21 +106,21 @@ Dynamic Context_obj::__Create(DynamicArray inArgs)
 	return result;}
 
 format::abc::Index Context_obj::toInt( cpp::CppInt32__ i){
-	return this->lookup(this->data->ints,i);
+	return this->lookup(this->data->ints,i,hxClassOf<cpp::CppInt32__ >());
 }
 
 
 DEFINE_DYNAMIC_FUNC1(Context_obj,toInt,return )
 
 format::abc::Index Context_obj::uint( cpp::CppInt32__ i){
-	return this->lookup(this->data->uints,i);
+	return this->lookup(this->data->uints,i,null());
 }
 
 
 DEFINE_DYNAMIC_FUNC1(Context_obj,uint,return )
 
 format::abc::Index Context_obj::_float( double f){
-	return this->lookup(this->data->floats,f);
+	return this->lookup(this->data->floats,f,null());
 }
 
 
@@ -141,12 +139,12 @@ format::abc::Index Context_obj::string( String s){
 
 DEFINE_DYNAMIC_FUNC1(Context_obj,string,return )
 
-format::abc::Index Context_obj::_namespace( format::abc::Namespace n){
-	return this->lookup(this->data->namespaces,n);
+format::abc::Index Context_obj::namespace( format::abc::Namespace n){
+	return this->elookup(this->data->namespaces,n);
 }
 
 
-DEFINE_DYNAMIC_FUNC1(Context_obj,_namespace,return )
+DEFINE_DYNAMIC_FUNC1(Context_obj,namespace,return )
 
 format::abc::Index Context_obj::nsset( Array<format::abc::Index > ns){
 	{
@@ -181,13 +179,31 @@ format::abc::Index Context_obj::nsset( Array<format::abc::Index > ns){
 DEFINE_DYNAMIC_FUNC1(Context_obj,nsset,return )
 
 format::abc::Index Context_obj::name( format::abc::Name n){
-	return this->lookup(this->data->names,n);
+	return this->elookup(this->data->names,n);
 }
 
 
 DEFINE_DYNAMIC_FUNC1(Context_obj,name,return )
 
+format::abc::Index Context_obj::getClass( Dynamic n){
+	{
+		int _g1 = 0;
+		int _g = this->data->classes->length;
+		while(_g1 < _g){
+			int i = _g1++;
+			if (this->data->classes->__get(i) == n)
+				return format::abc::Index_obj::Idx(i);
+		}
+	}
+	hxThrow ((STRING(L"unknown class: ",15) + n));
+}
+
+
+DEFINE_DYNAMIC_FUNC1(Context_obj,getClass,return )
+
 format::abc::Index Context_obj::type( String path){
+	if (bool(path != null()) && bool(path.indexOf(STRING(L" params:",8),null()) != -1))
+		return this->typeParams(path);
 	if (path == STRING(L"*",1))
 		return null();
 	Array<String > patharr = path.split(STRING(L".",1));
@@ -195,7 +211,7 @@ format::abc::Index Context_obj::type( String path){
 	String ns = patharr->join(STRING(L".",1));
 	format::abc::Index pid = this->string(ns);
 	format::abc::Index nameid = this->string(cname);
-	format::abc::Index pid1 = this->_namespace(format::abc::Namespace_obj::NPublic(pid));
+	format::abc::Index pid1 = this->namespace(format::abc::Namespace_obj::NPublic(pid));
 	format::abc::Index tid = this->name(format::abc::Name_obj::NName(nameid,pid1));
 	return tid;
 }
@@ -203,11 +219,40 @@ format::abc::Index Context_obj::type( String path){
 
 DEFINE_DYNAMIC_FUNC1(Context_obj,type,return )
 
+format::abc::Index Context_obj::typeParams( String path){
+	if (path == STRING(L"*",1))
+		return null();
+	Array<String > parts = path.split(STRING(L" params:",8));
+	String _path = parts->__get(0);
+	format::abc::Index __path = this->type(_path);
+	Array<String > _params = parts[1].split(STRING(L",",1));
+	Array<format::abc::Index > __params = Array_obj<format::abc::Index >::__new();
+	{
+		int _g1 = 0;
+		int _g = _params->length;
+		while(_g1 < _g){
+			int i = _g1++;
+			__params->push(this->type(_params->__get(i)));
+		}
+	}
+	format::abc::Index tid = this->name(format::abc::Name_obj::NParams(__path,__params));
+	return tid;
+}
+
+
+DEFINE_DYNAMIC_FUNC1(Context_obj,typeParams,return )
+
 format::abc::Index Context_obj::property( String pname,format::abc::Index ns){
-	format::abc::Index pid = this->string(STRING(L"",0));
-	format::abc::Index nameid = this->string(pname);
-	format::abc::Index pid1 = ns == null() ? format::abc::Index( this->_namespace(format::abc::Namespace_obj::NPublic(pid)) ) : format::abc::Index( ns );
-	format::abc::Index tid = this->name(format::abc::Name_obj::NName(nameid,pid1));
+	format::abc::Index tid;
+	if (pname.indexOf(STRING(L".",1),null()) != -1){
+		tid = this->type(pname);
+	}
+	else{
+		format::abc::Index pid = this->string(STRING(L"",0));
+		format::abc::Index nameid = this->string(pname);
+		format::abc::Index pid1 = ns == null() ? format::abc::Index( this->namespace(format::abc::Namespace_obj::NPublic(pid)) ) : format::abc::Index( ns );
+		tid = this->name(format::abc::Name_obj::NName(nameid,pid1));
+	}
 	return tid;
 }
 
@@ -222,14 +267,27 @@ format::abc::Index Context_obj::methodType( Dynamic m){
 
 DEFINE_DYNAMIC_FUNC1(Context_obj,methodType,return )
 
-format::abc::Index Context_obj::lookup( Array<Dynamic > arr,Dynamic n){
-	{
-		int _g1 = 0;
-		int _g = arr->length;
-		while(_g1 < _g){
-			int i = _g1++;
-			if (arr->__get(i) == n)
-				return format::abc::Index_obj::Idx(i + 1);
+format::abc::Index Context_obj::lookup( Array<Dynamic > arr,Dynamic n,Dynamic type){
+	if (type == hxClassOf<cpp::CppInt32__ >()){
+		{
+			int _g1 = 0;
+			int _g = arr->length;
+			while(_g1 < _g){
+				int i = _g1++;
+				if (cpp::CppInt32___obj::compare(arr->__get(i),cpp::CppInt32___obj::ofInt(n)) == 0)
+					return format::abc::Index_obj::Idx(i + 1);
+			}
+		}
+	}
+	else{
+		{
+			int _g1 = 0;
+			int _g = arr->length;
+			while(_g1 < _g){
+				int i = _g1++;
+				if (arr->__get(i) == n)
+					return format::abc::Index_obj::Idx(i + 1);
+			}
 		}
 	}
 	arr->push(n);
@@ -237,7 +295,7 @@ format::abc::Index Context_obj::lookup( Array<Dynamic > arr,Dynamic n){
 }
 
 
-DEFINE_DYNAMIC_FUNC2(Context_obj,lookup,return )
+DEFINE_DYNAMIC_FUNC3(Context_obj,lookup,return )
 
 format::abc::Index Context_obj::elookup( Array<Dynamic > arr,Dynamic n){
 	{
@@ -262,6 +320,16 @@ format::abc::ABCData Context_obj::getData( ){
 
 
 DEFINE_DYNAMIC_FUNC0(Context_obj,getData,return )
+
+format::abc::Index Context_obj::beginInterfaceFunction( Array<format::abc::Index > args,format::abc::Index ret,Dynamic extra){
+	this->endFunction();
+	Dynamic f = hxAnon_obj::Create()->Add( STRING(L"type",4) , this->methodType(hxAnon_obj::Create()->Add( STRING(L"args",4) , args)->Add( STRING(L"ret",3) , ret)->Add( STRING(L"extra",5) , extra)))->Add( STRING(L"nRegs",5) , args->length + 1)->Add( STRING(L"initScope",9) , 0)->Add( STRING(L"maxScope",8) , 0)->Add( STRING(L"maxStack",8) , 0)->Add( STRING(L"code",4) , null())->Add( STRING(L"trys",4) , Array_obj<Dynamic >::__new())->Add( STRING(L"locals",6) , Array_obj<Dynamic >::__new());
+	this->curFunction = hxAnon_obj::Create()->Add( STRING(L"f",1) , f)->Add( STRING(L"ops",3) , Array_obj<format::abc::OpCode >::__new());
+	return format::abc::Index_obj::Idx(this->data->methodTypes->length - 1);
+}
+
+
+DEFINE_DYNAMIC_FUNC3(Context_obj,beginInterfaceFunction,return )
 
 format::abc::Index Context_obj::beginFunction( Array<format::abc::Index > args,format::abc::Index ret,Dynamic extra){
 	this->endFunction();
@@ -339,46 +407,73 @@ return null();
 
 DEFINE_DYNAMIC_FUNC1(Context_obj,freeRegister,(void))
 
-Dynamic Context_obj::beginClass( String path){
-	this->endClass();
+Dynamic Context_obj::beginClass( String path,Dynamic isInterface){
+	this->classSupers = List_obj::__new();
+	if (!isInterface){
+		this->beginFunction(Array_obj<format::abc::Index >::__new(),null(),null());
+	}
+	else{
+		this->beginInterfaceFunction(Array_obj<format::abc::Index >::__new(),null(),null());
+	}
+	this->ops(Array_obj<format::abc::OpCode >::__new().Add(format::abc::OpCode_obj::OThis).Add(format::abc::OpCode_obj::OScope));
+	this->init = this->curFunction;
+	this->init->__Field(STRING(L"f",1)).FieldRef(STRING(L"maxStack",8)) = 2;
+	this->init->__Field(STRING(L"f",1)).FieldRef(STRING(L"maxScope",8)) = 2;
+	Dynamic script = hxAnon_obj::Create()->Add( STRING(L"method",6) , this->init->__Field(STRING(L"f",1))->__Field(STRING(L"type",4)).Cast<format::abc::Index >())->Add( STRING(L"fields",6) , Array_obj<Dynamic >::__new());
+	this->data->inits->push(script);
+	this->classes = script->__Field(STRING(L"fields",6)).Cast<Array<Dynamic > >();
+	this->endClass(null());
 	format::abc::Index tpath = this->type(path);
-	this->beginFunction(Array_obj<format::abc::Index >::__new(),null(),null());
-	format::abc::Index st = this->curFunction->__Field(STRING(L"f",1))->__Field(STRING(L"type",4)).Cast<format::abc::Index >();
-	this->op(format::abc::OpCode_obj::ORetVoid);
-	this->endFunction();
-	this->beginFunction(Array_obj<format::abc::Index >::__new(),null(),null());
-	format::abc::Index cst = this->curFunction->__Field(STRING(L"f",1))->__Field(STRING(L"type",4)).Cast<format::abc::Index >();
-	this->op(format::abc::OpCode_obj::ORetVoid);
-	this->endFunction();
 	this->fieldSlot = 1;
-	this->curClass = hxAnon_obj::Create()->Add( STRING(L"name",4) , tpath)->Add( STRING(L"superclass",10) , this->type(STRING(L"Object",6)))->Add( STRING(L"interfaces",10) , Array_obj<format::abc::Index >::__new())->Add( STRING(L"isSealed",8) , false)->Add( STRING(L"isInterface",11) , false)->Add( STRING(L"isFinal",7) , false)->Add( STRING(L"_namespace",10) , null())->Add( STRING(L"constructor",11) , cst)->Add( STRING(L"statics",7) , st)->Add( STRING(L"fields",6) , Array_obj<Dynamic >::__new())->Add( STRING(L"staticFields",12) , Array_obj<Dynamic >::__new());
+	this->curClass = hxAnon_obj::Create()->Add( STRING(L"name",4) , tpath)->Add( STRING(L"superclass",10) , this->type(STRING(L"Object",6)))->Add( STRING(L"interfaces",10) , Array_obj<format::abc::Index >::__new())->Add( STRING(L"isSealed",8) , false)->Add( STRING(L"isInterface",11) , false)->Add( STRING(L"isFinal",7) , false)->Add( STRING(L"namespace",9) , null())->Add( STRING(L"constructor",11) , null())->Add( STRING(L"statics",7) , null())->Add( STRING(L"fields",6) , Array_obj<Dynamic >::__new())->Add( STRING(L"staticFields",12) , Array_obj<Dynamic >::__new());
 	this->data->classes->push(this->curClass);
-	this->classes->push(hxAnon_obj::Create()->Add( STRING(L"name",4) , tpath)->Add( STRING(L"slot",4) , 0)->Add( STRING(L"kind",4) , format::abc::FieldKind_obj::FClass(format::abc::Index_obj::Idx(this->data->classes->length - 1)))->Add( STRING(L"metadatas",9) , null()));
+	this->classes->push(hxAnon_obj::Create()->Add( STRING(L"name",4) , tpath)->Add( STRING(L"slot",4) , this->classes->length + 1)->Add( STRING(L"kind",4) , format::abc::FieldKind_obj::FClass(format::abc::Index_obj::Idx(this->data->classes->length - 1)))->Add( STRING(L"metadatas",9) , null()));
 	this->curFunction = null();
 	return this->curClass;
 }
 
 
-DEFINE_DYNAMIC_FUNC1(Context_obj,beginClass,return )
+DEFINE_DYNAMIC_FUNC2(Context_obj,beginClass,return )
 
-Void Context_obj::endClass( ){
+Void Context_obj::endClass( Dynamic __o_makeInit){
+bool makeInit = __o_makeInit.Default(true);
 {
 		if (this->curClass == null())
 			return null();
 		this->endFunction();
-		this->curFunction = this->init;
-		this->ops(Array_obj<format::abc::OpCode >::__new().Add(format::abc::OpCode_obj::OGetGlobalScope).Add(format::abc::OpCode_obj::OGetLex(this->type(STRING(L"Object",6)))));
-		for(Dynamic __it = this->classSupers->iterator();  __it->__Field(STRING(L"hasNext",7))(); ){
+		if (makeInit){
+			this->curFunction = this->init;
+			this->ops(Array_obj<format::abc::OpCode >::__new().Add(format::abc::OpCode_obj::OGetGlobalScope).Add(format::abc::OpCode_obj::OGetLex(this->type(STRING(L"Object",6)))));
+			for(Dynamic __it = this->classSupers->iterator();  __it->__Field(STRING(L"hasNext",7))(); ){
 format::abc::Index sup = __it->__Field(STRING(L"next",4))();
-			this->ops(Array_obj<format::abc::OpCode >::__new().Add(format::abc::OpCode_obj::OScope).Add(format::abc::OpCode_obj::OGetLex(sup)));
-		}
-		this->ops(Array_obj<format::abc::OpCode >::__new().Add(format::abc::OpCode_obj::OScope).Add(format::abc::OpCode_obj::OGetLex(this->curClass->__Field(STRING(L"superclass",10)).Cast<format::abc::Index >())).Add(format::abc::OpCode_obj::OClassDef(format::abc::Index_obj::Idx(this->data->classes->length - 1))).Add(format::abc::OpCode_obj::OPopScope));
-		for(Dynamic __it = this->classSupers->iterator();  __it->__Field(STRING(L"hasNext",7))(); ){
+				this->ops(Array_obj<format::abc::OpCode >::__new().Add(format::abc::OpCode_obj::OScope).Add(format::abc::OpCode_obj::OGetLex(sup)));
+			}
+			this->ops(Array_obj<format::abc::OpCode >::__new().Add(format::abc::OpCode_obj::OScope).Add(format::abc::OpCode_obj::OGetLex(this->curClass->__Field(STRING(L"superclass",10)).Cast<format::abc::Index >())).Add(format::abc::OpCode_obj::OClassDef(format::abc::Index_obj::Idx(this->data->classes->length - 1))).Add(format::abc::OpCode_obj::OPopScope));
+			for(Dynamic __it = this->classSupers->iterator();  __it->__Field(STRING(L"hasNext",7))(); ){
 format::abc::Index sup = __it->__Field(STRING(L"next",4))();
-			this->op(format::abc::OpCode_obj::OPopScope);
+				this->op(format::abc::OpCode_obj::OPopScope);
+			}
+			this->ops(Array_obj<format::abc::OpCode >::__new().Add(format::abc::OpCode_obj::OInitProp(this->curClass->__Field(STRING(L"name",4)).Cast<format::abc::Index >())));
+			hxAddEq(this->curFunction->__Field(STRING(L"f",1)).FieldRef(STRING(L"maxScope",8)),this->classSupers->length);
+			this->op(format::abc::OpCode_obj::ORetVoid);
+			this->endFunction();
 		}
-		this->ops(Array_obj<format::abc::OpCode >::__new().Add(format::abc::OpCode_obj::OInitProp(this->curClass->__Field(STRING(L"name",4)).Cast<format::abc::Index >())));
-		hxAddEq(this->curFunction->__Field(STRING(L"f",1)).FieldRef(STRING(L"maxScope",8)),this->classSupers->length);
+		else{
+			this->curFunction = this->init;
+			this->op(format::abc::OpCode_obj::ORetVoid);
+			this->endFunction();
+		}
+		if (this->curClass->__Field(STRING(L"statics",7)).Cast<format::abc::Index >() == null()){
+			this->beginFunction(Array_obj<format::abc::Index >::__new(),null(),null());
+			format::abc::Index st = this->curFunction->__Field(STRING(L"f",1))->__Field(STRING(L"type",4)).Cast<format::abc::Index >();
+			this->curClass.FieldRef(STRING(L"statics",7)) = st;
+			this->curFunction->__Field(STRING(L"f",1)).FieldRef(STRING(L"maxStack",8)) = 1;
+			this->curFunction->__Field(STRING(L"f",1)).FieldRef(STRING(L"maxScope",8)) = 1;
+			this->op(format::abc::OpCode_obj::OThis);
+			this->op(format::abc::OpCode_obj::OScope);
+			this->op(format::abc::OpCode_obj::ORetVoid);
+			this->endFunction();
+		}
 		this->curFunction = null();
 		this->curClass = null();
 	}
@@ -386,7 +481,7 @@ return null();
 }
 
 
-DEFINE_DYNAMIC_FUNC0(Context_obj,endClass,(void))
+DEFINE_DYNAMIC_FUNC1(Context_obj,endClass,(void))
 
 Void Context_obj::addClassSuper( String sup){
 {
@@ -400,17 +495,30 @@ return null();
 
 DEFINE_DYNAMIC_FUNC1(Context_obj,addClassSuper,(void))
 
-Dynamic Context_obj::beginMethod( String mname,Array<format::abc::Index > targs,format::abc::Index tret,Dynamic isStatic,Dynamic isOverride,Dynamic isFinal,Dynamic willAddLater){
-	format::abc::Index m = this->beginFunction(targs,tret,null());
+Dynamic Context_obj::beginInterfaceMethod( String mname,Array<format::abc::Index > targs,format::abc::Index tret,Dynamic isStatic,Dynamic isOverride,Dynamic isFinal,Dynamic willAddLater,format::abc::MethodKind kind,Dynamic extra,format::abc::Index ns){
+	haxe::Log_obj::trace(STRING(L"beginInterfaceMethod mname: ",28) + mname,hxAnon_obj::Create()->Add( STRING(L"fileName",8) , STRING(L"Context.hx",10))->Add( STRING(L"lineNumber",10) , 419)->Add( STRING(L"className",9) , STRING(L"format.abc.Context",18))->Add( STRING(L"methodName",10) , STRING(L"beginInterfaceMethod",20)));
+	format::abc::Index m = this->beginInterfaceFunction(targs,tret,extra);
 	if (willAddLater != true){
 		Array<Dynamic > fl = isStatic ? Array<Dynamic >( this->curClass->__Field(STRING(L"staticFields",12)).Cast<Array<Dynamic > >() ) : Array<Dynamic >( this->curClass->__Field(STRING(L"fields",6)).Cast<Array<Dynamic > >() );
-		fl->push(hxAnon_obj::Create()->Add( STRING(L"name",4) , this->property(mname,null()))->Add( STRING(L"slot",4) , 0)->Add( STRING(L"kind",4) , format::abc::FieldKind_obj::FMethod(this->curFunction->__Field(STRING(L"f",1))->__Field(STRING(L"type",4)).Cast<format::abc::Index >(),format::abc::MethodKind_obj::KNormal,isFinal,isOverride))->Add( STRING(L"metadatas",9) , null()));
+		fl->push(hxAnon_obj::Create()->Add( STRING(L"name",4) , this->property(mname,ns))->Add( STRING(L"slot",4) , fl->length + 1)->Add( STRING(L"kind",4) , format::abc::FieldKind_obj::FMethod(this->curFunction->__Field(STRING(L"f",1))->__Field(STRING(L"type",4)).Cast<format::abc::Index >(),kind,isFinal,isOverride))->Add( STRING(L"metadatas",9) , null()));
 	}
 	return this->curFunction->__Field(STRING(L"f",1));
 }
 
 
-DEFINE_DYNAMIC_FUNC7(Context_obj,beginMethod,return )
+DEFINE_DYNAMIC_FUNC10(Context_obj,beginInterfaceMethod,return )
+
+Dynamic Context_obj::beginMethod( String mname,Array<format::abc::Index > targs,format::abc::Index tret,Dynamic isStatic,Dynamic isOverride,Dynamic isFinal,Dynamic willAddLater,format::abc::MethodKind kind,Dynamic extra,format::abc::Index ns){
+	format::abc::Index m = this->beginFunction(targs,tret,extra);
+	if (willAddLater != true){
+		Array<Dynamic > fl = isStatic ? Array<Dynamic >( this->curClass->__Field(STRING(L"staticFields",12)).Cast<Array<Dynamic > >() ) : Array<Dynamic >( this->curClass->__Field(STRING(L"fields",6)).Cast<Array<Dynamic > >() );
+		fl->push(hxAnon_obj::Create()->Add( STRING(L"name",4) , this->property(mname,ns))->Add( STRING(L"slot",4) , fl->length + 1)->Add( STRING(L"kind",4) , format::abc::FieldKind_obj::FMethod(this->curFunction->__Field(STRING(L"f",1))->__Field(STRING(L"type",4)).Cast<format::abc::Index >(),kind,isFinal,isOverride))->Add( STRING(L"metadatas",9) , null()));
+	}
+	return this->curFunction->__Field(STRING(L"f",1));
+}
+
+
+DEFINE_DYNAMIC_FUNC10(Context_obj,beginMethod,return )
 
 Void Context_obj::endMethod( ){
 {
@@ -422,15 +530,21 @@ return null();
 
 DEFINE_DYNAMIC_FUNC0(Context_obj,endMethod,(void))
 
-int Context_obj::defineField( String fname,format::abc::Index t,Dynamic isStatic){
+int Context_obj::defineField( String fname,format::abc::Index t,Dynamic isStatic,format::abc::Value value,Dynamic const,format::abc::Index ns){
 	Array<Dynamic > fl = isStatic ? Array<Dynamic >( this->curClass->__Field(STRING(L"staticFields",12)).Cast<Array<Dynamic > >() ) : Array<Dynamic >( this->curClass->__Field(STRING(L"fields",6)).Cast<Array<Dynamic > >() );
 	int slot = this->fieldSlot++;
-	fl->push(hxAnon_obj::Create()->Add( STRING(L"name",4) , this->property(fname,null()))->Add( STRING(L"slot",4) , slot)->Add( STRING(L"kind",4) , format::abc::FieldKind_obj::FVar(t,null(),null()))->Add( STRING(L"metadatas",9) , null()));
-	return slot;
+	format::abc::FieldKind kind = format::abc::FieldKind_obj::FVar(t,null(),null());
+	if (value != null()){
+		kind = format::abc::FieldKind_obj::FVar(t,value,null());
+		if (const)
+			kind = format::abc::FieldKind_obj::FVar(t,value,const);
+	}
+	fl->push(hxAnon_obj::Create()->Add( STRING(L"name",4) , this->property(fname,ns))->Add( STRING(L"slot",4) , fl->length + 1)->Add( STRING(L"kind",4) , kind)->Add( STRING(L"metadatas",9) , null()));
+	return fl->length;
 }
 
 
-DEFINE_DYNAMIC_FUNC3(Context_obj,defineField,return )
+DEFINE_DYNAMIC_FUNC6(Context_obj,defineField,return )
 
 Void Context_obj::op( format::abc::OpCode o){
 {
@@ -505,7 +619,7 @@ DEFINE_DYNAMIC_FUNC1(Context_obj,jump,return )
 
 Void Context_obj::finalize( ){
 {
-		this->endClass();
+		this->endClass(null());
 		this->curFunction = this->init;
 		this->op(format::abc::OpCode_obj::ORetVoid);
 		this->endFunction();
@@ -591,6 +705,7 @@ Dynamic Context_obj::__Field(const String &inName)
 		if (!memcmp(inName.__s,L"hstrings",sizeof(wchar_t)*8) ) { return hstrings; }
 		if (!memcmp(inName.__s,L"curClass",sizeof(wchar_t)*8) ) { return curClass; }
 		if (!memcmp(inName.__s,L"nsPublic",sizeof(wchar_t)*8) ) { return nsPublic; }
+		if (!memcmp(inName.__s,L"getClass",sizeof(wchar_t)*8) ) { return getClass_dyn(); }
 		if (!memcmp(inName.__s,L"property",sizeof(wchar_t)*8) ) { return property_dyn(); }
 		if (!memcmp(inName.__s,L"endClass",sizeof(wchar_t)*8) ) { return endClass_dyn(); }
 		if (!memcmp(inName.__s,L"finalize",sizeof(wchar_t)*8) ) { return finalize_dyn(); }
@@ -599,10 +714,11 @@ Dynamic Context_obj::__Field(const String &inName)
 		if (!memcmp(inName.__s,L"fieldSlot",sizeof(wchar_t)*9) ) { return fieldSlot; }
 		if (!memcmp(inName.__s,L"registers",sizeof(wchar_t)*9) ) { return registers; }
 		if (!memcmp(inName.__s,L"arrayProp",sizeof(wchar_t)*9) ) { return arrayProp; }
+		if (!memcmp(inName.__s,L"namespace",sizeof(wchar_t)*9) ) { return namespace_dyn(); }
 		if (!memcmp(inName.__s,L"endMethod",sizeof(wchar_t)*9) ) { return endMethod_dyn(); }
 		break;
 	case 10:
-		if (!memcmp(inName.__s,L"_namespace",sizeof(wchar_t)*10) ) { return _namespace_dyn(); }
+		if (!memcmp(inName.__s,L"typeParams",sizeof(wchar_t)*10) ) { return typeParams_dyn(); }
 		if (!memcmp(inName.__s,L"methodType",sizeof(wchar_t)*10) ) { return methodType_dyn(); }
 		if (!memcmp(inName.__s,L"beginClass",sizeof(wchar_t)*10) ) { return beginClass_dyn(); }
 		break;
@@ -622,6 +738,12 @@ Dynamic Context_obj::__Field(const String &inName)
 		if (!memcmp(inName.__s,L"beginFunction",sizeof(wchar_t)*13) ) { return beginFunction_dyn(); }
 		if (!memcmp(inName.__s,L"allocRegister",sizeof(wchar_t)*13) ) { return allocRegister_dyn(); }
 		if (!memcmp(inName.__s,L"addClassSuper",sizeof(wchar_t)*13) ) { return addClassSuper_dyn(); }
+		break;
+	case 20:
+		if (!memcmp(inName.__s,L"beginInterfaceMethod",sizeof(wchar_t)*20) ) { return beginInterfaceMethod_dyn(); }
+		break;
+	case 22:
+		if (!memcmp(inName.__s,L"beginInterfaceFunction",sizeof(wchar_t)*22) ) { return beginInterfaceFunction_dyn(); }
 	}
 	return super::__Field(inName);
 }
@@ -644,15 +766,18 @@ static int __id_toInt = __hxcpp_field_to_id("int");
 static int __id_uint = __hxcpp_field_to_id("uint");
 static int __id__float = __hxcpp_field_to_id("float");
 static int __id_string = __hxcpp_field_to_id("string");
-static int __id__namespace = __hxcpp_field_to_id("_namespace");
+static int __id_namespace = __hxcpp_field_to_id("namespace");
 static int __id_nsset = __hxcpp_field_to_id("nsset");
 static int __id_name = __hxcpp_field_to_id("name");
+static int __id_getClass = __hxcpp_field_to_id("getClass");
 static int __id_type = __hxcpp_field_to_id("type");
+static int __id_typeParams = __hxcpp_field_to_id("typeParams");
 static int __id_property = __hxcpp_field_to_id("property");
 static int __id_methodType = __hxcpp_field_to_id("methodType");
 static int __id_lookup = __hxcpp_field_to_id("lookup");
 static int __id_elookup = __hxcpp_field_to_id("elookup");
 static int __id_getData = __hxcpp_field_to_id("getData");
+static int __id_beginInterfaceFunction = __hxcpp_field_to_id("beginInterfaceFunction");
 static int __id_beginFunction = __hxcpp_field_to_id("beginFunction");
 static int __id_endFunction = __hxcpp_field_to_id("endFunction");
 static int __id_allocRegister = __hxcpp_field_to_id("allocRegister");
@@ -660,6 +785,7 @@ static int __id_freeRegister = __hxcpp_field_to_id("freeRegister");
 static int __id_beginClass = __hxcpp_field_to_id("beginClass");
 static int __id_endClass = __hxcpp_field_to_id("endClass");
 static int __id_addClassSuper = __hxcpp_field_to_id("addClassSuper");
+static int __id_beginInterfaceMethod = __hxcpp_field_to_id("beginInterfaceMethod");
 static int __id_beginMethod = __hxcpp_field_to_id("beginMethod");
 static int __id_endMethod = __hxcpp_field_to_id("endMethod");
 static int __id_defineField = __hxcpp_field_to_id("defineField");
@@ -690,15 +816,18 @@ Dynamic Context_obj::__IField(int inFieldID)
 	if (inFieldID==__id_uint) return uint_dyn();
 	if (inFieldID==__id__float) return _float_dyn();
 	if (inFieldID==__id_string) return string_dyn();
-	if (inFieldID==__id__namespace) return _namespace_dyn();
+	if (inFieldID==__id_namespace) return namespace_dyn();
 	if (inFieldID==__id_nsset) return nsset_dyn();
 	if (inFieldID==__id_name) return name_dyn();
+	if (inFieldID==__id_getClass) return getClass_dyn();
 	if (inFieldID==__id_type) return type_dyn();
+	if (inFieldID==__id_typeParams) return typeParams_dyn();
 	if (inFieldID==__id_property) return property_dyn();
 	if (inFieldID==__id_methodType) return methodType_dyn();
 	if (inFieldID==__id_lookup) return lookup_dyn();
 	if (inFieldID==__id_elookup) return elookup_dyn();
 	if (inFieldID==__id_getData) return getData_dyn();
+	if (inFieldID==__id_beginInterfaceFunction) return beginInterfaceFunction_dyn();
 	if (inFieldID==__id_beginFunction) return beginFunction_dyn();
 	if (inFieldID==__id_endFunction) return endFunction_dyn();
 	if (inFieldID==__id_allocRegister) return allocRegister_dyn();
@@ -706,6 +835,7 @@ Dynamic Context_obj::__IField(int inFieldID)
 	if (inFieldID==__id_beginClass) return beginClass_dyn();
 	if (inFieldID==__id_endClass) return endClass_dyn();
 	if (inFieldID==__id_addClassSuper) return addClassSuper_dyn();
+	if (inFieldID==__id_beginInterfaceMethod) return beginInterfaceMethod_dyn();
 	if (inFieldID==__id_beginMethod) return beginMethod_dyn();
 	if (inFieldID==__id_endMethod) return endMethod_dyn();
 	if (inFieldID==__id_defineField) return defineField_dyn();
@@ -790,15 +920,18 @@ static String sMemberFields[] = {
 	STRING(L"uint",4),
 	STRING(L"float",5),
 	STRING(L"string",6),
-	STRING(L"_namespace",10),
+	STRING(L"namespace",9),
 	STRING(L"nsset",5),
 	STRING(L"name",4),
+	STRING(L"getClass",8),
 	STRING(L"type",4),
+	STRING(L"typeParams",10),
 	STRING(L"property",8),
 	STRING(L"methodType",10),
 	STRING(L"lookup",6),
 	STRING(L"elookup",7),
 	STRING(L"getData",7),
+	STRING(L"beginInterfaceFunction",22),
 	STRING(L"beginFunction",13),
 	STRING(L"endFunction",11),
 	STRING(L"allocRegister",13),
@@ -806,6 +939,7 @@ static String sMemberFields[] = {
 	STRING(L"beginClass",10),
 	STRING(L"endClass",8),
 	STRING(L"addClassSuper",13),
+	STRING(L"beginInterfaceMethod",20),
 	STRING(L"beginMethod",11),
 	STRING(L"endMethod",9),
 	STRING(L"defineField",11),

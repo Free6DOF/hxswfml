@@ -3,6 +3,8 @@
 * @author Jan J. Flanders
 */
 package be.haxer.hxswfml;
+import be.haxer.hxswfml.HxGraphix;
+import be.haxer.hxswfml.Hxavm2;
 
 import format.abc.Data;
 import format.swf.Data;
@@ -16,7 +18,7 @@ import format.mp3.Writer;
 import haxe.io.Bytes;
 import haxe.io.BytesInput;
 import haxe.io.BytesOutput;
-import be.haxer.hxgraphix.HxGraphix;
+
 
 #if air
 import flash.display.MovieClip;
@@ -316,7 +318,14 @@ class HXswfML
 						var width = getFloat('width', 1.0);
 						var color = getInt('color', 0x000000);
 						var alpha = getFloat('alpha', 1.0);
-						hxg.lineStyle(width, color, alpha);
+						var pixelHinting = getBool('pixelHinting', null);
+						var scaleMode = getString('scaleMode', null);
+						var caps = getString('caps', null);
+						var joints = getString('joints', null);
+						var miterLimit = getInt('miterLimit', null);
+						var noClose = getBool('noClose', null);
+						//hxg.lineStyle(width, color, alpha);
+						hxg.lineStyle(width, color, alpha, pixelHinting, scaleMode, caps, joints, miterLimit, noClose);
 						
 			    case 'moveto':
 						var x = getFloat('x', 0.0);
@@ -384,7 +393,7 @@ class HXswfML
 						var rbr = getFloat('rbr', 0.0);
 						hxg.drawRoundRectComplex(x, y, w, h, rtl, rtr, rbl, rbr);
 						
-					default:
+				default:
 						error('!ERROR: ' + currentTag.nodeName +' is not allowed inside a DefineShape element. Valid children are: ' + validChildren.get('defineshape').toString() + '. TAG: ' + currentTag.toString());
 				}
 			}
@@ -590,66 +599,84 @@ class HXswfML
 	private function defineABC()
 	{
 		var abcTags : Array<SWFTag> = new Array();
-		var remap = getString('remap', "");
-		var file = getString('file', "", true);
 		var name = getString('name', null, false);
-		var swf = getBytes(file);
-		if(StringTools.endsWith(file, '.abc'))
+		var remap = getString('remap', "");
+		var file;
+		if (currentTag.elements().hasNext())
 		{
-			//abcTags.push(TUnknown(null, swf));
-			abcTags.push(TActionScript3(swf, name==null?null:{id : 1, label : name}));
-		}
-		else
+			var hxavm2 = new Hxavm2();
+			hxavm2.name = name;
+			//abcTags.push(hxavm2.xml2abc(currentTag.elements().next().toString()));
+			abcTags =  hxavm2.xml2abc(currentTag.elements().next().toString());
+		}	
+		else 
 		{
-			
-			var swfBytesInput = new BytesInput(swf);
-			var swfReader = new format.swf.Reader(swfBytesInput);
-			var header = swfReader.readHeader();
-			var tags : Array<SWFTag> = swfReader.readTagList();
-			swfBytesInput.close();
-			
-			var lookupStrings = ["Boot", "Lib", "Type"];// ...expand? custom classnames?
-			for (tag in tags)
+			file = getString('file', "", true);
+			if(StringTools.endsWith(file, '.abc'))
 			{
-				switch (tag)
+				var abc = getBytes(file);
+				abcTags.push(TActionScript3(abc, name==null?null:{id : 1, label : name}));
+			}
+			else if(StringTools.endsWith(file, '.swf'))
+			{
+				var swf = getBytes(file);
+				var swfBytesInput = new BytesInput(swf);
+				var swfReader = new format.swf.Reader(swfBytesInput);
+				var header = swfReader.readHeader();
+				var tags : Array<SWFTag> = swfReader.readTagList();
+				swfBytesInput.close();
+				
+				var lookupStrings = ["Boot", "Lib", "Type"];// ...expand? custom classnames?
+				for (tag in tags)
 				{
-					case TActionScript3(data, ctx): 
-						if(remap == "")
-						{
-							abcTags.push(TActionScript3(data, ctx));
-						}
-						else
-						{
-							#if !cpp
-							var abcReader = new format.abc.Reader(new haxe.io.BytesInput(data));
-							var abcFile = abcReader.read();
-							var cpoolStrings = abcFile.strings;
-							for (i in 0...cpoolStrings.length)
+					switch (tag)
+					{
+						case TActionScript3(data, ctx): 
+							if(remap == "")
 							{
-								for ( s in lookupStrings)
+								abcTags.push(TActionScript3(data, ctx));
+							}
+							else
+							{
+								#if !cpp
+								var abcReader = new format.abc.Reader(new haxe.io.BytesInput(data));
+								var abcFile = abcReader.read();
+								var cpoolStrings = abcFile.strings;
+								for (i in 0...cpoolStrings.length)
 								{
-									var regex =  new EReg('\\b' + s + '\\b', '');
-									var str = cpoolStrings[i];
-									if (regex.match(str))
+									for ( s in lookupStrings)
 									{
-										inform('<-' + cpoolStrings[i]);
-										cpoolStrings[i] = regex.replace(str, s + remap);
-										inform('->' + cpoolStrings[i]);
+										var regex =  new EReg('\\b' + s + '\\b', '');
+										var str = cpoolStrings[i];
+										if (regex.match(str))
+										{
+											inform('<-' + cpoolStrings[i]);
+											cpoolStrings[i] = regex.replace(str, s + remap);
+											inform('->' + cpoolStrings[i]);
+										}
 									}
 								}
-							}
 
-							var abcOutput = new haxe.io.BytesOutput();
-							format.abc.Writer.write(abcOutput, abcFile);
-							var abcBytes = abcOutput.getBytes();
-							abcTags.push(TActionScript3(abcBytes, ctx));
-							#end
-						}
-					default :
+								var abcOutput = new haxe.io.BytesOutput();
+								format.abc.Writer.write(abcOutput, abcFile);
+								var abcBytes = abcOutput.getBytes();
+								abcTags.push(TActionScript3(abcBytes, ctx));
+								#end
+							}
+						default :
+					}
 				}
+				if(abcTags.length == 0)
+					error('!ERROR: No ABC files were found inside the given file ' + file + '. TAG : ' + currentTag.toString());
 			}
-			if(abcTags.length == 0)
-				error('!ERROR: No ABC files were found inside the given file ' + file + '. TAG : ' + currentTag.toString());
+			else if(StringTools.endsWith(file, '.xml'))
+			{
+				var xml:String = getContent(file);
+				var hxavm2 = new Hxavm2();
+				hxavm2.name = name;
+				//abcTags.push(hxavm2.xml2abc(xml));
+				abcTags = hxavm2.xml2abc(xml);
+			}
 		}
 		return abcTags;
 	}
@@ -940,7 +967,7 @@ class HXswfML
 				bytes.read(len - 2);
 			}
 		}
-		else if(extension.toLowerCase() == 'png' )
+		else if(extension == 'png' )
 		{
 			bytes.bigEndian = true;
 			bytes.readInt32();//0x89504e47 SOI
@@ -952,7 +979,7 @@ class HXswfML
 			width = bytes.readUInt30();
 			height = bytes.readUInt30();
 		}
-		else if(extension.toLowerCase() == 'gif' )
+		else if(extension == 'gif' )
 		{
 			bytes.bigEndian = false;
 			bytes.readInt32();//0x47 0x49 0x46 0x38 
@@ -1073,7 +1100,7 @@ class HXswfML
 			checkTargetId(Std.parseInt(currentTag.get(att)));
 		return currentTag.exists(att)?  Std.parseInt(currentTag.get(att)) : defaultValue;
 	}
-	private function getBool(att : String, defaultValue : Bool, ?required : Bool = false)
+	private function getBool(att : String, defaultValue : Null<Bool>, ?required : Bool = false):Null<Bool>
 	{
 		if(required)
 			if(!currentTag.exists(att))
@@ -1308,7 +1335,7 @@ class HXswfML
 		xmlString += '<feature-files/>';
 		xmlString += '</features>';
 		//xmlString += '<components>';
-    //xmlString += '<component className="Foo" name="foo" uri="http://foo.com" />';
+		//xmlString += '<component className="Foo" name="foo" uri="http://foo.com" />';
 		//xmlString += '</components>';
 		xmlString += '<libraries>';
 		xmlString += '<library path="library.swf">';

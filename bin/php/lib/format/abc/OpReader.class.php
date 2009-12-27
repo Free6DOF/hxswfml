@@ -8,26 +8,31 @@ class format_abc_OpReader {
 	public $i;
 	public function readInt() {
 		$a = $this->i->readByte();
+		++format_abc_OpReader::$bytePos;
 		if($a < 128) {
 			return $a;
 		}
 		$a &= 127;
 		$b = $this->i->readByte();
+		++format_abc_OpReader::$bytePos;
 		if($b < 128) {
 			return ($b << 7) | $a;
 		}
 		$b &= 127;
 		$c = $this->i->readByte();
+		++format_abc_OpReader::$bytePos;
 		if($c < 128) {
 			return (($c << 14) | ($b << 7)) | $a;
 		}
 		$c &= 127;
 		$d = $this->i->readByte();
+		++format_abc_OpReader::$bytePos;
 		if($d < 128) {
 			return ((($d << 21) | ($c << 14)) | ($b << 7)) | $a;
 		}
 		$d &= 127;
 		$e = $this->i->readByte();
+		++format_abc_OpReader::$bytePos;
 		if($e > 15) {
 			throw new HException("assert");
 		}
@@ -41,26 +46,31 @@ class format_abc_OpReader {
 	}
 	public function readInt32() {
 		$a = $this->i->readByte();
+		++format_abc_OpReader::$bytePos;
 		if($a < 128) {
 			return $a;
 		}
 		$a &= 127;
 		$b = $this->i->readByte();
+		++format_abc_OpReader::$bytePos;
 		if($b < 128) {
 			return ($b << 7) | $a;
 		}
 		$b &= 127;
 		$c = $this->i->readByte();
+		++format_abc_OpReader::$bytePos;
 		if($c < 128) {
 			return (($c << 14) | ($b << 7)) | $a;
 		}
 		$c &= 127;
 		$d = $this->i->readByte();
+		++format_abc_OpReader::$bytePos;
 		if($d < 128) {
 			return ((($d << 21) | ($c << 14)) | ($b << 7)) | $a;
 		}
 		$d &= 127;
 		$e = $this->i->readByte();
+		++format_abc_OpReader::$bytePos;
 		if($e > 15) {
 			throw new HException("assert");
 		}
@@ -69,10 +79,27 @@ class format_abc_OpReader {
 		return ($big) | ($small);
 	}
 	public function reg() {
+		++format_abc_OpReader::$bytePos;
 		return $this->i->readByte();
 	}
 	public function jmp($j) {
-		return format_abc_OpCode::OJump($j, $this->i->readInt24());
+		format_abc_OpReader::$jumpNameIndex++;
+		$offset = $this->i->readInt24();
+		++format_abc_OpReader::$bytePos;
+		++format_abc_OpReader::$bytePos;
+		++format_abc_OpReader::$bytePos;
+		if($offset < 0) {
+			format_abc_OpReader::$ops->push(format_abc_OpCode::OJump($j, $offset));
+			return format_abc_OpCode::OJump2($j, format_abc_OpReader::$labels[format_abc_OpReader::$bytePos + $offset], $offset);
+		}
+		else {
+			if(format_abc_OpReader::$jumps[format_abc_OpReader::$bytePos + $offset] === null) {
+				format_abc_OpReader::$jumps[format_abc_OpReader::$bytePos + $offset] = new _hx_array(array());
+			}
+			_hx_array_get(format_abc_OpReader::$jumps, format_abc_OpReader::$bytePos + $offset)->push("j" . format_abc_OpReader::$jumpNameIndex);
+			format_abc_OpReader::$ops->push(format_abc_OpCode::OJump($j, $offset));
+			return format_abc_OpCode::OJump2($j, "j" . format_abc_OpReader::$jumpNameIndex, $offset);
+		}
 	}
 	public function readOp($op) {
 		return eval("if(isset(\$this)) \$퍁his =& \$this;switch(\$op) {
@@ -98,69 +125,349 @@ class format_abc_OpReader {
 				\$팿 = format_abc_OpCode::\$ODxNsLate;
 			}break;
 			case 8:{
-				\$팿 = format_abc_OpCode::ORegKill(\$퍁his->i->readByte());
+				\$팿 = format_abc_OpCode::ORegKill(eval(\"if(isset(\\\$this)) \\\$퍁his =& \\\$this;++format_abc_OpReader::\\\$bytePos;
+					\\\$팿2 = \\\$퍁his->i->readByte();
+					return \\\$팿2;
+				\"));
 			}break;
 			case 9:{
-				\$팿 = format_abc_OpCode::\$OLabel;
+				\$팿 = eval(\"if(isset(\\\$this)) \\\$퍁his =& \\\$this;format_abc_OpReader::\\\$labelNameIndex++;
+					format_abc_OpReader::\\\$labels[format_abc_OpReader::\\\$bytePos - 1] = \\\"label\\\" . format_abc_OpReader::\\\$labelNameIndex;
+					format_abc_OpReader::\\\$ops->push(format_abc_OpCode::\\\$OLabel);
+					\\\$팿3 = format_abc_OpCode::OLabel2(\\\"label\\\" . format_abc_OpReader::\\\$labelNameIndex);
+					return \\\$팿3;
+				\");
 			}break;
 			case 12:{
-				\$팿 = format_abc_OpCode::OJump(format_abc_JumpStyle::\$JNotLt, \$퍁his->i->readInt24());
+				\$팿 = eval(\"if(isset(\\\$this)) \\\$퍁his =& \\\$this;\\\$j = format_abc_JumpStyle::\\\$JNotLt;
+					format_abc_OpReader::\\\$jumpNameIndex++;
+					\\\$offset = \\\$퍁his->i->readInt24();
+					++format_abc_OpReader::\\\$bytePos;
+					++format_abc_OpReader::\\\$bytePos;
+					++format_abc_OpReader::\\\$bytePos;
+					\\\$팿4 = (\\\$offset < 0 ? eval(\\\"if(isset(\\\\\$this)) \\\\\$퍁his =& \\\\\$this;format_abc_OpReader::\\\\\$ops->push(format_abc_OpCode::OJump(\\\\\$j, \\\\\$offset));
+						\\\\\$팿5 = format_abc_OpCode::OJump2(\\\\\$j, format_abc_OpReader::\\\\\$labels[format_abc_OpReader::\\\\\$bytePos + \\\\\$offset], \\\\\$offset);
+						return \\\\\$팿5;
+					\\\") : eval(\\\"if(isset(\\\\\$this)) \\\\\$퍁his =& \\\\\$this;if(format_abc_OpReader::\\\\\$jumps[format_abc_OpReader::\\\\\$bytePos + \\\\\$offset] === null) {
+							format_abc_OpReader::\\\\\$jumps[format_abc_OpReader::\\\\\$bytePos + \\\\\$offset] = new _hx_array(array());
+						}
+						_hx_array_get(format_abc_OpReader::\\\\\$jumps, format_abc_OpReader::\\\\\$bytePos + \\\\\$offset)->push(\\\\\"j\\\\\" . format_abc_OpReader::\\\\\$jumpNameIndex);
+						format_abc_OpReader::\\\\\$ops->push(format_abc_OpCode::OJump(\\\\\$j, \\\\\$offset));
+						\\\\\$팿6 = format_abc_OpCode::OJump2(\\\\\$j, \\\\\"j\\\\\" . format_abc_OpReader::\\\\\$jumpNameIndex, \\\\\$offset);
+						return \\\\\$팿6;
+					\\\"));
+					return \\\$팿4;
+				\");
 			}break;
 			case 13:{
-				\$팿 = format_abc_OpCode::OJump(format_abc_JumpStyle::\$JNotLte, \$퍁his->i->readInt24());
+				\$팿 = eval(\"if(isset(\\\$this)) \\\$퍁his =& \\\$this;\\\$j2 = format_abc_JumpStyle::\\\$JNotLte;
+					format_abc_OpReader::\\\$jumpNameIndex++;
+					\\\$offset2 = \\\$퍁his->i->readInt24();
+					++format_abc_OpReader::\\\$bytePos;
+					++format_abc_OpReader::\\\$bytePos;
+					++format_abc_OpReader::\\\$bytePos;
+					\\\$팿7 = (\\\$offset2 < 0 ? eval(\\\"if(isset(\\\\\$this)) \\\\\$퍁his =& \\\\\$this;format_abc_OpReader::\\\\\$ops->push(format_abc_OpCode::OJump(\\\\\$j2, \\\\\$offset2));
+						\\\\\$팿8 = format_abc_OpCode::OJump2(\\\\\$j2, format_abc_OpReader::\\\\\$labels[format_abc_OpReader::\\\\\$bytePos + \\\\\$offset2], \\\\\$offset2);
+						return \\\\\$팿8;
+					\\\") : eval(\\\"if(isset(\\\\\$this)) \\\\\$퍁his =& \\\\\$this;if(format_abc_OpReader::\\\\\$jumps[format_abc_OpReader::\\\\\$bytePos + \\\\\$offset2] === null) {
+							format_abc_OpReader::\\\\\$jumps[format_abc_OpReader::\\\\\$bytePos + \\\\\$offset2] = new _hx_array(array());
+						}
+						_hx_array_get(format_abc_OpReader::\\\\\$jumps, format_abc_OpReader::\\\\\$bytePos + \\\\\$offset2)->push(\\\\\"j\\\\\" . format_abc_OpReader::\\\\\$jumpNameIndex);
+						format_abc_OpReader::\\\\\$ops->push(format_abc_OpCode::OJump(\\\\\$j2, \\\\\$offset2));
+						\\\\\$팿9 = format_abc_OpCode::OJump2(\\\\\$j2, \\\\\"j\\\\\" . format_abc_OpReader::\\\\\$jumpNameIndex, \\\\\$offset2);
+						return \\\\\$팿9;
+					\\\"));
+					return \\\$팿7;
+				\");
 			}break;
 			case 14:{
-				\$팿 = format_abc_OpCode::OJump(format_abc_JumpStyle::\$JNotGt, \$퍁his->i->readInt24());
+				\$팿 = eval(\"if(isset(\\\$this)) \\\$퍁his =& \\\$this;\\\$j3 = format_abc_JumpStyle::\\\$JNotGt;
+					format_abc_OpReader::\\\$jumpNameIndex++;
+					\\\$offset3 = \\\$퍁his->i->readInt24();
+					++format_abc_OpReader::\\\$bytePos;
+					++format_abc_OpReader::\\\$bytePos;
+					++format_abc_OpReader::\\\$bytePos;
+					\\\$팿10 = (\\\$offset3 < 0 ? eval(\\\"if(isset(\\\\\$this)) \\\\\$퍁his =& \\\\\$this;format_abc_OpReader::\\\\\$ops->push(format_abc_OpCode::OJump(\\\\\$j3, \\\\\$offset3));
+						\\\\\$팿11 = format_abc_OpCode::OJump2(\\\\\$j3, format_abc_OpReader::\\\\\$labels[format_abc_OpReader::\\\\\$bytePos + \\\\\$offset3], \\\\\$offset3);
+						return \\\\\$팿11;
+					\\\") : eval(\\\"if(isset(\\\\\$this)) \\\\\$퍁his =& \\\\\$this;if(format_abc_OpReader::\\\\\$jumps[format_abc_OpReader::\\\\\$bytePos + \\\\\$offset3] === null) {
+							format_abc_OpReader::\\\\\$jumps[format_abc_OpReader::\\\\\$bytePos + \\\\\$offset3] = new _hx_array(array());
+						}
+						_hx_array_get(format_abc_OpReader::\\\\\$jumps, format_abc_OpReader::\\\\\$bytePos + \\\\\$offset3)->push(\\\\\"j\\\\\" . format_abc_OpReader::\\\\\$jumpNameIndex);
+						format_abc_OpReader::\\\\\$ops->push(format_abc_OpCode::OJump(\\\\\$j3, \\\\\$offset3));
+						\\\\\$팿12 = format_abc_OpCode::OJump2(\\\\\$j3, \\\\\"j\\\\\" . format_abc_OpReader::\\\\\$jumpNameIndex, \\\\\$offset3);
+						return \\\\\$팿12;
+					\\\"));
+					return \\\$팿10;
+				\");
 			}break;
 			case 15:{
-				\$팿 = format_abc_OpCode::OJump(format_abc_JumpStyle::\$JNotGte, \$퍁his->i->readInt24());
+				\$팿 = eval(\"if(isset(\\\$this)) \\\$퍁his =& \\\$this;\\\$j4 = format_abc_JumpStyle::\\\$JNotGte;
+					format_abc_OpReader::\\\$jumpNameIndex++;
+					\\\$offset4 = \\\$퍁his->i->readInt24();
+					++format_abc_OpReader::\\\$bytePos;
+					++format_abc_OpReader::\\\$bytePos;
+					++format_abc_OpReader::\\\$bytePos;
+					\\\$팿13 = (\\\$offset4 < 0 ? eval(\\\"if(isset(\\\\\$this)) \\\\\$퍁his =& \\\\\$this;format_abc_OpReader::\\\\\$ops->push(format_abc_OpCode::OJump(\\\\\$j4, \\\\\$offset4));
+						\\\\\$팿14 = format_abc_OpCode::OJump2(\\\\\$j4, format_abc_OpReader::\\\\\$labels[format_abc_OpReader::\\\\\$bytePos + \\\\\$offset4], \\\\\$offset4);
+						return \\\\\$팿14;
+					\\\") : eval(\\\"if(isset(\\\\\$this)) \\\\\$퍁his =& \\\\\$this;if(format_abc_OpReader::\\\\\$jumps[format_abc_OpReader::\\\\\$bytePos + \\\\\$offset4] === null) {
+							format_abc_OpReader::\\\\\$jumps[format_abc_OpReader::\\\\\$bytePos + \\\\\$offset4] = new _hx_array(array());
+						}
+						_hx_array_get(format_abc_OpReader::\\\\\$jumps, format_abc_OpReader::\\\\\$bytePos + \\\\\$offset4)->push(\\\\\"j\\\\\" . format_abc_OpReader::\\\\\$jumpNameIndex);
+						format_abc_OpReader::\\\\\$ops->push(format_abc_OpCode::OJump(\\\\\$j4, \\\\\$offset4));
+						\\\\\$팿15 = format_abc_OpCode::OJump2(\\\\\$j4, \\\\\"j\\\\\" . format_abc_OpReader::\\\\\$jumpNameIndex, \\\\\$offset4);
+						return \\\\\$팿15;
+					\\\"));
+					return \\\$팿13;
+				\");
 			}break;
 			case 16:{
-				\$팿 = format_abc_OpCode::OJump(format_abc_JumpStyle::\$JAlways, \$퍁his->i->readInt24());
+				\$팿 = eval(\"if(isset(\\\$this)) \\\$퍁his =& \\\$this;\\\$j5 = format_abc_JumpStyle::\\\$JAlways;
+					format_abc_OpReader::\\\$jumpNameIndex++;
+					\\\$offset5 = \\\$퍁his->i->readInt24();
+					++format_abc_OpReader::\\\$bytePos;
+					++format_abc_OpReader::\\\$bytePos;
+					++format_abc_OpReader::\\\$bytePos;
+					\\\$팿16 = (\\\$offset5 < 0 ? eval(\\\"if(isset(\\\\\$this)) \\\\\$퍁his =& \\\\\$this;format_abc_OpReader::\\\\\$ops->push(format_abc_OpCode::OJump(\\\\\$j5, \\\\\$offset5));
+						\\\\\$팿17 = format_abc_OpCode::OJump2(\\\\\$j5, format_abc_OpReader::\\\\\$labels[format_abc_OpReader::\\\\\$bytePos + \\\\\$offset5], \\\\\$offset5);
+						return \\\\\$팿17;
+					\\\") : eval(\\\"if(isset(\\\\\$this)) \\\\\$퍁his =& \\\\\$this;if(format_abc_OpReader::\\\\\$jumps[format_abc_OpReader::\\\\\$bytePos + \\\\\$offset5] === null) {
+							format_abc_OpReader::\\\\\$jumps[format_abc_OpReader::\\\\\$bytePos + \\\\\$offset5] = new _hx_array(array());
+						}
+						_hx_array_get(format_abc_OpReader::\\\\\$jumps, format_abc_OpReader::\\\\\$bytePos + \\\\\$offset5)->push(\\\\\"j\\\\\" . format_abc_OpReader::\\\\\$jumpNameIndex);
+						format_abc_OpReader::\\\\\$ops->push(format_abc_OpCode::OJump(\\\\\$j5, \\\\\$offset5));
+						\\\\\$팿18 = format_abc_OpCode::OJump2(\\\\\$j5, \\\\\"j\\\\\" . format_abc_OpReader::\\\\\$jumpNameIndex, \\\\\$offset5);
+						return \\\\\$팿18;
+					\\\"));
+					return \\\$팿16;
+				\");
 			}break;
 			case 17:{
-				\$팿 = format_abc_OpCode::OJump(format_abc_JumpStyle::\$JTrue, \$퍁his->i->readInt24());
+				\$팿 = eval(\"if(isset(\\\$this)) \\\$퍁his =& \\\$this;\\\$j6 = format_abc_JumpStyle::\\\$JTrue;
+					format_abc_OpReader::\\\$jumpNameIndex++;
+					\\\$offset6 = \\\$퍁his->i->readInt24();
+					++format_abc_OpReader::\\\$bytePos;
+					++format_abc_OpReader::\\\$bytePos;
+					++format_abc_OpReader::\\\$bytePos;
+					\\\$팿19 = (\\\$offset6 < 0 ? eval(\\\"if(isset(\\\\\$this)) \\\\\$퍁his =& \\\\\$this;format_abc_OpReader::\\\\\$ops->push(format_abc_OpCode::OJump(\\\\\$j6, \\\\\$offset6));
+						\\\\\$팿20 = format_abc_OpCode::OJump2(\\\\\$j6, format_abc_OpReader::\\\\\$labels[format_abc_OpReader::\\\\\$bytePos + \\\\\$offset6], \\\\\$offset6);
+						return \\\\\$팿20;
+					\\\") : eval(\\\"if(isset(\\\\\$this)) \\\\\$퍁his =& \\\\\$this;if(format_abc_OpReader::\\\\\$jumps[format_abc_OpReader::\\\\\$bytePos + \\\\\$offset6] === null) {
+							format_abc_OpReader::\\\\\$jumps[format_abc_OpReader::\\\\\$bytePos + \\\\\$offset6] = new _hx_array(array());
+						}
+						_hx_array_get(format_abc_OpReader::\\\\\$jumps, format_abc_OpReader::\\\\\$bytePos + \\\\\$offset6)->push(\\\\\"j\\\\\" . format_abc_OpReader::\\\\\$jumpNameIndex);
+						format_abc_OpReader::\\\\\$ops->push(format_abc_OpCode::OJump(\\\\\$j6, \\\\\$offset6));
+						\\\\\$팿21 = format_abc_OpCode::OJump2(\\\\\$j6, \\\\\"j\\\\\" . format_abc_OpReader::\\\\\$jumpNameIndex, \\\\\$offset6);
+						return \\\\\$팿21;
+					\\\"));
+					return \\\$팿19;
+				\");
 			}break;
 			case 18:{
-				\$팿 = format_abc_OpCode::OJump(format_abc_JumpStyle::\$JFalse, \$퍁his->i->readInt24());
+				\$팿 = eval(\"if(isset(\\\$this)) \\\$퍁his =& \\\$this;\\\$j7 = format_abc_JumpStyle::\\\$JFalse;
+					format_abc_OpReader::\\\$jumpNameIndex++;
+					\\\$offset7 = \\\$퍁his->i->readInt24();
+					++format_abc_OpReader::\\\$bytePos;
+					++format_abc_OpReader::\\\$bytePos;
+					++format_abc_OpReader::\\\$bytePos;
+					\\\$팿22 = (\\\$offset7 < 0 ? eval(\\\"if(isset(\\\\\$this)) \\\\\$퍁his =& \\\\\$this;format_abc_OpReader::\\\\\$ops->push(format_abc_OpCode::OJump(\\\\\$j7, \\\\\$offset7));
+						\\\\\$팿23 = format_abc_OpCode::OJump2(\\\\\$j7, format_abc_OpReader::\\\\\$labels[format_abc_OpReader::\\\\\$bytePos + \\\\\$offset7], \\\\\$offset7);
+						return \\\\\$팿23;
+					\\\") : eval(\\\"if(isset(\\\\\$this)) \\\\\$퍁his =& \\\\\$this;if(format_abc_OpReader::\\\\\$jumps[format_abc_OpReader::\\\\\$bytePos + \\\\\$offset7] === null) {
+							format_abc_OpReader::\\\\\$jumps[format_abc_OpReader::\\\\\$bytePos + \\\\\$offset7] = new _hx_array(array());
+						}
+						_hx_array_get(format_abc_OpReader::\\\\\$jumps, format_abc_OpReader::\\\\\$bytePos + \\\\\$offset7)->push(\\\\\"j\\\\\" . format_abc_OpReader::\\\\\$jumpNameIndex);
+						format_abc_OpReader::\\\\\$ops->push(format_abc_OpCode::OJump(\\\\\$j7, \\\\\$offset7));
+						\\\\\$팿24 = format_abc_OpCode::OJump2(\\\\\$j7, \\\\\"j\\\\\" . format_abc_OpReader::\\\\\$jumpNameIndex, \\\\\$offset7);
+						return \\\\\$팿24;
+					\\\"));
+					return \\\$팿22;
+				\");
 			}break;
 			case 19:{
-				\$팿 = format_abc_OpCode::OJump(format_abc_JumpStyle::\$JEq, \$퍁his->i->readInt24());
+				\$팿 = eval(\"if(isset(\\\$this)) \\\$퍁his =& \\\$this;\\\$j8 = format_abc_JumpStyle::\\\$JEq;
+					format_abc_OpReader::\\\$jumpNameIndex++;
+					\\\$offset8 = \\\$퍁his->i->readInt24();
+					++format_abc_OpReader::\\\$bytePos;
+					++format_abc_OpReader::\\\$bytePos;
+					++format_abc_OpReader::\\\$bytePos;
+					\\\$팿25 = (\\\$offset8 < 0 ? eval(\\\"if(isset(\\\\\$this)) \\\\\$퍁his =& \\\\\$this;format_abc_OpReader::\\\\\$ops->push(format_abc_OpCode::OJump(\\\\\$j8, \\\\\$offset8));
+						\\\\\$팿26 = format_abc_OpCode::OJump2(\\\\\$j8, format_abc_OpReader::\\\\\$labels[format_abc_OpReader::\\\\\$bytePos + \\\\\$offset8], \\\\\$offset8);
+						return \\\\\$팿26;
+					\\\") : eval(\\\"if(isset(\\\\\$this)) \\\\\$퍁his =& \\\\\$this;if(format_abc_OpReader::\\\\\$jumps[format_abc_OpReader::\\\\\$bytePos + \\\\\$offset8] === null) {
+							format_abc_OpReader::\\\\\$jumps[format_abc_OpReader::\\\\\$bytePos + \\\\\$offset8] = new _hx_array(array());
+						}
+						_hx_array_get(format_abc_OpReader::\\\\\$jumps, format_abc_OpReader::\\\\\$bytePos + \\\\\$offset8)->push(\\\\\"j\\\\\" . format_abc_OpReader::\\\\\$jumpNameIndex);
+						format_abc_OpReader::\\\\\$ops->push(format_abc_OpCode::OJump(\\\\\$j8, \\\\\$offset8));
+						\\\\\$팿27 = format_abc_OpCode::OJump2(\\\\\$j8, \\\\\"j\\\\\" . format_abc_OpReader::\\\\\$jumpNameIndex, \\\\\$offset8);
+						return \\\\\$팿27;
+					\\\"));
+					return \\\$팿25;
+				\");
 			}break;
 			case 20:{
-				\$팿 = format_abc_OpCode::OJump(format_abc_JumpStyle::\$JNeq, \$퍁his->i->readInt24());
+				\$팿 = eval(\"if(isset(\\\$this)) \\\$퍁his =& \\\$this;\\\$j9 = format_abc_JumpStyle::\\\$JNeq;
+					format_abc_OpReader::\\\$jumpNameIndex++;
+					\\\$offset9 = \\\$퍁his->i->readInt24();
+					++format_abc_OpReader::\\\$bytePos;
+					++format_abc_OpReader::\\\$bytePos;
+					++format_abc_OpReader::\\\$bytePos;
+					\\\$팿28 = (\\\$offset9 < 0 ? eval(\\\"if(isset(\\\\\$this)) \\\\\$퍁his =& \\\\\$this;format_abc_OpReader::\\\\\$ops->push(format_abc_OpCode::OJump(\\\\\$j9, \\\\\$offset9));
+						\\\\\$팿29 = format_abc_OpCode::OJump2(\\\\\$j9, format_abc_OpReader::\\\\\$labels[format_abc_OpReader::\\\\\$bytePos + \\\\\$offset9], \\\\\$offset9);
+						return \\\\\$팿29;
+					\\\") : eval(\\\"if(isset(\\\\\$this)) \\\\\$퍁his =& \\\\\$this;if(format_abc_OpReader::\\\\\$jumps[format_abc_OpReader::\\\\\$bytePos + \\\\\$offset9] === null) {
+							format_abc_OpReader::\\\\\$jumps[format_abc_OpReader::\\\\\$bytePos + \\\\\$offset9] = new _hx_array(array());
+						}
+						_hx_array_get(format_abc_OpReader::\\\\\$jumps, format_abc_OpReader::\\\\\$bytePos + \\\\\$offset9)->push(\\\\\"j\\\\\" . format_abc_OpReader::\\\\\$jumpNameIndex);
+						format_abc_OpReader::\\\\\$ops->push(format_abc_OpCode::OJump(\\\\\$j9, \\\\\$offset9));
+						\\\\\$팿30 = format_abc_OpCode::OJump2(\\\\\$j9, \\\\\"j\\\\\" . format_abc_OpReader::\\\\\$jumpNameIndex, \\\\\$offset9);
+						return \\\\\$팿30;
+					\\\"));
+					return \\\$팿28;
+				\");
 			}break;
 			case 21:{
-				\$팿 = format_abc_OpCode::OJump(format_abc_JumpStyle::\$JLt, \$퍁his->i->readInt24());
+				\$팿 = eval(\"if(isset(\\\$this)) \\\$퍁his =& \\\$this;\\\$j10 = format_abc_JumpStyle::\\\$JLt;
+					format_abc_OpReader::\\\$jumpNameIndex++;
+					\\\$offset10 = \\\$퍁his->i->readInt24();
+					++format_abc_OpReader::\\\$bytePos;
+					++format_abc_OpReader::\\\$bytePos;
+					++format_abc_OpReader::\\\$bytePos;
+					\\\$팿31 = (\\\$offset10 < 0 ? eval(\\\"if(isset(\\\\\$this)) \\\\\$퍁his =& \\\\\$this;format_abc_OpReader::\\\\\$ops->push(format_abc_OpCode::OJump(\\\\\$j10, \\\\\$offset10));
+						\\\\\$팿32 = format_abc_OpCode::OJump2(\\\\\$j10, format_abc_OpReader::\\\\\$labels[format_abc_OpReader::\\\\\$bytePos + \\\\\$offset10], \\\\\$offset10);
+						return \\\\\$팿32;
+					\\\") : eval(\\\"if(isset(\\\\\$this)) \\\\\$퍁his =& \\\\\$this;if(format_abc_OpReader::\\\\\$jumps[format_abc_OpReader::\\\\\$bytePos + \\\\\$offset10] === null) {
+							format_abc_OpReader::\\\\\$jumps[format_abc_OpReader::\\\\\$bytePos + \\\\\$offset10] = new _hx_array(array());
+						}
+						_hx_array_get(format_abc_OpReader::\\\\\$jumps, format_abc_OpReader::\\\\\$bytePos + \\\\\$offset10)->push(\\\\\"j\\\\\" . format_abc_OpReader::\\\\\$jumpNameIndex);
+						format_abc_OpReader::\\\\\$ops->push(format_abc_OpCode::OJump(\\\\\$j10, \\\\\$offset10));
+						\\\\\$팿33 = format_abc_OpCode::OJump2(\\\\\$j10, \\\\\"j\\\\\" . format_abc_OpReader::\\\\\$jumpNameIndex, \\\\\$offset10);
+						return \\\\\$팿33;
+					\\\"));
+					return \\\$팿31;
+				\");
 			}break;
 			case 22:{
-				\$팿 = format_abc_OpCode::OJump(format_abc_JumpStyle::\$JLte, \$퍁his->i->readInt24());
+				\$팿 = eval(\"if(isset(\\\$this)) \\\$퍁his =& \\\$this;\\\$j11 = format_abc_JumpStyle::\\\$JLte;
+					format_abc_OpReader::\\\$jumpNameIndex++;
+					\\\$offset11 = \\\$퍁his->i->readInt24();
+					++format_abc_OpReader::\\\$bytePos;
+					++format_abc_OpReader::\\\$bytePos;
+					++format_abc_OpReader::\\\$bytePos;
+					\\\$팿34 = (\\\$offset11 < 0 ? eval(\\\"if(isset(\\\\\$this)) \\\\\$퍁his =& \\\\\$this;format_abc_OpReader::\\\\\$ops->push(format_abc_OpCode::OJump(\\\\\$j11, \\\\\$offset11));
+						\\\\\$팿35 = format_abc_OpCode::OJump2(\\\\\$j11, format_abc_OpReader::\\\\\$labels[format_abc_OpReader::\\\\\$bytePos + \\\\\$offset11], \\\\\$offset11);
+						return \\\\\$팿35;
+					\\\") : eval(\\\"if(isset(\\\\\$this)) \\\\\$퍁his =& \\\\\$this;if(format_abc_OpReader::\\\\\$jumps[format_abc_OpReader::\\\\\$bytePos + \\\\\$offset11] === null) {
+							format_abc_OpReader::\\\\\$jumps[format_abc_OpReader::\\\\\$bytePos + \\\\\$offset11] = new _hx_array(array());
+						}
+						_hx_array_get(format_abc_OpReader::\\\\\$jumps, format_abc_OpReader::\\\\\$bytePos + \\\\\$offset11)->push(\\\\\"j\\\\\" . format_abc_OpReader::\\\\\$jumpNameIndex);
+						format_abc_OpReader::\\\\\$ops->push(format_abc_OpCode::OJump(\\\\\$j11, \\\\\$offset11));
+						\\\\\$팿36 = format_abc_OpCode::OJump2(\\\\\$j11, \\\\\"j\\\\\" . format_abc_OpReader::\\\\\$jumpNameIndex, \\\\\$offset11);
+						return \\\\\$팿36;
+					\\\"));
+					return \\\$팿34;
+				\");
 			}break;
 			case 23:{
-				\$팿 = format_abc_OpCode::OJump(format_abc_JumpStyle::\$JGt, \$퍁his->i->readInt24());
+				\$팿 = eval(\"if(isset(\\\$this)) \\\$퍁his =& \\\$this;\\\$j12 = format_abc_JumpStyle::\\\$JGt;
+					format_abc_OpReader::\\\$jumpNameIndex++;
+					\\\$offset12 = \\\$퍁his->i->readInt24();
+					++format_abc_OpReader::\\\$bytePos;
+					++format_abc_OpReader::\\\$bytePos;
+					++format_abc_OpReader::\\\$bytePos;
+					\\\$팿37 = (\\\$offset12 < 0 ? eval(\\\"if(isset(\\\\\$this)) \\\\\$퍁his =& \\\\\$this;format_abc_OpReader::\\\\\$ops->push(format_abc_OpCode::OJump(\\\\\$j12, \\\\\$offset12));
+						\\\\\$팿38 = format_abc_OpCode::OJump2(\\\\\$j12, format_abc_OpReader::\\\\\$labels[format_abc_OpReader::\\\\\$bytePos + \\\\\$offset12], \\\\\$offset12);
+						return \\\\\$팿38;
+					\\\") : eval(\\\"if(isset(\\\\\$this)) \\\\\$퍁his =& \\\\\$this;if(format_abc_OpReader::\\\\\$jumps[format_abc_OpReader::\\\\\$bytePos + \\\\\$offset12] === null) {
+							format_abc_OpReader::\\\\\$jumps[format_abc_OpReader::\\\\\$bytePos + \\\\\$offset12] = new _hx_array(array());
+						}
+						_hx_array_get(format_abc_OpReader::\\\\\$jumps, format_abc_OpReader::\\\\\$bytePos + \\\\\$offset12)->push(\\\\\"j\\\\\" . format_abc_OpReader::\\\\\$jumpNameIndex);
+						format_abc_OpReader::\\\\\$ops->push(format_abc_OpCode::OJump(\\\\\$j12, \\\\\$offset12));
+						\\\\\$팿39 = format_abc_OpCode::OJump2(\\\\\$j12, \\\\\"j\\\\\" . format_abc_OpReader::\\\\\$jumpNameIndex, \\\\\$offset12);
+						return \\\\\$팿39;
+					\\\"));
+					return \\\$팿37;
+				\");
 			}break;
 			case 24:{
-				\$팿 = format_abc_OpCode::OJump(format_abc_JumpStyle::\$JGte, \$퍁his->i->readInt24());
+				\$팿 = eval(\"if(isset(\\\$this)) \\\$퍁his =& \\\$this;\\\$j13 = format_abc_JumpStyle::\\\$JGte;
+					format_abc_OpReader::\\\$jumpNameIndex++;
+					\\\$offset13 = \\\$퍁his->i->readInt24();
+					++format_abc_OpReader::\\\$bytePos;
+					++format_abc_OpReader::\\\$bytePos;
+					++format_abc_OpReader::\\\$bytePos;
+					\\\$팿40 = (\\\$offset13 < 0 ? eval(\\\"if(isset(\\\\\$this)) \\\\\$퍁his =& \\\\\$this;format_abc_OpReader::\\\\\$ops->push(format_abc_OpCode::OJump(\\\\\$j13, \\\\\$offset13));
+						\\\\\$팿41 = format_abc_OpCode::OJump2(\\\\\$j13, format_abc_OpReader::\\\\\$labels[format_abc_OpReader::\\\\\$bytePos + \\\\\$offset13], \\\\\$offset13);
+						return \\\\\$팿41;
+					\\\") : eval(\\\"if(isset(\\\\\$this)) \\\\\$퍁his =& \\\\\$this;if(format_abc_OpReader::\\\\\$jumps[format_abc_OpReader::\\\\\$bytePos + \\\\\$offset13] === null) {
+							format_abc_OpReader::\\\\\$jumps[format_abc_OpReader::\\\\\$bytePos + \\\\\$offset13] = new _hx_array(array());
+						}
+						_hx_array_get(format_abc_OpReader::\\\\\$jumps, format_abc_OpReader::\\\\\$bytePos + \\\\\$offset13)->push(\\\\\"j\\\\\" . format_abc_OpReader::\\\\\$jumpNameIndex);
+						format_abc_OpReader::\\\\\$ops->push(format_abc_OpCode::OJump(\\\\\$j13, \\\\\$offset13));
+						\\\\\$팿42 = format_abc_OpCode::OJump2(\\\\\$j13, \\\\\"j\\\\\" . format_abc_OpReader::\\\\\$jumpNameIndex, \\\\\$offset13);
+						return \\\\\$팿42;
+					\\\"));
+					return \\\$팿40;
+				\");
 			}break;
 			case 25:{
-				\$팿 = format_abc_OpCode::OJump(format_abc_JumpStyle::\$JPhysEq, \$퍁his->i->readInt24());
+				\$팿 = eval(\"if(isset(\\\$this)) \\\$퍁his =& \\\$this;\\\$j14 = format_abc_JumpStyle::\\\$JPhysEq;
+					format_abc_OpReader::\\\$jumpNameIndex++;
+					\\\$offset14 = \\\$퍁his->i->readInt24();
+					++format_abc_OpReader::\\\$bytePos;
+					++format_abc_OpReader::\\\$bytePos;
+					++format_abc_OpReader::\\\$bytePos;
+					\\\$팿43 = (\\\$offset14 < 0 ? eval(\\\"if(isset(\\\\\$this)) \\\\\$퍁his =& \\\\\$this;format_abc_OpReader::\\\\\$ops->push(format_abc_OpCode::OJump(\\\\\$j14, \\\\\$offset14));
+						\\\\\$팿44 = format_abc_OpCode::OJump2(\\\\\$j14, format_abc_OpReader::\\\\\$labels[format_abc_OpReader::\\\\\$bytePos + \\\\\$offset14], \\\\\$offset14);
+						return \\\\\$팿44;
+					\\\") : eval(\\\"if(isset(\\\\\$this)) \\\\\$퍁his =& \\\\\$this;if(format_abc_OpReader::\\\\\$jumps[format_abc_OpReader::\\\\\$bytePos + \\\\\$offset14] === null) {
+							format_abc_OpReader::\\\\\$jumps[format_abc_OpReader::\\\\\$bytePos + \\\\\$offset14] = new _hx_array(array());
+						}
+						_hx_array_get(format_abc_OpReader::\\\\\$jumps, format_abc_OpReader::\\\\\$bytePos + \\\\\$offset14)->push(\\\\\"j\\\\\" . format_abc_OpReader::\\\\\$jumpNameIndex);
+						format_abc_OpReader::\\\\\$ops->push(format_abc_OpCode::OJump(\\\\\$j14, \\\\\$offset14));
+						\\\\\$팿45 = format_abc_OpCode::OJump2(\\\\\$j14, \\\\\"j\\\\\" . format_abc_OpReader::\\\\\$jumpNameIndex, \\\\\$offset14);
+						return \\\\\$팿45;
+					\\\"));
+					return \\\$팿43;
+				\");
 			}break;
 			case 26:{
-				\$팿 = format_abc_OpCode::OJump(format_abc_JumpStyle::\$JPhysNeq, \$퍁his->i->readInt24());
+				\$팿 = eval(\"if(isset(\\\$this)) \\\$퍁his =& \\\$this;\\\$j15 = format_abc_JumpStyle::\\\$JPhysNeq;
+					format_abc_OpReader::\\\$jumpNameIndex++;
+					\\\$offset15 = \\\$퍁his->i->readInt24();
+					++format_abc_OpReader::\\\$bytePos;
+					++format_abc_OpReader::\\\$bytePos;
+					++format_abc_OpReader::\\\$bytePos;
+					\\\$팿46 = (\\\$offset15 < 0 ? eval(\\\"if(isset(\\\\\$this)) \\\\\$퍁his =& \\\\\$this;format_abc_OpReader::\\\\\$ops->push(format_abc_OpCode::OJump(\\\\\$j15, \\\\\$offset15));
+						\\\\\$팿47 = format_abc_OpCode::OJump2(\\\\\$j15, format_abc_OpReader::\\\\\$labels[format_abc_OpReader::\\\\\$bytePos + \\\\\$offset15], \\\\\$offset15);
+						return \\\\\$팿47;
+					\\\") : eval(\\\"if(isset(\\\\\$this)) \\\\\$퍁his =& \\\\\$this;if(format_abc_OpReader::\\\\\$jumps[format_abc_OpReader::\\\\\$bytePos + \\\\\$offset15] === null) {
+							format_abc_OpReader::\\\\\$jumps[format_abc_OpReader::\\\\\$bytePos + \\\\\$offset15] = new _hx_array(array());
+						}
+						_hx_array_get(format_abc_OpReader::\\\\\$jumps, format_abc_OpReader::\\\\\$bytePos + \\\\\$offset15)->push(\\\\\"j\\\\\" . format_abc_OpReader::\\\\\$jumpNameIndex);
+						format_abc_OpReader::\\\\\$ops->push(format_abc_OpCode::OJump(\\\\\$j15, \\\\\$offset15));
+						\\\\\$팿48 = format_abc_OpCode::OJump2(\\\\\$j15, \\\\\"j\\\\\" . format_abc_OpReader::\\\\\$jumpNameIndex, \\\\\$offset15);
+						return \\\\\$팿48;
+					\\\"));
+					return \\\$팿46;
+				\");
 			}break;
 			case 27:{
-				\$팿 = eval(\"if(isset(\\\$this)) \\\$퍁his =& \\\$this;\\\$def = \\\$퍁his->i->readInt24();
+				\$팿 = eval(\"if(isset(\\\$this)) \\\$퍁his =& \\\$this;format_abc_OpReader::\\\$bytePos += 3;
+					\\\$def = \\\$퍁his->i->readInt24();
 					\\\$cases = new _hx_array(array());
 					{
 						\\\$_g1 = 0; \\\$_g = \\\$퍁his->readInt() + 1;
 						while(\\\$_g1 < \\\$_g) {
 							\\\$_ = \\\$_g1++;
+							format_abc_OpReader::\\\$bytePos += 3;
 							\\\$cases->push(\\\$퍁his->i->readInt24());
 							unset(\\\$_);
 						}
 					}
-					\\\$팿2 = format_abc_OpCode::OSwitch(\\\$def, \\\$cases);
-					return \\\$팿2;
+					\\\$팿49 = format_abc_OpCode::OSwitch(\\\$def, \\\$cases);
+					return \\\$팿49;
 				\");
 			}break;
 			case 28:{
@@ -185,7 +492,10 @@ class format_abc_OpReader {
 				\$팿 = format_abc_OpCode::\$OForEach;
 			}break;
 			case 36:{
-				\$팿 = format_abc_OpCode::OSmallInt(\$퍁his->i->readInt8());
+				\$팿 = eval(\"if(isset(\\\$this)) \\\$퍁his =& \\\$this;++format_abc_OpReader::\\\$bytePos;
+					\\\$팿50 = format_abc_OpCode::OSmallInt(\\\$퍁his->i->readInt8());
+					return \\\$팿50;
+				\");
 			}break;
 			case 37:{
 				\$팿 = format_abc_OpCode::OInt(\$퍁his->readInt());
@@ -229,8 +539,8 @@ class format_abc_OpReader {
 			case 50:{
 				\$팿 = eval(\"if(isset(\\\$this)) \\\$퍁his =& \\\$this;\\\$r1 = \\\$퍁his->readInt();
 					\\\$r2 = \\\$퍁his->readInt();
-					\\\$팿3 = format_abc_OpCode::ONext(\\\$r1, \\\$r2);
-					return \\\$팿3;
+					\\\$팿51 = format_abc_OpCode::ONext(\\\$r1, \\\$r2);
+					return \\\$팿51;
 				\");
 			}break;
 			case 53:{
@@ -275,29 +585,29 @@ class format_abc_OpReader {
 			case 67:{
 				\$팿 = eval(\"if(isset(\\\$this)) \\\$퍁his =& \\\$this;\\\$s = \\\$퍁his->readInt();
 					\\\$n = \\\$퍁his->readInt();
-					\\\$팿4 = format_abc_OpCode::OCallMethod(\\\$s, \\\$n);
-					return \\\$팿4;
+					\\\$팿52 = format_abc_OpCode::OCallMethod(\\\$s, \\\$n);
+					return \\\$팿52;
 				\");
 			}break;
 			case 68:{
 				\$팿 = eval(\"if(isset(\\\$this)) \\\$퍁his =& \\\$this;\\\$m = format_abc_Index::Idx(\\\$퍁his->readInt());
 					\\\$n2 = \\\$퍁his->readInt();
-					\\\$팿5 = format_abc_OpCode::OCallStatic(\\\$m, \\\$n2);
-					return \\\$팿5;
+					\\\$팿53 = format_abc_OpCode::OCallStatic(\\\$m, \\\$n2);
+					return \\\$팿53;
 				\");
 			}break;
 			case 69:{
 				\$팿 = eval(\"if(isset(\\\$this)) \\\$퍁his =& \\\$this;\\\$p = format_abc_Index::Idx(\\\$퍁his->readInt());
 					\\\$n3 = \\\$퍁his->readInt();
-					\\\$팿6 = format_abc_OpCode::OCallSuper(\\\$p, \\\$n3);
-					return \\\$팿6;
+					\\\$팿54 = format_abc_OpCode::OCallSuper(\\\$p, \\\$n3);
+					return \\\$팿54;
 				\");
 			}break;
 			case 70:{
 				\$팿 = eval(\"if(isset(\\\$this)) \\\$퍁his =& \\\$this;\\\$p2 = format_abc_Index::Idx(\\\$퍁his->readInt());
 					\\\$n4 = \\\$퍁his->readInt();
-					\\\$팿7 = format_abc_OpCode::OCallProperty(\\\$p2, \\\$n4);
-					return \\\$팿7;
+					\\\$팿55 = format_abc_OpCode::OCallProperty(\\\$p2, \\\$n4);
+					return \\\$팿55;
 				\");
 			}break;
 			case 71:{
@@ -312,29 +622,29 @@ class format_abc_OpReader {
 			case 74:{
 				\$팿 = eval(\"if(isset(\\\$this)) \\\$퍁his =& \\\$this;\\\$p3 = format_abc_Index::Idx(\\\$퍁his->readInt());
 					\\\$n5 = \\\$퍁his->readInt();
-					\\\$팿8 = format_abc_OpCode::OConstructProperty(\\\$p3, \\\$n5);
-					return \\\$팿8;
+					\\\$팿56 = format_abc_OpCode::OConstructProperty(\\\$p3, \\\$n5);
+					return \\\$팿56;
 				\");
 			}break;
 			case 76:{
 				\$팿 = eval(\"if(isset(\\\$this)) \\\$퍁his =& \\\$this;\\\$p4 = format_abc_Index::Idx(\\\$퍁his->readInt());
 					\\\$n6 = \\\$퍁his->readInt();
-					\\\$팿9 = format_abc_OpCode::OCallPropLex(\\\$p4, \\\$n6);
-					return \\\$팿9;
+					\\\$팿57 = format_abc_OpCode::OCallPropLex(\\\$p4, \\\$n6);
+					return \\\$팿57;
 				\");
 			}break;
 			case 78:{
 				\$팿 = eval(\"if(isset(\\\$this)) \\\$퍁his =& \\\$this;\\\$p5 = format_abc_Index::Idx(\\\$퍁his->readInt());
 					\\\$n7 = \\\$퍁his->readInt();
-					\\\$팿10 = format_abc_OpCode::OCallSuperVoid(\\\$p5, \\\$n7);
-					return \\\$팿10;
+					\\\$팿58 = format_abc_OpCode::OCallSuperVoid(\\\$p5, \\\$n7);
+					return \\\$팿58;
 				\");
 			}break;
 			case 79:{
 				\$팿 = eval(\"if(isset(\\\$this)) \\\$퍁his =& \\\$this;\\\$p6 = format_abc_Index::Idx(\\\$퍁his->readInt());
 					\\\$n8 = \\\$퍁his->readInt();
-					\\\$팿11 = format_abc_OpCode::OCallPropVoid(\\\$p6, \\\$n8);
-					return \\\$팿11;
+					\\\$팿59 = format_abc_OpCode::OCallPropVoid(\\\$p6, \\\$n8);
+					return \\\$팿59;
 				\");
 			}break;
 			case 80:{
@@ -383,16 +693,25 @@ class format_abc_OpReader {
 				\$팿 = format_abc_OpCode::OSetProp(format_abc_Index::Idx(\$퍁his->readInt()));
 			}break;
 			case 98:{
-				\$팿 = format_abc_OpCode::OReg(\$퍁his->i->readByte());
+				\$팿 = format_abc_OpCode::OReg(eval(\"if(isset(\\\$this)) \\\$퍁his =& \\\$this;++format_abc_OpReader::\\\$bytePos;
+					\\\$팿60 = \\\$퍁his->i->readByte();
+					return \\\$팿60;
+				\"));
 			}break;
 			case 99:{
-				\$팿 = format_abc_OpCode::OSetReg(\$퍁his->i->readByte());
+				\$팿 = format_abc_OpCode::OSetReg(eval(\"if(isset(\\\$this)) \\\$퍁his =& \\\$this;++format_abc_OpReader::\\\$bytePos;
+					\\\$팿61 = \\\$퍁his->i->readByte();
+					return \\\$팿61;
+				\"));
 			}break;
 			case 100:{
 				\$팿 = format_abc_OpCode::\$OGetGlobalScope;
 			}break;
 			case 101:{
-				\$팿 = format_abc_OpCode::OGetScope(\$퍁his->i->readByte());
+				\$팿 = eval(\"if(isset(\\\$this)) \\\$퍁his =& \\\$this;++format_abc_OpReader::\\\$bytePos;
+					\\\$팿62 = format_abc_OpCode::OGetScope(\\\$퍁his->i->readByte());
+					return \\\$팿62;
+				\");
 			}break;
 			case 102:{
 				\$팿 = format_abc_OpCode::OGetProp(format_abc_Index::Idx(\$퍁his->readInt()));
@@ -408,6 +727,12 @@ class format_abc_OpReader {
 			}break;
 			case 109:{
 				\$팿 = format_abc_OpCode::OSetSlot(\$퍁his->readInt());
+			}break;
+			case 110:{
+				\$팿 = format_abc_OpCode::OGetGlobalSlot(\$퍁his->readInt());
+			}break;
+			case 111:{
+				\$팿 = format_abc_OpCode::OSetGlobalSlot(\$퍁his->readInt());
 			}break;
 			case 112:{
 				\$팿 = format_abc_OpCode::\$OToString;
@@ -461,13 +786,19 @@ class format_abc_OpReader {
 				\$팿 = format_abc_OpCode::OOp(format_abc_Operation::\$OpIncr);
 			}break;
 			case 146:{
-				\$팿 = format_abc_OpCode::OIncrReg(\$퍁his->i->readByte());
+				\$팿 = format_abc_OpCode::OIncrReg(eval(\"if(isset(\\\$this)) \\\$퍁his =& \\\$this;++format_abc_OpReader::\\\$bytePos;
+					\\\$팿63 = \\\$퍁his->i->readByte();
+					return \\\$팿63;
+				\"));
 			}break;
 			case 147:{
 				\$팿 = format_abc_OpCode::OOp(format_abc_Operation::\$OpDecr);
 			}break;
 			case 148:{
-				\$팿 = format_abc_OpCode::ODecrReg(\$퍁his->i->readByte());
+				\$팿 = format_abc_OpCode::ODecrReg(eval(\"if(isset(\\\$this)) \\\$퍁his =& \\\$this;++format_abc_OpReader::\\\$bytePos;
+					\\\$팿64 = \\\$퍁his->i->readByte();
+					return \\\$팿64;
+				\"));
 			}break;
 			case 149:{
 				\$팿 = format_abc_OpCode::\$OTypeof;
@@ -548,10 +879,16 @@ class format_abc_OpReader {
 				\$팿 = format_abc_OpCode::OOp(format_abc_Operation::\$OpIDecr);
 			}break;
 			case 194:{
-				\$팿 = format_abc_OpCode::OIncrIReg(\$퍁his->i->readByte());
+				\$팿 = format_abc_OpCode::OIncrIReg(eval(\"if(isset(\\\$this)) \\\$퍁his =& \\\$this;++format_abc_OpReader::\\\$bytePos;
+					\\\$팿65 = \\\$퍁his->i->readByte();
+					return \\\$팿65;
+				\"));
 			}break;
 			case 195:{
-				\$팿 = format_abc_OpCode::ODecrIReg(\$퍁his->i->readByte());
+				\$팿 = format_abc_OpCode::ODecrIReg(eval(\"if(isset(\\\$this)) \\\$퍁his =& \\\$this;++format_abc_OpReader::\\\$bytePos;
+					\\\$팿66 = \\\$퍁his->i->readByte();
+					return \\\$팿66;
+				\"));
 			}break;
 			case 196:{
 				\$팿 = format_abc_OpCode::OOp(format_abc_Operation::\$OpINeg);
@@ -590,14 +927,18 @@ class format_abc_OpReader {
 				\$팿 = format_abc_OpCode::OSetReg(3);
 			}break;
 			case 239:{
-				\$팿 = eval(\"if(isset(\\\$this)) \\\$퍁his =& \\\$this;if(\\\$퍁his->i->readByte() !== 1) {
+				\$팿 = eval(\"if(isset(\\\$this)) \\\$퍁his =& \\\$this;++format_abc_OpReader::\\\$bytePos;
+					if(\\\$퍁his->i->readByte() !== 1) {
 						throw new HException(\\\"assert\\\");
 					}
 					\\\$name = format_abc_Index::Idx(\\\$퍁his->readInt());
-					\\\$r = \\\$퍁his->i->readByte();
+					\\\$r = eval(\\\"if(isset(\\\\\$this)) \\\\\$퍁his =& \\\\\$this;++format_abc_OpReader::\\\\\$bytePos;
+						\\\\\$팿68 = \\\\\$퍁his->i->readByte();
+						return \\\\\$팿68;
+					\\\");
 					\\\$line = \\\$퍁his->readInt();
-					\\\$팿12 = format_abc_OpCode::ODebugReg(\\\$name, \\\$r, \\\$line);
-					return \\\$팿12;
+					\\\$팿67 = format_abc_OpCode::ODebugReg(\\\$name, \\\$r, \\\$line);
+					return \\\$팿67;
 				\");
 			}break;
 			case 240:{
@@ -627,23 +968,44 @@ class format_abc_OpReader {
 		else
 			throw new HException('Unable to call �'.$m.'�');
 	}
+	static $bytePos = 0;
+	static $jumps;
+	static $jumpNameIndex;
+	static $labels;
+	static $labelNameIndex;
+	static $ops;
 	static function decode($i) {
+		format_abc_OpReader::$bytePos = 0;
+		format_abc_OpReader::$jumps = new _hx_array(array());
+		format_abc_OpReader::$jumpNameIndex = 0;
+		format_abc_OpReader::$labels = new _hx_array(array());
+		format_abc_OpReader::$labelNameIndex = 0;
 		$opr = new format_abc_OpReader($i);
-		$ops = new _hx_array(array());
+		format_abc_OpReader::$ops = new _hx_array(array());
 		while(true) {
 			$op = null;
 			try {
+				if(format_abc_OpReader::$jumps[format_abc_OpReader::$bytePos] !== null) {
+					$_g = 0; $_g1 = format_abc_OpReader::$jumps[format_abc_OpReader::$bytePos];
+					while($_g < $_g1->length) {
+						$s = $_g1[$_g];
+						++$_g;
+						format_abc_OpReader::$ops->push(format_abc_OpCode::OJump3($s));
+						unset($s);
+					}
+				}
 				$op = $i->readByte();
+				++format_abc_OpReader::$bytePos;
 			}catch(Exception $팫) {
 			$_ex_ = ($팫 instanceof HException) ? $팫->e : $팫;
 			;
 			if(($e = $_ex_) instanceof haxe_io_Eof){
 				break;
 			} else throw $팫; }
-			$ops->push($opr->readOp($op));
-			unset($팫,$op,$e,$_ex_);
+			format_abc_OpReader::$ops->push($opr->readOp($op));
+			unset($팫,$s,$op,$e,$_g1,$_g,$_ex_);
 		}
-		return $ops;
+		return format_abc_OpReader::$ops;
 	}
 	function __toString() { return 'format.abc.OpReader'; }
 }

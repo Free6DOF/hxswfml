@@ -45,11 +45,12 @@ class BitsOutput {
 			if( n >= 31 ) throw "Bits error";
 			var n2 = 32 - nbits - 1;
 			var n3 = n - n2;
-			#if php
+			/*#if php
 			writeBits(n2,v >> n3);
 			#else
+			*/
 			writeBits(n2,v >>> n3);
-			#end
+			//#end
 			writeBits(n3,v & ((1 << n3) - 1));
 			return;
 		}
@@ -60,11 +61,12 @@ class BitsOutput {
 		nbits += n;
 		while( nbits >= 8 ) {
 			nbits -= 8;
-			#if php
+			/*#if php
 			o.writeByte((bits >> nbits) & 0xFF);
 			#else
+			*/
 			o.writeByte((bits >>> nbits) & 0xFF);
-			#end
+			//#end
 		}
 	}
 

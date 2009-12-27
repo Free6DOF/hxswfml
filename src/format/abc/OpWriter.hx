@@ -198,9 +198,15 @@ class OpWriter {
 			reg(r);
 		case OLabel:
 			b(0x09);
+		case OLabel2(landingName):
+			return;
 		case OJump(j,delta):
 			b(jumpCode(j));
 			o.writeInt24(delta);
+		case OJump2(j,landingName, delta):
+			return;
+		case OJump3(landingName):
+			return;
 		case OSwitch(def,deltas):
 			b(0x1B);
 			o.writeInt24(def);
@@ -382,6 +388,12 @@ class OpWriter {
 			int(s);
 		case OSetSlot(s):
 			b(0x6D);
+			int(s);
+		case OGetGlobalSlot(s):
+			b(0x6E);
+			int(s);
+		case OSetGlobalSlot(s):
+			b(0x6F);
 			int(s);
 		case OToString:
 			b(0x70);

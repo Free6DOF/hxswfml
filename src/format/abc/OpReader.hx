@@ -38,23 +38,23 @@ class OpReader {
 	}
 
 	public function readInt() {
-		var a = i.readByte();
+		var a = i.readByte(); ++bytePos;
 		if( a < 128 )
 			return a;
 		a &= 0x7F;
-		var b = i.readByte();
+		var b = i.readByte(); ++bytePos;
 		if( b < 128 )
 			return (b << 7) | a;
 		b &= 0x7F;
-		var c = i.readByte();
+		var c = i.readByte(); ++bytePos;
 		if( c < 128 )
 			return (c << 14) | (b << 7) | a;
 		c &= 0x7F;
-		var d = i.readByte();
+		var d = i.readByte(); ++bytePos;
 		if( d < 128 )
 			return (d << 21) | (c << 14) | (b << 7) | a;
 		d &= 0x7F;
-		var e = i.readByte();
+		var e = i.readByte(); ++bytePos;
 		if( e > 15 ) throw "assert";
 		if( ((e & 8) == 0) != ((e & 4) == 0) ) throw haxe.io.Error.Overflow;
 		return (e << 28) | (d << 21) | (c << 14) | (b << 7) | a;
@@ -65,23 +65,23 @@ class OpReader {
 	}
 
 	public function readInt32() : Int32 {
-		var a = i.readByte();
+		var a = i.readByte(); ++bytePos;
 		if( a < 128 )
 			return Int32.ofInt(a);
 		a &= 0x7F;
-		var b = i.readByte();
+		var b = i.readByte(); ++bytePos;
 		if( b < 128 )
 			return Int32.ofInt((b << 7) | a);
 		b &= 0x7F;
-		var c = i.readByte();
+		var c = i.readByte(); ++bytePos;
 		if( c < 128 )
 			return Int32.ofInt((c << 14) | (b << 7) | a);
 		c &= 0x7F;
-		var d = i.readByte();
+		var d = i.readByte(); ++bytePos;
 		if( d < 128 )
 			return Int32.ofInt((d << 21) | (c << 14) | (b << 7) | a);
 		d &= 0x7F;
-		var e = i.readByte();
+		var e = i.readByte(); ++bytePos;
 		if( e > 15 ) throw "assert";
 		var small = Int32.ofInt((d << 21) | (c << 14) | (b << 7) | a);
 		var big = Int32.shl(Int32.ofInt(e),28);
@@ -89,14 +89,30 @@ class OpReader {
 	}
 
 	inline function reg() {
+		++bytePos;
 		return i.readByte();
 	}
 
-	inline function jmp(j) {
-		return OJump(j,i.readInt24());
+	inline function jmp(j) 
+	{
+		jumpNameIndex++;
+		var offset = i.readInt24();++bytePos;++bytePos;++bytePos;
+		if (offset < 0)
+		{
+			ops.push(OJump(j, offset));//commented in xml
+			return OJump2(j, labels[bytePos + offset], offset);
+		}
+		else
+		{
+			if (jumps[bytePos + offset] == null)
+				jumps[bytePos + offset] = [];
+			jumps[bytePos + offset].push('j' + jumpNameIndex);
+			ops.push(OJump(j, offset));//commented in xml
+			return OJump2(j, 'j' + jumpNameIndex, offset);
+		}
 	}
 
-	public function readOp(op) {
+	public function readOp(op:Int) {
 		return switch( op ) {
 		case 0x01:
 			OBreakPoint;
@@ -115,7 +131,10 @@ class OpReader {
 		case 0x08:
 			ORegKill(reg());
 		case 0x09:
-			OLabel;
+			labelNameIndex++;
+			labels[bytePos-1]= 'label' + labelNameIndex;
+			ops.push(OLabel);//commented in xml
+			OLabel2('label' + labelNameIndex);
 		case 0x0C:
 			jmp(JNotLt);
 		case 0x0D:
@@ -147,10 +166,14 @@ class OpReader {
 		case 0x1A:
 			jmp(JPhysNeq);
 		case 0x1B:
+			bytePos+=3;
 			var def = i.readInt24();
 			var cases = new Array();
-			for( _ in 0...readInt() + 1 )
+			for ( _ in 0...readInt() + 1 )
+			{
+				bytePos+=3;
 				cases.push(i.readInt24());
+			}
 			OSwitch(def,cases);
 		case 0x1C:
 			OPushWith;
@@ -167,6 +190,7 @@ class OpReader {
 		case 0x23:
 			OForEach;
 		case 0x24:
+			++bytePos;
 			OSmallInt(i.readInt8());
 		case 0x25:
 			OInt(readInt());
@@ -299,6 +323,7 @@ class OpReader {
 		case 0x64:
 			OGetGlobalScope;
 		case 0x65:
+			++bytePos;
 			OGetScope(i.readByte());
 		case 0x66:
 			OGetProp(readIndex());
@@ -310,6 +335,10 @@ class OpReader {
 			OGetSlot(readInt());
 		case 0x6D:
 			OSetSlot(readInt());
+		case 0x6E:
+			OGetGlobalSlot(readInt());
+		case 0x6F:
+			OSetGlobalSlot(readInt());
 		case 0x70:
 			OToString;
 		case 0x71:
@@ -431,6 +460,7 @@ class OpReader {
 		case 0xD7:
 			OSetReg(3);
 		case 0xEF:
+			++bytePos;
 			if( i.readByte() != 1 ) throw "assert";
 			var name = readIndex();
 			var r = reg();
@@ -448,13 +478,33 @@ class OpReader {
 			OUnknown(op);
 		}
 	}
+	static var bytePos:Int = 0;
+	static var jumps:Array<Array<String>>;
+	static var jumpNameIndex:Int;
+	static var labels:Array<String>;
+	static var labelNameIndex:Int;
+	static var ops: Array<format.abc.OpCode>;
+	public static function decode( i : haxe.io.Input ) 
+	{
+		bytePos = 0;
+		jumps = new Array();
+		jumpNameIndex = 0;
+		labels = new Array();
+		labelNameIndex = 0;
 
-	public static function decode( i : haxe.io.Input ) {
 		var opr = new OpReader(i);
-		var ops = new Array();
-		while( true ) {
+		/*var*/ ops = [];
+		while ( true ) 
+		{
 			var op;
-			try op = i.readByte() catch( e : haxe.io.Eof ) break;
+			try 
+			{
+				if (jumps[bytePos] != null)
+					for(s in jumps[bytePos])
+						ops.push(OJump3(s));
+				op = i.readByte();
+				++bytePos;
+			}catch ( e : haxe.io.Eof ) break;
 			ops.push(opr.readOp(op));
 		}
 		return ops;

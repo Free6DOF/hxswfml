@@ -482,11 +482,11 @@ Void Writer_obj::writeField( Dynamic f){
 		format::abc::FieldKind _switch_6 = (f->__Field(STRING(L"kind",4)).Cast<format::abc::FieldKind >());
 		switch((_switch_6)->GetIndex()){
 			case 0: {
-				Dynamic _const = _switch_6->__Param(2);
+				Dynamic const = _switch_6->__Param(2);
 				format::abc::Value v = _switch_6->__Param(1);
 				format::abc::Index t = _switch_6->__Param(0);
 {
-					this->o->writeByte(int((_const ? int( 6 ) : int( 0 ))) | int(flags));
+					this->o->writeByte(int((const ? int( 6 ) : int( 0 ))) | int(flags));
 					this->opw->writeInt(f->__Field(STRING(L"slot",4)).Cast<int >());
 					this->writeIndexOpt(t);
 					this->writeValue(false,v);
@@ -519,7 +519,11 @@ Void Writer_obj::writeField( Dynamic f){
 						break;
 					}
 					this->o->writeByte(flags);
-					this->opw->writeInt(f->__Field(STRING(L"slot",4)).Cast<int >());
+					if (isOverride)
+						this->opw->writeInt(0);
+					else
+						this->opw->writeInt(f->__Field(STRING(L"slot",4)).Cast<int >());
+;
 					this->writeIndex(t);
 				}
 			}
@@ -662,11 +666,11 @@ Void Writer_obj::writeClass( Dynamic c){
 			hxOrEq(flags,2);
 		if (c->__Field(STRING(L"isInterface",11)).Cast<bool >())
 			hxOrEq(flags,4);
-		if (c->__Field(STRING(L"_namespace",10)).Cast<format::abc::Index >() != null())
+		if (c->__Field(STRING(L"namespace",9)).Cast<format::abc::Index >() != null())
 			hxOrEq(flags,8);
 		this->o->writeByte(flags);
-		if (c->__Field(STRING(L"_namespace",10)).Cast<format::abc::Index >() != null())
-			this->writeIndex(c->__Field(STRING(L"_namespace",10)).Cast<format::abc::Index >());
+		if (c->__Field(STRING(L"namespace",9)).Cast<format::abc::Index >() != null())
+			this->writeIndex(c->__Field(STRING(L"namespace",9)).Cast<format::abc::Index >());
 		this->writeList2(c->__Field(STRING(L"interfaces",10)).Cast<Array<format::abc::Index > >(),this->writeIndex_dyn());
 		this->writeIndex(c->__Field(STRING(L"constructor",11)).Cast<format::abc::Index >());
 		this->writeList2(c->__Field(STRING(L"fields",6)).Cast<Array<Dynamic > >(),this->writeField_dyn());

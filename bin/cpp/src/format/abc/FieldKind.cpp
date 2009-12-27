@@ -21,11 +21,11 @@ FieldKind  FieldKind_obj::FClass(format::abc::Index c)
 FieldKind  FieldKind_obj::FFunction(format::abc::Index f)
 	{ return CreateEnum<FieldKind_obj >(STRING(L"FFunction",9),3,DynamicArray(0,1).Add(f)); }
 
-FieldKind  FieldKind_obj::FMethod(format::abc::Index type,format::abc::MethodKind k,Dynamic isOverride,Dynamic isFinal)
-	{ return CreateEnum<FieldKind_obj >(STRING(L"FMethod",7),1,DynamicArray(0,4).Add(type).Add(k).Add(isOverride).Add(isFinal)); }
+FieldKind  FieldKind_obj::FMethod(format::abc::Index type,format::abc::MethodKind k,Dynamic isFinal,Dynamic isOverride)
+	{ return CreateEnum<FieldKind_obj >(STRING(L"FMethod",7),1,DynamicArray(0,4).Add(type).Add(k).Add(isFinal).Add(isOverride)); }
 
-FieldKind  FieldKind_obj::FVar(format::abc::Index type,format::abc::Value value,Dynamic _const)
-	{ return CreateEnum<FieldKind_obj >(STRING(L"FVar",4),0,DynamicArray(0,3).Add(type).Add(value).Add(_const)); }
+FieldKind  FieldKind_obj::FVar(format::abc::Index type,format::abc::Value value,Dynamic const)
+	{ return CreateEnum<FieldKind_obj >(STRING(L"FVar",4),0,DynamicArray(0,3).Add(type).Add(value).Add(const)); }
 
 DEFINE_CREATE_ENUM(FieldKind_obj)
 

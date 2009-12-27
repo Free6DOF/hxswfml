@@ -328,7 +328,7 @@ class format_abc_Reader {
 		$interfs = $this->readList2(isset($this->readIndex) ? $this->readIndex: array($this, "readIndex"));
 		$construct = format_abc_Index::Idx($this->opr->readInt());
 		$fields = $this->readList2(isset($this->readField) ? $this->readField: array($this, "readField"));
-		return _hx_anonymous(array("name" => $name, "superclass" => $csuper, "interfaces" => $interfs, "constructor" => $construct, "fields" => $fields, "_namespace" => $ns, "isSealed" => ($flags & 1) !== 0, "isFinal" => ($flags & 2) !== 0, "isInterface" => ($flags & 4) !== 0, "statics" => null, "staticFields" => null));
+		return _hx_anonymous(array("name" => $name, "superclass" => $csuper, "interfaces" => $interfs, "constructor" => $construct, "fields" => $fields, "namespace" => $ns, "isSealed" => ($flags & 1) !== 0, "isFinal" => ($flags & 2) !== 0, "isInterface" => ($flags & 4) !== 0, "statics" => null, "staticFields" => null));
 	}
 	public function readInit() {
 		return _hx_anonymous(array("method" => format_abc_Index::Idx($this->opr->readInt()), "fields" => $this->readList2(isset($this->readField) ? $this->readField: array($this, "readField"))));

@@ -18,7 +18,7 @@ class format_tools_BitsOutput {
 			}
 			$n2 = 32 - $this->nbits - 1;
 			$n3 = $n - $n2;
-			$this->writeBits($n2, $v >> $n3);
+			$this->writeBits($n2, _hx_shift_right($v, $n3));
 			$this->writeBits($n3, $v & ((1 << $n3) - 1));
 			return;
 		}
@@ -29,7 +29,7 @@ class format_tools_BitsOutput {
 		$this->nbits += $n;
 		while($this->nbits >= 8) {
 			$this->nbits -= 8;
-			$this->o->writeByte(($this->bits >> $this->nbits) & 255);
+			$this->o->writeByte((_hx_shift_right($this->bits, $this->nbits)) & 255);
 			;
 		}
 	}

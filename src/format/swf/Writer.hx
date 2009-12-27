@@ -1287,11 +1287,16 @@ class Writer {
 		bits.writeBit(data.html);
 		bits.writeBit(data.useOutlines);
 		
-		if(data.hasFont)		
+		if (data.hasFont)
+		{
 			o.writeUInt16(data.fontID);
-		if(data.hasFontClass)	
+			o.writeUInt16(data.fontHeight);
+		}
+		else if (data.hasFontClass)
+		{
 			o.writeString(data.fontClass);
-		o.writeUInt16(data.fontHeight);
+			o.writeByte(0);//string ending
+		}	
 		if(data.hasTextColor)	
 			writeRGBA(data.textColor);
 		if(data.hasMaxLength)	
@@ -1306,9 +1311,11 @@ class Writer {
 		}
 		o.writeString(data.variableName);
 		o.writeByte(0);//string ending
-		if(data.hasText)		
+		if (data.hasText)
+		{
 			o.writeString(data.initialText);
 			o.writeByte(0);//string ending
+		}
 	}
 	
 	public function writeTag( t : SWFTag )

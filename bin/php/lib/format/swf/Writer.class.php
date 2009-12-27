@@ -2284,11 +2284,14 @@ class format_swf_Writer {
 		$this->bits->writeBit($data->useOutlines);
 		if($data->hasFont) {
 			$this->o->writeUInt16($data->fontID);
+			$this->o->writeUInt16($data->fontHeight);
 		}
-		if($data->hasFontClass) {
-			$this->o->writeString($data->fontClass);
+		else {
+			if($data->hasFontClass) {
+				$this->o->writeString($data->fontClass);
+				$this->o->writeByte(0);
+			}
 		}
-		$this->o->writeUInt16($data->fontHeight);
 		if($data->hasTextColor) {
 			$this->writeRGBA($data->textColor);
 		}
@@ -2306,8 +2309,8 @@ class format_swf_Writer {
 		$this->o->writeByte(0);
 		if($data->hasText) {
 			$this->o->writeString($data->initialText);
+			$this->o->writeByte(0);
 		}
-		$this->o->writeByte(0);
 	}
 	public function writeTag($t) {
 		$»t = ($t);

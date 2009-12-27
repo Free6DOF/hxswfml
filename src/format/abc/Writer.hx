@@ -198,8 +198,8 @@ class Writer {
 		var flags = 0;
 		if( f.metadatas != null ) flags |= 0x40;
 		switch( f.kind ) {
-		case FVar(t,v,_const):
-			o.writeByte((_const ? 0x06 : 0x00) | flags);
+		case FVar(t,v,const):
+			o.writeByte((const ? 0x06 : 0x00) | flags);
 			writeInt(f.slot);
 			writeIndexOpt(t);
 			writeValue(false,v);
@@ -212,7 +212,10 @@ class Writer {
 			case KSetter: flags |= 0x03;
 			}
 			o.writeByte(flags);
-			writeInt(f.slot);
+			if (isOverride)
+				writeInt(0);
+			else
+				writeInt(f.slot);
 			writeIndex(t);
 		case FClass(c):
 			o.writeByte(0x04 | flags);
@@ -233,7 +236,8 @@ class Writer {
 		for( a in m.args )
 			writeIndexOpt(a);
 		var x = m.extra;
-		if( x == null ) {
+		if ( x == null ) 
+		{
 			writeIndexOpt(null); // debug name
 			o.writeByte(0); // flags
 			return;
@@ -277,10 +281,10 @@ class Writer {
 		if( c.isSealed ) flags |= 0x01;
 		if( c.isFinal ) flags |= 0x02;
 		if( c.isInterface ) flags |= 0x04;
-		if( c._namespace != null ) flags |= 0x08;
+		if( c.namespace != null ) flags |= 0x08;
 		o.writeByte(flags);
-		if( c._namespace != null )
-			writeIndex(c._namespace);
+		if( c.namespace != null )
+			writeIndex(c.namespace);
 		writeList2(c.interfaces,writeIndex);
 		writeIndex(c.constructor);
 		writeList2(c.fields,writeField);
