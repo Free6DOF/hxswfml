@@ -1,0 +1,7 @@
+-cp src
+be.haxer.hxswfml.SwfWriter
+-swf9 bin/flash/swf/hxswfml.swc
+-D swc
+#-debug
+-cmd echo "swc(SWF) created"
+-cmd pause
