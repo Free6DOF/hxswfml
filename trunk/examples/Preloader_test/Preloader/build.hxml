@@ -1,6 +1,0 @@
-Preloader
--main Preloader
---flash-use-stage
--swf9 Preloader.swf
-
--cmd hXswfML swf.xml preloaded_movie.swf

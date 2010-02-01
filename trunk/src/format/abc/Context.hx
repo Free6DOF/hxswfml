@@ -74,8 +74,8 @@ class Context {
                 hstrings = new Hash();
 				
                 data = new ABCData();
-                data.ints = new Array();
-                data.uints = new Array();
+                data.ints = new Array<Int32>();
+                data.uints = new Array<Int32>();
                 data.floats = new Array();
                 data.strings = new Array();
                 data.namespaces = new Array();
@@ -86,16 +86,28 @@ class Context {
                 data.classes = new Array();
                 data.functions = new Array();
                 emptyString = string("");
-                nsPublic = namespace(NPublic(emptyString));
+                nsPublic = _namespace(NPublic(emptyString));
                 arrayProp = name(NMultiLate(nsset([nsPublic])));
 
                 classes = new Array();
-				data.inits = [];
+				data.inits = new Array();
         }
-
-        public function int(i) {
+		/*
+		public function int(i) {
 			return lookup(data.ints, i, Int32);//Int32 added
         }
+		*/
+		public function int(n):Index<Int32>
+		{
+			var arr = data.ints;
+			for ( i in 0...arr.length ) 
+			{
+				if (Int32.compare(cast arr[i], Int32.ofInt(cast n)) == 0) 
+					return Idx(i + 1);
+			}			
+			arr.push(n);
+			return Idx(arr.length);
+		}
 
         public function uint(i) {
                 return lookup(data.uints,i);
@@ -115,7 +127,7 @@ class Context {
                 return Idx(n);
         }
 
-        public function namespace(n) {
+        public function _namespace(n) {
                 //return lookup(data.namespaces,n);
                return elookup(data.namespaces,n);
         }
@@ -160,7 +172,7 @@ class Context {
                 var ns = patharr.join(".");
                 var pid = string(ns);
                 var nameid = string(cname);
-                var pid = namespace(NPublic(pid));
+                var pid = _namespace(NPublic(pid));
                 var tid = name(NName(nameid,pid));
                 return tid;
         }
@@ -191,7 +203,7 @@ class Context {
 			{
                 var pid = string("");
                 var nameid = string(pname);
-                var pid = if ( ns == null ) namespace(NPublic(pid)) else ns;
+                var pid = if ( ns == null ) _namespace(NPublic(pid)) else ns;
 				tid = name(NName(nameid,pid));
 			}	
 			return tid;
@@ -201,8 +213,20 @@ class Context {
                 data.methodTypes.push(m);
                 return Idx(data.methodTypes.length - 1);
         }
+		//#if cpp
+		function lookup<T>(arr:Array<T>, n:T):Index<T> 
+		{
+				for ( i in 0...arr.length ) 
+					if (arr[i] == n) 
+						return Idx(i + 1);
+			arr.push(n);
+			return Idx(arr.length);
+		}
+		/*
+		#else
 		function lookup<T>(arr:Array<T>, n:T, ?type:Class<Int32>):Index<T> 
 		{
+			
 			if (type == Int32)
 			{
 				for ( i in 0...arr.length ) 
@@ -211,6 +235,7 @@ class Context {
 			}			
 			else 
 			{
+			
 				for ( i in 0...arr.length ) 
 					if (arr[i] == n) 
 						return Idx(i + 1);
@@ -218,7 +243,9 @@ class Context {
 			arr.push(n);
 			return Idx(arr.length);
 		}
-
+		#end
+		*/
+		
         function elookup < T > ( arr : Array < T > , n : T ) : Index < T > {
                 for( i in 0...arr.length )
                         if( Type.enumEq(arr[i],n) )
@@ -333,7 +360,7 @@ class Context {
                         isSealed : false,
                         isInterface : false,
                         isFinal : false,
-                        namespace : null,
+                        _namespace : null,
 						
 						constructor : null,
 						statics : null,
@@ -416,7 +443,7 @@ class Context {
         }
 		public function beginInterfaceMethod( mname : String, targs, tret, ?isStatic, ?isOverride, ?isFinal, ?willAddLater,  ?kind:MethodKind, ?extra,?ns:Index< Namespace > )
 		{
-			trace('beginInterfaceMethod mname: '+ mname);
+			//trace('beginInterfaceMethod mname: '+ mname);
                 var m = beginInterfaceFunction(targs, tret, extra);
                 if (willAddLater != true)
                 {
@@ -450,7 +477,7 @@ class Context {
                 endFunction();
         }
 		
-        public function defineField( fname : String, t:Null < IName > , ?isStatic, ?value : Value, ?const : Bool,?ns:Index< Namespace >) : Slot// ?value : Value, ?const : Bool added,?ns:Index< Namespace >,
+        public function defineField( fname : String, t:Null < IName > , ?isStatic, ?value : Value, ?_const : Bool,?ns:Index< Namespace >) : Slot// ?value : Value, ?_const : Bool added,?ns:Index< Namespace >,
 		{
                 var fl = if( isStatic ) curClass.staticFields else curClass.fields;
                 var slot = fieldSlot++;
@@ -458,13 +485,13 @@ class Context {
 				if (value != null)
 				{
 					kind = FVar(t, value);
-					if (const)
-						kind = FVar(t, value, const);
+					if (_const)
+						kind = FVar(t, value, _const);
 				}
                 fl.push({
                         name : property(fname , ns),//ns added
                         slot : fl.length+1,//slot,
-                        kind : kind,//value, const added
+                        kind : kind,//value, _const added
                         metadatas : null,
                 });
                 return fl.length;// slot;

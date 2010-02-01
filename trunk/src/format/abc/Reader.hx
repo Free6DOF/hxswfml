@@ -27,6 +27,7 @@
  */
 package format.abc;
 import format.abc.Data;
+import haxe.Int32;
 
 class Reader {
 
@@ -38,11 +39,11 @@ class Reader {
 		opr = new OpReader(i);
 	}
 
-	inline function readInt() {
+	/*inline*/ function readInt() {
 		return opr.readInt();
 	}
 
-	inline function readIndex<T>() : Index<T> {
+	/*inline*/ function readIndex<T>() : Index<T> {
 		return Idx(readInt());
 	}
 
@@ -84,7 +85,7 @@ class Reader {
 		case 0x18: NProtected(p);
 		case 0x19: NExplicit(p);
 		case 0x1A: NStaticProtected(p);
-		default: throw "assert";
+		default: throw "assert readNamespace" + k;
 		}
 	}
 
@@ -94,7 +95,7 @@ class Reader {
 			a.push(readIndex());
 		return a;
 	}
-
+	
 	function readName( k = -1 ) : Name {
 		if( k == -1 ) k = i.readByte();
 		return switch( k ) {
@@ -114,6 +115,8 @@ class Reader {
 			NRuntime(readIndex());
 		case 0x10:
 			NRuntimeLate;
+		case 0x11:
+			NRuntimeLate;//??
 		case 0x12:
 			NAttrib(readName(0x11));
 		case 0x1B:
@@ -125,14 +128,14 @@ class Reader {
 			var params = readList2(readIndex);
 			NParams(id,params);
 		default:
-			throw "assert";
+			throw "assert readName" + k;
 		}
 	}
 
 	function readValue(extra) {
 		var idx = readInt();
 		if( idx == 0 ) {
-			if( extra && i.readByte() != 0 ) throw "assert";
+			if( extra && i.readByte() != 0 ) throw "assert readValue1 " + idx;
 			return null;
 		}
 		var n = i.readByte();
@@ -142,10 +145,10 @@ class Reader {
 		case 0x04: VUInt(Idx(idx));
 		case 0x06: VFloat(Idx(idx));
 		case 0x05, 0x08, 0x16, 0x17, 0x18, 0x19, 0x1A: VNamespace(n,Idx(idx));
-		case 0x0A: if( idx != 0x0A ) throw "assert"; VBool(false);
-		case 0x0B: if( idx != 0x0B ) throw "assert"; VBool(true);
-		case 0x0C: if( idx != 0x0C ) throw "assert"; VNull;
-		default: throw "assert";
+		case 0x0A: if( idx != 0x0A ) throw "assert readValue2 " + n; VBool(false);
+		case 0x0B: if( idx != 0x0B ) throw "assert readValue2 " + n; VBool(true);
+		case 0x0C: if( idx != 0x0C ) throw "assert readValue2 " + n; VNull;
+		default: throw "assert readValue3 "+ n;
 		}
 	}
 
@@ -163,9 +166,13 @@ class Reader {
 				ret : tret,
 				extra : null,
 			};
-		var dparams = null, pnames = null;
-		if( (flags & 0x08) != 0 )
-			dparams = readList2(callback(readValue,true));
+		var dparams =[];
+		var pnames : Array < Null < Index < Dynamic > >> = new Array();
+		if ( (flags & 0x08) != 0 )
+		{
+			for(i in readList2(callback(readValue, true)))
+				dparams.push(i);
+		}
 		if( (flags & 0x80) != 0 ) {
 			pnames = new Array();
 			for( i in 0...nargs )
@@ -182,8 +189,8 @@ class Reader {
 				newBlock : (flags & 0x02) != 0,
 				unused : (flags & 0x10) != 0,
 				debugName : dname,
-				defaultParameters : dparams,
-				paramNames : pnames,
+				defaultParameters : dparams.length==0?null:dparams,
+				paramNames : pnames.length==0?null:pnames,
 			},
 		};
 	}
@@ -218,7 +225,7 @@ class Reader {
 				case 0x01: KNormal;
 				case 0x02: KGetter;
 				case 0x03: KSetter;
-				default: throw "assert";
+				default: throw "assert readField1 "+(kind & 0xF);
 			}
 			f = FMethod(mt,kind,final,over);
 		case 0x04:
@@ -226,11 +233,14 @@ class Reader {
 		case 0x05:
 			f = FFunction(readIndex());
 		default:
-			throw "assert";
+			throw "assert readField2 "+(kind & 0xf);
 		};
-		var metas = null;
-		if( (kind & 0x40) != 0 )
-			metas = readList2(readIndex);
+		var metas = [];
+		if ( (kind & 0x40) != 0 )
+		{
+			for (i in readList2(readIndex))
+				metas.push(i);
+		}
 		return {
 			name : name,
 			slot : slot,
@@ -254,7 +264,7 @@ class Reader {
 			interfaces : interfs,
 			constructor : construct,
 			fields : fields,
-			namespace : ns,
+			_namespace : ns,
 			isSealed : (flags & 0x01) != 0,
 			isFinal : (flags & 0x02) != 0,
 			isInterface : (flags & 0x04) != 0,
@@ -264,9 +274,11 @@ class Reader {
 	}
 
 	function readInit() : Init {
+		var method = readIndex();
+		var fields = readList2(readField);
 		return {
-			method : readIndex(),
-			fields : readList2(readField),
+			method : method,
+			fields : fields,
 		};
 	}
 
@@ -302,7 +314,9 @@ class Reader {
 	}
 
 
-	public function read() {
+	public function read() 
+	{
+		#if !cpp
 		if( i.readUInt30() != 0x002E0010 )
 			throw "invalid header";
 		var data = new ABCData();
@@ -318,12 +332,75 @@ class Reader {
 		data.classes = readList2(readClass);
 		for( c in data.classes ) {
 			c.statics = readIndex();
-			//trace(c.statics);
 			c.staticFields = readList2(readField);
 		}
 		data.inits = readList2(readInit);
 		data.functions = readList2(readFunction);
 		return data;
+		#else
+		/*
+		if ( i.readUInt30() != 0x002E0010 )
+		{
+			//throw "invalid header"; 
+		}
+		var data = new ABCData();
+		data.ints.concat(readList(opr.readInt32));
+		data.uints.concat(readList(opr.readInt32));
+		data.floats.concat(readList(i.readDouble));
+		data.strings.concat(readList(readString));
+		data.namespaces.concat(readList(readNamespace));
+		data.nssets.concat(readList(readNsSet));
+		data.names.concat(readList(callback(readName, -1)));
+		data.methodTypes.concat(readList2(readMethodType));
+		data.metadatas.concat(readList2(readMetadata));
+		data.classes.concat(readList2(readClass));
+		for ( c in data.classes ) {
+			c.statics = readIndex();
+			c.staticFields.concat(readList2(readField));
+		}
+		data.inits.concat(readList2(readInit));
+		data.functions.concat(readList2(readFunction));
+		return data;
+		*/
+		
+		if ( i.readUInt30() != 0x002E0010 )
+		{
+			//throw "invalid header";
+		}
+		var data = new ABCData();
+		data.ints = [];
+		data.uints = [];
+		data.floats= [];
+		data.strings = [];
+		data.nssets = [];
+		data.namespaces = [];
+		data.names= [];
+		data.methodTypes = [];
+		data.metadatas = [];
+		data.classes= [];
+		data.inits= [];
+		data.functions= [];
+		var a = readList(opr.readInt32);
+		for (i in 0...a.length) data.ints.push(a[i]);
+		for (i in readList(opr.readInt32)) data.uints.push(i);
+		for (i in readList(i.readDouble))data.floats.push(i);
+		for (i in readList(readString))data.strings.push(i);
+		for (i in readList(readNamespace))data.namespaces.push(i);
+		for (i in readList(readNsSet)) data.nssets.push(i);
+		for (i in readList(callback(readName,-1)))data.names.push(i);
+		for (i in readList2(readMethodType))data.methodTypes.push(i);
+		for (i in readList2(readMetadata))data.metadatas.push(i);
+		for (i in readList2(readClass)) data.classes.push(i);
+		for ( c in data.classes ) 
+		{
+			c.statics = readIndex();
+			c.staticFields = [];
+			for (i in readList2(readField))
+				c.staticFields.push(i);
+		}
+		for (i in readList2(readInit)) data.inits.push(i);
+		for (i in readList2(readFunction))data.functions.push(i);
+		return data;
+		#end
 	}
-
 }
