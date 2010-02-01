@@ -1,7 +1,0 @@
-Movie
--cp scripts
--main Movie
--swf9 script.swf
-
--cmd hxswfml ./resources/library.xml movie.swf
--cmd del script.swf

@@ -1,6 +1,0 @@
-Movie
--main Movie
--swf9 Movie.swf
---flash-use-stage
-
--cmd hXswfML swf.xml Movie.swf

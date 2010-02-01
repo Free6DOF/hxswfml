@@ -93,10 +93,13 @@ class OpReader {
 		return i.readByte();
 	}
 
-	inline function jmp(j) 
+	function jmp(j): format.abc.OpCode
 	{
 		jumpNameIndex++;
-		var offset = i.readInt24();++bytePos;++bytePos;++bytePos;
+		var offset = i.readInt24();
+		++bytePos;
+		++bytePos;
+		++bytePos;
 		if (offset < 0)
 		{
 			ops.push(OJump(j, offset));//commented in xml
@@ -106,13 +109,14 @@ class OpReader {
 		{
 			if (jumps[bytePos + offset] == null)
 				jumps[bytePos + offset] = [];
-			jumps[bytePos + offset].push('j' + jumpNameIndex);
+			jumps[bytePos + offset].push('J' + jumpNameIndex);
 			ops.push(OJump(j, offset));//commented in xml
-			return OJump2(j, 'j' + jumpNameIndex, offset);
+			return OJump2(j, 'J' + jumpNameIndex, offset);
 		}
 	}
 
-	public function readOp(op:Int) {
+	public function readOp(op:Int) :format.abc.OpCode
+	{
 		return switch( op ) {
 		case 0x01:
 			OBreakPoint;
@@ -132,9 +136,9 @@ class OpReader {
 			ORegKill(reg());
 		case 0x09:
 			labelNameIndex++;
-			labels[bytePos-1]= 'label' + labelNameIndex;
+			labels[(bytePos-1)]= 'L' + labelNameIndex;
 			ops.push(OLabel);//commented in xml
-			OLabel2('label' + labelNameIndex);
+			OLabel2('L' + labelNameIndex);
 		case 0x0C:
 			jmp(JNotLt);
 		case 0x0D:
@@ -460,10 +464,18 @@ class OpReader {
 		case 0xD7:
 			OSetReg(3);
 		case 0xEF:
+			var b = i.readByte();
+			if (b != 1 ) 
+				throw "assert"; 
 			++bytePos;
-			if( i.readByte() != 1 ) throw "assert";
 			var name = readIndex();
-			var r = reg();
+			var r; 
+			#if php 
+				++bytePos;
+				r = i.readByte();
+			#else
+				r = reg();
+			#end
 			var line = readInt();
 			ODebugReg(name,r,line);
 		case 0xF0:
@@ -478,36 +490,44 @@ class OpReader {
 			OUnknown(op);
 		}
 	}
+
 	static var bytePos:Int = 0;
 	static var jumps:Array<Array<String>>;
 	static var jumpNameIndex:Int;
 	static var labels:Array<String>;
 	static var labelNameIndex:Int;
 	static var ops: Array<format.abc.OpCode>;
-	public static function decode( i : haxe.io.Input ) 
+	public static function decode( i : haxe.io.Input ) : Array<format.abc.OpCode>
 	{
 		bytePos = 0;
 		jumps = new Array();
 		jumpNameIndex = 0;
 		labels = new Array();
 		labelNameIndex = 0;
-
 		var opr = new OpReader(i);
-		/*var*/ ops = [];
+		ops = new Array();
 		while ( true ) 
 		{
 			var op;
 			try 
 			{
 				if (jumps[bytePos] != null)
-					for(s in jumps[bytePos])
+				{
+					for (s in jumps[bytePos])
+					{
 						ops.push(OJump3(s));
+					}
+				}
 				op = i.readByte();
 				++bytePos;
-			}catch ( e : haxe.io.Eof ) break;
-			ops.push(opr.readOp(op));
+			}
+			catch ( e : haxe.io.Eof ) 
+			{
+				break;
+			}
+			var opc = opr.readOp(op);
+			ops.push(opc);
 		}
 		return ops;
 	}
-
 }

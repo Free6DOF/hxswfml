@@ -66,11 +66,15 @@ class Reader {
 	function readRect() {
 		bits.reset();
 		var nbits = bits.readBits(5);
+		var left = Tools.signExtend(bits.readBits(nbits), nbits);
+		var right = Tools.signExtend(bits.readBits(nbits), nbits);
+		var top = Tools.signExtend(bits.readBits(nbits), nbits);
+		var bottom = Tools.signExtend(bits.readBits(nbits), nbits);
 		return {
-			left : Tools.signExtend(bits.readBits(nbits), nbits),
-			right : Tools.signExtend(bits.readBits(nbits), nbits),
-			top : Tools.signExtend(bits.readBits(nbits), nbits),
-			bottom : Tools.signExtend(bits.readBits(nbits), nbits),
+			left : left,
+			right : right,
+			top : top,
+			bottom : bottom
 		};
 	}
 
@@ -554,56 +558,7 @@ class Reader {
 			filters.push(readFilter());
 		return filters;
 	}
-
-	function error(msg:String="") {
-		return "Invalid SWF: " + msg;
-	}
-
-	public function readHeader() : SWFHeader {
-		var tag = i.readString(3);
-		var compressed;
-		if( tag == "CWS" )
-			compressed = true;
-		else if( tag == "FWS" )
-			compressed = false;
-		else
-			throw error('invalid file signature');
-		version = i.readByte();
-		var size = i.readUInt30();
-		if( compressed ) {
-			var bytes = format.tools.Inflate.run(i.readAll());
-			if( bytes.length + 8 != size ) throw error('wrong bytes length after decompression');
-			i = new haxe.io.BytesInput(bytes);
-		}
-		bits = new format.tools.BitsInput(i);
-		var r = readRect();
-		if( r.left != 0 || r.top != 0 || r.right % 20 != 0 || r.bottom % 20 != 0 )
-			throw error('invalid swf width or height');
-		i.readByte();
-		var fps = i.readByte();
-		//var fps = readFixed8();
-		var nframes = i.readUInt16();
-		return {
-			version : version,
-			compressed : compressed,
-			width : Std.int(r.right/20),
-			height : Std.int(r.bottom/20),
-			fps : fps,
-			nframes : nframes,
-		};
-	}
-
-	public function readTagList() {
-		var a = new Array();
-		while( true ) {
-			var t = readTag();
-			if( t == null )
-				break;
-			a.push(t);
-		}
-		return a;
-	}
-
+	
 	function readShape(len : Int, ver : Int) {
 		var id = i.readUInt16();
 
@@ -920,12 +875,13 @@ class Reader {
 	}
 
 	function readSymbols() : Array<SymData> {
-		var sl = new Array<SymData>();
-		for( n in 0...i.readUInt16() )
-			sl.push({
-				cid : i.readUInt16(),
-				className : i.readUntil(0),
-			});
+		var sl:Array<SymData> = new Array();
+		for ( n in 0...i.readUInt16() )
+		{
+			var id = i.readUInt16(); 
+			var name = i.readUntil(0);
+			sl.push({cid:id, className:name});
+		}
 		return sl;
 	}
 
@@ -1242,7 +1198,54 @@ class Reader {
 		bits.readBits(24);//reserved
 		return {useDirectBlit:useDirectBlit, useGPU:useGPU, hasMetaData:hasMetaData,actionscript3:actionscript3,useNetWork:useNetWork}
 	}
+	
+	function error(msg:String="") {
+		return "Invalid SWF: " + msg;
+	}
 
+	public function readHeader() : SWFHeader {
+		var tag = i.readString(3);
+		var compressed;
+		if( tag == "CWS" )
+			compressed = true;
+		else if( tag == "FWS" )
+			compressed = false;
+		else
+			throw error('invalid file signature');
+		version = i.readByte();
+		var size = i.readUInt30();
+		if( compressed ) {
+			var bytes = format.tools.Inflate.run(i.readAll());
+			if( bytes.length + 8 != size ) throw error('wrong bytes length after decompression');
+			i = new haxe.io.BytesInput(bytes);
+		}
+		bits = new format.tools.BitsInput(i);
+		var r = readRect();
+		if( r.left != 0 || r.top != 0 || r.right % 20 != 0 || r.bottom % 20 != 0 )
+			throw error('invalid swf width or height');
+		i.readByte();//ignored for fps
+		var fps = i.readByte();
+		var nframes = i.readUInt16();
+		return {
+			version : version,
+			compressed : compressed,
+			width : Std.int(r.right/20),
+			height : Std.int(r.bottom/20),
+			fps : fps,
+			nframes : nframes,
+		};
+	}
+
+	public function readTagList() {
+		var a = new Array();
+		while( true ) {
+			var t = readTag();
+			if( t == null )
+				break;
+			a.push(t);
+		}
+		return a;
+	}
 	public function readTag() : SWFTag {
 		var h = i.readUInt16();
 		var id = h >> 6;
@@ -1253,7 +1256,6 @@ class Reader {
 			if( len < 63 ) ext = true;
 		}
 		return switch( id ) {
-		case TagId.End:null;
 		case TagId.ShowFrame:
 			TShowFrame;
 		case TagId.DefineShape:
@@ -1273,7 +1275,9 @@ class Reader {
 		case TagId.DefineFont2:
 			readFont(len, 2);
 		case TagId.DefineFont3:
-			readFont(len, 3);
+			//readFont(len, 3);
+			var data = i.read(len);
+			TUnknown(id,data);
 		case TagId.DefineFontInfo:
 			readFontInfo(len, 1);
 		case TagId.DefineFontInfo2:
@@ -1368,6 +1372,8 @@ class Reader {
 		default:
 			var data = i.read(len);
 			TUnknown(id,data);
+		case TagId.End:
+			null;
 		}
 	}
 

@@ -10,7 +10,7 @@ import cpp.Lib;
 import cpp.FileSystem;
 import cpp.io.File;
 #end
-import be.haxer.hxswfml.HXswfML;
+import be.haxer.hxswfml.SwfWriter;
 
 class Main
 {
@@ -41,14 +41,15 @@ class Main
 			{
 				if (!FileSystem.exists(args[1]))
 				{
-					Lib.println("!ERROR: File " + args[1] + " could not be found at the given location.");
+					
+					Lib.println("ERROR: File " + args[1] + " could not be found at the given location.");
 					Sys.exit(1);
 				}
 				else
 				{
-					var hxvml = new Hxvml();
-					var xml = hxvml.abc2xml(args[1]);
-					var file = File.write(args[2],false);
+					var abcReader = new AbcReader();
+					var xml = abcReader.abc2xml(args[1]);
+					var file = File.write(args[2], false);
 					file.writeString(xml);
 					file.close();
 				}
@@ -60,15 +61,15 @@ class Main
 					var strict:Bool = true;
 					if(args[2]!=null && args[2]!='true') 
 						strict = false;
-					var hxswfml = new HXswfML(strict);
-					var swf = hxswfml.xml2swf(File.getContent(args[0]), args[1]);
+					var swfWriter = new SwfWriter(strict);
+					var swf = swfWriter.xml2swf(File.getContent(args[0]), args[1]);
 					var file = File.write(args[1],true);
 					file.write(swf);
 					file.close();
 				}
 				else
 				{
-					Lib.println("!ERROR: File " + args[0] + " could not be found at the given location.");
+					Lib.println("ERROR: File " + args[0] + " could not be found at the given location.");
 					Sys.exit(1);
 				}
 			}

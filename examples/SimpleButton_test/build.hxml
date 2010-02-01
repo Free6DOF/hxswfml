@@ -1,8 +1,0 @@
-#compile the script (referenced in the xml)
-Script
--main Script
--swf9 Script.swf
-
-# build final swf from xml source
--cmd hXswfML swf.xml SimpleButton_test.swf
--cmd del Script.swf

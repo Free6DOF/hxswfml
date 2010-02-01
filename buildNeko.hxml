@@ -2,6 +2,6 @@
 -cp src
 be.haxer.hxswfml.Main
 -main be.haxer.hxswfml.Main
--neko bin/neko/hXswfML.n
--cmd nekotools boot bin/neko/hXswfML.n
+-neko bin/neko/hxswfml.n
+-cmd nekotools boot bin/neko/hxswfml.n
 -cmd echo "neko created"
