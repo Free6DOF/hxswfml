@@ -1,0 +1,5 @@
+-cp src
+be.haxer.hxswfml.SwfWriter
+-php bin/php
+-cmd echo "php created"
+-cmd pause

@@ -1,0 +1,6 @@
+-cp src
+be.haxer.hxswfml.SwfWriter
+-main be.haxer.hxswfml.Main
+-cpp bin/cpp
+-cmd echo "cpp created"
+-cmd pause
