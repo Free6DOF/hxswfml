@@ -33,17 +33,20 @@ class Reader {
 
 	var i : haxe.io.Input;
 	var opr : OpReader;
+	public var functions:Array<Function>;
 
-	public function new(i) {
+	public function new(i) 
+	{
+		functions = new Array();
 		this.i = i;
-		opr = new OpReader(i);
+		opr = new OpReader(i);	
 	}
 
-	/*inline*/ function readInt() {
+	inline function readInt() {
 		return opr.readInt();
 	}
 
-	/*inline*/ function readIndex<T>() : Index<T> {
+	inline function readIndex<T>() : Index<T> {
 		return Idx(readInt());
 	}
 
@@ -301,7 +304,7 @@ class Reader {
 		var code = i.read(readInt());
 		var trys = readList2(readTryCatch);
 		var locals = readList2(readField);
-		return {
+		var func = {
 			type : t,
 			maxStack : ss,
 			nRegs : nregs,
@@ -311,12 +314,14 @@ class Reader {
 			trys : trys,
 			locals : locals,
 		};
+		functions[Type.enumParameters(t)[0]]= func;
+		return func;
 	}
 
 
 	public function read() 
 	{
-		#if !cpp
+		//#if !cpp
 		if( i.readUInt30() != 0x002E0010 )
 			throw "invalid header";
 		var data = new ABCData();
@@ -337,36 +342,12 @@ class Reader {
 		data.inits = readList2(readInit);
 		data.functions = readList2(readFunction);
 		return data;
-		#else
 		/*
-		if ( i.readUInt30() != 0x002E0010 )
-		{
-			//throw "invalid header"; 
-		}
-		var data = new ABCData();
-		data.ints.concat(readList(opr.readInt32));
-		data.uints.concat(readList(opr.readInt32));
-		data.floats.concat(readList(i.readDouble));
-		data.strings.concat(readList(readString));
-		data.namespaces.concat(readList(readNamespace));
-		data.nssets.concat(readList(readNsSet));
-		data.names.concat(readList(callback(readName, -1)));
-		data.methodTypes.concat(readList2(readMethodType));
-		data.metadatas.concat(readList2(readMetadata));
-		data.classes.concat(readList2(readClass));
-		for ( c in data.classes ) {
-			c.statics = readIndex();
-			c.staticFields.concat(readList2(readField));
-		}
-		data.inits.concat(readList2(readInit));
-		data.functions.concat(readList2(readFunction));
-		return data;
-		*/
+		#else
 		
 		if ( i.readUInt30() != 0x002E0010 )
-		{
-			//throw "invalid header";
-		}
+			throw "invalid header";
+		
 		var data = new ABCData();
 		data.ints = [];
 		data.uints = [];
@@ -380,27 +361,27 @@ class Reader {
 		data.classes= [];
 		data.inits= [];
 		data.functions= [];
-		var a = readList(opr.readInt32);
-		for (i in 0...a.length) data.ints.push(a[i]);
-		for (i in readList(opr.readInt32)) data.uints.push(i);
-		for (i in readList(i.readDouble))data.floats.push(i);
-		for (i in readList(readString))data.strings.push(i);
-		for (i in readList(readNamespace))data.namespaces.push(i);
-		for (i in readList(readNsSet)) data.nssets.push(i);
-		for (i in readList(callback(readName,-1)))data.names.push(i);
-		for (i in readList2(readMethodType))data.methodTypes.push(i);
-		for (i in readList2(readMetadata))data.metadatas.push(i);
-		for (i in readList2(readClass)) data.classes.push(i);
-		for ( c in data.classes ) 
+		
+		data.ints.concat(readList(opr.readInt32));
+		data.uints.concat(readList(opr.readInt32));
+		data.floats.concat(readList(i.readDouble));
+		data.strings.concat(readList(readString));
+		data.namespaces.concat(readList(readNamespace));
+		data.nssets.concat(readList(readNsSet));
+		data.names.concat(readList(callback(readName,-1)));
+		data.methodTypes.concat(readList2(readMethodType));
+		data.metadatas.concat(readList2(readMetadata));
+		data.classes.concat(readList2(readClass));
+		for( c in data.classes ) 
 		{
 			c.statics = readIndex();
-			c.staticFields = [];
-			for (i in readList2(readField))
-				c.staticFields.push(i);
+			c.staticFields=[];
+			c.staticFields.concat(readList2(readField));
 		}
-		for (i in readList2(readInit)) data.inits.push(i);
-		for (i in readList2(readFunction))data.functions.push(i);
+		data.inits.concat(readList2(readInit));
+		data.functions.concat(readList2(readFunction));
 		return data;
 		#end
+		*/
 	}
 }

@@ -23,23 +23,23 @@ import flash.display.MovieClip;
 class AbcReader
 {
 	var abcFile:ABCData;
-	var xml:String ;
 	var indentLevel:Int;
 	var functionClosures:Array<String>;
 	var functionClosuresBodies:Array<Dynamic>;
+	var functionParseIndex:Int;
+	var currentFunctionName:String;
 	var className:String;
-	public var sourceInfo:Bool;
-	public var debugInfo:Bool;
-	var jumpInfo:Bool;
 	var debugLines:Array<String>;
 	var debugFile:String;
 	var debugFileName:String;
 	var lastJump:String;
 	var lastLabel:String;
 	var abcReader_import:AbcReader;
-	var functionParseIndex:Int;
-	var currentFunctionName:String;
 	var abcId:Int;
+	
+	public var debugInfo:Bool;
+	public var jumpInfo:Bool;
+	public var sourceInfo:Bool;
 
 	public function new ()
 	{
@@ -47,20 +47,22 @@ class AbcReader
 		Xml.parse("");//for swc
 		new flash.Boot(new MovieClip());//for swc
 		#end
+		
 		debugFile = "";
-		sourceInfo = false;
 		debugInfo = false;
 		jumpInfo = false;
+		sourceInfo = false;
 		functionParseIndex = 0;
 		abcId = 0;
 	}
 	public function abc2xml(fileName:String, _swf=null):String
 	{
 		var lastStamp = Date.now().getTime();
-		var xml_out = '<abcfiles>\n';
+		var xml_out = new StringBuf();
+		xml_out.add('<abcfiles>\n');
 		if (StringTools.endsWith(fileName, '.abc'))
 		{
-			xml_out+= abcToXml(getBytes(fileName, _swf), null);
+			xml_out.add(abcToXml(getBytes(fileName, _swf), null));
 		}
 		else if (StringTools.endsWith(fileName, '.swf'))
 		{
@@ -70,19 +72,49 @@ class AbcReader
 			var header = swfReader.readHeader();
 			var tags : Array<SWFTag> = swfReader.readTagList();
 			swfBytesInput.close();
-			var index=0;
+			var index = 0;
+			var loopIndex:Int = 0;
 			for (tag in tags)
 			{
 				switch (tag)
 				{
 					case TActionScript3(data, ctx):
-						xml_out+= abcToXml(data, ctx);
+						var lastStampAbc = Date.now().getTime();
+						xml_out.add(abcToXml(data, ctx));
 					default:
 				}
 			}
 		}
-		trace('total time = ' + (Date.now().getTime() - lastStamp));
-		return xml_out+'</abcfiles>';
+		else if (StringTools.endsWith(fileName, '.swc'))
+		{
+			var zip = getBytes(fileName, _swf);
+			var zipBytesInput = new BytesInput(zip);
+			var zipReader = new format.zip.Reader(zipBytesInput);
+			var list = zipReader.read();
+			var swf=null;
+			for(file in list)
+				if(file.fileName=="library.swf")
+					swf = file.data;
+			var swfBytesInput = new BytesInput(swf);
+			var swfReader = new format.swf.Reader(swfBytesInput);
+			var header = swfReader.readHeader();
+			var tags : Array<SWFTag> = swfReader.readTagList();
+			swfBytesInput.close();
+			var index = 0;
+			var loopIndex:Int = 0;
+			for (tag in tags)
+			{
+				switch (tag)
+				{
+					case TActionScript3(data, ctx):
+						var lastStampAbc = Date.now().getTime();
+						xml_out.add(abcToXml(data, ctx));
+					default:
+				}
+			}
+		}
+		xml_out.add('</abcfiles>');
+		return xml_out.toString();
 	}
 	private function getBytes(fileName:String, swf=null)
 	{
@@ -99,12 +131,18 @@ class AbcReader
 		functionClosures = new Array();
 		functionClosuresBodies = new Array();
 		indentLevel = 1;
-		var name:String=infos!=null?infos.label:"abc-file_" + Std.string(abcId++);
-		xml = indent() + '<abcfile name="' + name+ '">\n';
+		var name:String=infos!=null?infos.label:"anonymous_" + Std.string(abcId++);
+		var xml = new StringBuf();
+		xml.add(indent());
+		xml.add('<abcfile name="');
+		xml.add(name);
+		xml.add('">\n');
 		indentLevel++;
 		var hasMethodBody:Bool = false;
+		var loopIndex:Int = 0;
 		for ( _class in abcFile.classes)
 		{
+			var lastStampClass = Date.now().getTime();
 			var clName = getName(_class.name);
 			className = clName;
 			
@@ -119,8 +157,10 @@ class AbcReader
 			var _sealed = _class.isSealed;
 			var _final = _class.isFinal;
 			var _interface = _class.isInterface;
+			
 			//find init of this class/script
 			var script_init = null;
+			var script_init2 = null;
 			for (i in abcFile.inits)
 			{
 				for (field in i.fields)
@@ -130,6 +170,7 @@ class AbcReader
 						case FClass(c):
 							if ((_class == abcFile.classes[Type.enumParameters(c)[0]]))
 							{
+								script_init2 = i.method;
 								script_init = getMethod(i.method);
 								break;
 							}
@@ -143,45 +184,66 @@ class AbcReader
 				for (a in script_init.args)
 					stargsStr += getName(a) + ',';
 				var ret = getName(script_init.ret);
-				xml += indent() + '<init name="' + clName + '"';
+				xml.add(indent());
+				xml.add('<init name="');
+				xml.add(clName);
+				xml.add('"');
 				if(stargsStr!="")
-					xml += ' args="' + cutComma(stargsStr) + '"';
-				xml += ' return="' + ret + '"';
-				xml += parseMethodExtra(script_init.extra);
-				currentFunctionName = clName;
-				for (f in abcFile.functions)
 				{
-					if (getMethod(f.type) == script_init)//if (Type.enumEq(getMethod(f.type), script_init))
-					{
-						if (f.locals.length != 0)
-							xml += ' locals="' + parseLocals(f.locals)+'"';
-						xml+=' >';
-						xml+= '<!-- maxStack="' + f.maxStack + '"';
-						xml+= ' nRegs="' + f.nRegs + '"';
-						xml+= ' initScope="' + f.initScope + '"';
-						xml+= ' maxScope="' + f.maxScope + '" -->';
-						xml+= '\n';
-						xml += decodeToXML(format.abc.OpReader.decode(new haxe.io.BytesInput(f.code)), f);
-						xml += indent() + '</init>\n';
-						break;
-					}
+					xml.add(' args="');
+					xml.add(cutComma(stargsStr));
+					xml.add('"');
+				}	
+				xml.add(' return="');
+				xml.add(ret);
+				xml.add('"');
+				xml.add(parseMethodExtra(script_init.extra));
+				currentFunctionName = clName;
+				var f:Function = abcReader.functions[ Type.enumParameters(script_init2)[0] ];
+				if (f.locals.length != 0)
+				{
+					xml.add(' locals="');
+					xml.add(parseLocals(f.locals));
+					xml.add('"');
 				}
+				xml.add(' ><!-- maxStack="');
+				xml.add(f.maxStack);
+				xml.add('" nRegs="');
+				xml.add(f.nRegs);
+				xml.add('" initScope="');
+				xml.add(f.initScope);
+				xml.add('" maxScope="');
+				xml.add(f.maxScope);
+				xml.add('" -->\n');
+				xml.add(decodeToXML(format.abc.OpReader.decode(new haxe.io.BytesInput(f.code)), f));
+				xml.add(indent());
+				xml.add('</init>\n');
 			}
-			xml += indent() + '<class name="' + clName + '"';
-
-			if(_extends!=null && _extends!="")	
-				xml += ' extends="' + _extends + '"';
-			if(__implements!="")	
-				xml += ' implements="' + cutComma(__implements) + '"';
+			xml.add(indent());
+			xml.add('<class name="');
+			xml.add(clName);
+			xml.add('"');
+			if(_extends!=null && _extends!="")
+			{
+				xml.add(' extends="');
+				xml.add(_extends);
+				xml.add('"');
+			}
+			if(__implements!="")
+			{
+				xml.add(' implements="');
+				xml.add(cutComma(__implements));
+				xml.add('"');
+			}
 			//if(_ns!=null && _ns!="")
 				//xml += ' ns="' + _ns + '"';
 			if(_sealed)
-				xml += ' sealed="true"';
+				xml.add(' sealed="true"');
 			if(_final)
-				xml += ' final="true"';
+				xml.add(' final="true"');
 			if(_interface)
-				xml += ' interface="true"';
-			xml+='>\n';
+				xml.add(' interface="true"');
+			xml.add('>\n');
 			//-------------------------------------------------------------
 			// instance vars
 			indentLevel++;
@@ -193,14 +255,27 @@ class AbcReader
 						var _type = getName(type);
 						var _value = getValue(value);
 						var __const = _const;
-						xml += indent() + '<var name="' +getFieldName(field.name) + '"' ;
+						xml.add(indent());
+						xml.add('<var name="');
+						xml.add(getFieldName(field.name));
+						xml.add('"');
 						if(_type!=null && _type!="*" && _type!="")
-							xml += ' type="' + _type + '"';
+						{
+							xml.add(' type="');
+							xml.add(_type);
+							xml.add('"');
+						}
 						if(_value !="")
-							xml += ' value="' + _value + '"';
+						{
+							xml.add(' value="');
+							xml.add(_value);
+							xml.add('"');
+						}
 						if(__const)
-							xml += ' const="' + 'true' + '"';
-						xml += '/>\n';
+						{
+							xml.add(' const="true"');
+						}
+						xml.add('/>\n');
 					default:
 				}
 			}
@@ -214,15 +289,27 @@ class AbcReader
 						var _type = getName(type);
 						var _value = getValue(value);
 						var __const = _const;
-						xml += indent() + '<var name="' +getFieldName(field.name) + '"' ;
+						xml.add(indent());
+						xml.add('<var name="');
+						xml.add(getFieldName(field.name));
+						xml.add('"');
 						if(_type!=null && _type!="*" && _type!="")
-							xml += ' type="' + _type + '"';
+						{
+							xml.add(' type="');
+							xml.add(_type);
+							xml.add('"');
+						}
 						if(_value !="")
-							xml += ' value="' + _value + '"';
+						{
+							xml.add(' value="');
+							xml.add(_value);
+							xml.add('"');
+						}
 						if(__const)
-							xml += ' const="' + 'true' + '"';
-						xml += ' static="true"';
-						xml += '/>\n';
+						{
+							xml.add(' const="true"');
+						}
+						xml.add(' static="true" />\n');
 					default:
 				}
 			}
@@ -233,35 +320,46 @@ class AbcReader
 			for (a in cst.args)
 				cargsStr += getName(a) + ',';
 			var returnType = getName(cst.ret);
-			//}
-			xml += indent() + '<function name="' + clName + '"';
-			xml += ' args="' + cutComma(cargsStr) + '"';
-			xml += ' return="' + returnType + '"';
-			xml += parseMethodExtra(cst.extra);
+			xml.add(indent());
+			xml.add('<function name="');
+			xml.add(clName);
+			xml.add('" args="');
+			xml.add(cutComma(cargsStr));
+			xml.add('" return="');
+			xml.add(returnType);
+			xml.add('"');
+			xml.add(parseMethodExtra(cst.extra));
 			currentFunctionName = clName;
-			for (f in abcFile.functions)
+			var f:Function = abcReader.functions[ Type.enumParameters(_class.constructor)[0] ];
+			if(f!=null)
 			{
-				if (Type.enumEq(f.type, _class.constructor))//if (f.type==_class.constructor)//
+				if (f.locals.length != 0)
 				{
-					if (f.locals.length != 0)
-						xml += ' locals="' + parseLocals(f.locals)+'"';
-					xml+=' >';
-					xml+= '<!-- maxStack="' + f.maxStack + '"';
-					xml+= ' nRegs="' + f.nRegs + '"';
-					xml+= ' initScope="' + f.initScope + '"';
-					xml+= ' maxScope="' + f.maxScope + '" -->';
-					xml+= '\n';
-					xml+=decodeToXML(format.abc.OpReader.decode(new haxe.io.BytesInput(f.code)), f);
-					break;
+					xml.add(' locals="');
+					xml.add(parseLocals(f.locals));
+					xml.add('"');
 				}
+				xml.add(' > <!-- maxStack="');
+				xml.add(f.maxStack);
+				xml.add('" nRegs="');
+				xml.add(f.nRegs);
+				xml.add('" initScope="');
+				xml.add(f.initScope);
+				xml.add('" maxScope="');
+				xml.add(f.maxScope);
+				xml.add('" -->\n');
+				xml.add(decodeToXML(format.abc.OpReader.decode(new haxe.io.BytesInput(f.code)), f));
 			}
-			if (_interface)
+			if (_interface || f==null)
 			{
-				xml += ' >\n' + indent() +'</function>\n\n';
+				xml.add(' >\n');
+				xml.add(indent());
+				xml.add('</function>\n\n');
 			}
 			else
 			{
-				xml += indent() + '</function>\n\n';
+				xml.add(indent());
+				xml.add('</function>\n\n');
 			}
 			//-------------------------------------------------------------
 			// static constructor
@@ -270,30 +368,35 @@ class AbcReader
 			for (a in st.args)
 				stargsStr += getName(a) + ',';
 			var ret = getName(st.ret);
-			xml += indent() + '<function name="' + getName(_class.name) + '"';
-			xml += ' static="true"';
-			if(stargsStr!="")
-				xml += ' args="' + cutComma(stargsStr) + '"';
-			xml += ' return="' + ret + '"';
-			xml += parseMethodExtra(st.extra);
+			xml.add(indent());
+			xml.add('<function name="');
+			xml.add(getName(_class.name));
+			xml.add('" static="true" args="');
+			xml.add(cutComma(stargsStr));
+			xml.add('" return="');
+			xml.add(ret);
+			xml.add('"');
+			xml.add(parseMethodExtra(st.extra));
 			currentFunctionName = clName;
-			for (f in abcFile.functions)
+			var f:Function = abcReader.functions[ Type.enumParameters(_class.statics)[0] ];
+			if (f.locals.length != 0)
 			{
-				if (getMethod(f.type)==st)//if (Type.enumEq(getMethod(f.type), st))
-				{
-					if (f.locals.length != 0)
-						xml += ' locals="' + parseLocals(f.locals)+'"';				
-					xml+=' >';
-					xml+= '<!-- maxStack="' + f.maxStack + '"';
-					xml+= ' nRegs="' + f.nRegs + '"';
-					xml+= ' initScope="' + f.initScope + '"';
-					xml+= ' maxScope="' + f.maxScope + '" -->';
-					xml+= '\n';
-					xml+=decodeToXML(format.abc.OpReader.decode(new haxe.io.BytesInput(f.code)), f);
-					break;
-				}
+				xml.add(' locals="');
+				xml.add(parseLocals(f.locals));
+				xml.add('"');				
 			}
-			xml += indent() + '</function>\n\n';
+			xml.add(' > <!-- maxStack="');
+			xml.add(f.maxStack);
+			xml.add('" nRegs="');
+			xml.add(f.nRegs);
+			xml.add('" initScope="');
+			xml.add(f.initScope);
+			xml.add('" maxScope="');
+			xml.add(f.maxScope);
+			xml.add('" -->\n');
+			xml.add(decodeToXML(format.abc.OpReader.decode(new haxe.io.BytesInput(f.code)), f));
+			xml.add(indent());
+			xml.add('</function>\n\n');
 			//-------------------------------------------------------------
 			// instance methods
 			for (field in _class.fields)
@@ -308,38 +411,53 @@ class AbcReader
 						var _ret = getName(_m.ret);
 						var _k = switch(k) { case KNormal:'normal'; case KSetter:'setter'; case KGetter:'getter';};
 						var _name = getFieldName(field.name);
-						xml += indent() + '<function name="' + _name + '"';
+						xml.add(indent());
+						xml.add('<function name="');
+						xml.add(_name);
+						xml.add('"');
 						if(isOverride)
-							xml += ' override="'+isOverride+'"';
+							xml.add(' override="true"');
 						if(isFinal)
-							xml += ' final="'+'true'+'"';
+							xml.add(' final="true"');
 						if (_k != 'normal')
-							xml += ' kind="' + _k + '"';
-						xml += ' args="' + cutComma(_args) +'"';
-						xml += ' return="' + _ret +'"';
-						xml += parseMethodExtra(_m.extra);
+						{
+							xml.add(' kind="');
+							xml.add(_k);
+							xml.add('"');
+						}
+						xml.add(' args="');
+						xml.add(cutComma(_args));
+						xml.add('" return="');
+						xml.add(_ret);
+						xml.add('"');
+						xml.add(parseMethodExtra(_m.extra));
 						hasMethodBody = false;
 						currentFunctionName = _name;
-						for (f in abcFile.functions)
+						var f:Function = abcReader.functions[ Type.enumParameters(methodType)[0] ];
+						if(f!=null)
 						{
-							if (Type.enumEq(f.type, methodType))//if (f.type==methodType)
+							hasMethodBody = true;
+							if (f.locals.length != 0)
 							{
-								hasMethodBody = true;
-								if (f.locals.length != 0)
-									xml += ' locals="' + parseLocals(f.locals)+'"';
-								xml+=' >';
-								xml+= '<!-- maxStack="' + f.maxStack + '"';
-								xml+= ' nRegs="' + f.nRegs + '"';
-								xml+= ' initScope="' + f.initScope + '"';
-								xml+= ' maxScope="' + f.maxScope + '" -->';
-								xml+= '\n';
-								xml+= decodeToXML(format.abc.OpReader.decode(new haxe.io.BytesInput(f.code)), f);
-								break;
+								xml.add(' locals="');
+								xml.add(parseLocals(f.locals));
+								xml.add('"');
 							}
-						}
+							xml.add(' > <!-- maxStack="');
+							xml.add(f.maxStack);
+							xml.add('" nRegs="');
+							xml.add(f.nRegs);
+							xml.add('" initScope="');
+							xml.add(f.initScope);
+							xml.add('" maxScope="');
+							xml.add(f.maxScope);
+							xml.add('" -->\n');
+							xml.add(decodeToXML(format.abc.OpReader.decode(new haxe.io.BytesInput(f.code)), f));
+							}
 						if (!hasMethodBody)
-							xml += ' >\n';
-						xml += indent() +'</function>\n\n';
+							xml.add(' >\n');
+						xml.add(indent());
+						xml.add('</function>\n\n');
 					default:
 				}
 			}
@@ -358,45 +476,59 @@ class AbcReader
 						var _ret = getName(_m.ret);
 						var _k = switch(k) { case KNormal:'normal'; case KSetter:'setter'; case KGetter:'getter';};
 						var _name = getFieldName(field.name);
-						xml += indent() + '<function name="' + _name +'"';
-						xml += ' static="true"';
+						xml.add(indent());
+						xml.add('<function name="');
+						xml.add(_name);
+						xml.add('" static="true"');
 						if(isOverride)
-							xml += ' override="'+isOverride+'"';
+							xml.add(' override="true"');
 						if(isFinal)
-							xml += ' final="'+'true'+'"';
+							xml.add(' final="true"');
 						if (_k != 'normal')
-							xml += ' kind="' + _k + '"';
-						xml += ' args="' + cutComma(_args) +'"';
-						xml += ' return="' + _ret +'"';
-						xml += parseMethodExtra(_m.extra);
+						{
+							xml.add(' kind="');
+							xml.add(_k);
+							xml.add('"');
+						}
+						xml.add(' args="');
+						xml.add(cutComma(_args));
+						xml.add('" return="');
+						xml.add(_ret);
+						xml.add('"');
+						xml.add(parseMethodExtra(_m.extra));
 						hasMethodBody = false;
 						currentFunctionName = _name;
-						for (f in abcFile.functions)
+						var f:Function = abcReader.functions[ Type.enumParameters(type)[0] ];
+						if(f!=null)
 						{
-							if (Type.enumEq(f.type, type))
+							hasMethodBody = true;
+							if (f.locals.length != 0)
 							{
-								hasMethodBody = true;
-								if (f.locals.length != 0)
-									xml += ' locals="' + parseLocals(f.locals)+'"';
-								xml+=' >';
-								xml+= '<!-- maxStack="' + f.maxStack + '"';
-								xml+= ' nRegs="' + f.nRegs + '"';
-								xml+= ' initScope="' + f.initScope + '"';
-								xml+= ' maxScope="' + f.maxScope + '" -->';
-								xml+= '\n';
-								xml+=decodeToXML(format.abc.OpReader.decode(new haxe.io.BytesInput(f.code)), f);
-								break;
+								xml.add(' locals="');
+								xml.add(parseLocals(f.locals));
+								xml.add('"');
 							}
+							xml.add(' > <!-- maxStack="');
+							xml.add(f.maxStack);
+							xml.add('" nRegs="');
+							xml.add(f.nRegs);
+							xml.add('" initScope="');
+							xml.add(f.initScope);
+							xml.add('" maxScope="');
+							xml.add(f.maxScope);
+							xml.add('" -->\n');
+							xml.add(decodeToXML(format.abc.OpReader.decode(new haxe.io.BytesInput(f.code)), f));
 						}
 						if (!hasMethodBody)
-							xml += ' >\n';
-						xml += indent() +'</function>\n\n';
+							xml.add(' >\n');
+						xml.add(indent());
+						xml.add('</function>\n\n');
 					default:
 				}
 			}
 			indentLevel--;
-			xml += indent() + '</class>\n';
-			//xml += indent() + '<!--_________________________________________________________________-->\n';
+			xml.add(indent());
+			xml.add('</class>\n');
 		}
 		//-------------------------------------------------------------
 		// function closures
@@ -406,21 +538,20 @@ class AbcReader
 				temp.push(createFunctionClosure(functionClosuresBodies.shift()));
 		}
 		temp.reverse();
-		xml += temp.join('');
+		xml.add(temp.join(''));
 		indentLevel--;
-		xml += indent() + '</abcfile>\n';
-		return xml;
+		xml.add(indent());
+		xml.add('</abcfile>\n');
+		return xml.toString();
 	}
 	private function decodeToXML(ops:Array<OpCode>, f)
 	{
 		indentLevel++;
-		//var strs:Array<String> = [];
-		var buf = new StringBuf();//new StringBuilder();//
+		var buf = new StringBuf();
 		for (op in ops)
 		{
 			switch(op)
 			{
-				
 				case	OBreakPoint, ONop, OThrow, ODxNsLate, OPushWith, OPopScope, OForIn, OHasNext, ONull, OUndefined, OForEach, OTrue, OFalse, ONaN, OPop, ODup, OSwap, 
 						OScope, ONewBlock, ORetVoid, ORet, OToString, OGetGlobalScope, OInstanceOf, OToXml, OToXmlAttr, OToInt, OToUInt, OToNumber, OToBool, OToObject, 
 						OCheckIsXml, OAsAny, OAsString, OAsObject, OTypeof, OThis, OSetThis, OTimestamp:
@@ -542,10 +673,7 @@ class AbcReader
 				case	OOp(o) :
 						buf.add(indent());
 						buf.add('<');
-						//buf.add(Type.enumConstructor(op));
-						//buf.add(' v="' );
 						buf.add( Type.enumConstructor(o));
-						//buf.add('" />\n');
 						buf.add(' />\n');
 					
 				case	OCallStatic(s, nargs):
@@ -569,8 +697,6 @@ class AbcReader
 						buf.add('" />\n');
 						
 				case	OLabel:
-						//lastLabel = '<!--<' + Type.enumConstructor(op) +'/>-->';
-						//"";
 						 
 				case	OLabel2(landingName):
 						buf.add(indent());
@@ -585,8 +711,6 @@ class AbcReader
 						}
 												
 				case	OJump(jump, offset):
-						//lastJump = '<!--<' + Type.enumConstructor(op) +' jump="' + jump + '" offset="' + offset + '"/>-->';
-						// "";
 						 
 				case 	OJump2(jump, landingName, offset):
 						if (offset >= 0)
@@ -645,38 +769,24 @@ class AbcReader
 						buf.add('" />\n');
 						
 				case	ODebugFile(v) :
+						if (debugInfo)
+						{
 							var name = getString(v);
 							if(debugLines==null || name!=debugFile)
 							{
 								debugFile = name;
 								debugFileName = fileToLines(name);
 							}
-						buf.add(indent());
-						buf.add('<');
-						buf.add(Type.enumConstructor(op));
-						buf.add(' v="');
-						buf.add(debugFileName );
-						buf.add('" />\n');
+							buf.add(indent());
+							buf.add('<');
+							buf.add(Type.enumConstructor(op));
+							buf.add(' v="');
+							buf.add(debugFileName );
+							buf.add('" />\n');
+						}
 						
 				case	ODebugLine(v): 
-						var line:String;
-						if (!sourceInfo || debugFileName == "")
-						{
-							line = "";
-						}
-						else
-						{
-							line = '<!--  ' + v + ')' + debugLines[(v - 1)] + '-->';
-							
-						}
-						if (!debugInfo)
-						{
-							if (line != "")
-							{
-								buf.add(line + '\n');
-							}
-						}
-						else
+						if (debugInfo)
 						{
 							buf.add(indent());
 							buf.add('<' );
@@ -684,8 +794,14 @@ class AbcReader
 							buf.add(' v="' );
 							buf.add( v );
 							buf.add( '" />\n' );
-							buf.add(line);
-							buf.add( '\n');
+						}
+						if (sourceInfo && debugLines[(v - 1)]!=null)
+						{
+							buf.add('<!--  ');
+							buf.add(v);
+							buf.add(')');
+							buf.add(debugLines[(v - 1)]);
+							buf.add('-->\n');
 						}
 
 				case	ODebugReg(name, r, line):
@@ -713,66 +829,94 @@ class AbcReader
 	}
 	private function createFunctionClosure(f):String
 	{
-		var out:String = '';
+		var out = new StringBuf();
 		var _m = getMethod(f);
 		var _args = '';
 		for (a in _m.args)
 			_args += getName(a) + ',';
 		var _ret = getName(_m.ret);
 		var _name = 'function__' + Type.enumParameters(f)[0];
-		out += indent() + '<function f="'+_name+'" name="'+ _name +'" kind="KFunction" args="' + cutComma(_args) +'"';
+		out.add(indent());
+		out.add('<function f="');
+		out.add(_name);
+		out.add('" name="');
+		out.add(_name);
+		out.add('" kind="KFunction" args="');
+		out.add(cutComma(_args));
+		out.add('"');
 		if (_ret != "")
-			out += ' return="' + _ret +'"';
-		out += parseMethodExtra(_m.extra);
+		{
+			out.add(' return="');
+			out.add(_ret);
+			out.add('"');
+		}
+		out.add(parseMethodExtra(_m.extra));
 		currentFunctionName = _name;
 		for (_f in abcFile.functions)
-			if (Type.enumEq(_f.type, f))
+		{
+			if (Type.enumEq(f, _f.type))
 			{
 				if (_f.locals.length != 0)
-					out += ' locals="' + parseLocals(_f.locals) + '"';
-				out += ' >';
-				out += '<!-- maxStack="' + _f.maxStack + '"';
-				out += ' nRegs="' + _f.nRegs + '"';
-				out += ' initScope="' + _f.initScope + '"';
-				out += ' maxScope="' + _f.maxScope + '" -->';
-				out += '\n';
-				out += decodeToXML(format.abc.OpReader.decode(new haxe.io.BytesInput(_f.code)), _f);
-				out += indent() +'</function>\n';
+				{
+					out.add(' locals="');
+					out.add(parseLocals(_f.locals));
+					out.add('"');
+				}
+				out.add(' > <!-- maxStack="');
+				out.add(_f.maxStack);
+				out.add('" nRegs="');
+				out.add(_f.nRegs);
+				out.add('" initScope="');
+				out.add(_f.initScope);
+				out.add('" maxScope="');
+				out.add(_f.maxScope);
+				out.add('" -->\n');
+				out.add(decodeToXML(format.abc.OpReader.decode(new haxe.io.BytesInput(_f.code)), _f));
+				out.add(indent());
+				out.add('</function>\n');
 				break;
 			}
-		return out;
-	}
-	private function parseMethodExtra(extra:MethodTypeExtra):String
-	{
-		if (extra == null)
-			return '';
-		var out = '';
-		if (extra.native)
-			out += ' native="true"';
-		if (extra.variableArgs)
-			out += ' variableArgs="true"';
-		if (extra.argumentsDefined)
-			out += ' argumentsDefined="true"';
-		if (extra.usesDXNS)
-			out += ' usesDXNS="true"';
-		if (extra.newBlock)
-			out += ' newBlock="true"';
-		if (extra.unused)
-			out += ' unused="true"';
-		if (extra.debugName != null && getString(extra.debugName) !="")
-			out += ' debugName="' + getString(extra.debugName) + '"';
-		if (extra.defaultParameters != null)
-		{
-			var str = '';
-			for(i in 0...extra.defaultParameters.length)
-				str += 'null,';
-			out += ' defaultParameters="' + cutComma(str)+'"';
 		}
-		return out;
+		return out.toString();
 	}
-	private function parseLocals(locals:Array<Field>):String
+	inline private function parseMethodExtra(extra:MethodTypeExtra):String
 	{
-		var out = "";
+		var out = new StringBuf();
+		if (extra != null)
+		{		
+			if (extra.native)
+				out.add(' native="true"');
+			if (extra.variableArgs)
+				out.add(' variableArgs="true"');
+			if (extra.argumentsDefined)
+				out.add(' argumentsDefined="true"');
+			if (extra.usesDXNS)
+				out.add(' usesDXNS="true"');
+			if (extra.newBlock)
+				out.add(' newBlock="true"');
+			if (extra.unused)
+				out.add(' unused="true"');
+			if (extra.debugName != null && getString(extra.debugName) !="")
+			{
+				out.add(' debugName="');
+				out.add(getString(extra.debugName));
+				out.add('"');
+			}
+			if (extra.defaultParameters != null)
+			{
+				var str = new StringBuf();
+				for(i in 0...extra.defaultParameters.length)
+					str.add('null,');
+				out.add(' defaultParameters="');
+				out.add(cutComma(str.toString()));
+				out.add('"');
+			}
+		}
+		return out.toString();
+	}
+	inline private function parseLocals(locals:Array<Field>):String
+	{
+		var out = new StringBuf();
 		for (l in locals)
 		{
 			switch(l.kind)
@@ -783,25 +927,35 @@ class AbcReader
 						con = 'true';
 					else
 						con = 'false';
-					out += getName(l.name) + ":" + getName(type) + ":" + getValue(value)+":"+con+",";
+					out.add(getName(l.name));
+					out.add(":");
+					out.add(getName(type));
+					out.add(":");
+					out.add(getValue(value));
+					out.add(":");
+					out.add(con);
+					out.add(",");
 					
-				case FMethod( type , k , isFinal, isOverride ): out += "FMethod";
+				case FMethod( type , k , isFinal, isOverride ): 
+					out.add("FMethod");
 					
-				case FClass( c  ):out += "FClass";
+				case FClass( c  ):
+					out.add("FClass");
 					
-				case FFunction( f  ):out += "FFunction";
+				case FFunction( f  ):
+					out.add("FFunction");
 			}
 		}
-		return cutComma(out);
+		return cutComma(out.toString());
 	}
-	private function indent():String
+	inline private function indent():String
 	{
-		var str:String = '';
+		var str = new StringBuf();
 		for (i in 0...indentLevel)
 		{
-			str += '\t';
+			str.add('\t');
 		}
-		return str;
+		return str.toString();
 	}
 	inline private function getString(id:Index<String>):String
 	{
@@ -827,19 +981,20 @@ class AbcReader
 	{
 		return abcFile.classes[Type.enumParameters(id)[0]];
 	}
-	private function getNamespace(id:Index<Namespace>):String
+	inline private function getNamespace(id:Index<Namespace>):String
 	{
-		if (id == null)
-			return"";
-		else
+		var out:String="";
+		if (id != null)
 		{
 			var ns:Namespace = abcFile.get(abcFile.namespaces, id);
 			var name:Index<String> = Type.enumParameters(ns)[0];
 			var _name:String = getString(name);
 			if (_name == null)
-				return "";
-			return (_name != "")? _name + "." : _name;
+				out= "";
+			else
+				out= (_name != "")? _name + "." : _name;
 		}
+		return out;
 	}
 	private function getName(id:IName):String
 	{
@@ -886,16 +1041,16 @@ class AbcReader
 		}
 		return __namespace + cutComma(__name);
 	}
-	private function getFieldName(id:IName):String
+	inline private function getFieldName(id:IName):String
 	{
 		return getName(id);
 	}
-	private function cutComma(str:String):String
+	inline private function cutComma(str:String):String
 	{
+		var out:String = str;
 		if(str.lastIndexOf(',')==str.length-1)
-			return str.substr(0, str.length - 1);
-		else
-			return str;
+			out = str.substr(0, str.length - 1);
+		return out;
 	}
 	private function getValue(value:Null<Value>):String
 	{
@@ -915,7 +1070,7 @@ class AbcReader
 		}
 		return out;
 	}
-	private function fileToLines(fileName:String):String
+	inline private function fileToLines(fileName:String):String
 	{
 		debugFileName = fileName.split(String.fromCharCode(92)).join("/").split(';;').join("/");
 		debugLines=[];
@@ -940,13 +1095,14 @@ class AbcReader
 			}
 		}
 		#end
-		return debugFileName=='<null>'?"":debugFileName;
+		var out:String = (debugFileName=='<null>')? "" : debugFileName;
+		return out;
 	}
-	private function urlEncode(str:String):String
+	inline private function urlEncode(str:String):String
 	{
-		return str.split('"').join('&quot;').split('<').join('&lt;');
+		return str.split('&').join('&amp;').split('"').join('&quot;').split('<').join('&lt;');
 	}
-	private function lineSplitter(str:String):String
+	inline private function lineSplitter(str:String):String
 	{
 		var out= str.split("\r\n").join("\n");
 		return out.split("\r").join("\n");
