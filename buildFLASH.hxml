@@ -1,7 +1,15 @@
--cp src
 be.haxer.hxswfml.SwfWriter
+-main be.haxer.hxswfml.SwfWriter
+-cp src
 -swf9 bin/flash/swf/hxswfml.swc
 -D swc
-#-debug
+-debug
 -cmd echo "swc(SWF) created"
--cmd pause
+
+--next
+be.haxer.hxswfml.SwfWriter
+-main be.haxer.hxswfml.SwfWriter
+-cp src
+-swf9 bin/flash/swf/hxswfml.swf
+-debug
+-cmd echo "swf created"

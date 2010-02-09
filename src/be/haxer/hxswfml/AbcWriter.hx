@@ -38,19 +38,18 @@ class AbcWriter
 		var abcfiles:Xml = Xml.parse(xml).firstElement();
 		if(abcfiles.nodeName.toLowerCase()=="abcfile")
 		{
-			swfTags.push(xmlToabc(abcfiles));
+			swfTags.push(xmlToabc(abcfiles, true));
 		}
 		else
 		{
 			for (abcfile in abcfiles.elements())
 			{
-				swfTags.push(xmlToabc(abcfile));
+				swfTags.push(xmlToabc(abcfile, true));
 			}
 		}
-		trace('total time = ' + (Date.now().getTime() - lastStamp));
 		return swfTags;
 	}
-	public function xmlToabc(xml):SWFTag
+	public function xmlToabc(xml, info:Bool=false):Dynamic
 	{	
 		var ctx_xml:Xml = xml;
 		ctx = new format.abc.Context();
@@ -67,7 +66,6 @@ class AbcWriter
 		//FUNCTION CLOSURES
 		for(_classNode in ctx_xml.elements())
 		{
-			
 			switch(_classNode.nodeName)
 			{
 				case 'function':
@@ -85,13 +83,12 @@ class AbcWriter
 					throw ('<'+_classNode.nodeName + '> Must be <function>, <init>, <import> or <class [<var>], [<function>]>.');
 				
 				case 'function': 
-					// function closures are handled before classes
+					// function closures are handled before classes because we need a reference to them.
 					
 				case 'init':
 					// function inits are handled after classes
 					
 				case 'import':
-					//var n = _classNode.get('class');
 					var n = _classNode.get('name');
 					var cn = n.split('.').pop();
 					imports.set(cn, n);
@@ -175,7 +172,10 @@ class AbcWriter
 		var abcFile = ctx.getData();
 		var abcOutput = new haxe.io.BytesOutput();
 		format.abc.Writer.write(abcOutput, abcFile);
-		return TActionScript3(abcOutput.getBytes(), {id : 1, label : className});
+		if (info)
+			return TActionScript3(abcOutput.getBytes(), { id : 1, label : className } );
+		else
+			return abcOutput.getBytes();
 	}
 	function createFunction(node:Xml, functionType:String, ?isInterface:Bool=false)
 	{
@@ -285,8 +285,7 @@ class AbcWriter
 			if (locals.length != 0) 
 				f.locals = locals;
 		}
-		
-		//var result:Bool = 
+
 		writeCodeBlock(node, f);
 		
 		if (node.get('maxStack') != null)
@@ -469,7 +468,6 @@ class AbcWriter
 				ctx.op(op);
 			}
 		}
-		//return true;
 	}
 	
 	public function abc2xml(abc):String

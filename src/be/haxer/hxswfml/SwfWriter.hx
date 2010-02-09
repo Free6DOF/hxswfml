@@ -629,7 +629,7 @@ class SwfWriter
 				var tags : Array<SWFTag> = swfReader.readTagList();
 				swfBytesInput.close();
 				
-				var lookupStrings = ["Boot", "Lib", "Type"];// ...expand? custom classnames?
+				var lookupStrings = ["Boot", "Lib", "Type"];
 				for (tag in tags)
 				{
 					switch (tag)
@@ -641,7 +641,6 @@ class SwfWriter
 							}
 							else
 							{
-								#if !cpp
 								var abcReader = new format.abc.Reader(new haxe.io.BytesInput(data));
 								var abcFile = abcReader.read();
 								var cpoolStrings = abcFile.strings;
@@ -664,7 +663,6 @@ class SwfWriter
 								format.abc.Writer.write(abcOutput, abcFile);
 								var abcBytes = abcOutput.getBytes();
 								abcTags.push(TActionScript3(abcBytes, ctx));
-								#end
 							}
 						default :
 					}
@@ -1253,7 +1251,7 @@ class SwfWriter
 		validElements.set('beginfill',  ['color', 'alpha']);
 		validElements.set('begingradientfill', ['colors', 'alphas', 'ratios', 'type', 'x', 'y', 'scaleX', 'scaleY', 'rotate0', 'rotate1']);
 		validElements.set('beginbitmapfill', ['bitmapId', 'x', 'y', 'scaleX', 'scaleY', 'rotate0', 'rotate1', 'repeat', 'smooth']);
-		validElements.set('linestyle', ['width', 'color', 'alpha']);
+		validElements.set('linestyle', ['width', 'color', 'alpha','pixelHinting', 'scaleMode', 'caps', 'joints', 'miterLimit', 'noClose']);
 		validElements.set('moveto', ['x', 'y']);
 		validElements.set('lineto', ['x', 'y']);
 		validElements.set('curveto', ['cx', 'cy', 'ax', 'ay']);
