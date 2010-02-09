@@ -149,7 +149,7 @@ class SwfWriter
 				case 'exportassets' : for(tag in exportAssets()) swfWriter.writeTag(tag);
 				case 'metadata' : swfWriter.writeTag(metadata());
 				case 'framelabel' : swfWriter.writeTag(frameLabel());
-				case 'showframe' : swfWriter.writeTag(showFrame());
+				case 'showframe' : for(tag in showFrame()) swfWriter.writeTag(tag);
 				case 'endframe' : swfWriter.writeTag(endFrame());
 				case 'tween' : for(tag in tween()) swfWriter.writeTag(tag);
 				case 'custom' : swfWriter.writeTag(custom());
@@ -407,8 +407,7 @@ class SwfWriter
 	private function defineSprite()
 	{
 		var id = getInt('id', null, true, true);
-		var frames = getInt('frameCount', 1);
-		var showFrameCount = 0;
+		var frameCount = getInt('frameCount', 1);
 		var tags : Array<SWFTag> = new Array();
 		var spriteTag = currentTag;
 		for(tag in currentTag.elements())
@@ -421,15 +420,16 @@ class SwfWriter
 				case "removeobject" : tags.push(removeObject2());
 				case "startsound" : tags.push(startSound());
 				case "framelabel" : tags.push(frameLabel());
-				case 'showframe' : showFrameCount++;tags.push(showFrame());
+				case 'showframe' : 
+					var showFrames = showFrame();
+					for(tag in showFrames)
+						tags.push(tag);
 				case "endframe" : tags.push(endFrame());
 				case 'tween' : for(tag in tween()) tags.push(tag);
 				default : error('ERROR: ' + currentTag.nodeName + ' is not allowed inside a DefineSprite element. Valid children are: ' + validChildren.get('definesprite').toString() + '. TAG: ' + currentTag.toString());
 			}
 		}
-		//if(showFrameCount!=frames)
-			//error('ERROR: The number of ShowFrame element in the DefineSprite element does not match the value in the frameCount attribute. TAG: ' + spriteTag.toString());
-		return TClip(id, frames, tags);
+		return TClip(id, frameCount, tags);
 	}
 
 	private function defineButton2()
@@ -842,7 +842,7 @@ class SwfWriter
 			var drs0 : Null<Float> = (startRotateO == null || endRotateO == null)? null : startRotateO + ((endRotateO - startRotateO) * i) / frameCount;
 			var drs1 : Null<Float> = (startRotate1 == null || endRotate1 == null)? null : startRotate1 + ((endRotate1 - startRotate1) * i) / frameCount;
 			tags.push(moveObject(depth, dx * 20, dy * 20, dsx, dsy ,drs0 , drs1));
-			tags.push(showFrame());
+			tags.push(showFrame()[0]);
 		}
 		return tags;
 	}
@@ -906,9 +906,16 @@ class SwfWriter
 		return TFrameLabel(label, anchor);
 	}
 	
-	private function showFrame()
+	private function showFrame():Array<SWFTag>
 	{
-		return TShowFrame;
+		var showFrames:Array<SWFTag>=new Array();
+		var count = getInt('count', null, false);
+		if(count==null)
+			return [TShowFrame];
+		else
+			for(i in 0...count)
+				showFrames.push(TShowFrame);
+		return showFrames;
 	}
 	
 	private function endFrame()
@@ -1279,7 +1286,7 @@ class SwfWriter
 		validElements.set('exportassets', ['id', 'class']);
 		validElements.set('metadata', ['file']);
 		validElements.set('framelabel', ['name', 'anchor']);
-		validElements.set('showframe', []);
+		validElements.set('showframe', ['count']);
 		validElements.set('endframe', []);
 		validElements.set('tween', ['depth', 'frameCount']);
 		validElements.set('tw', ['prop', 'start', 'end']);
