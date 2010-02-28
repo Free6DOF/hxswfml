@@ -17,7 +17,7 @@ class Main
 	public static function main() 
 	{
 		var args:Array<String> = Sys.args();
-		if (args.length<3)
+		if (args.length<3 && args[0] != 'ttf2hx' && args[0] != 'ttf2swf')
 		{
 			Lib.println("Usage		: hxswfml operation inputfile outputfile [options]");
 			Lib.println("");
@@ -50,6 +50,9 @@ class Main
 			{
 				if(args[0] == 'abc2xml')
 				{
+					#if cpp
+					Lib.println("ERROR: Due to a bug in the cpp target, abc2xml is currently not available.");
+					#else
 					var abcReader = new AbcReader();
 					abcReader.debugInfo = args[3]=='true';
 					abcReader.jumpInfo = args[4]=='true';
@@ -58,6 +61,7 @@ class Main
 					var file = File.write(args[2], false);
 					file.writeString(xml);
 					file.close();
+					#end
 				}
 				else if (args[0] == 'xml2abc')
 				{
@@ -76,6 +80,45 @@ class Main
 					var swf = swfWriter.xml2swf(File.getContent(args[1]), args[2]);
 					var file = File.write(args[2],true);
 					file.write(swf);
+					file.close();
+				}
+				else if(args[0] == 'ttf2swf')
+				{
+					var bytes = File.getBytes(args[1]);
+					var className = args[2]==null?throw 'Missing className argument':args[2];
+					var ranges = "32-127";
+					if(args[3]!=null)ranges=args[3];
+					
+					var fontWriter = new FontWriter();
+					fontWriter.write(bytes,ranges, 'swf');
+					var swf = fontWriter.getFontSWF(1,className, 10, false, 1024, 1024, 30, 1);
+					var file = File.write(fontWriter.fontName+'.swf',true);
+					file.write(swf);
+					file.close();
+				}
+				else if(args[0] == 'ttf2hx')
+				{
+					var bytes = File.getBytes(args[1]);
+					var ranges = "32-127";
+					if(args[2]!=null) ranges = args[2];
+					var fontWriter = new FontWriter();
+					fontWriter.write(bytes, ranges, 'zip');
+					var zip = fontWriter.getZip();
+					var file = File.write(fontWriter.fontName+'.zip', true);
+					file.write(zip);
+					file.close();
+				}
+				
+				else if(args[0] == 'ttf2txt')
+				{
+					var bytes = File.getBytes(args[1]);
+					var ranges = "32-127";
+					if(args[2]!=null) ranges = args[2];
+					var fontWriter = new FontWriter();
+					fontWriter.write(bytes, ranges, 'txt');
+					var txt = fontWriter.getTxt();
+					var file = File.write(fontWriter.fontName+'.txt',false);
+					file.writeString(txt);
 					file.close();
 				}
 				else

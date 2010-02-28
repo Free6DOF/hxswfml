@@ -53,7 +53,6 @@ enum SWFTag {
 	TActionScript3( data : haxe.io.Bytes, ?context : AS3Context );
 	TSymbolClass( symbols : Array<SymData> );
 	TExportAssets( symbols : Array<SymData> );
-	//TSandBox( v : Int );
 	TSandBox( v : FileAttributes );
 	TBitsLossless( data : Lossless );
 	TBitsLossless2( data : Lossless );
@@ -61,9 +60,10 @@ enum SWFTag {
 	TJPEGTables( data : haxe.io.Bytes );
 	TBinaryData( id : Int, data : haxe.io.Bytes );
 	TSound( data : Sound );
-	//TSoundStreamHead2(data:SoundStreamHead2);
-	//TDefineVideoStream(id:Int, data:VideoInfo);
-	//TDefineVideoFrame(id:Int, frameNum:Int, data:VideoData);
+	TSoundStreamBlock(samplesCount:Int, seekSamples:Int, data :haxe.io.Bytes);
+	TSoundStreamHead2(data:SoundStreamHead2);
+	TDefineVideoStream(id:Int, data:VideoInfo);
+	TDefineVideoFrame(id:Int, frameNum:Int, data :haxe.io.Bytes );//VideoData);
 	TStartSound(id:Int, soundInfo:SoundInfo);
 	TDoAction(data : haxe.io.Bytes);
 	TScriptLimits(maxRecursion:Int, timeoutSeconds:Int);
@@ -531,22 +531,18 @@ typedef Sound = {
 	var data : SoundData;
 };
 
-typedef SoundStreamHead2={
-
-	var playbackSoundRate:Int;//0 = 5.5 kHz, 1 = 11 kHz, 2 = 22 kHz, 3 = 44 kHz, 
-	var playbackSoundSize:Int;//Always 1 (16 bit).
-	var playbackSoundType:Bool;//0mono, 1stereo
-
+typedef SoundStreamHead2=
+{
 	var streamSoundCompression:Int;//1=ADPCM 2=MP3 , 0,3=raw, uncompressed samples, 6, NELLYMOSERDATA record
+	var playbackSoundRate:Int;//0 = 5.5 kHz, 1 = 11 kHz, 2 = 22 kHz, 3 = 44 kHz, 
+	var playbackSoundType:Bool;//0mono, 1stereo
 	var streamSoundRate:Int;//0 = 5.5 kHz, 1 = 11 kHz, 2 = 22 kHz, 3 = 44 kHz, 
-	var streamSoundSize:Bool;//Always 1 (16 bit).
 	var streamSoundType:Bool;//0mono, 1stereo
-	var streamSoundSampleCount:Int;//Average number of samples in each SoundStreamBlock. Not affected by mono/stereo setting; 
-	//for stereo sounds this is the number of sample pairs.
-	var latencySeek:Null<Int>;//If StreamSoundCompression = 2, SI16 Otherwise absent
-  //The value here should match the SeekSamples field in the first SoundStreamBlock for this stream.
+	var streamSoundSampleCount:Int;//Average number of samples in each SoundStreamBlock. Not affected by mono/stereo setting; //for stereo sounds this is the number of sample pairs.
+	var latencySeek:Null<Int>;//If StreamSoundCompression = 2, SI16 Otherwise absent //The value here should match the SeekSamples field in the first SoundStreamBlock for this stream.
 }
-typedef MP3streamSoundData={
+typedef MP3streamSoundData=
+{
 	var sampleCount:Int;//Number of samples represented by this block. Not affected by mono/stereo setting; for stereo sounds this is the number of sample pairs.
 	var mp3SoundData:Array<_MP3Frame>;//MP3 frames with SeekSamples values.
 }
@@ -648,6 +644,7 @@ typedef FontLayoutData = {
 	var glyphs: Array<FontLayoutGlyphData>;
 	var kerning: Array<FontKerningData>;
 }
+
 typedef _MP3Frame = {
 	var header : _MP3Header;
 	var data : haxe.io.Bytes;

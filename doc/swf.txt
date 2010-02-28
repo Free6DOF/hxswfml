@@ -18,6 +18,11 @@ A basic swf (a movie with 3 empty frames) looks like:
         <ShowFrame />
         <ShowFrame />
 </swf>
+Update: A new attribute count is added so that the above can be written as:
+<swf>
+        <Header />
+        <ShowFrame count="3"/>
+</swf>
 
 The FlashPlayer? will start parsing/playing the tags from the top till it reaches the <EndFrame/> tag.
 When it encounters a <ShowFrame/> it renders the previous tags to the screen.

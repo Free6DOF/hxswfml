@@ -1218,4 +1218,58 @@ class AbcWriter
 	{
 		trace(msg);
 	}
+
+	public static function createABC(className : String, baseClass : String):SWFTag
+	{
+		var ctx = new format.abc.Context();
+		var c = ctx.beginClass(className, false);
+		c.superclass = ctx.type(baseClass);
+		switch(baseClass)
+		{
+			case 'flash.display.MovieClip' : 	
+				ctx.addClassSuper("flash.events.EventDispatcher");
+				ctx.addClassSuper("flash.display.DisplayObject");
+				ctx.addClassSuper("flash.display.InteractiveObject");
+				ctx.addClassSuper("flash.display.DisplayObjectContainer");
+				ctx.addClassSuper("flash.display.Sprite");
+				ctx.addClassSuper("flash.display.MovieClip");
+
+			case 'flash.display.Sprite' : 
+				ctx.addClassSuper("flash.events.EventDispatcher");
+				ctx.addClassSuper("flash.display.DisplayObject");
+				ctx.addClassSuper("flash.display.InteractiveObject");
+				ctx.addClassSuper("flash.display.DisplayObjectContainer");
+				ctx.addClassSuper("flash.display.Sprite");
+				
+			case 'flash.display.SimpleButton' : 
+				ctx.addClassSuper("flash.events.EventDispatcher");
+				ctx.addClassSuper("flash.display.DisplayObject");
+				ctx.addClassSuper("flash.display.InteractiveObject");
+				ctx.addClassSuper("flash.display.SimpleButton");
+			
+			case 'flash.display.Bitmap' : 
+				ctx.addClassSuper("flash.events.EventDispatcher");
+				ctx.addClassSuper("flash.display.DisplayObject");
+				ctx.addClassSuper("flash.display.Bitmap");
+			
+			case 'flash.media.Sound' : 
+				ctx.addClassSuper("flash.events.EventDispatcher");
+				ctx.addClassSuper("flash.media.Sound");
+				
+			case 'flash.text.Font' : 
+				ctx.addClassSuper("flash.text.Font");
+			
+			case 'flash.utils.ByteArray' : 
+				ctx.addClassSuper("flash.utils.ByteArray");
+		}
+		var m = ctx.beginMethod(className, [], null, false, false, false, true);
+		m.maxStack = 2;
+		c.constructor = m.type;
+		ctx.ops( [OThis, OConstructSuper(0), ORetVoid] );
+		//ctx.finalize();
+		ctx.endClass();
+		var abcOutput = new haxe.io.BytesOutput();
+		format.abc.Writer.write(abcOutput, ctx.getData());
+		return TActionScript3(abcOutput.getBytes(), {id : 1, label : className});
+	}
 }
