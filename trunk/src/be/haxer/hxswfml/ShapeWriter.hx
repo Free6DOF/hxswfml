@@ -32,6 +32,10 @@ class ShapeWriter
 	
 	public function new(?forceShape3:Bool=false)
 	{
+		reset(forceShape3);
+	}
+	function reset(?forceShape3:Bool=false)
+	{
 		_xMin= Math.POSITIVE_INFINITY;
 		_yMin= Math.POSITIVE_INFINITY;
 		_xMax= Math.POSITIVE_INFINITY;
@@ -50,7 +54,6 @@ class ShapeWriter
 		_shapeType = 4;
 		_forceShape3 = forceShape3;
 	}
-	
 	public function beginFill(?color:Int=0x000000, ?alpha:Float=1.0):Void
 	{
 		_stateFillStyle = true;
@@ -340,7 +343,7 @@ class ShapeWriter
 		curveTo(x + w, y + h, x + w / 2, y + h);//4
 		curveTo(x, y+h, x, y+h/2);
 	}
-		public function getTag(id:Int,?useWinding:Null<Bool>,?useNonScalingStroke:Null<Bool>,?useScalingStroke:Null<Bool>)
+	public function getTag(id:Int,?useWinding:Null<Bool>,?useNonScalingStroke:Null<Bool>,?useScalingStroke:Null<Bool>)
 	{
 		_shapeRecords.push(SHREnd);
 

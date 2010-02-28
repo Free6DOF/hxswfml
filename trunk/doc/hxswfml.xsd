@@ -236,6 +236,7 @@
 		<xs:complexType>
 			<xs:attribute name="file" type="xs:string" use="required"/>
 			<xs:attribute name="id" type="xs:positiveInteger" use="required"/>
+			<xs:attribute name="charCodes" type="xs:string" use="optional"/>
 		</xs:complexType>
 	</xs:element>
 	<!--____________________________________________________________-->
@@ -272,11 +273,12 @@
 			<xs:attribute name="password" type="xs:boolean" use="optional" default="false"/>
 			<xs:attribute name="rightMargin" type="xs:integer" use="optional" default="0"/>
 			<xs:attribute name="selectable" type="xs:boolean" use="optional" default="false"/>
-			<xs:attribute name="textColor" use="optional" default="0x000000FF">
+			<xs:attribute name="alpha" type="xs:decimal" use="optional" default="1.0"/>
+			<xs:attribute name="textColor" use="optional" default="0x000000">
 				<!--RGBA-->
 				<xs:simpleType>
 					<xs:restriction base="xs:string">
-						<xs:pattern value="(0x[0-9A-Fa-f]{8})"/>
+						<xs:pattern value="(0x[0-9A-Fa-f]{6})"/>
 					</xs:restriction>
 				</xs:simpleType>
 			</xs:attribute>
@@ -532,6 +534,7 @@
 			</xs:sequence>
 			<xs:attribute name="frameCount" type="xs:positiveInteger" use="optional" default="1"/>
 			<xs:attribute name="id" type="xs:positiveInteger" use="required"/>
+			<xs:attribute name="file" type="xs:string" use="optional"/>
 		</xs:complexType>
 
 	</xs:element>
@@ -667,7 +670,9 @@
 		<xs:annotation>
 			<xs:documentation>This element will render everything previously put on the display list with PlaceObject.</xs:documentation>
 		</xs:annotation>
-		<xs:complexType/>
+		<xs:complexType>
+			<xs:attribute name="count" type="xs::positiveInteger" use="optional" default="1"/>
+		</xs:complexType>
 	</xs:element>
 	<!--____________________________________________________________-->
 	<xs:element name="EndFrame">

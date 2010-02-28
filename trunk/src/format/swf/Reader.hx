@@ -1003,22 +1003,21 @@ class Reader {
 
 		var offset_table = new Array<Int>();
 		var shape_data_length: Int = 0;
-		if(hasWideOffsets) {
+		if(hasWideOffsets) 
+		{
 			var first_glyph_offset = num_glyphs * 4 + 4;
-
 			for(j in 0...num_glyphs)
 				offset_table.push(i.readUInt30() - first_glyph_offset);
-
 			var code_table_offset = i.readUInt30();
 			shape_data_length = code_table_offset - first_glyph_offset;
-		
-		} else {
+		} 
+		else 
+		{
 			var first_glyph_offset = num_glyphs * 2 + 2;
 			for(j in 0...num_glyphs) {
 				var offs = i.readUInt16();
 				offset_table.push(offs - first_glyph_offset);
-			}
-			
+			}	
 			var code_table_offset = i.readUInt16();
 			shape_data_length = code_table_offset - first_glyph_offset;
 		}
@@ -1026,14 +1025,17 @@ class Reader {
 		var glyph_shapes = readGlyphs(shape_data_length, offset_table);
 		var glyphs = new Array<Font2GlyphData>();
 
-		if(hasWideCodes) {
+		if(hasWideCodes) 
+		{
 			for(j in 0...num_glyphs)
 				glyphs.push({
 					charCode: i.readUInt16(),
 					shape: glyph_shapes[j]
 				});
 
-		} else {
+		} 
+		else 
+		{
 			for(j in 0...num_glyphs)
 				glyphs.push({
 					charCode: i.readByte(),
@@ -1042,7 +1044,8 @@ class Reader {
 		}
 
 		var layout: Null<FontLayoutData> = null;
-		if(hasLayout) {
+		if(hasLayout) 
+		{
 			var ascent = i.readInt16();
 			var descent = i.readInt16();
 			var leading = i.readInt16();
@@ -1052,9 +1055,9 @@ class Reader {
 				advance_table.push(i.readInt16());
 
 			var glyph_layout = new Array<FontLayoutGlyphData>();
-			for(j in 0...num_glyphs) {
+			for(j in 0...num_glyphs) 
+			{
 				var bounds = readRect();
-
 				glyph_layout.push({
 					advance: advance_table[j],
 					bounds: bounds
@@ -1066,7 +1069,8 @@ class Reader {
 			for(i in 0...num_kerning)
 				kerning.push(readKerningRecord(hasWideCodes));
 
-			layout = {
+			layout = 
+			{
 				ascent: ascent,
 				descent: descent,
 				leading: leading,
@@ -1075,7 +1079,8 @@ class Reader {
 			};
 		}
 
-		var f2data: Font2Data = {
+		var f2data: Font2Data = 
+		{
 			shiftJIS: shiftJIS,
 			isSmall: isSmall,
 			isANSI: isANSI,
@@ -1255,6 +1260,12 @@ class Reader {
 			len = i.readUInt30();
 			if( len < 63 ) ext = true;
 		}
+		/*
+    var old_i = i;
+    var old_bits = bits;
+    i = new haxe.io.BytesInput(i.read(len));
+    bits = new format.tools.BitsInput(i);
+		*/
 		return switch( id ) {
 		case TagId.ShowFrame:
 			TShowFrame;
@@ -1275,9 +1286,9 @@ class Reader {
 		case TagId.DefineFont2:
 			readFont(len, 2);
 		case TagId.DefineFont3:
-			//readFont(len, 3);
-			var data = i.read(len);
-			TUnknown(id,data);
+			readFont(len, 3);
+			//var data = i.read(len);
+			//TUnknown(id,data);
 		case TagId.DefineFontInfo:
 			readFontInfo(len, 1);
 		case TagId.DefineFontInfo2:
@@ -1369,12 +1380,17 @@ class Reader {
 			var id = i.readUInt16();
 			var splitter = readRect();
 			TDefineScalingGrid(id, splitter);
+		case TagId.End:
+			null;
+			
 		default:
 			var data = i.read(len);
 			TUnknown(id,data);
-		case TagId.End:
-			null;
 		}
+		/*
+		i = old_i;
+    bits = old_bits;
+		*/
 	}
 
 	public function read() : SWF {

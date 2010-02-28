@@ -164,6 +164,12 @@ class Tools {
 		case TDefineEditText(id, data):["id", id];
 		case TMetadata(data) : ["metadata", data];
 		case TDefineScalingGrid(id, splitter) : ["id", id, "splitter", "todo"];
+		
+		case TSoundStreamBlock(samplesCount, seekSamples, data):["samplesCount",samplesCount, "seekSamples", seekSamples];
+		case TSoundStreamHead2(soundStreamHeadData):["soundStreamHeadData", soundStreamHeadData];
+		case TDefineVideoStream(id, videoInfo):["id", id, "videoInfo", videoInfo];
+		case TDefineVideoFrame(id, frameNum, data ):["id", id, "frameNum", frameNum, "data", hex(data,max)];
+		
 		case TUnknown(id,data): ["id",id,"data",hex(data,max)];
 		}
 		var b = new StringBuf();

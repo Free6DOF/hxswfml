@@ -590,17 +590,21 @@ class Writer {
 
 			case SHRChange(data):
 				bits.writeBit(false);
-				if(data.newStyles != null) {
-					if(ver == 2 || ver == 3)
+				if(data.newStyles != null) 
+				{
+					if(ver > 1)
 						bits.writeBit(true);
 					else
-						throw "Defining new fill and line style arrays are only supported in shape version 2 and 3!";
-				} else
+						throw "Defining new fill and line style arrays are only supported in shape versions higher than 1!";
+				} 
+				else
+				{
 					bits.writeBit(false);
-				bits.writeBit(data.lineStyle != null);
-				bits.writeBit(data.fillStyle1 != null);
-				bits.writeBit(data.fillStyle0 != null);
-				bits.writeBit(data.moveTo != null);
+					bits.writeBit(data.lineStyle != null);
+					bits.writeBit(data.fillStyle1 != null);
+					bits.writeBit(data.fillStyle0 != null);
+					bits.writeBit(data.moveTo != null);
+				}
 
 				if(data.moveTo != null) {
 					var mb = Tools.minBits([data.moveTo.dx, data.moveTo.dy]) + 1;
@@ -675,12 +679,12 @@ class Writer {
 		}
 	}
 	
-	function writeShapeWithoutStyle(ver: Int, data: ShapeWithoutStyleData) {
+	function writeShapeWithoutStyle(ver: Int, data: ShapeWithoutStyleData, ?isFont:Bool=false) {
 		var style_info: ShapeStyleInfo = {
 			numFillStyles: 0,
 			fillBits: 1,
 			numLineStyles: 0,
-			lineBits: 1
+			lineBits: isFont?0:1
 		};
 		
 		bits.writeBits(4, style_info.fillBits);
@@ -1003,7 +1007,8 @@ class Writer {
 			offsets.push(offs);
 			
 			var old = openTMP();
-			writeShapeWithoutStyle(1, shape);
+			var isFont=true;
+			writeShapeWithoutStyle(1, shape, isFont);
 			bits.flush();
 			var shape_data = closeTMP(old);
 
@@ -1037,7 +1042,8 @@ class Writer {
 		o.write(shape_data);
 	}
 
-	function writeFont2(hasWideChars: Bool, data: Font2Data) {
+	function writeFont2(hasWideChars: Bool, data: Font2Data) 
+	{
 		var glyphs = new Array<ShapeWithoutStyleData>();
 		var num_glyphs: Int = data.glyphs.length;
 		for(glyph in data.glyphs)
@@ -1072,64 +1078,66 @@ class Writer {
 		o.writeString(data.name);
 		o.writeUInt16(num_glyphs);
 
-		if(hasWideOffsets) {
-			// OffsetTable size + CodeTabbleOffset field (32bit version)
+		if(hasWideOffsets) // OffsetTable size + CodeTabbleOffset field (32bit version)
+		{
 			var first_glyph_offset = num_glyphs * 4 + 4;
-			
-			for(offset in offset_table) {
+			for(offset in offset_table) 
 				o.writeUInt30(first_glyph_offset + offset);
-			}
 			o.writeUInt30(first_glyph_offset + shape_data.length);
-
-		} else {
-			// OffsetTable size + CodeTabbleOffset field (16bit version)
+		} 
+		else // OffsetTable size + CodeTabbleOffset field (16bit version)
+		{
 			var first_glyph_offset = num_glyphs * 2 + 2;
-			
-			for(offset in offset_table) {
+			for(offset in offset_table)
 				o.writeUInt16(first_glyph_offset + offset);
-			}
 			o.writeUInt16(first_glyph_offset + shape_data.length);
 		}
-
+		
 		o.write(shape_data);
-
+		
 		// CodeTable
-		if(hasWideChars) {
-			for(glyph in data.glyphs) {
+		if(hasWideChars) 
+			for(glyph in data.glyphs) 
 				o.writeUInt16(glyph.charCode);
-			}
-
-		} else {
+		else 
 			for(glyph in data.glyphs)
 				o.writeByte(glyph.charCode);
-		}
 
-		if(data.layout != null) {
+		if(data.layout != null) 
+		{
 			o.writeInt16(data.layout.ascent);
 			o.writeInt16(data.layout.descent);
 			o.writeInt16(data.layout.leading);
-
+			//var idx=0;
 			for(g in data.layout.glyphs)
-				o.writeInt16(g.advance);
+			{
+				//untyped __global__["trace"](idx++ + 'advanceWidth:'+g.advance);
+				//o.writeInt16(g.advance);
+				o.writeUInt16(g.advance);
+			}
 
 			for(g in data.layout.glyphs)
 				writeRect(g.bounds);
 
 			o.writeUInt16(data.layout.kerning.length);
 
-			if(hasWideChars) {
-				for(k in data.layout.kerning) {
+			if(hasWideChars) 
+			{
+				for(k in data.layout.kerning) 
+				{
 					o.writeUInt16(k.charCode1);
 					o.writeUInt16(k.charCode2);
 					o.writeInt16(k.adjust);
 				}
-			} else {
-				for(k in data.layout.kerning) {
+			} 
+			else 
+			{
+				for(k in data.layout.kerning) 
+				{
 					o.writeByte(k.charCode1);
 					o.writeByte(k.charCode2);
 					o.writeInt16(k.adjust);
 				}
-
 			}
 		}
 	}
@@ -1462,21 +1470,22 @@ class Writer {
 				o.write(data);
 
 			case TBitsJPEG(id, jdata):
-				switch (jdata) {
-				case JDJPEG1(data):
-					writeTIDExt(TagId.DefineBits, data.length + 2);
-					o.writeUInt16(id);
-					o.write(data);
-				case JDJPEG2(data):
-					writeTIDExt(TagId.DefineBitsJPEG2, data.length + 2);
-					o.writeUInt16(id);
-					o.write(data);
-				case JDJPEG3(data, mask):	
-					writeTIDExt(TagId.DefineBitsJPEG3, data.length + mask.length + 6);
-					o.writeUInt16(id);
-					o.writeUInt30(data.length);
-					o.write(data);
-					o.write(mask);
+				switch (jdata) 
+				{
+					case JDJPEG1(data):
+						writeTIDExt(TagId.DefineBits, data.length + 2);
+						o.writeUInt16(id);
+						o.write(data);
+					case JDJPEG2(data):
+						writeTIDExt(TagId.DefineBitsJPEG2, data.length + 2);
+						o.writeUInt16(id);
+						o.write(data);
+					case JDJPEG3(data, mask):	
+						writeTIDExt(TagId.DefineBitsJPEG3, data.length + mask.length + 6);
+						o.writeUInt16(id);
+						o.writeUInt30(data.length);
+						o.write(data);
+						o.write(mask);
 				}
 
 			case TSound(data):
@@ -1495,6 +1504,7 @@ class Writer {
 				writeTID(TagId.ScriptLimits,4);
 				o.writeUInt16(maxRecursion);
 				o.writeUInt16(timeoutseconds);
+				
 			case TDefineButton2(id, buttonRecords):
 				var t = openTMP();
 				for( t in buttonRecords )
@@ -1506,6 +1516,7 @@ class Writer {
 				o.writeUInt16(0);
 				o.write(bytes);
 				o.writeByte(0); // end-tag
+				
 			case TDefineEditText(id, data):
 				var t = openTMP();
 				writeDefineEditText(data);
@@ -1513,22 +1524,61 @@ class Writer {
 				writeTID(TagId.DefineEditText, bytes.length + 2);
 				o.writeUInt16(id);
 				o.write(bytes);
+				
 			case TMetadata(data):
 				writeTID(TagId.Metadata, data.length+1);
 				o.writeString(data);
 				o.writeByte(0);
+				
 			case TDefineScalingGrid(id, splitter):
 				var t = openTMP();
 				writeRect(splitter);
 				var bytes = closeTMP(t);
 				writeTID(TagId.DefineScalingGrid, bytes.length + 2);
 				o.writeUInt16(id);
-				o.write(bytes);				
+				o.write(bytes);
+				
+			case TDefineVideoStream(id, videoData):
+				writeTID(TagId.DefineVideoStream, 10);
+				o.writeUInt16(id);
+				o.writeUInt16(videoData.numFrames);
+				o.writeUInt16(videoData.width);
+				o.writeUInt16(videoData.height);
+				bits.writeBits(4,0);
+				bits.writeBits(3,0);
+				bits.writeBit(videoData.smoothing);
+				o.writeByte(videoData.codecId);
+				
+			case TDefineVideoFrame(id, frameNum, data):	
+				writeTID(TagId.VideoFrame, 4+data.length);
+				o.writeUInt16(id);
+				o.writeUInt16(frameNum);
+				o.write(data);
+				
+			case TSoundStreamHead2(data):
+				writeTID(TagId.SoundStreamHead2, data.streamSoundCompression==2?6:4);
+				bits.writeBits(4,0);
+				bits.writeBits(2,data.playbackSoundRate);
+				bits.writeBit(true);
+				bits.writeBit(data.playbackSoundType);
+				bits.writeBits(4,data.streamSoundCompression);
+				bits.writeBits(2,data.streamSoundRate);
+				bits.writeBit(true);
+				bits.writeBit(data.streamSoundType);
+				o.writeUInt16(data.streamSoundSampleCount);
+				if(data.streamSoundCompression==2)
+					o.writeInt16(data.latencySeek);
+
+			case TSoundStreamBlock(samplesCount, seekSamples, data):
+				writeTID(TagId.SoundStreamBlock, 4+data.length);
+				o.writeUInt16(samplesCount);
+				o.writeInt16(seekSamples);
+				o.write(data);
 		}
 	}
 
 	public function writeEnd() {
-		o.writeUInt16(0); // end tag
+		o.writeUInt16(0); 
 		var bytes = o.getBytes();
 		var size = bytes.length;
 		if( compressed ) bytes = format.tools.Deflate.run(bytes);

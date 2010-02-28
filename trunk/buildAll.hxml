@@ -12,7 +12,7 @@ be.haxer.hxswfml.SwfWriter
 be.haxer.hxswfml.SwfWriter
 -swf9 bin/flash/swf/hxswfml.swc
 -D swc
--debug
+#-debug
 -xml doc/api.xml
 -cmd echo "swc documentation created"
 -cmd echo "swc(SWF) created"

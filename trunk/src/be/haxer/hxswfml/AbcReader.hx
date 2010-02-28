@@ -57,7 +57,6 @@ class AbcReader
 	}
 	public function abc2xml(fileName:String, _swf=null):String
 	{
-		var lastStamp = Date.now().getTime();
 		var xml_out = new StringBuf();
 		xml_out.add('<abcfiles>\n');
 		if (StringTools.endsWith(fileName, '.abc'))
@@ -79,7 +78,6 @@ class AbcReader
 				switch (tag)
 				{
 					case TActionScript3(data, ctx):
-						var lastStampAbc = Date.now().getTime();
 						xml_out.add(abcToXml(data, ctx));
 					default:
 				}
@@ -107,7 +105,6 @@ class AbcReader
 				switch (tag)
 				{
 					case TActionScript3(data, ctx):
-						var lastStampAbc = Date.now().getTime();
 						xml_out.add(abcToXml(data, ctx));
 					default:
 				}
@@ -142,7 +139,6 @@ class AbcReader
 		var loopIndex:Int = 0;
 		for ( _class in abcFile.classes)
 		{
-			var lastStampClass = Date.now().getTime();
 			var clName = getName(_class.name);
 			className = clName;
 			
