@@ -229,11 +229,6 @@
 </haxe_doc>
 	</class>
 	<class path="be.haxer.hxswfml.HxmWriter" params="" file="src/be/haxer/hxswfml/HxmWriter.hx">
-		<createABC public="1" set="method" line="1817" static="1"><f a="className:baseClass">
-	<c path="String"/>
-	<c path="String"/>
-	<e path="format.swf.SWFTag"/>
-</f></createABC>
 		<debugInfo public="1"><e path="Bool"/></debugInfo>
 		<sourceInfo public="1"><e path="Bool"/></sourceInfo>
 		<useFolders public="1"><e path="Bool"/></useFolders>
@@ -268,28 +263,29 @@
 		<debugLines><c path="Array"><c path="String"/></c></debugLines>
 		<debugFile><c path="String"/></debugFile>
 		<debugFileName><c path="String"/></debugFileName>
+		<lastBytepos><c path="Int"/></lastBytepos>
 		<opStack><c path="Array"><c path="String"/></c></opStack>
 		<scStack><c path="Array"><c path="String"/></c></scStack>
 		<packages><c path="Array"><c path="Array"><c path="String"/></c></c></packages>
-		<write public="1" set="method" line="66"><f a="xml">
+		<write public="1" set="method" line="67"><f a="xml">
 	<c path="String"/>
 	<e path="Void"/>
 </f></write>
-		<getHXM public="1" set="method" line="91"><f a="initName">
+		<getHXM public="1" set="method" line="93"><f a="initName">
 	<c path="String"/>
 	<c path="String"/>
 </f></getHXM>
-		<xml2abc set="method" line="225"><f a="xml">
+		<xml2abc set="method" line="226"><f a="xml">
 	<c path="Xml"/>
 	<e path="Void"/>
 </f></xml2abc>
-		<createFunction set="method" line="392"><f a="node:functionType:?isInterface">
+		<createFunction set="method" line="390"><f a="node:functionType:?isInterface">
 	<c path="Xml"/>
 	<c path="String"/>
 	<e path="Bool"/>
 	<t path="format.abc.Function"/>
 </f></createFunction>
-		<writeCodeBlock set="method" line="568"><f a="member:f">
+		<writeCodeBlock set="method" line="571"><f a="member:f">
 	<c path="Xml"/>
 	<a><trys><a>
 	<push><f a="">
@@ -306,65 +302,65 @@
 </a></trys></a>
 	<e path="Void"/>
 </f></writeCodeBlock>
-		<getImport set="method" line="836"><f a="name">
+		<getImport set="method" line="845"><f a="name">
 	<c path="String"/>
 	<c path="String"/>
 </f></getImport>
-		<namespaceType set="method" line="842"><f a="ns">
+		<namespaceType set="method" line="851"><f a="ns">
 	<c path="String"/>
 	<e path="format.abc.Index"><e path="format.abc.Namespace"/></e>
 </f></namespaceType>
-		<__namespaceType set="method" line="857"><f a="ns">
+		<__namespaceType set="method" line="866"><f a="ns">
 	<c path="String"/>
 	<c path="String"/>
 </f></__namespaceType>
-		<parseLocals set="method" line="873"><f a="locals">
+		<parseLocals set="method" line="882"><f a="locals">
 	<c path="String"/>
 	<t path="Null"><c path="Array"><t path="format.abc.Field"/></c></t>
 </f></parseLocals>
-		<__parseLocals set="method" line="893"><f a="locals">
+		<__parseLocals set="method" line="902"><f a="locals">
 	<c path="String"/>
 	<t path="Null"><c path="Array"><c path="String"/></c></t>
 </f></__parseLocals>
-		<parseFieldKind set="method" line="913"><f a="fld">
+		<parseFieldKind set="method" line="922"><f a="fld">
 	<c path="String"/>
 	<e path="format.abc.FieldKind"/>
 </f></parseFieldKind>
-		<nonEmptyStack set="method" line="930"><f a="fname">
+		<nonEmptyStack set="method" line="939"><f a="fname">
 	<c path="String"/>
 	<e path="Void"/>
 </f></nonEmptyStack>
-		<stackError set="method" line="938"><f a="op:type">
+		<stackError set="method" line="947"><f a="op:type">
 	<e path="format.abc.OpCode"/>
 	<c path="Int"/>
 	<e path="Void"/>
 </f></stackError>
-		<scopeStackError set="method" line="947"><f a="op:type">
+		<scopeStackError set="method" line="956"><f a="op:type">
 	<e path="format.abc.OpCode"/>
 	<c path="Int"/>
 	<e path="Void"/>
 </f></scopeStackError>
-		<urlDecode set="method" line="956"><f a="str">
+		<urlDecode set="method" line="965"><f a="str">
 	<c path="String"/>
 	<c path="String"/>
 </f></urlDecode>
-		<updateStacks set="method" line="960"><f a="opc">
+		<updateStacks set="method" line="969"><f a="opc">
 	<e path="format.abc.OpCode"/>
 	<e path="Void"/>
 </f></updateStacks>
-		<logStack set="method" line="1813"><f a="msg">
+		<logStack set="method" line="1822"><f a="msg">
 	<c path="String"/>
 	<e path="Void"/>
 </f></logStack>
-		<fileToLines get="inline" set="null" line="1870"><f a="fileName">
+		<fileToLines get="inline" set="null" line="1826"><f a="fileName">
 	<c path="String"/>
 	<c path="String"/>
 </f></fileToLines>
-		<lineSplitter get="inline" set="null" line="1898"><f a="str">
+		<lineSplitter get="inline" set="null" line="1854"><f a="str">
 	<c path="String"/>
 	<c path="String"/>
 </f></lineSplitter>
-		<new public="1" set="method" line="63"><f a=""><e path="Void"/></f></new>
+		<new public="1" set="method" line="64"><f a=""><e path="Void"/></f></new>
 		<haxe_doc>
  * ...
  * @author Jan J. Flanders
@@ -6343,24 +6339,24 @@
 	<t path="format.abc.MethodType"/>
 	<e path="format.abc.Index"><t path="format.abc.MethodType"/></e>
 </f></methodType>
-		<beginClass public="1" set="method" line="278"><f a="path:?isInterface">
+		<getClass public="1" set="method" line="278"><f a="n">
+	<t path="format.abc.ClassDef"/>
+	<e path="format.abc.Index"><t path="format.abc.ClassDef"/></e>
+</f></getClass>
+		<beginClass public="1" set="method" line="285"><f a="path:?isInterface">
 	<c path="String"/>
 	<e path="Bool"/>
 	<t path="format.abc.ClassDef"/>
 </f></beginClass>
-		<getClass public="1" set="method" line="339"><f a="n">
-	<t path="format.abc.ClassDef"/>
-	<e path="format.abc.Index"><t path="format.abc.ClassDef"/></e>
-</f></getClass>
-		<endClass public="1" set="method" line="346"><f a="?makeInit">
+		<endClass public="1" set="method" line="343"><f a="?makeInit">
 	<e path="Bool"/>
 	<e path="Void"/>
 </f></endClass>
-		<addClassSuper public="1" set="method" line="402"><f a="sup">
+		<addClassSuper public="1" set="method" line="399"><f a="sup">
 	<c path="String"/>
 	<e path="Void"/>
 </f></addClassSuper>
-		<beginInterfaceMethod public="1" set="method" line="408"><f a="mname:targs:tret:?isStatic:?isOverride:?isFinal:?willAddLater:?kind:?extra:?ns">
+		<beginInterfaceMethod public="1" set="method" line="405"><f a="mname:targs:tret:?isStatic:?isOverride:?isFinal:?willAddLater:?kind:?extra:?ns">
 	<c path="String"/>
 	<c path="Array"><t path="Null"><t path="format.abc.IName"/></t></c>
 	<t path="Null"><t path="format.abc.IName"/></t>
@@ -6373,20 +6369,20 @@
 	<e path="format.abc.Index"><e path="format.abc.Namespace"/></e>
 	<t path="format.abc.Function"/>
 </f></beginInterfaceMethod>
-		<beginInterfaceFunction public="1" set="method" line="423"><f a="args:ret:?extra">
+		<beginInterfaceFunction public="1" set="method" line="420"><f a="args:ret:?extra">
 	<c path="Array"><t path="Null"><t path="format.abc.IName"/></t></c>
 	<t path="Null"><t path="format.abc.IName"/></t>
 	<t path="format.abc.MethodTypeExtra"/>
 	<e path="format.abc.Index"><unknown/></e>
 </f></beginInterfaceFunction>
-		<beginFunction public="1" set="method" line="439"><f a="args:ret:?extra">
+		<beginFunction public="1" set="method" line="436"><f a="args:ret:?extra">
 	<c path="Array"><t path="Null"><t path="format.abc.IName"/></t></c>
 	<t path="Null"><t path="format.abc.IName"/></t>
 	<t path="format.abc.MethodTypeExtra"/>
 	<e path="format.abc.Index"><t path="format.abc.Function"/></e>
 </f></beginFunction>
-		<endFunction public="1" set="method" line="459"><f a=""><e path="Void"/></f></endFunction>
-		<beginMethod public="1" set="method" line="472"><f a="mname:targs:tret:?isStatic:?isOverride:?isFinal:?willAddLater:?kind:?extra:?ns">
+		<endFunction public="1" set="method" line="456"><f a=""><e path="Void"/></f></endFunction>
+		<beginMethod public="1" set="method" line="469"><f a="mname:targs:tret:?isStatic:?isOverride:?isFinal:?willAddLater:?kind:?extra:?ns">
 	<c path="String"/>
 	<c path="Array"><t path="Null"><t path="format.abc.IName"/></t></c>
 	<t path="Null"><t path="format.abc.IName"/></t>
@@ -6399,8 +6395,8 @@
 	<e path="format.abc.Index"><e path="format.abc.Namespace"/></e>
 	<t path="format.abc.Function"/>
 </f></beginMethod>
-		<endMethod public="1" set="method" line="487"><f a=""><e path="Void"/></f></endMethod>
-		<defineField public="1" set="method" line="491"><f a="fname:t:?isStatic:?value:?_const:?ns">
+		<endMethod public="1" set="method" line="484"><f a=""><e path="Void"/></f></endMethod>
+		<defineField public="1" set="method" line="488"><f a="fname:t:?isStatic:?value:?_const:?ns">
 	<c path="String"/>
 	<t path="Null"><t path="format.abc.IName"/></t>
 	<e path="Bool"/>
@@ -6409,28 +6405,28 @@
 	<e path="format.abc.Index"><e path="format.abc.Namespace"/></e>
 	<t path="format.abc.Slot"/>
 </f></defineField>
-		<op public="1" set="method" line="510"><f a="o">
+		<op public="1" set="method" line="507"><f a="o">
 	<e path="format.abc.OpCode"/>
 	<e path="Void"/>
 </f></op>
-		<ops public="1" set="method" line="515"><f a="ops">
+		<ops public="1" set="method" line="512"><f a="ops">
 	<c path="Array"><e path="format.abc.OpCode"/></c>
 	<e path="Void"/>
 </f></ops>
-		<backwardJump public="1" set="method" line="520"><f a=""><f a="jcond">
+		<backwardJump public="1" set="method" line="517"><f a=""><f a="jcond">
 	<e path="format.abc.JumpStyle"/>
 	<e path="Void"/>
 </f></f></backwardJump>
-		<jump public="1" set="method" line="529"><f a="jcond">
+		<jump public="1" set="method" line="526"><f a="jcond">
 	<e path="format.abc.JumpStyle"/>
 	<f a=""><e path="Void"/></f>
 </f></jump>
-		<allocRegister public="1" set="method" line="540"><f a=""><c path="Int"/></f></allocRegister>
-		<freeRegister public="1" set="method" line="551"><f a="i">
+		<allocRegister public="1" set="method" line="537"><f a=""><c path="Int"/></f></allocRegister>
+		<freeRegister public="1" set="method" line="548"><f a="i">
 	<c path="Int"/>
 	<e path="Void"/>
 </f></freeRegister>
-		<finalize public="1" set="method" line="555"><f a=""><e path="Void"/></f></finalize>
+		<finalize public="1" set="method" line="552"><f a=""><e path="Void"/></f></finalize>
 		<new public="1" set="method" line="70"><f a=""><e path="Void"/></f></new>
 	</class>
 	<class path="flash.events.Event" params="" file="C:\Program Files\Motion-Twin\haxe/std/flash9/events/Event.hx" extern="1">

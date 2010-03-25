@@ -275,17 +275,20 @@ class Context
 		data.methodTypes.push(m);
 		return Idx(data.methodTypes.length - 1);
 	}
+	public function getClass(n) 
+	{
+		for ( i in 0...data.classes.length ) 
+			if (data.classes[i] == n) 
+				return Idx(i);
+		throw('unknown class: '+n);
+	}
 	public function beginClass( path : String, ?isInterface:Bool ) 
 	{
 		classSupers = new List();
 		if(!isInterface)
-		{
 			beginFunction([],null);
-		}
 		else
-		{
 			beginInterfaceFunction([],null);
-		}
 		ops([OThis,OScope]);
 		init = curFunction;
 		init.f.maxStack = 2;
@@ -336,13 +339,7 @@ class Context
 		curFunction = null;
 		return curClass;
 	}
-	public function getClass(n) 
-	{
-		for ( i in 0...data.classes.length ) 
-			if (data.classes[i] == n) 
-				return Idx(i);
-		throw('unknown class: '+n);
-	}
+	
 	public function endClass(?makeInit:Bool=true) 
 	{
 		if( curClass == null )
@@ -453,7 +450,7 @@ class Context
 		data.functions.push(f);
 		registers = new Array();
 		for( x in 0...f.nRegs )
-		registers.push(true);
+			registers.push(true);
 		return Idx(data.functions.length - 1);
 	}
 	public function endFunction() 
@@ -464,7 +461,7 @@ class Context
 		var bytes = new haxe.io.BytesOutput();
 		opw.o = bytes;
 		for( op in curFunction.ops )
-		opw.write(op);
+			opw.write(op);
 		curFunction.f.code = bytes.getBytes();
 		opw.o = old;
 		curFunction = null;
@@ -497,7 +494,7 @@ class Context
 		{
 			kind = FVar(t, value);
 			if (_const)
-			kind = FVar(t, value, _const);
+				kind = FVar(t, value, _const);
 		}
 		fl.push({
 			name : property(fname , ns),//ns added
