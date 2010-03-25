@@ -278,3 +278,11 @@ typedef UnicodeRange=
 	start:Int,
 	end:Int
 }
+typedef Path=
+{
+	type:Null<Int>,
+	x:Float,
+	y:Float,
+	cx:Null<Float>,
+	cy:Null<Float>
+}

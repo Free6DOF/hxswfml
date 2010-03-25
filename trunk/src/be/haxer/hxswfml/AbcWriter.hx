@@ -20,36 +20,116 @@ class AbcWriter
 	var currentStack:Int;
 	var currentScopeStack:Int;
 	var imports:Hash<String>;
-	var functionClosures:Hash < Index < MethodType >> ;
-	var inits:Hash< Index < MethodType >> ;
-	var classDefs:Hash < Index < ClassDef >> ;
+	var functionClosures:Hash <Index<MethodType >> ;
+	var inits:Hash<Index<MethodType>> ;
+	var classDefs:Hash<Index<ClassDef>> ;
 	var jumps:Hash<Void->Void> ;
 	var labels:Hash<JumpStyle->Void>;
-	
+	var abcFile:ABCData;
+	var swfTags:Array<SWFTag>;
+	var classNames:Array<String>;
+	var swcClasses:Array<Array<String>>;
 	public function new ()
 	{
-		strict = false;
-		log = false;
 	}
-	public function xml2abc(xml:String):Array<SWFTag>
+	public function write(xml:String):haxe.io.Bytes
 	{
 		var lastStamp = Date.now().getTime();
-		var swfTags:Array<SWFTag>=[];
+		swfTags=new Array();
 		var abcfiles:Xml = Xml.parse(xml).firstElement();
 		if(abcfiles.nodeName.toLowerCase()=="abcfile")
 		{
-			swfTags.push(xmlToabc(abcfiles, true));
+			swfTags.push(xml2abc(abcfiles));
 		}
 		else
 		{
 			for (abcfile in abcfiles.elements())
 			{
-				swfTags.push(xmlToabc(abcfile, true));
+				swfTags.push(xml2abc(abcfile));
 			}
 		}
+		return Type.enumParameters(swfTags[0])[0];
+	}
+	public function getTags():Array<SWFTag>
+	{
 		return swfTags;
 	}
-	public function xmlToabc(xml, info:Bool=false):Dynamic
+	public function getABC():haxe.io.Bytes
+	{
+		if(swfTags.length>1)
+			return Type.enumParameters(swfTags[0])[0];
+		else
+			return Type.enumParameters(swfTags[0])[0];
+	}
+	public function getSWF(className:String=null, version:Int=10, compressed:Bool=true, width:Int=800, height:Int=600, fps:Int=30, nframes:Int=1):haxe.io.Bytes
+	{
+		var swfFile = 
+		{
+			header: {version:version, compressed:compressed, width:width, height:height, fps:fps, nframes:nframes},
+			tags:[]
+		};
+		swfFile.tags.push(TSandBox({useDirectBlit :false, useGPU:false, hasMetaData:false, actionscript3:true, useNetWork:false}));
+		for(t in swfTags)
+			swfFile.tags.push(t);
+		swfFile.tags.push(TSymbolClass([{cid:0, className:className!=null?className:classNames.pop()}]));
+		swfFile.tags.push(TShowFrame);
+		var swfOutput:haxe.io.BytesOutput = new haxe.io.BytesOutput();
+		var writer = new format.swf.Writer(swfOutput);
+		writer.write(swfFile);
+		return swfOutput.getBytes();
+	}
+	public function getSWC():haxe.io.Bytes
+	{
+		var swfFile = 
+		{
+			header: {version:10, compressed:true, width:500, height:400, fps:30, nframes:1},
+			tags:[]
+		};
+		swfFile.tags.push(TSandBox({useDirectBlit :false, useGPU:false, hasMetaData:false, actionscript3:true, useNetWork:false}));
+		for(t in swfTags)
+			swfFile.tags.push(t);
+		swfFile.tags.push(TShowFrame);
+		var swfOutput:haxe.io.BytesOutput = new haxe.io.BytesOutput();
+		var writer = new format.swf.Writer(swfOutput);
+		writer.write(swfFile);
+		var library = swfOutput.getBytes();
+		var swcWriter = new SwcWriter();
+
+		swcWriter.write(swcClasses, library);
+		var swc = swcWriter.getSWC();
+		return swc;
+	}
+	public function abc2swf(data:haxe.io.Bytes)
+	{
+		#if cpp
+			throw "ERROR: Due to a bug in the cpp target, abc2swf with .abc input is currently not available.";
+		#else
+		var abcReader = new format.abc.Reader(new haxe.io.BytesInput(data));
+		var abcFile = abcReader.read();
+		var inits = abcFile.inits;
+		var init = inits.pop();
+		var fields = init.fields;
+		var className="";
+		for(f in fields)
+		{
+			switch(f.kind)
+			{
+				case FClass(c):
+					var iName = abcFile.classes[Type.enumParameters(c)[0]].name;
+					var name = abcFile.get(abcFile.names, iName);
+					switch (name)
+					{
+						case NName(id, ns):
+							classNames = [abcFile.get(abcFile.strings, id)];
+						default:
+					}
+				default:
+			}
+		}
+		swfTags=[TActionScript3(data, { id : 1, label : className} )];
+		#end
+	}
+	private function xml2abc(xml):SWFTag
 	{	
 		var ctx_xml:Xml = xml;
 		ctx = new format.abc.Context();
@@ -61,6 +141,8 @@ class AbcWriter
 		functionClosures = new Hash();
 		inits= new Hash();
 		classDefs = new Hash();
+		classNames = new Array();
+		swcClasses = new Array();
 		var ctx = ctx;
 		
 		//FUNCTION CLOSURES
@@ -95,6 +177,7 @@ class AbcWriter
 	
 				case 'class', 'interface':
 					className = _classNode.get('name');
+					classNames.push(className);
 					var cl = ctx.beginClass(className, _classNode.get('interface') == 'true');
 					curClass = cl;
 					classDefs.set(className, ctx.getClass(cl));
@@ -108,13 +191,14 @@ class AbcWriter
 					cl.isFinal = _classNode.get('final') == 'true';
 					cl.isInterface = _classNode.get('interface') == 'true';
 					cl.isSealed = _classNode.get('sealed') == 'true';
-					//cl.namespace = namespaceType(_classNode.get('ns'));//ctx.namespace(NProtected(ctx.string(curClassName)));
+					//cl.Namespace = NamespaceType(_classNode.get('ns'));//ctx.Namespace(NProtected(ctx.string(curClassName)));
 					var _extends = _classNode.get('extends');
 					if (_extends != null)
 					{
 						cl.superclass = ctx.type(getImport(_extends));
 						ctx.addClassSuper(getImport(_extends));
 					}
+					swcClasses.push([className, _extends==null?"Object":_extends]);
 					for(member in _classNode.elements())
 					{
 						switch(member.nodeName)
@@ -127,7 +211,7 @@ class AbcWriter
 								var isStatic:Bool = member.get('static') == 'true';
 								var value:String = member.get('value');
 								var _const:Bool = member.get('const') == 'true';
-								var ns = namespaceType(member.get('ns'));
+								var ns = NamespaceType(member.get('ns'));
 								var _value = (value==null)?null: switch (type)
 								{
 									case 'String': VString(ctx.string(value));
@@ -169,15 +253,11 @@ class AbcWriter
 					}
 			}
 		}
-		var abcFile = ctx.getData();
 		var abcOutput = new haxe.io.BytesOutput();
-		format.abc.Writer.write(abcOutput, abcFile);
-		if (info)
-			return TActionScript3(abcOutput.getBytes(), { id : 1, label : className } );
-		else
-			return abcOutput.getBytes();
+		format.abc.Writer.write(abcOutput, ctx.getData());
+		return TActionScript3(abcOutput.getBytes(), { id : 1, label : className } );
 	}
-	function createFunction(node:Xml, functionType:String, ?isInterface:Bool=false)
+	private function createFunction(node:Xml, functionType:String, ?isInterface:Bool=false)
 	{
 		maxStack= 0;
 		currentStack = 0;
@@ -212,7 +292,7 @@ class AbcWriter
 			defaultParameters : _defaultParameters,
 			paramNames : null//Null<Array<Null<Index<String>>>>;
 		}
-		var ns = namespaceType(node.get('ns'));
+		var ns = NamespaceType(node.get('ns'));
 		var f = null;
 		if (functionType == 'function')
 		{
@@ -302,7 +382,7 @@ class AbcWriter
 			nonEmptyStack(node.get('name'));
 		return f;
 	}
-	function writeCodeBlock(member:Xml, f)/*:Bool*/
+	private function writeCodeBlock(member:Xml, f)/*:Bool*/
 	{
 		if (log)
 		{
@@ -469,19 +549,13 @@ class AbcWriter
 			}
 		}
 	}
-	
-	public function abc2xml(abc):String
-	{
-		return "";
-	}
 	private function getImport(name:String):String
 	{
 		if (imports.exists(name))
 			return imports.get(name);
 		return name;
 	}
-	
-	private function namespaceType(ns:String)
+	private function NamespaceType(ns:String)
 	{
 		return ctx._namespace(
 			switch(ns)
@@ -490,14 +564,13 @@ class AbcWriter
 					case 'private': NPrivate(ctx.string("*"));
 					case 'protected': NProtected(ctx.string(curClassName));
 					case 'internal': NInternal(ctx.string(""));
-					case 'namespace': NNamespace(ctx.string(curClassName));
+					case 'Namespace': NNamespace(ctx.string(curClassName));
 					case 'explicit': NExplicit(ctx.string(""));//name todo
 					case 'staticProtected': NStaticProtected(ctx.string(curClassName));
 					default : NPublic(ctx.string(""));
 				});
 	}
-	
-	private function parseLocals(locals:String):Null < Array < Field >> 
+	private function parseLocals(locals:String):Null<Array<Field>> 
 	{
 		var locs:Array < String > = locals.split(',');
 		var out:Array<Field> = new Array();
@@ -560,7 +633,6 @@ class AbcWriter
 		if(log)
 			logStack(msg);
 	}
-	
 	private function urlDecode(str:String):String
 	{
 		return str.split('&quot;').join('"').split('&lt;').join('<');
@@ -718,7 +790,7 @@ class AbcWriter
 				currentScopeStack++;
 				maxScopeStack++;
 
-			case ONamespace(v): //0x31, pushnamespace, stack:0|+1, scope:0|0
+			case ONamespace(v): //0x31, pushNamespace, stack:0|+1, scope:0|0
 				if(++currentStack>maxStack)
 					maxStack++;
 
@@ -1218,8 +1290,7 @@ class AbcWriter
 	{
 		trace(msg);
 	}
-
-	public static function createABC(className : String, baseClass : String):SWFTag
+	public static function createABC(className:String, baseClass:String):SWFTag
 	{
 		var ctx = new format.abc.Context();
 		var c = ctx.beginClass(className, false);

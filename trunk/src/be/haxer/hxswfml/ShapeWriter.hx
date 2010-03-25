@@ -34,7 +34,7 @@ class ShapeWriter
 	{
 		reset(forceShape3);
 	}
-	function reset(?forceShape3:Bool=false)
+	public function reset(?forceShape3:Bool=false)
 	{
 		_xMin= Math.POSITIVE_INFINITY;
 		_yMin= Math.POSITIVE_INFINITY;
@@ -68,7 +68,7 @@ class ShapeWriter
 		}
 		_shapeRecords.push( SHRChange(_shapeChangeRec) );
 	}
-	public function beginGradientFill(type:String="linear", colors:Array<Dynamic>, alphas:Array<Dynamic>, ratios:Array<Dynamic>, x:Float, y:Float, scaleX:Float, scaleY:Float, ?rotate0:Float=0, ?rotate1:Float=0):Void
+	public function beginGradientFill(type:String, colors:Array<Dynamic>, alphas:Array<Dynamic>, ratios:Array<Dynamic>, x:Float, y:Float, scaleX:Float, scaleY:Float, ?rotate0:Float=0, ?rotate1:Float=0):Void
 	{
 		_stateFillStyle = true;
 		var data:Array<GradRecord> = new Array();
@@ -222,7 +222,6 @@ class ShapeWriter
 		}
 		_shapeRecords.push( SHRChange(_shapeChangeRec) );
 	}
-
 	public function curveTo( cx : Float, cy : Float, ax : Float, ay : Float ):Void
 	{
 		if(!_boundsInitialized)initBounds(0,0);
@@ -343,7 +342,7 @@ class ShapeWriter
 		curveTo(x + w, y + h, x + w / 2, y + h);//4
 		curveTo(x, y+h, x, y+h/2);
 	}
-	public function getTag(id:Int,?useWinding:Null<Bool>,?useNonScalingStroke:Null<Bool>,?useScalingStroke:Null<Bool>)
+	public function getTag(id:Int,?useWinding:Null<Bool>,?useNonScalingStroke:Null<Bool>,?useScalingStroke:Null<Bool>):SWFTag
 	{
 		_shapeRecords.push(SHREnd);
 
@@ -366,6 +365,32 @@ class ShapeWriter
 				useScalingStroke: useScalingStroke,	shapes: _shapeWithStyleData}));
 		}
 	}	
+	public function getSWF(id:Int=1, version:Int=10, compressed:Bool=true, width:Int=800, height:Int=600, fps:Int=30, nframes:Int=1):Bytes
+	{
+		var placeObject2 = new PlaceObject();
+		placeObject2.depth = 1;
+		placeObject2.move = false;
+		placeObject2.cid = id;
+		placeObject2.bitmapCache =false;
+		var swfFile = 
+		{
+			header: {version:version, compressed:compressed, width:width, height:height, fps:fps, nframes:nframes},
+			tags: 
+			[
+				getTag(id),
+				TPlaceObject2(placeObject2),
+				TShowFrame
+			]
+		}
+		var swfOutput:haxe.io.BytesOutput = new haxe.io.BytesOutput();
+		var writer = new Writer(swfOutput);
+		writer.write(swfFile);
+		return swfOutput.getBytes();
+	}
+	public function getShapeRecords():Array<ShapeRecord>
+	{
+		return _shapeRecords;
+	}
 	private function initBounds(x,y):Void
 	{
 		var midLine:Float = _lineStyles[_lineStyles.length-1]==null?0:_lineStyles[_lineStyles.length-1].width/40;

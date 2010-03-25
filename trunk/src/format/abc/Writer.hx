@@ -37,7 +37,7 @@ class Writer {
 		this.o = o;
 		opw = new OpWriter(o);
 	}
-
+/*
 	function beginTag( id : Int, len : Int ) {
 		if( len >= 63 ) {
 			o.writeUInt16((id << 6) | 63);
@@ -45,7 +45,7 @@ class Writer {
 		} else
 			o.writeUInt16((id << 6) | len);
 	}
-
+*/
 	inline function writeInt( n : Int ) {
 		opw.writeInt(n);
 	}
@@ -327,7 +327,8 @@ class Writer {
 		writeList2(d.methodTypes,writeMethodType);
 		writeList2(d.metadatas,writeMetadata);
 		writeList2(d.classes,writeClass);
-		for( c in d.classes ) {
+		for( c in d.classes ) 
+		{
 			writeIndex(c.statics);
 			writeList2(c.staticFields,writeField);
 		}

@@ -40,8 +40,34 @@
 			</xs:appinfo>
 		</xs:annotation>
 		<xs:complexType>
+		<xs:attribute name="compressed" type="xs:boolean" use="optional" default="true"/>
+			<xs:attribute name="fps" use="optional" default="30">
+				<xs:simpleType>
+					<xs:restriction base="xs:integer">
+						<xs:minInclusive value="0"/>
+						<xs:maxInclusive value="120"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:attribute>
+			<xs:attribute name="frameCount" type="xs:integer" use="optional" default="1"/>
+			<xs:attribute name="height" use="optional" default="600">
+				<xs:simpleType>
+					<xs:restriction base="xs:integer">
+						<xs:minInclusive value="1"/>
+						<xs:maxInclusive value="2880"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:attribute>
+			<xs:attribute name="version" type="xs:integer" use="optional" default="10"/>
+			<xs:attribute name="width" use="optional" default="800">
+				<xs:simpleType>
+					<xs:restriction base="xs:integer">
+						<xs:minInclusive value="1"/>
+						<xs:maxInclusive value="2880"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:attribute>
 			<xs:sequence>
-				<xs:element ref="Header"/>
 				<xs:element ref="FileAttributes"/>
 				<xs:sequence maxOccurs="unbounded">
 					<xs:choice minOccurs="0" maxOccurs="unbounded">
@@ -110,44 +136,9 @@
 		</xs:keyref>
 	</xs:element>
 	<!--____________________________________________________________-->
-	<xs:element name="Header">
-		<xs:annotation>
-			<xs:documentation>This element is mandatory, can only occur once and must be the first element in your swf.</xs:documentation>
-		</xs:annotation>
-		<xs:complexType>
-			<xs:attribute name="compressed" type="xs:boolean" use="optional" default="true"/>
-			<xs:attribute name="fps" use="optional" default="30">
-				<xs:simpleType>
-					<xs:restriction base="xs:integer">
-						<xs:minInclusive value="0"/>
-						<xs:maxInclusive value="120"/>
-					</xs:restriction>
-				</xs:simpleType>
-			</xs:attribute>
-			<xs:attribute name="frameCount" type="xs:integer" use="optional" default="1"/>
-			<xs:attribute name="height" use="optional" default="600">
-				<xs:simpleType>
-					<xs:restriction base="xs:integer">
-						<xs:minInclusive value="1"/>
-						<xs:maxInclusive value="2880"/>
-					</xs:restriction>
-				</xs:simpleType>
-			</xs:attribute>
-			<xs:attribute name="version" type="xs:integer" use="optional" default="10"/>
-			<xs:attribute name="width" use="optional" default="800">
-				<xs:simpleType>
-					<xs:restriction base="xs:integer">
-						<xs:minInclusive value="1"/>
-						<xs:maxInclusive value="2880"/>
-					</xs:restriction>
-				</xs:simpleType>
-			</xs:attribute>
-		</xs:complexType>
-	</xs:element>
-	<!--____________________________________________________________-->
 	<xs:element name="FileAttributes">
 		<xs:annotation>
-			<xs:documentation>This element can occur only once and must come after the Header element. If the swf contains a DefineABC element then the actionscript3 attribute must be set to true so that the Flash Player will set the VM to AMV2. If the swf contains a DefineMeta element then the hasMetaData attribute must be set to true and vice versa: if the hasMetaData attribute has been set to true then the swf must contain a DefineMetadata element. To allow local playback of swf with access to network locations the useNetwork attribute must be set to true. Access to local files is not available in that case. If the swf needs to reference local files, then the useNetwork attribute must be set to false. </xs:documentation>
+			<xs:documentation>This element can occur only once and must be the first element. If the swf contains a DefineABC element then the actionscript3 attribute must be set to true so that the Flash Player will set the VM to AMV2. If the swf contains a DefineMeta element then the hasMetaData attribute must be set to true and vice versa: if the hasMetaData attribute has been set to true then the swf must contain a DefineMetadata element. To allow local playback of swf with access to network locations the useNetwork attribute must be set to true. Access to local files is not available in that case. If the swf needs to reference local files, then the useNetwork attribute must be set to false. </xs:documentation>
 		</xs:annotation>
 		<xs:complexType>
 			<xs:attribute name="actionscript3" type="xs:boolean" use="optional" default="true"/>
@@ -275,7 +266,6 @@
 			<xs:attribute name="selectable" type="xs:boolean" use="optional" default="false"/>
 			<xs:attribute name="alpha" type="xs:decimal" use="optional" default="1.0"/>
 			<xs:attribute name="textColor" use="optional" default="0x000000">
-				<!--RGBA-->
 				<xs:simpleType>
 					<xs:restriction base="xs:string">
 						<xs:pattern value="(0x[0-9A-Fa-f]{6})"/>

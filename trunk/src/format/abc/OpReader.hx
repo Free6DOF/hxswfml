@@ -109,9 +109,9 @@ class OpReader {
 		{
 			if (jumps[bytePos + offset] == null)
 				jumps[bytePos + offset] = [];
-			jumps[bytePos + offset].push('J' + jumpNameIndex);
+			jumps[bytePos + offset].push('jump' + jumpNameIndex);
 			ops.push(OJump(j, offset));//commented in xml
-			return OJump2(j, 'J' + jumpNameIndex, offset);
+			return OJump2(j, 'jump' + jumpNameIndex, offset);
 		}
 	}
 
@@ -136,9 +136,9 @@ class OpReader {
 			ORegKill(reg());
 		case 0x09:
 			labelNameIndex++;
-			labels[(bytePos-1)]= 'L' + labelNameIndex;
+			labels[(bytePos-1)]= 'label' + labelNameIndex;
 			ops.push(OLabel);//commented in xml
-			OLabel2('L' + labelNameIndex);
+			OLabel2('label' + labelNameIndex);
 		case 0x0C:
 			jmp(JNotLt);
 		case 0x0D:

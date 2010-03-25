@@ -1,172 +1,169 @@
+package be.haxer.hxswfml;
+import format.swf.Data;
+
 /**
 * 
 * @author Jan J. Flanders
 */
-package be.haxer.hxswfml;
-#if !cpp
-import be.haxer.hxswfml.AbcReader;
-#end
-import be.haxer.hxswfml.AbcWriter;
-import be.haxer.hxswfml.AudioWriter;
-import be.haxer.hxswfml.FontWriter;
-import be.haxer.hxswfml.ShapeWriter;
-import be.haxer.hxswfml.VideoWriter;
-
-import format.abc.Data;
-import format.swf.Data;
-import format.swf.Reader;
-import format.swf.Writer;
-import format.zip.Data;
-import format.zip.Writer;
-import format.mp3.Data;
-import format.mp3.Reader;
-import format.mp3.Writer;
-
-import haxe.io.Bytes;
-import haxe.io.BytesInput;
-import haxe.io.BytesOutput;
-
-#if air
-import flash.display.MovieClip;
-import flash.events.IOErrorEvent;
-import flash.filesystem.File;
-import flash.filesystem.FileMode;
-import flash.filesystem.FileStream;
-#elseif flash
-import flash.display.MovieClip;
-import flash.Lib;
-#elseif neko
-import neko.Lib;
-#elseif php
-import php.Lib;
-#end
-
 class SwfWriter
 {
-	private var currentTag : Xml;
-	private var validBaseClasses : Array<String>;
+	private var swf:SWF;
+	private var swfBytes:haxe.io.Bytes;
 	private var validElements : Hash<Array<String>>;
 	private var validChildren : Hash<Array<String>>;
-	private var swcClasses : Array<Array<String>>;
+	private var validBaseClasses : Array<String>;
 	private var bitmapIds : Array<Array<Int>>;
 	private var dictionary : Array<String>;
+	private var swcClasses : Array<Array<String>>;
+	private var currentTag : Xml;
 	private var strict:Bool;
 	public var library : Hash<Dynamic>;
+	
 	public static function main()
 	{
 		new SwfWriter();
 	}
-	public function new(?strict:Bool=true)
+	public function new()
 	{
-		this.strict=strict;
-		#if (swc || air)
-		new flash.Boot(new MovieClip());//for swc
-		#end
+		#if (swc || air) 
+			new flash.Boot(new flash.display.MovieClip()); //for swc
+		#end 
+		library = new Hash();
+		init();
+	}
+	public function write(input:String, ?strict:Bool=true):haxe.io.Bytes
+	{
 		bitmapIds = new Array();
 		dictionary = new Array();
 		swcClasses = new Array();
-		library = new Hash();
-		setup();
-	}
-	public function xml2swf(input : String, fileOut : String) : Bytes
-	{
+		
+		this.strict=strict;
 		var xml : Xml = Xml.parse(input);
-		var swfBytesOutput = new BytesOutput();
-		var swfWriter : format.swf.Writer = new format.swf.Writer(swfBytesOutput);
-		createSWF(xml, swfWriter);
-		var swfBytes = swfBytesOutput.getBytes();
-
-		if(StringTools.endsWith(fileOut, '.swf'))
+		var root: Xml = xml.firstElement();
+		setCurrentElement(root);
+		var header = header();
+		var tags:Array<Dynamic>=[];
+		
+		for(e in root.elements())
 		{
-			return swfBytes;
-		}
-		else if(StringTools.endsWith(fileOut, '.swc'))
-		{
-			var date : Date = Date.now();
-			var mod : Float = date.getTime();
-
-			var xmlBytesOutput = new BytesOutput();
-			xmlBytesOutput.write(Bytes.ofString(createXML(mod)));
-			var xmlBytes = xmlBytesOutput.getBytes();
-			
-			var zipBytesOutput = new BytesOutput();
-			var zipWriter = new format.zip.Writer(zipBytesOutput);
-			
-			var data : List<Entry> = new List();
-			
-			data.push({
-			fileName : 'catalog.xml', 
-			fileSize : xmlBytes.length, 
-			fileTime : date, 
-			compressed : false, 
-			dataSize : xmlBytes.length,
-			data : xmlBytes,
-			crc32 : format.tools.CRC32.encode(xmlBytes),
-			extraFields : null});
-			
-			data.push({
-			fileName : 'library.swf', 
-			fileSize : swfBytes.length, 
-			fileTime : date, 
-			compressed : false, 
-			dataSize : swfBytes.length,
-			data : swfBytes,
-			crc32 : format.tools.CRC32.encode(swfBytes),
-			extraFields : null});
-			
-			zipWriter.writeData( data );
-			
-			return zipBytesOutput.getBytes();
-		}
-		else
-		{
-			error(': Supported file formats for output are .swf and .swc');
-			return null;
-		}
-	}
-	private function createSWF(xml : Xml, swfWriter) : Void
-	{
-		var swf : Xml = xml.firstElement();
-		for(tag in swf.elements())
-		{
-			currentTag = tag;
-			checkUnknownAttributes();
-			switch(currentTag.nodeName.toLowerCase())
+			setCurrentElement(e);
+			var obj:Dynamic = Reflect.field(this, e.nodeName.toLowerCase())();
+			switch(Type.typeof(obj))
 			{
-				case 'header' : swfWriter.writeHeader(header());
-				case 'fileattributes' : swfWriter.writeTag(fileAttributes());
-				case 'setbackgroundcolor' : swfWriter.writeTag(setBackgroundColor());
-				case 'scriptlimits' : swfWriter.writeTag(scriptLimits());
-				case 'definebitsjpeg' : swfWriter.writeTag(defineBitsJPEG());
-				case 'defineshape' : swfWriter.writeTag(defineShape());
-				case 'definesprite' : for(tag in defineSprite()) swfWriter.writeTag(tag);//swfWriter.writeTag(defineSprite());
-				case 'definebutton' : swfWriter.writeTag(defineButton2());
-				case 'definebinarydata' : swfWriter.writeTag(defineBinaryData());
-				case 'definesound' : swfWriter.writeTag(defineSound());
-				case 'definefont' : swfWriter.writeTag(defineFont());
-				case 'defineedittext' : swfWriter.writeTag(defineEditText());
-				case 'defineabc' : for(tag in defineABC()) swfWriter.writeTag(tag);
-				case 'definescalinggrid' : swfWriter.writeTag(defineScalingGrid());
-				case 'placeobject' : swfWriter.writeTag(placeObject2());
-				case 'removeobject' : swfWriter.writeTag(removeObject2());
-				case 'startsound' : swfWriter.writeTag(startSound());
-				case 'symbolclass' : for(tag in symbolClass()) swfWriter.writeTag(tag);
-				case 'exportassets' : for(tag in exportAssets()) swfWriter.writeTag(tag);
-				case 'metadata' : swfWriter.writeTag(metadata());
-				case 'framelabel' : swfWriter.writeTag(frameLabel());
-				case 'showframe' : for(tag in showFrame()) swfWriter.writeTag(tag);
-				case 'endframe' : swfWriter.writeTag(endFrame());
-				case 'tween' : for(tag in tween()) swfWriter.writeTag(tag);
-				case 'custom' : swfWriter.writeTag(custom());
-				default:
-					error('ERROR: ' + currentTag.nodeName + ' is not allowed inside an swf element. Valid children are: ' +  validChildren.get('swf').toString() + '. TAG: ' + currentTag.toString());
+				case TClass(Array) : for(i in 0...obj.length)tags.push(obj[i]);
+				default : tags.push(obj);
 			}
 		}
-		swfWriter.writeEnd();
+		var swfBytesOutput = new haxe.io.BytesOutput();
+		var swfWriter = new format.swf.Writer(swfBytesOutput);
+		swfWriter.write({header:header, tags:tags});
+		swfBytes = swfBytesOutput.getBytes();
+		return swfBytes;
+	}
+	public function getSWF():haxe.io.Bytes
+	{
+		return swfBytes;
+	}
+	public function getSWC():haxe.io.Bytes
+	{
+		var date : Date = Date.now();
+		var mod : Float = date.getTime();
+
+		var xmlBytesOutput = new haxe.io.BytesOutput();
+		xmlBytesOutput.write(haxe.io.Bytes.ofString(createXML(mod)));
+		var xmlBytes = xmlBytesOutput.getBytes();
+			
+		var zipBytesOutput = new haxe.io.BytesOutput();
+		var zipWriter = new format.zip.Writer(zipBytesOutput);
+			
+		var data : List<format.zip.Data.Entry> = new List();
+		
+		data.push({
+		fileName : 'catalog.xml', 
+		fileSize : xmlBytes.length, 
+		fileTime : date, 
+		compressed : false, 
+		dataSize : xmlBytes.length,
+		data : xmlBytes,
+		crc32 : format.tools.CRC32.encode(xmlBytes),
+		extraFields : null});
+			
+		data.push({
+		fileName : 'library.swf', 
+		fileSize : swfBytes.length, 
+		fileTime : date, 
+		compressed : false, 
+		dataSize : swfBytes.length,
+		data : swfBytes,
+		crc32 : format.tools.CRC32.encode(swfBytes),
+		extraFields : null});
+			
+		zipWriter.writeData( data );
+			
+		return zipBytesOutput.getBytes();
+	}
+	public function getTags():Array<SWFTag>
+	{
+		return swf.tags;
+	}
+	private function init():Void
+	{
+		validElements = new Hash();
+		validElements.set('swf', ['width', 'height', 'fps', 'version', 'compressed', 'frameCount']);
+		validElements.set('fileattributes', ['actionscript3', 'useNetwork', 'useDirectBlit', 'useGPU', 'hasMetaData']);
+		validElements.set('setbackgroundcolor', ['color']);
+		validElements.set('scriptlimits', ['maxRecursionDepth', 'scriptTimeoutSeconds']);
+		validElements.set('definebitsjpeg', ['id', 'file']);
+		validElements.set('defineshape', ['id', 'bitmapId', 'x', 'y', 'scaleX', 'scaleY', 'rotate0', 'rotate1', 'repeat', 'smooth']);
+		validElements.set('beginfill',  ['color', 'alpha']);
+		validElements.set('begingradientfill', ['colors', 'alphas', 'ratios', 'type', 'x', 'y', 'scaleX', 'scaleY', 'rotate0', 'rotate1']);
+		validElements.set('beginbitmapfill', ['bitmapId', 'x', 'y', 'scaleX', 'scaleY', 'rotate0', 'rotate1', 'repeat', 'smooth']);
+		validElements.set('linestyle', ['width', 'color', 'alpha','pixelHinting', 'scaleMode', 'caps', 'joints', 'miterLimit', 'noClose']);
+		validElements.set('moveto', ['x', 'y']);
+		validElements.set('lineto', ['x', 'y']);
+		validElements.set('curveto', ['cx', 'cy', 'ax', 'ay']);
+		validElements.set('endfill', []);
+		validElements.set('endline', []);
+		validElements.set('clear', []);
+		validElements.set('drawcircle', ['x', 'y', 'r', 'sections']);
+		validElements.set('drawellipse', ['x', 'y', 'width', 'height']);
+		validElements.set('drawrect', ['x', 'y', 'width', 'height']);
+		validElements.set('drawroundrect', ['x', 'y', 'width', 'height', 'r']);
+		validElements.set('drawroundrectcomplex', ['x', 'y', 'width', 'height', 'rtl', 'rtr', 'rbl', 'rbr']);
+		validElements.set('definesprite', ['id', 'frameCount', 'file', 'fps', 'width', 'height']);
+		validElements.set('definebutton', ['id']);
+		validElements.set('buttonstate', ['id', 'depth', 'hit', 'down', 'over', 'up', 'x', 'y', 'scaleX', 'scaleY', 'rotate0', 'rotate1']);
+		validElements.set('definebinarydata', ['id', 'file']);
+		validElements.set('definesound', ['id', 'file']);
+		validElements.set('definefont', ['id', 'file','charCodes']);
+		validElements.set('defineedittext', ['id', 'initialText', 'fontID', 'useOutlines', 'width', 'height', 'wordWrap', 'multiline', 'password', 'input', 'autoSize', 'selectable', 'border', 'wasStatic', 'html', 'fontClass', 'fontHeight', 'textColor', 'alpha', 'maxLength', 'align', 'leftMargin', 'rightMargin', 'indent', 'leading', 'variableName', 'file']);
+		validElements.set('defineabc', ['file', 'name']);
+		validElements.set('definescalinggrid', ['id', 'x', 'width', 'y', 'height']);
+		validElements.set('placeobject', ['id', 'depth', 'name', 'move', 'x', 'y', 'scaleX', 'scaleY', 'rotate0', 'rotate1']);
+		validElements.set('removeobject', ['depth']);
+		validElements.set('startsound', ['id', 'stop', 'loopCount']);
+		validElements.set('symbolclass', ['id', 'class', 'base']);
+		validElements.set('exportassets', ['id', 'class']);
+		validElements.set('metadata', ['file']);
+		validElements.set('framelabel', ['name', 'anchor']);
+		validElements.set('showframe', ['count']);
+		validElements.set('endframe', []);
+		validElements.set('tween', ['depth', 'frameCount']);
+		validElements.set('tw', ['prop', 'start', 'end']);
+		validElements.set('custom', ['tagId', 'file', 'data', 'comment']);
+		
+		validChildren = new Hash();
+		validChildren.set('swf', ['fileattributes', 'setbackgroundcolor', 'scriptlimits', 'definebitsjpeg', 'defineshape', 'definesprite', 'definebutton', 'definebinarydata', 'definesound', 'definefont', 'defineedittext', 'defineabc', 'definescalinggrid', 'placeobject', 'removeobject', 'startsound', 'symbolclass', 'exportassets', 'metadata', 'framelabel', 'showframe', 'endframe', 'custom']);
+		validChildren.set('defineshape', ['beginfill', 'begingradientfill', 'beginbitmapfill', 'linestyle', 'moveto', 'lineto', 'curveto', 'endfill', 'endline', 'clear', 'drawcircle', 'drawellipse', 'drawrect', 'drawroundrect', 'drawroundrectcomplex', 'custom']);
+		validChildren.set('definesprite', ['placeobject', 'removeobject', 'startsound', 'framelabel', 'showframe', 'endframe', 'tween', 'custom']);
+		validChildren.set('definebutton', ['buttonstate', 'custom']);
+		validChildren.set('tween', ['tw', 'custom']);
+	
+		validBaseClasses = ['flash.display.MovieClip', 'flash.display.Sprite', 'flash.display.SimpleButton', 'flash.display.Bitmap', 'flash.media.Sound', 'flash.text.Font','flash.utils.ByteArray'];
 	}
 	
-	//FILE TAGS
-	private function header()
+	//FILEHEADER:
+	private function header():SWFHeader
 	{
 		return
 		{
@@ -178,7 +175,9 @@ class SwfWriter
 			nframes : getInt('frameCount', 1)
 		};
 	}
-	private function fileAttributes()
+	
+	//FILE TAGS
+	private function fileattributes():SWFTag
 	{
 		return 
 		TSandBox (
@@ -190,28 +189,35 @@ class SwfWriter
 			useNetWork : getBool('useNetwork', false)
 		});
 	}
-	private function setBackgroundColor()
+	private function setbackgroundcolor():SWFTag
 	{
 		return TBackgroundColor(getInt('color', 0xffffff));
 	}
-	private function scriptLimits()
+	private function scriptlimits():SWFTag
 	{
 		var maxRecursion = getInt('maxRecursionDepth', 256);
 		var timeoutSeconds = getInt('scriptTimeoutSeconds', 15);
 		return TScriptLimits(maxRecursion, timeoutSeconds);
 	}
+	private function metadata():SWFTag
+	{
+		var file = getString('file', "", true);
+		var data = getContent(file);
+		return TMetadata(data);
+	}
+
 	// DEFINITION TAGS
-	private function defineBitsJPEG()
+	private function definebitsjpeg():SWFTag
 	{
 		var id = getInt('id', null, true, true);
 		var file = getString('file', "", true);
 		var bytes = getBytes(file);
 		var imageWriter = new ImageWriter();
-		imageWriter.parse(bytes, file, currentTag, error);
+		imageWriter.write(bytes, file, currentTag);
 		bitmapIds[id] = [imageWriter.width, imageWriter.height];
-		return imageWriter.getImageTag(id);
+		return imageWriter.getTag(id);
 	}
-	private function defineShape()
+	private function defineshape():SWFTag
 	{
 		var id = getInt('id', null, true, true);
 		var bounds;
@@ -219,13 +225,8 @@ class SwfWriter
 		if(currentTag.exists('bitmapId'))
 		{
 			var bitmapId = getInt('bitmapId', null);
-			if(strict)
-			{
-				if(dictionary[bitmapId] != 'definebitsjpeg')
-				{
-					error('ERROR: bitmapId ' + bitmapId + ' must be a reference to a DefineBitsJPEG tag. TAG: ' + currentTag.toString());
-				}
-			}
+			if(strict && dictionary[bitmapId] != 'definebitsjpeg')
+				error('ERROR: bitmapId ' + bitmapId + ' must be a reference to a DefineBitsJPEG tag. TAG: ' + currentTag.toString());
 			var width = bitmapIds[bitmapId][0] * 20;
 			var height = bitmapIds[bitmapId][1] * 20;
 			var scaleX = getFloat('scaleX', 1.0) * 20;
@@ -274,8 +275,7 @@ class SwfWriter
 			var shapeWriter = new ShapeWriter();
 			for(cmd in currentTag.elements())
 			{
-				currentTag = cmd;
-				checkUnknownAttributes();
+				setCurrentElement(cmd);
 				switch(currentTag.nodeName.toLowerCase())
 				{
 					case 'beginfill':
@@ -305,13 +305,8 @@ class SwfWriter
 						
 					case 'beginbitmapfill':
 						var bitmapId = getInt('bitmapId', null, true);
-						if(strict)
-						{
-							if(dictionary[bitmapId] != 'definebitsjpeg')
-							{
-								error('ERROR: bitmapId ' + bitmapId + ' must be a reference to a DefineBitsJPEG tag. TAG: ' + currentTag.toString());
-							}
-						}
+						if(strict && dictionary[bitmapId] != 'definebitsjpeg')
+							error('ERROR: bitmapId ' + bitmapId + ' must be a reference to a DefineBitsJPEG tag. TAG: ' + currentTag.toString());
 						var scaleX = getFloat('scaleX', 1.0);
 						var scaleY = getFloat('scaleY', 1.0);
 						var scale = {x : scaleX, y : scaleY};
@@ -335,7 +330,7 @@ class SwfWriter
 						var joints = getString('joints', null);
 						var miterLimit = getInt('miterLimit', null);
 						var noClose = getBool('noClose', null);
-						//shapeWriter.lineStyle(width, color, alpha);
+						//shapeWriter.lineStyle(width, color, alpha);//swf version <=9
 						shapeWriter.lineStyle(width, color, alpha, pixelHinting, scaleMode, caps, joints, miterLimit, noClose);
 						
 			    case 'moveto':
@@ -411,15 +406,21 @@ class SwfWriter
 			return shapeWriter.getTag(id);
 		}
 	}
-	private function defineSprite()
+	private function definesprite():Array<SWFTag>
 	{
 		var id = getInt('id', null, true, true);
 		var file = getString('file', "", false);
 		if(file!='')
 		{
+			var fps = getInt('fps', null, false, false);
+			if(fps==null)fps=12;
+			var w = getInt('width', null, false, false);
+			if(w==null)w=320;
+			var h = getInt('height', null, false, false);
+			if(h==null)h=240;
 			var bytes = getBytes(file);
 			var videoWriter = new VideoWriter();
-			videoWriter.flv2swf(bytes, id);
+			videoWriter.write(bytes, id, fps, w, h);
 			return videoWriter.getTags();
 		}
 		else
@@ -428,19 +429,18 @@ class SwfWriter
 			var tags : Array<SWFTag> = new Array();
 			for(tag in currentTag.elements())
 			{
-				currentTag = tag;
-				checkUnknownAttributes();
+				setCurrentElement(tag);
 				switch(currentTag.nodeName.toLowerCase())
 				{
-					case "placeobject" : tags.push(placeObject2());
-					case "removeobject" : tags.push(removeObject2());
-					case "startsound" : tags.push(startSound());
-					case "framelabel" : tags.push(frameLabel());
+					case "placeobject" : tags.push(placeobject());
+					case "removeobject" : tags.push(removeobject());
+					case "startsound" : tags.push(startsound());
+					case "framelabel" : tags.push(framelabel());
 					case 'showframe' : 
-						var showFrames = showFrame();
+						var showFrames = showframe();
 						for(tag in showFrames)
 							tags.push(tag);
-					case "endframe" : tags.push(endFrame());
+					case "endframe" : tags.push(endframe());
 					case 'tween' : for(tag in tween()) tags.push(tag);
 					default : error('ERROR: ' + currentTag.nodeName + ' is not allowed inside a DefineSprite element. Valid children are: ' + validChildren.get('definesprite').toString() + '. TAG: ' + currentTag.toString());
 				}
@@ -449,15 +449,13 @@ class SwfWriter
 		}
 		
 	}
-
-	private function defineButton2()
+	private function definebutton():SWFTag
 	{
 		var id = getInt('id', null, true, true);
 		var buttonRecords : Array<ButtonRecord> = new Array();
 		for(buttonRecord in currentTag.elements())
 		{
-				currentTag = buttonRecord;
-				checkUnknownAttributes();
+				setCurrentElement(buttonRecord);
 				switch(currentTag.nodeName.toLowerCase())
 				{
 					case 'buttonstate':
@@ -489,7 +487,7 @@ class SwfWriter
 			error('ERROR: You need to supply at least one buttonstate element. TAG: ' + currentTag.toString());
 		return TDefineButton2(id, buttonRecords);
 	}
-	private function defineSound()
+	private function definesound():SWFTag
 	{
 		var file = getString('file', "", true);
 		var sid = getInt('id', null, true, true);
@@ -500,17 +498,17 @@ class SwfWriter
 		var mp3FileBytes = new haxe.io.BytesInput(getBytes(file));
 		#end
 		var audioWriter = new AudioWriter();
-		audioWriter.parse(mp3FileBytes, file, currentTag, error);
-		return audioWriter.getSoundTag(sid);
+		audioWriter.write(mp3FileBytes, currentTag);
+		return audioWriter.getTag(sid);
 	}
-	private function defineBinaryData()
+	private function definebinarydata():SWFTag
 	{
 		var id = getInt('id', null, true, true);
 		var file = getString('file', "", true);
 		var bytes = getBytes(file);
 		return TBinaryData(id, bytes);
 	}
-	private function defineFont()
+	private function definefont():SWFTag
 	{
 		var _id = getInt('id', null, true, true);
 		var file = getString('file', "", true);
@@ -519,7 +517,7 @@ class SwfWriter
 		if(extension == 'swf')
 		{
 			var swf = getBytes(file);
-			var swfBytesInput = new BytesInput(swf);
+			var swfBytesInput = new haxe.io.BytesInput(swf);
 			var swfReader = new format.swf.Reader(swfBytesInput);
 			var header = swfReader.readHeader();
 			var tags : Array<SWFTag> = swfReader.readTagList();
@@ -541,10 +539,10 @@ class SwfWriter
 		else if(extension == 'ttf')
 		{
 			var bytes = getBytes(file);
-			var fontWriter = new FontWriter();
 			var ranges = getString('charCodes', "32-127", false/*true*/);
+			var fontWriter = new FontWriter();
 			fontWriter.write(bytes, ranges, 'swf');
-			fontTag = fontWriter.getFontTag(_id);
+			fontTag = fontWriter.getTag(_id);
 		}
 		else
 		{
@@ -552,15 +550,12 @@ class SwfWriter
 		}
 		return fontTag;
 	}
-	private function defineEditText()
+	private function defineedittext():SWFTag
 	{
 		var id = getInt('id', null, true, true);
 		var fontID = getInt('fontID', null);
-		if(strict)
-		{
-			if(fontID != null && dictionary[fontID] != 'definefont')
-				error('ERROR: The id ' + fontID + ' must be a reference to a DefineFont tag. TAG: ' + currentTag.toString());
-		}
+		if(strict && fontID != null && dictionary[fontID] != 'definefont')
+			error('ERROR: The id ' + fontID + ' must be a reference to a DefineFont tag. TAG: ' + currentTag.toString());
 		var textColor : Int = getInt('textColor', 0x000000);
 		var alpha : Int = Std.int(Math.round(getFloat('alpha', 1.0, false)*0xFF));
 		if(alpha >0xFF || alpha <0)
@@ -607,7 +602,7 @@ class SwfWriter
 			initialText : getString('initialText', "")
 		});
 	}
-	private function defineABC()
+	private function defineabc():Array<SWFTag>
 	{
 		var abcTags : Array<SWFTag> = new Array();
 		var name = getString('name', null, false);
@@ -617,7 +612,8 @@ class SwfWriter
 		{
 			var abcWriter = new AbcWriter();
 			abcWriter.name = name;
-			abcTags =  abcWriter.xml2abc(currentTag.elements().next().toString());
+			abcWriter.write(currentTag.elements().next().toString());
+			abcTags =  abcWriter.getTags();
 		}	
 		else 
 		{
@@ -630,7 +626,7 @@ class SwfWriter
 			else if(StringTools.endsWith(file, '.swf'))
 			{
 				var swf = getBytes(file);
-				var swfBytesInput = new BytesInput(swf);
+				var swfBytesInput = new haxe.io.BytesInput(swf);
 				var swfReader = new format.swf.Reader(swfBytesInput);
 				var header = swfReader.readHeader();
 				var tags : Array<SWFTag> = swfReader.readTagList();
@@ -660,9 +656,9 @@ class SwfWriter
 										var str = cpoolStrings[i];
 										if (regex.match(str))
 										{
-											inform('<-' + cpoolStrings[i]);
+											//trace('<-' + cpoolStrings[i]);
 											cpoolStrings[i] = regex.replace(str, s + remap);
-											inform('->' + cpoolStrings[i]);
+											//trace('->' + cpoolStrings[i]);
 										}
 									}
 								}
@@ -683,12 +679,13 @@ class SwfWriter
 				var xml:String = getContent(file);
 				var abcWriter = new AbcWriter();
 				abcWriter.name = name;
-				abcTags = abcWriter.xml2abc(xml);
+				abcWriter.write(xml);
+				abcTags = abcWriter.getTags();
 			}
 		}
 		return abcTags;
 	}
-	private function defineScalingGrid()
+	private function definescalinggrid():SWFTag
 	{
 		var id = getInt('id', null, true, false, true);
 		var x = getInt('x', null, true) * 20;
@@ -698,8 +695,9 @@ class SwfWriter
 		var splitter = { left : x, right : x + width, top : y, bottom : y + height};
 		return TDefineScalingGrid(id, splitter);
 	}
+
 	//CONTROL TAGS
-	private function placeObject2()
+	private function placeobject():SWFTag
 	{
 		var id = getInt('id', null);
 		if(id != null)
@@ -724,7 +722,7 @@ class SwfWriter
 		
 		return TPlaceObject2(placeObject);
 	}
-	private function moveObject(depth : Int, x : Int, y : Int, scaleX : Null<Float>, scaleY : Null<Float>, rs0 : Null<Float>, rs1 : Null<Float>)
+	private function moveObject(depth : Int, x : Int, y : Int, scaleX : Null<Float>, scaleY : Null<Float>, rs0 : Null<Float>, rs1 : Null<Float>):SWFTag
 	{
 		var id = null;
 		var depth = depth;
@@ -768,8 +766,7 @@ class SwfWriter
 		placeObject.bitmapCache = false;
 		return TPlaceObject2(placeObject);
 	}
-	
-	private function tween()/*:Array<SWFTag>*/
+	private function tween():Array<SWFTag>
 	{
 		var depth : Int = getInt('depth', null, true);
 		var frameCount : Int = getInt('frameCount', null, true);
@@ -790,8 +787,7 @@ class SwfWriter
 		
 		for(tagNode in currentTag.elements())
 		{
-			currentTag = tagNode;
-			checkUnknownAttributes();
+			setCurrentElement(tagNode);
 			switch(currentTag.nodeName.toLowerCase())
 			{
 				case 'tw' : 
@@ -850,17 +846,16 @@ class SwfWriter
 			var drs0 : Null<Float> = (startRotateO == null || endRotateO == null)? null : startRotateO + ((endRotateO - startRotateO) * i) / frameCount;
 			var drs1 : Null<Float> = (startRotate1 == null || endRotate1 == null)? null : startRotate1 + ((endRotate1 - startRotate1) * i) / frameCount;
 			tags.push(moveObject(depth, dx * 20, dy * 20, dsx, dsy ,drs0 , drs1));
-			tags.push(showFrame()[0]);
+			tags.push(showframe()[0]);
 		}
 		return tags;
 	}
-	
-	private function removeObject2()
+	private function removeobject():SWFTag
 	{
 		var depth = getInt('depth', null, true);
 		return TRemoveObject2(depth);
 	}
-	private function startSound()
+	private function startsound():SWFTag
 	{
 		var id : Int = getInt('id', null, true, false, true);
 		var stop : Bool = getBool('stop', false);
@@ -868,7 +863,7 @@ class SwfWriter
 		var hasLoops = loopCount == 0? false : true;
 		return TStartSound(id, {syncStop : stop, hasLoops : hasLoops, loopCount : loopCount});
 	}
-	private function symbolClass()
+	private function symbolclass():Array<SWFTag>
 	{
 		var cid = getInt('id', null, true, false, true);
 		var className = getString('class', "", true);
@@ -877,10 +872,10 @@ class SwfWriter
 		var tags : Array<SWFTag> = new Array();
 		if(baseClass != "")
 		{
-			if(checkValidBaseClass(baseClass))
+			if(isValidBaseClass(baseClass))
 			{
 				swcClasses.push([className, baseClass]);
-				tags = [createABC(className, baseClass), TSymbolClass(symbols)];
+				tags = [AbcWriter.createABC(className, baseClass), TSymbolClass(symbols)];
 			}
 			else
 			{
@@ -893,28 +888,22 @@ class SwfWriter
 		}
 		return tags;
 	}
-	private function exportAssets()
+	private function exportassets():Array<SWFTag>
 	{
 		var cid = getInt('id', null, true, false, true);
 		var className = getString('class', "", true);
 		var symbols : Array<SymData> = [{cid : cid, className : className}];
 		return [TExportAssets(symbols)];
 	}
-	private function metadata()
-	{
-		var file = getString('file', "", true);
-		var data = getContent(file);
-		return TMetadata(data);
-	}
+
 	//FRAME TAGS:
-	private function frameLabel()
+	private function framelabel():SWFTag
 	{
 		var label = getString('name', "", true);
 		var anchor = getBool('anchor', false);
 		return TFrameLabel(label, anchor);
 	}
-	
-	private function showFrame():Array<SWFTag>
+	private function showframe():Array<SWFTag>
 	{
 		var showFrames:Array<SWFTag>=new Array();
 		var count = getInt('count', null, false);
@@ -925,12 +914,11 @@ class SwfWriter
 				showFrames.push(TShowFrame);
 		return showFrames;
 	}
-	
-	private function endFrame()
+	private function endframe():SWFTag
 	{
 		return TEnd;
 	}	
-	private function custom()
+	private function custom():SWFTag
 	{
 		var tagId = getInt('tagId', null, false);
 		var data;
@@ -953,60 +941,8 @@ class SwfWriter
 		return TUnknown(tagId, data);
 	}
 
-	public static function createABC(className : String, baseClass : String)
-	{
-		var ctx = new format.abc.Context();
-		var c = ctx.beginClass(className);
-		c.superclass = ctx.type(baseClass);
-		switch(baseClass)
-		{
-			case 'flash.display.MovieClip' : 	
-				ctx.addClassSuper("flash.events.EventDispatcher");
-				ctx.addClassSuper("flash.display.DisplayObject");
-				ctx.addClassSuper("flash.display.InteractiveObject");
-				ctx.addClassSuper("flash.display.DisplayObjectContainer");
-				ctx.addClassSuper("flash.display.Sprite");
-				ctx.addClassSuper("flash.display.MovieClip");
-
-			case 'flash.display.Sprite' : 
-				ctx.addClassSuper("flash.events.EventDispatcher");
-				ctx.addClassSuper("flash.display.DisplayObject");
-				ctx.addClassSuper("flash.display.InteractiveObject");
-				ctx.addClassSuper("flash.display.DisplayObjectContainer");
-				ctx.addClassSuper("flash.display.Sprite");
-				
-			case 'flash.display.SimpleButton' : 
-				ctx.addClassSuper("flash.events.EventDispatcher");
-				ctx.addClassSuper("flash.display.DisplayObject");
-				ctx.addClassSuper("flash.display.InteractiveObject");
-				ctx.addClassSuper("flash.display.SimpleButton");
-			
-			case 'flash.display.Bitmap' : 
-				ctx.addClassSuper("flash.events.EventDispatcher");
-				ctx.addClassSuper("flash.display.DisplayObject");
-				ctx.addClassSuper("flash.display.Bitmap");
-			
-			case 'flash.media.Sound' : 
-				ctx.addClassSuper("flash.events.EventDispatcher");
-				ctx.addClassSuper("flash.media.Sound");
-				
-			case 'flash.text.Font' : 
-				ctx.addClassSuper("flash.text.Font");
-			
-			case 'flash.utils.ByteArray' : 
-				ctx.addClassSuper("flash.utils.ByteArray");
-		}
-		var m = ctx.beginMethod(className, [], null, false, false, false, true);
-		m.maxStack = 2;
-		c.constructor = m.type;
-		ctx.ops( [OThis, OConstructSuper(0), ORetVoid] );
-		ctx.finalize();
-		var abcOutput = new haxe.io.BytesOutput();
-		format.abc.Writer.write(abcOutput, ctx.getData());
-		return TActionScript3(abcOutput.getBytes(), {id : 1, label : className});
-	}
-	
-	private function getContent(file : String)
+	//FILE HANDLING:
+	private function getContent(file:String):String
 	{
 		checkFileExistence(file);
 		#if neko
@@ -1019,15 +955,15 @@ class SwfWriter
 			var f = new flash.filesystem.File();
 			f = f.resolvePath(file);
 			var fileStream = new flash.filesystem.FileStream();
-			fileStream.open(f, FileMode.READ);
-			var str = fileStream.readMultiByte(f.size, File.systemCharset);
+			fileStream.open(f, flash.filesystem.FileMode.READ);
+			var str = fileStream.readMultiByte(f.size, flash.filesystem.File.systemCharset);
 			fileStream.close();
 			return str;
 		#else
 			return Std.string(library.get(file));
 		#end
 	}
-	private function getBytes(file : String)
+	private function getBytes(file:String):haxe.io.Bytes
 	{
 		checkFileExistence(file);
 		#if neko
@@ -1040,13 +976,13 @@ class SwfWriter
 			var f = new flash.filesystem.File();
 			f = f.resolvePath(file);
 			var fileStream = new flash.filesystem.FileStream();
-			fileStream.open(f, FileMode.READ);
+			fileStream.open(f, flash.filesystem.FileMode.READ);
 			var byteArray : flash.utils.ByteArray = new flash.utils.ByteArray();
 			fileStream.readBytes(byteArray);
 			fileStream.close();
-			return Bytes.ofData(byteArray);
+			return haxe.io.Bytes.ofData(byteArray);
 		#else
-			return Bytes.ofData(library.get(file));
+			return haxe.io.Bytes.ofData(library.get(file));
 		#end
 	}
 	private function getInt(att : String, defaultValue, ?required : Bool = false, ?uniqueId : Bool = false, ?targetId : Bool = false)
@@ -1070,7 +1006,7 @@ class SwfWriter
 				error('ERROR: Required attribute ' + att + ' is missing in tag: ' + currentTag);
 		return currentTag.exists(att)? (currentTag.get(att) == 'true'? true : false) : defaultValue;
 	}
-	private function getFloat(att : String, defaultValue : Null<Float>, ?required : Bool = false)
+	private function getFloat(att : String, defaultValue : Null<Float>, ?required : Bool = false): Null<Float>
 	{
 		if(currentTag.exists(att))
 			if(Math.isNaN(Std.parseFloat(currentTag.get(att))))
@@ -1080,14 +1016,14 @@ class SwfWriter
 				error('ERROR: Required attribute ' + att + ' is missing in tag: ' + currentTag.toString());
 		return currentTag.exists(att)? Std.parseFloat(currentTag.get(att)) : defaultValue;
 	}
-	private function getString(att : String, defaultValue : String, ?required : Bool = false)
+	private function getString(att : String, defaultValue : String, ?required : Bool = false): String
 	{
 		if(required)
 			if(!currentTag.exists(att))
 				error('ERROR: Required attribute ' + att + ' is missing in tag: ' + currentTag.toString());
 		return currentTag.exists(att)? currentTag.get(att) : defaultValue;
 	}
-	private function getMatrix()
+	private function getMatrix():Matrix
 	{
 		var scale, rotate, translate;
 		//scale:
@@ -1104,7 +1040,6 @@ class SwfWriter
 		translate = {x : x, y : y};
 		return {scale : scale, rotate : rotate, translate : translate};
 	}
-
 	private function checkDictionary(id : Int) : Void
 	{
 		if(strict)
@@ -1182,7 +1117,7 @@ class SwfWriter
 			error('ERROR: File: ' + file + ' could not be found at the given location. TAG: ' + currentTag.toString());
 		}
 		#elseif air
-			var f : File = new flash.filesystem.File(file);
+			var f = new flash.filesystem.File(file);
 			if(!f.exists)
 			{
 				error('ERROR: File: ' + file + ' could not be found at the given location. TAG: ' + currentTag.toString());
@@ -1194,77 +1129,21 @@ class SwfWriter
 			}
 		#end
 	}
-	private function setup() : Void
+	private function setCurrentElement(tag:Xml) : Void
 	{
-		validChildren = new Hash();
-		validChildren.set('swf', ['header', 'fileattributes', 'setbackgroundcolor', 'scriptlimits', 'definebitsjpeg', 'defineshape', 'definesprite', 'definebutton', 'definebinarydata', 'definesound', 'definefont', 'defineedittext', 'defineabc', 'definescalinggrid', 'placeobject', 'removeobject', 'startsound', 'symbolclass', 'exportassets', 'metadata', 'framelabel', 'showframe', 'endframe', 'custom']);
-		validChildren.set('defineshape', ['beginfill', 'begingradientfill', 'beginbitmapfill', 'linestyle', 'moveto', 'lineto', 'curveto', 'endfill', 'endline', 'clear', 'drawcircle', 'drawellipse', 'drawrect', 'drawroundrect', 'drawroundrectcomplex', 'custom']);
-		validChildren.set('definesprite', ['placeobject', 'removeobject', 'startsound', 'framelabel', 'showframe', 'endframe', 'tween', 'custom']);
-		validChildren.set('definebutton', ['buttonstate', 'custom']);
-		validChildren.set('tween', ['tw', 'custom']);
-		
-		validElements = new Hash();
-		validElements.set('swf', []);
-		validElements.set('header', ['width', 'height', 'fps', 'version', 'compressed', 'frameCount']);
-		validElements.set('fileattributes', ['actionscript3', 'useNetwork', 'useDirectBlit', 'useGPU', 'hasMetaData']);
-		validElements.set('setbackgroundcolor', ['color']);
-		validElements.set('scriptlimits', ['maxRecursionDepth', 'scriptTimeoutSeconds']);
-		validElements.set('definebitsjpeg', ['id', 'file']);
-		validElements.set('defineshape', ['id', 'bitmapId', 'x', 'y', 'scaleX', 'scaleY', 'rotate0', 'rotate1', 'repeat', 'smooth']);
-		validElements.set('beginfill',  ['color', 'alpha']);
-		validElements.set('begingradientfill', ['colors', 'alphas', 'ratios', 'type', 'x', 'y', 'scaleX', 'scaleY', 'rotate0', 'rotate1']);
-		validElements.set('beginbitmapfill', ['bitmapId', 'x', 'y', 'scaleX', 'scaleY', 'rotate0', 'rotate1', 'repeat', 'smooth']);
-		validElements.set('linestyle', ['width', 'color', 'alpha','pixelHinting', 'scaleMode', 'caps', 'joints', 'miterLimit', 'noClose']);
-		validElements.set('moveto', ['x', 'y']);
-		validElements.set('lineto', ['x', 'y']);
-		validElements.set('curveto', ['cx', 'cy', 'ax', 'ay']);
-		validElements.set('endfill', []);
-		validElements.set('endline', []);
-		validElements.set('clear', []);
-		validElements.set('drawcircle', ['x', 'y', 'r', 'sections']);
-		validElements.set('drawellipse', ['x', 'y', 'width', 'height']);
-		validElements.set('drawrect', ['x', 'y', 'width', 'height']);
-		validElements.set('drawroundrect', ['x', 'y', 'width', 'height', 'r']);
-		validElements.set('drawroundrectcomplex', ['x', 'y', 'width', 'height', 'rtl', 'rtr', 'rbl', 'rbr']);
-		validElements.set('definesprite', ['id', 'frameCount', 'file']);
-		validElements.set('definebutton', ['id']);
-		validElements.set('buttonstate', ['id', 'depth', 'hit', 'down', 'over', 'up', 'x', 'y', 'scaleX', 'scaleY', 'rotate0', 'rotate1']);
-		validElements.set('definebinarydata', ['id', 'file']);
-		validElements.set('definesound', ['id', 'file']);
-		validElements.set('definefont', ['id', 'file','charCodes']);
-		validElements.set('defineedittext', ['id', 'initialText', 'fontID', 'useOutlines', 'width', 'height', 'wordWrap', 'multiline', 'password', 'input', 'autoSize', 'selectable', 'border', 'wasStatic', 'html', 'fontClass', 'fontHeight', 'textColor', 'alpha', 'maxLength', 'align', 'leftMargin', 'rightMargin', 'indent', 'leading', 'variableName', 'file']);
-		validElements.set('defineabc', ['file', 'name']);
-		validElements.set('definescalinggrid', ['id', 'x', 'width', 'y', 'height']);
-		validElements.set('placeobject', ['id', 'depth', 'name', 'move', 'x', 'y', 'scaleX', 'scaleY', 'rotate0', 'rotate1']);
-		validElements.set('removeobject', ['depth']);
-		validElements.set('startsound', ['id', 'stop', 'loopCount']);
-		validElements.set('symbolclass', ['id', 'class', 'base']);
-		validElements.set('exportassets', ['id', 'class']);
-		validElements.set('metadata', ['file']);
-		validElements.set('framelabel', ['name', 'anchor']);
-		validElements.set('showframe', ['count']);
-		validElements.set('endframe', []);
-		validElements.set('tween', ['depth', 'frameCount']);
-		validElements.set('tw', ['prop', 'start', 'end']);
-		validElements.set('custom', ['tagId', 'file', 'data', 'comment']);
-		
-		validBaseClasses = ['flash.display.MovieClip', 'flash.display.Sprite', 'flash.display.SimpleButton', 'flash.display.Bitmap', 'flash.media.Sound', 'flash.text.Font','flash.utils.ByteArray'];
-	}
-	
-	private function checkUnknownAttributes() : Void
-	{
+		currentTag = tag;
 		if(!validElements.exists(currentTag.nodeName.toLowerCase()))
 			error('ERROR: Unknown tag: '+ currentTag.nodeName);
 		for(a in currentTag.attributes())
 		{
-			if(!checkValidAttribute(a))
+			if(!isValidAttribute(a))
 			{
+				if(currentTag.nodeName.toLowerCase()!="swf")
 				error('ERROR: Unknown attribute: ' + a + '. Valid attributes are: ' + validElements.get(currentTag.nodeName.toLowerCase()).toString() +'. TAG: ' + currentTag.toString());
 			}
 		}
 	}
-	
-	private function checkValidAttribute(a : String) : Bool
+	private function isValidAttribute(a : String) : Bool
 	{
 		var validAttributes = validElements.get(currentTag.nodeName.toLowerCase());
 		for(i in validAttributes)
@@ -1274,8 +1153,7 @@ class SwfWriter
 		}
 		return false;
 	}
-	
-	private function checkValidBaseClass( c:String) : Bool
+	private function isValidBaseClass( c:String) : Bool
 	{
 		for(i in validBaseClasses)
 		{
@@ -1291,7 +1169,7 @@ class SwfWriter
 		xmlString += '<swc xmlns="http://www.adobe.com/flash/swccatalog/9">';
 		xmlString += '<versions>';
 		xmlString += '<swc version="1.2"/>';
-		xmlString += '<haxe version="2.04"/>';
+		xmlString += '<haxe version="2.05"/>';
 		xmlString += '</versions>';
 		xmlString += '<features>';
 		xmlString += '<feature-script-deps/>';
@@ -1319,20 +1197,8 @@ class SwfWriter
 		xmlString += '</swc>';
 		return xmlString;
 	}
-	private function error(msg : String)
+	private function error(msg : String):Void
 	{
 			throw msg;
-	}
-	private function inform(msg : String)
-	{
-		#if neko
-			neko.Lib.println(msg);
-		#elseif php
-			php.Lib.println(msg);
-		#elseif cpp
-			cpp.Lib.println(msg);
-		#elseif (flash || air)
-			flash.Lib.trace(msg);
-		#end
 	}
 }

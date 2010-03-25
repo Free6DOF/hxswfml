@@ -1,9 +1,7 @@
 1)SWF general:
 http://www.adobe.com/devnet/swf/pdf/swf_file_format_spec_v10.pdf (see pages 26 to 33)
 
--A swf always starts with a <Header /> tag
-
--If the swf contains a <DefineABC /> tag (ActionscriptByteCode?,AS3) a <FileAttributes/> tag is mandatory right after the <Header/> tag.
+-If the swf contains a <DefineABC /> tag (ActionscriptByteCode?,AS3) a <FileAttributes/> tag is mandatory.
 
 -If the swf contains a <MetaData /> tag you must set the 'hasMetaData' attribute to true in the <FileAttributes/> tag.
 
@@ -13,18 +11,16 @@ http://www.adobe.com/devnet/swf/pdf/swf_file_format_spec_v10.pdf (see pages 26 t
 A basic swf (a movie with 3 empty frames) looks like:
 
 <swf>
-        <Header />
         <ShowFrame />
         <ShowFrame />
         <ShowFrame />
 </swf>
 Update: A new attribute count is added so that the above can be written as:
 <swf>
-        <Header />
         <ShowFrame count="3"/>
 </swf>
 
-The FlashPlayer? will start parsing/playing the tags from the top till it reaches the <EndFrame/> tag.
+The FlashPlayer will start parsing/playing the tags from the top till it reaches the <EndFrame/> tag.
 When it encounters a <ShowFrame/> it renders the previous tags to the screen.
 Note that although the <EndFrame/> tag is available for use, under normal circumstances you will never need it as it is added to the end of your file automatically by hXswfML.
 
@@ -32,11 +28,11 @@ Note that although the <EndFrame/> tag is available for use, under normal circum
 -Element names are not case sensitive. <fileattributes/> is equally valid to <FileAttributes>
 -The attribute names are case sensitive.
 -Most tags have some default values set:
-Using <Header/> will be compiled as <Header width="800" height="600" fps="30" version="10" compressed="true" frameCount="1" />
-If you only want to change the framerate you would use: <Header fps="12"/>
+Using <swf/> will be compiled as <swf width="800" height="600" fps="30" version="10" compressed="true" frameCount="1" />
+If you only want to change the framerate you would use: <swf fps="12"/>
 -Some tags have mandatory attributes which must be set. The program will throw an error and tell you what attribute is missing in which tag.
 
-The names of some elements in the hXswfML may seem confusing at some points (DefineSprite? defines a MovieClip? for example), but they are kept the same as much as possible as in the official swf file specifications, making a lookup for information more easy.
+The names of some elements in the hxswfml may seem confusing at some points (DefineSprite defines a MovieClip for example), but they are kept the same as much as possible as in the official swf file specifications, making a lookup for information more easy.
 More information about the swf file format and the possible tags can be found here:
 
     http://www.adobe.com/devnet/swf/pdf/swf_file_format_spec_v10.pdf
@@ -71,7 +67,6 @@ Everything that has been put on or removed from the display up until the next <S
 A movie with 1 frame, rendering a black rectangle on screen looks like:
 
 <swf>
-        <Header/>
         <DefineShape id="1"> 
 					<BeginFill color="0x000000" alpha="1.0" />
           <DrawRect width="100" height="100"/> 
@@ -83,9 +78,7 @@ A movie with 1 frame, rendering a black rectangle on screen looks like:
 Multiframe movies:
 To show a black rectangle in frame 1 and a red rectangle in frame 2 you use:
 
-<swf>
-        <Header frameCount="2" />
-
+<swf frameCount="2">
         <DefineShape id="1">
 					<BeginFill color="0x000000" alpha="1.0" />
           <DrawRect width="100" height="100"/> 
@@ -126,8 +119,6 @@ Available tags are: <PlaceObject/>, <RemoveObject/>, <StartSound/>, <FrameLabel/
 Example of a 2 frame movieclip showing a black rectangle in frame 1 and a red rectangle in frame 2:
 
 <swf>
-        <Header/>
-        
         <DefineShape id="1">
 					<BeginFill color="0x000000" alpha="1.0" />
           <DrawRoundRect width="100" height="100" r="25"/> 
