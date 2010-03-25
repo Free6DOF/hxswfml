@@ -157,9 +157,6 @@ class Main
 				}
 				else if(args[0] == 'abc2xml')
 				{
-					#if cpp
-					Lib.println("ERROR: Due to a bug in the cpp target, abc2xml is currently not available.Use the neko version.");
-					#else
 					var abcReader = new AbcReader();
 					abcReader.debugInfo = args[3]=='true';
 					abcReader.sourceInfo = args[4]=='true';
@@ -168,13 +165,9 @@ class Main
 					var file = File.write(args[2], false);
 					file.writeString(xml);
 					file.close();
-					#end
 				}
 				else if(args[0] == 'abc2hxm')
 				{
-					#if cpp
-					Lib.println("ERROR: Due to a bug in the cpp target, abc2hxm is currently not available. Use the neko version.");
-					#else
 					var abcReader = new AbcReader();
 					abcReader.debugInfo = args[4]=='true';
 					abcReader.sourceInfo = args[5]=='true';
@@ -195,13 +188,9 @@ class Main
 					var file = File.write(hxmWriter.outputFolder+'/GenSWF.hx', false);
 					file.writeString(hxm);
 					file.close();
-					#end
 				}
 				else if(args[0] == 'xml2hxm')
 				{
-					#if cpp
-					Lib.println("ERROR: Due to a bug in the cpp target, xml2hxm is currently not available. Use the neko version.");
-					#else
 					var xml = File.getContent(args[1]);
 					
 					var hxmWriter = new HxmWriter();
@@ -218,7 +207,6 @@ class Main
 					var file = File.write(hxmWriter.outputFolder+'/GenSWF.hx', false);
 					file.writeString(hxm);
 					file.close();
-					#end
 				}
 				else if(args[0] == 'ttf2swf')
 				{

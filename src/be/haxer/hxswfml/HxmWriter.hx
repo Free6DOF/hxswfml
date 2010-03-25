@@ -55,6 +55,7 @@ class HxmWriter
 	var debugLines:Array<String>;
 	var debugFile:String;
 	var debugFileName:String;
+	var lastBytepos:Int;
 	
 	
 	private var opStack:Array<String>;
@@ -70,7 +71,8 @@ class HxmWriter
 		#end
 		swfTags=new Array();
 		buf=new StringBuf();
-		packages=new Array();
+		packages = new Array();
+		lastBytepos = 0;
 		var abcfiles:Xml = Xml.parse(xml).firstElement();
 		if(abcfiles.nodeName.toLowerCase()=="abcfile")
 		{
@@ -181,7 +183,6 @@ class HxmWriter
 			}
 		}
 		
-		//buf.toString()+
 		var end = '//------------------\n\t\tvar abcOutput = new haxe.io.BytesOutput();\n'+
 		'\t\tformat.abc.Writer.write(abcOutput, ctx.getData());\n'+
 		'\t\tvar abcOutput = new haxe.io.BytesOutput();\n'+
@@ -252,7 +253,7 @@ class HxmWriter
 			}
 		}
 		localFunctions=buf.toString();
-		//buf=new StringBuf();
+
 		//VARs & METHODs
 		for(_classNode in ctx_xml.elements())
 		{
@@ -385,9 +386,6 @@ class HxmWriter
 					packages.push([className,buf.toString()]);
 			}
 		}
-		//var abcOutput = new haxe.io.BytesOutput();
-		//format.abc.Writer.write(abcOutput, ctx.getData());
-		//return TActionScript3(abcOutput.getBytes(), { id : 1, label : className } );
 	}
 	private function createFunction(node:Xml, functionType:String, ?isInterface:Bool=false)
 	{
@@ -435,7 +433,7 @@ class HxmWriter
 			defaultParameters : _defaultParameters,
 			paramNames : null//Null<Array<Null<Index<String>>>>;
 		}
-		var __debugName :String = node.get('debugName')==null?"''":node.get('debugName');
+		var __debugName :String = node.get('debugName')==null?'""':node.get('debugName');
 		var __extra = "{"+
 			"native:" + Std.string( node.get('native')=="true")+", "+
 			"variableArgs:" + Std.string( node.get('variableArgs')=="true")+", "+
@@ -443,7 +441,7 @@ class HxmWriter
 			"usesDXNS:"+Std.string( node.get('usesDXNS')=="true") +", "+
 			"newBlock:"+Std.string( node.get('newBlock')=="true") +", "+
 			"unused:"+Std.string(node.get('unused')=="true") +", "+
-			"debugName:ctx.string("+__debugName+"), "+
+			"debugName:ctx.string('"+__debugName+"'), "+
 			"defaultParameters:"+ ___defaultParameters+", "+
 			"paramNames:null"+
 		"}";
@@ -482,7 +480,8 @@ class HxmWriter
 				if (_static == true)
 				{
 					ctx.beginFunction(args, _return, extra);
-					buf.add("\n\t\tctx.beginFunction(["+__args.join(',')+"], "+__return+", "+__extra+");\n");
+					buf.add("\n\t\tctx.beginFunction([" + __args.join(',') + "], " + __return + ", " + __extra + ");\n");
+					buf.add("\t\t{\n");
 					f = ctx.curFunction.f;
 					buf.add("\t\tf = ctx.curFunction.f;\n");
 					curClass.statics = f.type;
@@ -495,6 +494,7 @@ class HxmWriter
 						f = ctx.beginInterfaceMethod(getImport(node.get('name')), args, _return, _static, _override,_final,  true, kind, extra, ns);
 						buf.add("\n\t\tf=ctx.beginInterfaceMethod('"+getImport(node.get('name'))+"', ["+__args.join(',')+"], "+__return+", "+_static+", "+_override+", "+_final+", true, "+kind+", "+__extra+", "+__ns+");\n");
 						curClass.constructor = f.type;
+						buf.add("\t\t{\n");
 						buf.add("\t\tcl.constructor = f.type;\n");
 						return f;
 					}
@@ -503,6 +503,7 @@ class HxmWriter
 						f = ctx.beginMethod(getImport(node.get('name')), args, _return, _static, _override,_final,  true, kind, extra, ns);
 						buf.add("\n\t\tf=ctx.beginMethod('"+getImport(node.get('name'))+"', ["+__args.join(',')+"], "+__return+", "+_static+", "+_override+", "+_final+", true, "+kind+", "+__extra+", "+__ns+");\n");
 						curClass.constructor = f.type;
+						buf.add("\t\t{\n");
 						buf.add("\t\tcl.constructor = f.type;\n");
 					}
 				}
@@ -512,13 +513,14 @@ class HxmWriter
 				if (isInterface)
 				{
 					var f = ctx.beginInterfaceMethod(getImport(node.get('name')), args, _return, _static, _override, _final, _later, kind, extra, ns);
-					buf.add("\n\t\tf=ctx.beginInterfaceMethod('"+getImport(node.get('name'))+"', ["+__args.join(',')+"], "+__return+", "+_static+", "+_override+", "+_final+", "+_later+", "+kind+", "+__extra+", "+__ns+");\n");
+					buf.add("\n\t\tf=ctx.beginInterfaceMethod('" + getImport(node.get('name')) + "', [" + __args.join(',') + "], " + __return + ", " + _static + ", " + _override + ", " + _final + ", " + _later + ", " + kind + ", " + __extra + ", " + __ns + ");\n");
+					buf.add("\t\t{\n");
 					return f;
 				}
 				else
 				f = ctx.beginMethod(getImport(node.get('name')), args, _return, _static, _override, _final, _later, kind, extra, ns);
 				buf.add("\n\t\tf=ctx.beginMethod('"+getImport(node.get('name'))+"', ["+__args.join(',')+"], "+__return+", "+_static+", "+_override+", "+_final+", "+_later+", "+kind+", "+__extra+", "+__ns+");\n");
-					
+				buf.add("\t\t{\n");
 			}
 			
 		}
@@ -527,6 +529,7 @@ class HxmWriter
 			ctx.beginFunction(args, _return, extra);
 			buf.add("\n\t\tctx.beginFunction(["+__args.join(',')+"], "+__return+","+__extra+");\n");
 			f = ctx.curFunction.f;
+			buf.add("\t\t{\n");
 			buf.add("\t\tf = ctx.curFunction.f;\n");
 			var name = getImport(node.get('name'));
 			inits.set(name, f.type);
@@ -544,9 +547,8 @@ class HxmWriter
 			}
 		}
 		
-		buf.add("\t\t{\n");
 		writeCodeBlock(node, f);
-		buf.add("\t\t}\n");
+		
 		
 		if (node.get('maxStack') != null)
 			f.maxStack = Std.parseInt(node.get('maxStack'));
@@ -563,10 +565,12 @@ class HxmWriter
 		buf.add("\t\t//f.nRegs = "+f.nRegs+";\n");
 		if (currentStack > 0) 
 			nonEmptyStack(node.get('name'));
+		buf.add("\t\t}\n");
 		return f;
 	}
 	private function writeCodeBlock(member:Xml, f)/*:Bool*/
 	{
+		
 		if (log)
 		{
 			if(className==null)
@@ -575,7 +579,8 @@ class HxmWriter
 				logStack("------------------------------------------------\ncurrent class= " + className + ', method= ' + member.get('name') + "\ncurrentStack= " + currentStack + ', maxStack= ' + maxStack + "\ncurrentScopeStack= " + currentScopeStack + ', maxScopeStack= ' + maxScopeStack + "\n\n");
 		}
 		opStack=[];
-		scStack=[];
+		scStack = [];
+		lastBytepos = ctx.bytepos.n;
 		for (o in member.elements())
 		{
 			var op:Null<OpCode> = null;
@@ -588,20 +593,6 @@ class HxmWriter
 						__op=o.nodeName;
 						Type.createEnum(OpCode, o.nodeName);
 	
-				case "ODebugFile" :
-						__op=o.nodeName+"(ctx.string('"+o.get('v')+"'))";
-						if(debugLines==null || o.get('v')!=debugFile)
-						{
-							debugFile = o.get('v');
-							debugFileName = fileToLines(o.get('v'));
-						}
-						if(sourceInfo)
-						{
-							debugFile = o.get('v');
-							debugFileName = fileToLines(o.get('v'));
-						}
-						Type.createEnum(OpCode, o.nodeName, [ctx.string(o.get('v'))]);
-						
 				case	"ODxNs":
 						__op=o.nodeName+"(ctx.string('"+o.get('v')+"'))";
 						Type.createEnum(OpCode, o.nodeName, [ctx.string(o.get('v'))]);
@@ -667,20 +658,34 @@ class HxmWriter
 							__op=o.nodeName+"(ctx.type('"+getImport(p)+"'),"+nargs+")";
 							Type.createEnum(OpCode, o.nodeName, [ctx.type(getImport(p)),nargs]);
 						}
-												
+						
+				case "ODebugFile" :
+						__op=o.nodeName+"(ctx.string('"+o.get('v')+"'))";
+						if(debugLines==null || o.get('v')!=debugFile)
+						{
+							debugFile = o.get('v');
+							debugFileName = fileToLines(o.get('v'));
+						}
+						if(sourceInfo)
+						{
+							debugFile = o.get('v');
+							debugFileName = fileToLines(o.get('v'));
+						}
+						Type.createEnum(OpCode, o.nodeName, [ctx.string(o.get('v'))]);
+						
 				case "ODebugLine":
 						var v = Std.parseInt(o.get('v'));
+						var out = null;
+						if (sourceInfo && debugLines[(v - 1)]!=null)
+						{
+							buf.add('\t\t\t//'+debugLines[(v - 1)]+'\n');
+						}
 						if (debugInfo)
 						{
 							__op=o.nodeName+"("+v+")";
-							Type.createEnum(OpCode, o.nodeName, [v]);
+							out = Type.createEnum(OpCode, o.nodeName, [v]);
 						}
-						if (sourceInfo && debugLines[(v - 1)]!=null)
-						{
-							if(showBytePos)buf.add("//"+ctx.bytepos.n+"\n");
-							buf.add('\t\t\t//'+debugLines[(v - 1)]+'\n');
-						}
-						null;
+						out;
 						
 				case	"OReg", "OIncrReg", "ODecrReg", "OIncrIReg", "ODecrIReg", "OSmallInt", "OInt", "OGetScope", "OBreakPointLine", "OUnknown", 
 						"OCallStack", "OConstruct", "OConstructSuper", "OApplyType", "OObject", "OArray", "OGetSlot", "OSetSlot", "OGetGlobalSlot", "OSetGlobalSlot":
@@ -695,6 +700,7 @@ class HxmWriter
 						Type.createEnum(OpCode, o.nodeName, [v]);
 						
 				case	"OSetReg":
+						if(showBytePos)buf.add("//"+(ctx.bytepos.n-lastBytepos)+" : \n");
 						buf.add('\t\t\tctx.allocRegister();\n');
 						var v = Std.parseInt(o.get('v'));
 						__op=o.nodeName+"("+v+")";
@@ -742,8 +748,8 @@ class HxmWriter
 							jumpFunc();//make the jump
 							//buf.add("var jumpFunc = jumps.get('"+jumpName+"');\n");
 							//buf.add("jumpFunc();\n");//make the jump 
+							if(showBytePos)buf.add("//"+(ctx.bytepos.n-lastBytepos)+" : \n");
 							buf.add('\t\t\t'+jumpName+'();\n');
-							if(showBytePos)buf.add("//"+ctx.bytepos.n+"\n");
 							if (log) 
 								logStack('OJump name=' + jumpName);
 						}
@@ -765,13 +771,15 @@ class HxmWriter
 						if (jumpName != null)
 						{
 							//buf.add('//jumps.set("'+jumpName+'", ctx.jump('+__op+'));\n');
+							if(showBytePos)buf.add("//"+(ctx.bytepos.n-lastBytepos)+" : \n");
 							buf.add('\t\t\tvar '+jumpName+' = ctx.jump('+__op+');\n');
-							if(showBytePos)buf.add("//"+ctx.bytepos.n+"\n");
+							
 							jumps.set(jumpName, ctx.jump(jump));
 						}
 						else if (labelName != null)
 						{
 							//buf.add('//labels.get("'+labelName+'")('+__op+');\n');
+							if(showBytePos)buf.add("//"+(ctx.bytepos.n-lastBytepos)+" : \n");
 							buf.add('\t\t\t'+labelName+'('+__op+');\n');
 							labels.get(labelName)(jump);
 						}
@@ -788,6 +796,7 @@ class HxmWriter
 							}
 							labels.set(o.get('name'), ctx.backwardJump());
 							//buf.add('//labels.set("'+o.get('name')+'", ctx.backwardJump());\n');
+							if(showBytePos)buf.add("//"+(ctx.bytepos.n-lastBytepos)+" : \n");
 							buf.add('\t\t\tvar '+ o.get('name') +'= ctx.backwardJump();\n');
 							null;
 						}
@@ -821,9 +830,9 @@ class HxmWriter
 			}
 			if (op != null)
 			{
+				buf.add("//"+(ctx.bytepos.n-lastBytepos)+" : \n");
 				updateStacks(op);
 				ctx.op(op);
-				if(showBytePos) buf.add("//"+ctx.bytepos.n+"\n");
 				buf.add("\t\t\tctx.op("+__op +");\n");
 			}
 			if(log)
@@ -1813,59 +1822,6 @@ class HxmWriter
 	private function logStack(msg)
 	{
 		//trace(msg);
-	}
-	public static function createABC(className:String, baseClass:String):SWFTag
-	{
-		var ctx = new format.abc.Context();
-		var c = ctx.beginClass(className, false);
-		c.superclass = ctx.type(baseClass);
-		switch(baseClass)
-		{
-			case 'flash.display.MovieClip' : 	
-				ctx.addClassSuper("flash.events.EventDispatcher");
-				ctx.addClassSuper("flash.display.DisplayObject");
-				ctx.addClassSuper("flash.display.InteractiveObject");
-				ctx.addClassSuper("flash.display.DisplayObjectContainer");
-				ctx.addClassSuper("flash.display.Sprite");
-				ctx.addClassSuper("flash.display.MovieClip");
-
-			case 'flash.display.Sprite' : 
-				ctx.addClassSuper("flash.events.EventDispatcher");
-				ctx.addClassSuper("flash.display.DisplayObject");
-				ctx.addClassSuper("flash.display.InteractiveObject");
-				ctx.addClassSuper("flash.display.DisplayObjectContainer");
-				ctx.addClassSuper("flash.display.Sprite");
-				
-			case 'flash.display.SimpleButton' : 
-				ctx.addClassSuper("flash.events.EventDispatcher");
-				ctx.addClassSuper("flash.display.DisplayObject");
-				ctx.addClassSuper("flash.display.InteractiveObject");
-				ctx.addClassSuper("flash.display.SimpleButton");
-			
-			case 'flash.display.Bitmap' : 
-				ctx.addClassSuper("flash.events.EventDispatcher");
-				ctx.addClassSuper("flash.display.DisplayObject");
-				ctx.addClassSuper("flash.display.Bitmap");
-			
-			case 'flash.media.Sound' : 
-				ctx.addClassSuper("flash.events.EventDispatcher");
-				ctx.addClassSuper("flash.media.Sound");
-				
-			case 'flash.text.Font' : 
-				ctx.addClassSuper("flash.text.Font");
-			
-			case 'flash.utils.ByteArray' : 
-				ctx.addClassSuper("flash.utils.ByteArray");
-		}
-		var m = ctx.beginMethod(className, [], null, false, false, false, true);
-		m.maxStack = 2;
-		c.constructor = m.type;
-		ctx.ops( [OThis, OConstructSuper(0), ORetVoid] );
-		//ctx.finalize();
-		ctx.endClass();
-		var abcOutput = new haxe.io.BytesOutput();
-		format.abc.Writer.write(abcOutput, ctx.getData());
-		return TActionScript3(abcOutput.getBytes(), {id : 1, label : className});
 	}
 	inline private function fileToLines(fileName:String):String
 	{
