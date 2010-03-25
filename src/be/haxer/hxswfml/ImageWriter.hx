@@ -22,7 +22,7 @@ class ImageWriter
 	public function new()
 	{
 	}
-	public function parse(bytes, ?fileName:String='', ?currentTag:Xml=null, ?error=null)
+	public function write(bytes:Bytes, fileName:String, ?currentTag:Xml=null):Void
 	{
 		this.bytes=bytes;
 		var extension = fileName.substr(fileName.lastIndexOf('.') + 1).toLowerCase();
@@ -33,7 +33,7 @@ class ImageWriter
 		{
 			if (input.readByte() != 255 || input.readByte() != 216)
 			{
-				error('ERROR: in image file: ' + fileName + '. SOI (Start Of Image) marker 0xff 0xd8 missing , TAG: ' + currentTag.toString());
+				throw 'ERROR: in image file: ' + fileName + '. SOI (Start Of Image) marker 0xff 0xd8 missing , TAG: ' + currentTag.toString();
 			}
 			var marker : Int;
 			var len : Int;
@@ -73,7 +73,7 @@ class ImageWriter
 			height = input.readUInt16();
 		}
 	}
-	public function getImageTag(?id:Int=1):SWFTag
+	public function getTag(?id:Int=1):SWFTag
 	{
 		return TBitsJPEG(id, JDJPEG2(bytes));
 	}
@@ -86,19 +86,19 @@ class ImageWriter
 		placeObject2.bitmapCache =false;
 		var swfFile = 
 		{
-			header: {version:10, compressed:true, width:800, height:600, fps:30, nframes:1},
+			header: {version:10, compressed:true, width:width, height:height, fps:30, nframes:1},
 			tags: 
 			[
-				getImageTag(id),
+				getTag(id),
 				getShape(id),
 				TPlaceObject2(placeObject2),
 				TShowFrame
 			]
 		}
 		var swfOutput:haxe.io.BytesOutput = new haxe.io.BytesOutput();
-    var writer = new Writer(swfOutput);
-    writer.write(swfFile);
-    return swfOutput.getBytes();
+		var writer = new Writer(swfOutput);
+		writer.write(swfFile);
+		return swfOutput.getBytes();
 	}
 	function getShape(id)
 	{

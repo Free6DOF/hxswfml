@@ -674,8 +674,8 @@ class Reader
 						break;
 			return 0;
 		}
-		catch (e:Dynamic)
-		return 0;
+		catch (e:Dynamic)return 0;
+		return 0;		
 	}
 	
 	function getCharCodeFromIndex(index:Int):Int

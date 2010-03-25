@@ -31,6 +31,8 @@ class Deflate {
 	public static function run( b : haxe.io.Bytes ) : haxe.io.Bytes {
 		#if neko
 		return neko.zip.Compress.run(b,9);
+		#elseif cpp
+		return cpp.zip.Compress.run(b,9);
 		#elseif flash9
 		var bytes = b.sub(0,b.length);
 		var data = bytes.getData();

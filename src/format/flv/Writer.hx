@@ -28,40 +28,18 @@ package format.flv;
 import format.flv.Data;
 
 class Writer {
-
+	
 	var ch : haxe.io.Output;
-
+	
 	public function new(o) {
 		this.ch = o;
 		o.bigEndian = true;
 	}
-
+	
 	public function close() {
 		ch.close();
 	}
-
-	public static function readHeader( ch : haxe.io.Input ) {
-		ch.bigEndian = true;
-		if( ch.readString(3) != 'FLV' )
-			throw "Invalid signature";
-		if( ch.readByte() != 0x01 )
-			throw "Invalid version";
-		var flags = ch.readByte();
-		if( flags & 0xF2 != 0 )
-			throw "Invalid type flags "+flags;
-		var offset = ch.readUInt30();
-		if( offset != 0x09 )
-			throw "Invalid offset "+offset;
-		var prev = ch.readUInt30();
-		if( prev != 0 )
-			throw "Invalid prev "+prev;
-		return {
-			hasAudio : (flags & 1) != 1,
-			hasVideo : (flags & 4) != 1,
-			hasMeta : (flags & 8) != 1,
-		};
-	}
-
+	
 	public function writeHeader( h : Header ) {
 		ch.writeString("FLV");
 		ch.writeByte(0x01);
@@ -69,7 +47,7 @@ class Writer {
 		ch.writeUInt30(0x09);
 		ch.writeUInt30(0x00);
 	}
-
+	
 	public function writeChunk( chunk : Data ) {
 		var k, data, time;
 		switch( chunk ) {
@@ -84,5 +62,4 @@ class Writer {
 		ch.write(data);
 		ch.writeUInt30(data.length + 11);
 	}
-
 }

@@ -1,12 +1,3 @@
-<Header/>
-        Parent: <swf>
-        Children: none
-        Attributes: width,height,fps,version,compressed,frameCount
-                Required: none
-                Default:width=800, height=600, fps=30, version=10, compressed=true, frameCount=1
-        Signature: <Header width="800" height="600" fps="30" version="10" compressed="true" frameCount="1" />
-        Usage: <Header/>
-
 <FileAttributes/>
         Parent: <swf>
         Children: none
@@ -14,7 +5,7 @@
                 Required: none
                 Default: actionscript3=true, useNetwork=false, useDirectBlit=false, useGPU=false, hasMetaData=false
         Signature: <FileAttributes actionscript3="true" useNetwork="false" useDirectBlit="false" useGPU="false" hasMetaData="false" />
-        Usage: <FileAttributes/> (You must use this tag right after the <Header/> tag if the final swf contains AS3)
+        Usage: <FileAttributes/>
 
 <SetBackgroundColor/>
         Parent: <swf>
@@ -400,15 +391,15 @@
 <swf></swf>
         Parent: none (root/document element)
         Children:
-                <Header/>,<FileAttributes/>,<SetBackgroundColor/>,<ScriptLimits/>,<MetaData/>
+                <FileAttributes/>,<SetBackgroundColor/>,<ScriptLimits/>,<MetaData/>
                 <DefineBitsJPEG/>,<DefineShape/>,<DefineSprite>,<DefineButton>,<DefineBinaryData/>,<DefineSound/>,<DefineFont/>,<DefineEditText/>,<DefineScalingGrid/>,<DefineABC/>,
                 <PlaceObject/>,<RemoveObject/>,<StartSound/>,<SymbolClass/>
                 <FrameLabel/><ShowFrame/><EndFrame/>
-        Attributes: none
+        Attributes: width,height,fps,version,compressed,frameCount
+								Required: none
+								Default:width=800, height=600, fps=30, version=10, compressed=true, frameCount=1
         Signature:
-<?xml version="1.0" ?>
-<swf>
-        <Header width="800" height="600" fps="30" version="10" compressed="true" frameCount="1" />
+<swf width=800, height="600", fps="30", version="10", compressed="true", frameCount="1" >
         
         <FileAttributes actionscript3="true" useNetwork="false" useDirectBlit="false" useGPU="false" hasMetaData="false" />
         

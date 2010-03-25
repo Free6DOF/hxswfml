@@ -37,3 +37,51 @@ enum Data {
 	FLVVideo( data : haxe.io.Bytes, time : Int );
 	FLVMeta( data : haxe.io.Bytes, time : Int );
 }
+typedef HeaderData=
+{
+	type: String,
+	hasAudio : Bool,
+	hasVideo : Bool,
+	hasMeta : Bool
+}
+typedef VideoData=
+{
+	time:Int,
+	type: String,
+	frameType : Int,
+	codecId : Int,
+	adjustment:Int,
+	alphaOffset: Int,
+	data : haxe.io.Bytes
+}
+typedef AudioData=
+{
+	time:Int,
+	type: String,
+	soundFormat : Int,
+	soundRate : Int,
+	is16bit : Bool,
+	isStereo : Bool,
+	data : haxe.io.Bytes
+}
+typedef MetaData=
+{
+	width:Int,
+	height:Int,
+	framerate:Int
+}
+typedef SoundInfo=
+{
+	tags:Array<AudioData>,
+	soundFormat : Int,
+	soundRate : Int,
+	is16bit : Bool,
+	isStereo : Bool,
+}
+typedef VideoInfo=
+{
+	tags:Array<VideoData>,
+	frameType :Int,
+	codecId :Int,
+}
+typedef MetaInfo=MetaData

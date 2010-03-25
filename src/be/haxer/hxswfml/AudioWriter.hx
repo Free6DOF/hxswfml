@@ -16,11 +16,11 @@ import haxe.io.BytesOutput;
 
 class AudioWriter
 {
-	var soundData:format.swf.Data.Sound;
+	private var soundData:format.swf.Data.Sound;
 	public function new()
 	{
 	}
-	public function parse(bytes, ?file=null, ?currentTag=null, ?error=null)
+	public function write(bytes, ?currentTag=null)
 	{
 		var mp3Reader = new format.mp3.Reader(bytes);
 
@@ -40,7 +40,7 @@ class AudioWriter
 			default: null; 
 		}
 		if(samplingRate == null)
-			error('ERROR: Unsupported MP3 SoundRate ' + mp3Header.samplingRate + ' in ' + file + '. TAG: ' + currentTag.toString());
+			throw 'ERROR: Unsupported MP3 SoundRate ' + mp3Header.samplingRate + '. TAG: ' + currentTag.toString();
 		soundData= 
 		{
 			sid : 1,
@@ -59,7 +59,7 @@ class AudioWriter
 			data : SDMp3(0, output.getBytes())
 		};
 	}
-	public function getSoundTag(?id:Int=1):SWFTag
+	public function getTag(?id:Int=1):SWFTag
 	{
 		soundData.sid=id;
 		return TSound(soundData);
@@ -71,14 +71,14 @@ class AudioWriter
 			header: {version:10, compressed:true, width:800, height:600, fps:30, nframes:1},
 			tags: 
 			[
-				getSoundTag(id),
+				getTag(id),
 				TStartSound(id, {syncStop:false, hasLoops:false, loopCount:null}),
 				TShowFrame
 			]
 		}
 		var swfOutput:haxe.io.BytesOutput = new haxe.io.BytesOutput();
-    var writer = new Writer(swfOutput);
-    writer.write(swfFile);
-    return swfOutput.getBytes();
+		var writer = new Writer(swfOutput);
+		writer.write(swfFile);
+		return swfOutput.getBytes();
 	}
 }

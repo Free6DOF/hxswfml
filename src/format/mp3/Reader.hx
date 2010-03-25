@@ -141,6 +141,7 @@ class Reader {
       catch (ex : haxe.io.Eof) {
          return FT_NONE;
       }
+	  return FT_NONE;
    }
 
    /**

@@ -34,8 +34,11 @@ class VideoWriter
 	var metaInfoObj:Dynamic;
 	var actualWidth:Int;
 	var actualHeight:Int;
-	public var outTags:Array<Null<SWFTag>>;
-	public var swf:Bytes;
+	var defaultFPS:Int;
+	var defaultWidth:Int;
+	var defaultHeight:Int;
+	var outTags:Array<Null<SWFTag>>;
+	var swf:Bytes;
 	public function new()
 	{
 	
@@ -127,20 +130,23 @@ class VideoWriter
 		}
 		return flvTags;
 	}
-	public function getTags()
+	public function getTags():Array<SWFTag>
 	{
 		return outTags;
 	}
-	public function getSWF()
+	public function getSWF():Bytes
 	{
 		return swf;
 	}
-	public function flv2swf(flv:Bytes, id:Int=1)
+	public function write(flv:Bytes, ?id=1, ?defaultFPS=12, ?defaultWidth=320, ?defaultHeight=240)
 	{
 		var soundFormats=['Linear PCM','ADPCM','MP3','Linear PCM, little endian','Nellymoser 16-kHz mono','Nellymoser 8-kHz mono','Nellymoser','G.711 A-law logarithmic PCM','G.711 mu-law logarithmic PCM','reserved','AAC','Speex','MP3 8-Khz','Device-specific sound'];
 		var videoFormats=['','','Sorenson H.263','Screen video','VP6','VP6 video with alpha channel'];
 		var soundRates=[5510, 11025, 22050, 44100];
-		var defaultFPS=12;
+		this.defaultFPS=defaultFPS;
+		this.defaultWidth=defaultWidth;
+		this.defaultHeight=defaultHeight;
+		
 		var flvTags = parse(flv);
 		flvHeader = flvTags[0];
 		setCorrectHeaderInfo(flvTags);
@@ -161,7 +167,7 @@ class VideoWriter
 		metaInfoObj = findMetaInfo(flvTags);
 		if(metaInfoObj==null)
 		{
-			trace('\nNo metaData tag found in flv. Using default fps: 12. Calculated actual width and height...');
+			trace('\nNo metaData tag found in flv. Using following values for fps:'+ defaultFPS +', width:'+actualWidth +', height:'+actualHeight);
 			metaInfoObj = {width:actualWidth, height:actualHeight, framerate:defaultFPS};
 		}
 		if(metaInfoObj.framerate==0)metaInfoObj.framerate = defaultFPS;
@@ -169,10 +175,9 @@ class VideoWriter
 		if(metaInfoObj.height==0)metaInfoObj.height = actualHeight;
 		if(metaInfoObj.width==0 || metaInfoObj.height==0)
 		{
-			metaInfoObj.width = 320;
-			metaInfoObj.height = 240;
+			metaInfoObj.width = defaultWidth;
+			metaInfoObj.height = defaultHeight;
 		}
-
 		outTags=new Array();
 		var defineVideoStreamTag=null;
 		if(flvHeader.hasVideo)
@@ -259,7 +264,7 @@ class VideoWriter
 		placeObject2.bitmapCache =false;
 		var swfFile = 
 		{
-			header: {version:10, compressed:true, width:800, height:600, fps:Std.int(metaInfoObj.framerate), nframes:1},
+			header: {version:10, compressed:true, width:Std.int(metaInfoObj.width), height:Std.int(metaInfoObj.height), fps:Std.int(metaInfoObj.framerate), nframes:1},
 			tags: 
 			[
 				TSandBox({useDirectBlit :false, useGPU:false, hasMetaData:false, actionscript3:true, useNetWork:false}), 
@@ -273,9 +278,9 @@ class VideoWriter
 		outTags.push(TClip(id, videoInfo.tags.length, controlTags));
 
 		var swfOutput:haxe.io.BytesOutput = new haxe.io.BytesOutput();
-    var writer = new Writer(swfOutput);
-    writer.write(swfFile);
-    swf = swfOutput.getBytes();
+		var writer = new Writer(swfOutput);
+		writer.write(swfFile);
+		swf = swfOutput.getBytes();
 	}
 	function handleNoMetaData()
 	{
@@ -373,6 +378,8 @@ class VideoWriter
 		var dim_x=0;
 		var render_y=0;
 		var render_x=0;
+		actualWidth=defaultWidth;
+		actualHeight=defaultHeight;
 		if(videoInfo.codecId==5)
 		{
 			//Alpha Offset
@@ -408,69 +415,4 @@ class VideoWriter
 		}
 		return [actualWidth, actualHeight];
 	}
-	function dump(flvTags:Array<Dynamic>)
-	{
-		for(tag in flvTags)
-		{
-			switch(tag.type)
-			{
-				case 'header':
-					trace(tag);
-				case 'meta':
-					trace(tag);
-				case 'audio':
-					trace(tag);
-				case 'video':
-					trace(tag);
-			}
-		}
-	}
 }
-typedef HeaderData=
-{
-	type: String,
-	hasAudio : Bool,
-	hasVideo : Bool,
-	hasMeta : Bool
-}
-typedef VideoData=
-{
-	time:Int,
-	type: String,
-	frameType : Int,
-	codecId : Int,
-	adjustment:Int,
-	alphaOffset: Int,
-	data : Bytes
-}
-typedef AudioData=
-{
-	time:Int,
-	type: String,
-	soundFormat : Int,
-	soundRate : Int,
-	is16bit : Bool,
-	isStereo : Bool,
-	data : Bytes
-}
-typedef MetaData=
-{
-	width:Int,
-	height:Int,
-	framerate:Int
-}
-typedef SoundInfo=
-{
-	tags:Array<AudioData>,
-	soundFormat : Int,
-	soundRate : Int,
-	is16bit : Bool,
-	isStereo : Bool,
-}
-typedef VideoInfo=
-{
-	tags:Array<VideoData>,
-	frameType :Int,
-	codecId :Int,
-}
-typedef MetaInfo=MetaData

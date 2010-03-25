@@ -1226,7 +1226,7 @@ class Reader {
 		}
 		bits = new format.tools.BitsInput(i);
 		var r = readRect();
-		if( r.left != 0 || r.top != 0 || r.right % 20 != 0 || r.bottom % 20 != 0 )
+		if( r.left != 0 || r.top != 0 )
 			throw error('invalid swf width or height');
 		i.readByte();//ignored for fps
 		var fps = i.readByte();
@@ -1370,8 +1370,9 @@ class Reader {
 			var data = i.read(len-2);
 			TUnknown(id,data);
 		case TagId.DefineEditText:
-			var cid = i.readUInt16();
-			var data = i.read(len-2);
+			//var cid = i.readUInt16();
+			//var data = i.read(len-2);
+			var data = i.read(len);
 			TUnknown(id,data);
 		case TagId.Metadata:
 			var data = i.readString(len);
