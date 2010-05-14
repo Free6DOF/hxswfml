@@ -44,8 +44,10 @@ class HxmWriter
 	var functionClosures:Hash <Index<MethodType >> ;
 	var inits:Hash<Index<MethodType>> ;
 	var classDefs:Hash<Index<ClassDef>> ;
-	var jumps:Hash<Void->Void> ;
-	var labels:Hash<JumpStyle->Void>;
+	var jumps:Hash < Void->Void > ;
+	var switches:Hash<Void->Void> ;
+	//var labels:Hash<JumpStyle->Bool->Int>;
+	var labels:Hash<Null<JumpStyle>->Int>;
 	var abcFile:ABCData;
 	var swfTags:Array<SWFTag>;
 	var classNames:Array<String>;
@@ -93,7 +95,13 @@ class HxmWriter
 	public function getHXM(initName):String
 	{
 		
-		var start = 'import format.abc.Data;\n'+
+		var start = 
+		'/* build.hxml:\n\n'+
+		'-cp C://cygwin/home/jan/hxswfml/src\n'+ 
+		'-main GenSWF\n'+
+		'-x gen_swf.n\n\n' + 
+		'*/\n\n'+
+		'import format.abc.Data;\n'+
 		'import format.swf.Data;\n'+
 		'import neko.Sys;\n'+
 		'import neko.Lib;\n'+
@@ -110,7 +118,7 @@ class HxmWriter
 		'\t\tvar inits:Hash<Index<MethodType>> = new Hash();\n'+
 		'\t\tvar classes:Hash<Index<ClassDef>> = new Hash();\n'+
 		'\t\tvar ctx:format.abc.Context = new format.abc.Context();\n'+
-		'\t\tvar localFunctions:Hash<Index<MethodType>>=new Hash();\n//------------------\n';
+		'\t\tvar localFunctions:Hash<Index<MethodType>>=new Hash();\n\t\t//------------------\n';
 
 		var middle = "";
 		if(useFolders)
@@ -174,7 +182,7 @@ class HxmWriter
 		else
 		{
 			start+='\t\tinitLocalFunctions(localFunctions, ctx, classes);\n';
-			start+='//------------------\n';
+			start+='\t\t//------------------\n';
 			for(i in packages)
 			{
 				var path = i[0];
@@ -183,11 +191,11 @@ class HxmWriter
 			}
 		}
 		
-		var end = '//------------------\n\t\tvar abcOutput = new haxe.io.BytesOutput();\n'+
+		var end = '\t\t//------------------\n\t\tvar abcOutput = new haxe.io.BytesOutput();\n'+
 		'\t\tformat.abc.Writer.write(abcOutput, ctx.getData());\n'+
 		'\t\tvar abcOutput = new haxe.io.BytesOutput();\n'+
 		'\t\tformat.abc.Writer.write(abcOutput, ctx.getData());\n'+
-		'//------------------\n'+
+		'\t\t//------------------\n'+
 		'\t\tvar swfFile = \n'+
 		'\t\t{\n'+
 			'\t\t\theader: {version:10, compressed:false, width:800, height:600, fps:30, nframes:1},\n'+
@@ -199,7 +207,7 @@ class HxmWriter
 				'\t\t\t\tTShowFrame\n'+
 			'\t\t\t]\n'+
 		'\t\t};\n'+
-		'//------------------\n'+
+		'\t\t//------------------\n'+
 		'\t\tvar swfOutput:haxe.io.BytesOutput = new haxe.io.BytesOutput();\n'+
 		'\t\tvar writer = new format.swf.Writer(swfOutput);\n'+
 		'\t\twriter.write(swfFile);\n'+
@@ -230,6 +238,7 @@ class HxmWriter
 		
 		jumps = new Hash();
 		labels = new Hash();
+		switches = new Hash();
 		curClassName="";
 		var statics:Array<OpCode>=new Array();
 		imports = new Hash();
@@ -330,6 +339,7 @@ class HxmWriter
 								var value:String = member.get('value');
 								var _const:Bool = member.get('const') == 'true';
 								var ns = namespaceType(member.get('ns'));
+								var slot = member.get('slot');
 								var _value = (value==null)?null: switch (type)
 								{
 									case 'String': VString(ctx.string(value));
@@ -348,8 +358,8 @@ class HxmWriter
 									case 'Boolean': "VBool("+(value == 'true')+")";
 									default : "null"; //throw('You must provide a datatype for: ' +  name +  ' if you provide a value here.(Supported types for predefined values are String, int, uint, Number, Boolean)');
 								};
-								ctx.defineField(name, ctx.type(getImport(type)), isStatic, _value, _const, ns);
-								buf.add("\t\tctx.defineField('"+name+"', ctx.type('"+getImport(type)+"'), "+isStatic+", "+_svalue+", "+_const+', ctx._namespace(NPublic(ctx.string(""))));\n');
+								ctx.defineField(name, ctx.type(getImport(type)), isStatic, _value, _const, ns, Std.parseInt(slot));
+								buf.add("\t\tctx.defineField('"+name+"', ctx.type('"+getImport(type)+"'), "+isStatic+", "+_svalue+", "+_const+', ctx._namespace(NPublic(ctx.string(""))),'+slot+');\n');
 
 							case 'function':
 								createFunction(member, 'method', cl.isInterface);
@@ -454,6 +464,7 @@ class HxmWriter
 		{
 			ctx.beginFunction(args, _return, extra);
 			buf.add("\n\t\tctx.beginFunction(["+__args.join(',')+"], "+__return+", "+__extra+");\n");
+			buf.add("\t\t{\n");
 			f = ctx.curFunction.f;
 			buf.add("\t\tf = ctx.curFunction.f;\n");
 			var name = node.get('f');
@@ -494,7 +505,6 @@ class HxmWriter
 						f = ctx.beginInterfaceMethod(getImport(node.get('name')), args, _return, _static, _override,_final,  true, kind, extra, ns);
 						buf.add("\n\t\tf=ctx.beginInterfaceMethod('"+getImport(node.get('name'))+"', ["+__args.join(',')+"], "+__return+", "+_static+", "+_override+", "+_final+", true, "+kind+", "+__extra+", "+__ns+");\n");
 						curClass.constructor = f.type;
-						buf.add("\t\t{\n");
 						buf.add("\t\tcl.constructor = f.type;\n");
 						return f;
 					}
@@ -514,7 +524,6 @@ class HxmWriter
 				{
 					var f = ctx.beginInterfaceMethod(getImport(node.get('name')), args, _return, _static, _override, _final, _later, kind, extra, ns);
 					buf.add("\n\t\tf=ctx.beginInterfaceMethod('" + getImport(node.get('name')) + "', [" + __args.join(',') + "], " + __return + ", " + _static + ", " + _override + ", " + _final + ", " + _later + ", " + kind + ", " + __extra + ", " + __ns + ");\n");
-					buf.add("\t\t{\n");
 					return f;
 				}
 				else
@@ -807,14 +816,60 @@ class HxmWriter
 						}
 
 				case	"OSwitch":
-						var arr = o.get('deltas').split(',');
+						var arr = o.get('deltas').split('[').join('').split(']').join('').split(',');
 						var deltas:Array<Int> = new Array();
 						for ( i in arr)
 							deltas.push(Std.parseInt(i));
 						var __deltas = deltas.toString();
 						__op=o.nodeName+'('+Std.parseInt(o.get('default'))+', '+__deltas+')';
 						Type.createEnum(OpCode, o.nodeName, [Std.parseInt(o.get('default')), deltas]);
-												
+						
+				case 	"OSwitch2":
+						var def = o.get('default');
+						var _def = 0;
+						var __def:Dynamic = "";
+						if (StringTools.startsWith(def, 'label'))
+						{
+							_def = labels.get(def)(null);
+							__def = def + '()';
+						}
+						else
+						{
+							switches.set(def, ctx.switchDefault());
+							buf.add('\t\t\tvar '+ def +' = ctx.switchDefault();\n');
+							//__def = def;
+							__def = _def;
+						}
+						var arr = o.get('deltas').split('[').join('').split(']').join('').split(' ').join('').split(',');
+						var offsets = [];
+						var __offsets:Array<Dynamic> = [];
+						for ( i in 0...arr.length)
+						{
+							if (StringTools.startsWith(arr[i],'label'))
+							{
+								offsets.push(labels.get(arr[i])(null));
+								__offsets.push(arr[i]+'()');
+							}
+							else
+							{
+								buf.add('\t\t\tvar '+arr[i]+' = ctx.switchCase('+i+');\n');
+								switches.set(arr[i], ctx.switchCase(i));
+								offsets.push(0);
+								//__offsets.push(arr[i]);
+								__offsets.push(_def);
+							}
+						}
+						__op = "OSwitch("+__def+","+__offsets+")";
+						Type.createEnum(OpCode, "OSwitch", [_def, offsets]);
+						
+				case 	"OCase":
+						var out:Null<OpCode>=null;
+						var jumpName = o.get('name');
+						var jumpFunc = switches.get(jumpName);
+						jumpFunc();
+						buf.add('\t\t\t' + jumpName + '();\n');
+						out;
+						
 				case	"ONext":
 						__op = o.nodeName+"("+Std.parseInt(o.get('v1'))+","+Std.parseInt(o.get('v2'))+")";
 						Type.createEnum(OpCode, o.nodeName, [Std.parseInt(o.get('v1')), Std.parseInt(o.get('v2'))]);
@@ -964,7 +1019,7 @@ class HxmWriter
 	}
 	private function urlDecode(str:String):String
 	{
-		return str.split('&quot;').join('"').split('&lt;').join('<');
+		return str.split('&quot;').join('"').split('&lt;').join('<').split('\\').join('\\\\').split("'").join("\\'");
 	}
 	private function updateStacks(opc:OpCode) 
 	{
@@ -1039,7 +1094,10 @@ class HxmWriter
 				if (--currentStack < 0) 
 					stackError(opc, 0);
 					opStack.pop();
-					
+			case OSwitch2(landingName, landingNames, offsets):
+				
+			case OCase(landingName):
+				
 			case OPushWith: //0x1C, pushwith, stack:-1|0, scope:0|+1
 				if (--currentStack < 0) 
 					stackError(opc, 0);

@@ -56,17 +56,17 @@ class AbcReader
 		functionParseIndex = 0;
 		abcId = 0;
 	}
-	public function read(fileName:String, _swf=null)
+	public function read(type:String, bytes:haxe.io.Bytes)
 	{
 		xml_out = new StringBuf();
 		xml_out.add('<abcfiles>\n');
-		if (StringTools.endsWith(fileName, '.abc'))
+		if (type =='abc')
 		{
-			xml_out.add(abcToXml(getBytes(fileName, _swf), null));
+			xml_out.add(abcToXml(bytes, null));
 		}
-		else if (StringTools.endsWith(fileName, '.swf'))
+		else if (type =='swf')
 		{
-			var swf = getBytes(fileName, _swf);
+			var swf = bytes;
 			var swfBytesInput = new BytesInput(swf);
 			var swfReader = new format.swf.Reader(swfBytesInput);
 			var header = swfReader.readHeader();
@@ -84,16 +84,21 @@ class AbcReader
 				}
 			}
 		}
-		else if (StringTools.endsWith(fileName, '.swc'))
+		else if (type =='swc')
 		{
-			var zip = getBytes(fileName, _swf);
-			var zipBytesInput = new BytesInput(zip);
+			var zipBytesInput = new BytesInput(bytes);
 			var zipReader = new format.zip.Reader(zipBytesInput);
 			var list = zipReader.read();
 			var swf=null;
 			for(file in list)
-				if(file.fileName=="library.swf")
+			{
+				var extension = file.fileName.substr(file.fileName.lastIndexOf('.') + 1).toLowerCase();
+				if(extension=="swf")
+				{
 					swf = file.data;
+				}
+			}
+			if(swf==null)throw "No swf file found inside swc";
 			var swfBytesInput = new BytesInput(swf);
 			var swfReader = new format.swf.Reader(swfBytesInput);
 			var header = swfReader.readHeader();
@@ -111,20 +116,13 @@ class AbcReader
 				}
 			}
 		}
+		else throw 'Unsupported input file format';
 		xml_out.add('</abcfiles>');
 		
 	}
 	public function getXML():String
 	{
 		return xml_out.toString();
-	}
-	private function getBytes(fileName:String, swf=null)
-	{
-		#if (flash || js)
-		return haxe.io.Bytes.ofData(swf);
-		#else
-		 return File.getBytes(fileName);
-		#end
 	}
 	private function abcToXml(data, infos):String
 	{
@@ -188,6 +186,7 @@ class AbcReader
 								xml.add(parseLocals(f.locals));
 								xml.add('"');
 							}
+							xml.add(' slot="'+ field.slot+'"');
 							xml.add(' > <!-- maxStack="');
 							xml.add(f.maxStack);
 							xml.add('" nRegs="');
@@ -196,7 +195,7 @@ class AbcReader
 							xml.add(f.initScope);
 							xml.add('" maxScope="');
 							xml.add(f.maxScope);
-							xml.add('" -->\n');
+							xml.add('" length="'+f.code.length+' bytes"-->\n');
 							xml.add(decodeToXML(format.abc.OpReader.decode(new haxe.io.BytesInput(f.code)), f));
 							}
 						if (!hasMethodBody)
@@ -280,7 +279,7 @@ class AbcReader
 				xml.add(f.initScope);
 				xml.add('" maxScope="');
 				xml.add(f.maxScope);
-				xml.add('" -->\n');
+				xml.add('" length="'+f.code.length+' bytes"-->\n');
 				xml.add(decodeToXML(format.abc.OpReader.decode(new haxe.io.BytesInput(f.code)), f));
 				xml.add(indent());
 				xml.add('</init>\n');
@@ -341,7 +340,8 @@ class AbcReader
 						{
 							xml.add(' const="true"');
 						}
-						xml.add('/>\n');
+						xml.add(' slot="'+ field.slot+'"');
+						xml.add(' />\n');
 					default:
 				}
 			}
@@ -375,6 +375,7 @@ class AbcReader
 						{
 							xml.add(' const="true"');
 						}
+						xml.add(' slot="'+ field.slot+'"');
 						xml.add(' static="true" />\n');
 					default:
 				}
@@ -413,7 +414,7 @@ class AbcReader
 				xml.add(f.initScope);
 				xml.add('" maxScope="');
 				xml.add(f.maxScope);
-				xml.add('" -->\n');
+				xml.add('" length="'+f.code.length+' bytes"-->\n');
 				xml.add(decodeToXML(format.abc.OpReader.decode(new haxe.io.BytesInput(f.code)), f));
 			}
 			if (_interface || f==null)
@@ -459,7 +460,7 @@ class AbcReader
 			xml.add(f.initScope);
 			xml.add('" maxScope="');
 			xml.add(f.maxScope);
-			xml.add('" -->\n');
+			xml.add('" length="'+f.code.length+' bytes"-->\n');
 			xml.add(decodeToXML(format.abc.OpReader.decode(new haxe.io.BytesInput(f.code)), f));
 			xml.add(indent());
 			xml.add('</function>\n\n');
@@ -509,6 +510,7 @@ class AbcReader
 								xml.add(parseLocals(f.locals));
 								xml.add('"');
 							}
+							xml.add(' slot="'+ field.slot+'"');
 							xml.add(' > <!-- maxStack="');
 							xml.add(f.maxStack);
 							xml.add('" nRegs="');
@@ -517,7 +519,7 @@ class AbcReader
 							xml.add(f.initScope);
 							xml.add('" maxScope="');
 							xml.add(f.maxScope);
-							xml.add('" -->\n');
+							xml.add('" length="'+f.code.length+' bytes"-->\n');
 							xml.add(decodeToXML(format.abc.OpReader.decode(new haxe.io.BytesInput(f.code)), f));
 							}
 						if (!hasMethodBody)
@@ -574,6 +576,7 @@ class AbcReader
 								xml.add(parseLocals(f.locals));
 								xml.add('"');
 							}
+							xml.add(' slot="'+ field.slot+'"');
 							xml.add(' > <!-- maxStack="');
 							xml.add(f.maxStack);
 							xml.add('" nRegs="');
@@ -582,7 +585,7 @@ class AbcReader
 							xml.add(f.initScope);
 							xml.add('" maxScope="');
 							xml.add(f.maxScope);
-							xml.add('" -->\n');
+							xml.add('" length="'+f.code.length+' bytes"-->\n');
 							xml.add(decodeToXML(format.abc.OpReader.decode(new haxe.io.BytesInput(f.code)), f));
 						}
 						if (!hasMethodBody)
@@ -614,8 +617,18 @@ class AbcReader
 	{
 		indentLevel++;
 		var buf = new StringBuf();
+		var index = 0;
+		var bytePos = 0;
 		for (op in ops)
 		{
+			var ec = Type.enumConstructor(op);
+			if (ec != "OLabel2" && ec != "OJump" && ec != "OJump3" && ec != "OCase")
+			{
+				bytePos = format.abc.OpReader.positions[index++];
+				buf.add('<!--');
+				buf.add(bytePos);
+				buf.add('-->');
+			}			
 			switch(op)
 			{
 				case	OBreakPoint, ONop, OThrow, ODxNsLate, OPushWith, OPopScope, OForIn, OHasNext, ONull, OUndefined, OForEach, OTrue, OFalse, ONaN, OPop, ODup, OSwap, 
@@ -682,7 +695,7 @@ class AbcReader
 						buf.add(Type.enumParameters(f)[0] + '"');
 						buf.add(' />\n');
 						functionClosuresBodies.push(f);
-
+						
 				case	OGetSuper(v), OSetSuper(v), OGetDescendants(v), OFindPropStrict(v), OFindProp(v), OFindDefinition(v), OGetLex(v), OSetProp(v), OGetProp(v), 
 						OInitProp(v), ODeleteProp(v), OCast(v), OAsType(v), OIsType(v):
 						buf.add(indent());
@@ -788,7 +801,8 @@ class AbcReader
 							buf.add( landingName);
 							buf.add('" offset="' );
 							buf.add( offset );
-							buf.add('" />\n');
+							buf.add('" />');
+							buf.add('<!--'+ (bytePos+4+offset)+'-->\n');
 						}
 						else if (offset < 0)
 						{
@@ -799,7 +813,8 @@ class AbcReader
 							buf.add( landingName );
 							buf.add('" offset="' );
 							buf.add( offset );
-							buf.add('" />\n');
+							buf.add('" />');
+							buf.add('<!--'+ (bytePos+4+offset)+'-->\n');
 						}
 							
 				case	OJump3( landingName ):
@@ -822,7 +837,56 @@ class AbcReader
 						buf.add( def );
 						buf.add( '" deltas="' );
 						buf.add( deltas);
+						buf.add('" />');
+						buf.add('<!--');  
+						for (d in deltas)
+							buf.add(' ' +(bytePos + d) + ', ');
+						buf.add('-->\n');
+						
+				case	OSwitch2(def, deltas, offsets):
+						buf.add(indent());
+						buf.add('<!--');
+						buf.add(Type.enumConstructor(op));
+						buf.add(' default="' );
+						buf.add( offsets.shift() );
+						buf.add( '" deltas="' );
+						buf.add(offsets);
+						buf.add('" />-->');
+						buf.add('<!--');  
+						for (d in offsets)
+							buf.add(' ['+d+'->'+(bytePos + d)+'], ');
+						buf.add('-->\n');
+						
+						buf.add('<!--');
+						buf.add(bytePos);
+						buf.add('-->');
+						
+						buf.add(indent());
+						buf.add('<');
+						buf.add(Type.enumConstructor(op));
+						buf.add(' default="' );
+						buf.add( def );
+						buf.add( '" deltas="' );
+						buf.add( deltas);
 						buf.add('" />\n');
+						/*
+						buf.add('<!--');  
+						for (d in offsets)
+							buf.add(' ['+d+','+(bytePos + d)+'], ');
+						buf.add('-->\n');
+						*/
+						
+				case	OCase( landingName ):
+						buf.add(indent());
+						buf.add('<OCase name="');
+						buf.add(landingName );
+						buf.add('"/>\n');
+						if (jumpInfo)
+						{
+							buf.add('<!-- ');
+							buf.add(landingName );
+							buf.add(' -->\n');
+						}
 												
 				case	ONext(r1, r2):
 						buf.add(indent());
@@ -942,7 +1006,7 @@ class AbcReader
 				out.add(_f.initScope);
 				out.add('" maxScope="');
 				out.add(_f.maxScope);
-				out.add('" -->\n');
+				out.add('" length="'+_f.code.length+' bytes"-->\n');
 				out.add(decodeToXML(format.abc.OpReader.decode(new haxe.io.BytesInput(_f.code)), _f));
 				out.add(indent());
 				out.add('</function>\n');
@@ -977,8 +1041,8 @@ class AbcReader
 			if (extra.defaultParameters != null)
 			{
 				var str = new StringBuf();
-				for(i in 0...extra.defaultParameters.length)
-					str.add('null,');
+				for (i in 0...extra.defaultParameters.length)
+					str.add(getDefaultValue(extra.defaultParameters[i]) + ',');//str.add('null,');
 				out.add(' defaultParameters="');
 				out.add(cutComma(str.toString()));
 				out.add('"');
@@ -988,37 +1052,50 @@ class AbcReader
 	}
 	inline private function parseLocals(locals:Array<Field>):String
 	{
-		var out = new StringBuf();
-		for (l in locals)
+		//var out = new StringBuf();
+		var out = "";
+		var _locals:Array<String>= [];
+		for (i in 0...locals.length)
 		{
+			var l = locals[i];
+			var slot = l.slot;
 			switch(l.kind)
 			{
 				case FVar( type , value , _const ):
+					var str = "";
 					var con:String;
 					if (_const)
 						con = 'true';
 					else
 						con = 'false';
-					out.add(getName(l.name));
-					out.add(":");
-					out.add(getName(type));
-					out.add(":");
-					out.add(getValue(value));
-					out.add(":");
-					out.add(con);
-					out.add(",");
-					
+					str+=(getName(l.name));
+					str+=(":");
+					str+=(getName(type));
+					str+=(":");
+					str+=(getValue(value));
+					str+=(":");
+					str+=(con);
+					//out.add(",");
+					_locals[slot] = str;
 				case FMethod( type , k , isFinal, isOverride ): 
-					out.add("FMethod");
+					//out.add("FMethod");
+					_locals[slot] = "FMethod";
 					
 				case FClass( c  ):
-					out.add("FClass");
+					//out.add("FClass");
+					_locals[slot] = "FClass";
 					
 				case FFunction( f  ):
-					out.add("FFunction");
+					//out.add("FFunction");
+					_locals[slot] = "FFunction";
 			}
 		}
-		return cutComma(out.toString());
+		for (i in 1..._locals.length)
+		{
+			out += _locals[i]+',';
+		}
+		//return cutComma(out.toString());
+		return cutComma(out);
 	}
 	inline private function indent():String
 	{
@@ -1082,6 +1159,7 @@ class AbcReader
 	}
 	private function getNameType(name:Name):String
 	{
+		
 		var __namespace = '';
 		var __name = '';
 		switch (name)
@@ -1090,10 +1168,18 @@ class AbcReader
 				__name = getString(name);
 				__namespace = getNamespace(ns);
 					
-			case NMulti( name, nset ):
+			case NMulti( name, nsset ):
 				__name = getString(name);
-				//__namespace = "(nset=" + Type.enumParameters(nset)[0] + ")-TODO";
-					
+					for(n in abcFile.names)
+					{
+						switch(n)
+						{
+							default:
+							case NName(nname, nns):
+								if(getString(nname)== __name)
+									__namespace = getNamespace(nns);
+						}
+					}
 			case NRuntime( name):
 				__name = getString(name);
 				
@@ -1119,20 +1205,36 @@ class AbcReader
 	}
 	inline private function cutComma(str:String):String
 	{
-		var out:String = str;
-		if(str.lastIndexOf(',')==str.length-1)
+		var out:String = str==null?"":str;
+		if(str!=null && str.lastIndexOf(',')==str.length-1)
 			out = str.substr(0, str.length - 1);
+		return out;
+	}
+	private function getDefaultValue(value:Null<Value>):String
+	{
+		if (value == null) return "";
+		
+		var out = "";
+		out = switch(value)
+		{
+			case VNull:"";
+			case VString(v):urlEncode(getString(v))+":String";
+			case VInt(v): getInt(v)+":int";
+			case VUInt(v): getUInt(v)+":uint";
+			case VFloat(v):getFloat(v)+":Number";
+			case VBool(v): (v==true)? 'true:Boolean':'false:Boolean';
+			case VNamespace(kind, ns): kind + getNamespace(ns)+":Namespace";
+		}
 		return out;
 	}
 	private function getValue(value:Null<Value>):String
 	{
-		var out = '';
-		if (value == null)
-			out = "";
-		else
+		if (value == null) return "";
+		
+		var out = "";
 		out = switch(value)
 		{
-			case VNull: "";
+			case VNull:"";
 			case VString(v):urlEncode(getString(v));
 			case VInt(v): getInt(v);
 			case VUInt(v): getUInt(v);
@@ -1172,7 +1274,9 @@ class AbcReader
 	}
 	inline private function urlEncode(str:String):String
 	{
-		return str.split('&').join('&amp;').split('"').join('&quot;').split('<').join('&lt;');
+		//return StringTools.urlEncode(str);
+		 return str.split('&').join('&amp;').split('"').join('&quot;').split('<').join('&lt;').split('\t').join('\\t').split('\r').join('\\r').split('\n').join('\\n').split(String.fromCharCode(0x1b)).join('\\u001b');
+		
 	}
 	inline private function lineSplitter(str:String):String
 	{

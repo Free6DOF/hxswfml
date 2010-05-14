@@ -62,11 +62,13 @@ class Main
 			Lib.println("operation	: abc2swf");
 			Lib.println("inputfile	: xml or abc file");
 			Lib.println("outputfile	: swf file");
+			Lib.println("main class	: main class");
 			//Lib.println("example		: hxswfml abc2swf script.abc index.swf");
 			Lib.println("");
 			Lib.println("operation	: abc2swc");
 			Lib.println("inputfile	: xml file");
 			Lib.println("outputfile	: swc file");
+			Lib.println("main class	: main class");
 			//Lib.println("example		: hxswfml abc2swc script.xml lib.swc");
 			Lib.println("");
 			Lib.println("operation	: ttf2swf");
@@ -101,7 +103,7 @@ class Main
 		{	
 			if (!FileSystem.exists(args[1]))
 			{
-				Lib.println("ERROR: File " + args[1] + " could not be found at the given location.");
+				Lib.println("ERROR: File " + args[1] + " could not be found.");
 				Sys.exit(1);
 			}
 			else 
@@ -132,6 +134,8 @@ class Main
 					var extension = args[1].substr(args[1].lastIndexOf('.') + 1).toLowerCase();
 					var className = args[3];
 					var abcWriter = new AbcWriter();
+					//abcWriter.log = true;
+					abcWriter.strict = false;
 					if(extension=="xml")
 						abcWriter.write(File.getContent(args[1]));
 					else if(extension=="abc")
@@ -143,67 +147,106 @@ class Main
 				}
 				else if (args[0] == 'abc2swc')
 				{
-					var extension = args[1].substr(args[1].lastIndexOf('.') + 1).toLowerCase();
+					var xmlFile = args[1];
+					var swcFile = args[2];
 					var className = args[3];
-					var abcWriter = new AbcWriter();
-					if(extension=="xml")
-						abcWriter.write(File.getContent(args[1]));
+					
+					var extension = xmlFile.substr(xmlFile.lastIndexOf('.') + 1).toLowerCase();
+					if (extension == "xml")
+					{
+						var abcWriter = new AbcWriter();
+						abcWriter.write(File.getContent(xmlFile));
+						var swc = abcWriter.getSWC(className);	
+						var file = File.write(swcFile,true);
+						file.write(swc);
+						file.close();
+					}
 					else
 						throw 'unsupported file format';
-					var swc = abcWriter.getSWC();	
-					var file = File.write(args[2],true);
-					file.write(swc);
-					file.close();
+					
 				}
 				else if(args[0] == 'abc2xml')
 				{
+					var binFile = args[1];
+					var xmlFile = args[2];
+					var debugInfo = args[3] == 'true';
+					var sourceInfo = args[4] == 'true';
+					
 					var abcReader = new AbcReader();
-					abcReader.debugInfo = args[3]=='true';
-					abcReader.sourceInfo = args[4]=='true';
-					abcReader.read(args[1]);
+					abcReader.debugInfo = debugInfo;
+					abcReader.sourceInfo = sourceInfo;
+					var extension = binFile.substr(binFile.lastIndexOf('.') + 1).toLowerCase();
+					abcReader.read(extension, File.getBytes(binFile));
 					var xml = abcReader.getXML();
-					var file = File.write(args[2], false);
+					
+					var file = File.write(xmlFile, false);
 					file.writeString(xml);
 					file.close();
 				}
 				else if(args[0] == 'abc2hxm')
 				{
-					var abcReader = new AbcReader();
-					abcReader.debugInfo = args[4]=='true';
-					abcReader.sourceInfo = args[5]=='true';
-					abcReader.read(args[1]);
-					var xml = abcReader.getXML();
+					var binFile = args[1];
+					var hxFile = args[2];
+					var mainClass = args[3];
+					var debugInfo = args[4] == 'true';
+					var sourceInfo = args[5] == 'true';
+					var useFolders = args[6] == 'true';
+					var showBytePos = true;
+					var log = false;
 					
+					var abcReader = new AbcReader();
+					abcReader.debugInfo = debugInfo;
+					abcReader.sourceInfo = sourceInfo;
+					var extension = binFile.substr(binFile.lastIndexOf('.') + 1).toLowerCase();
+					var xml = "";
+					if (extension != "xml")
+					{
+						abcReader.read(extension,File.getBytes(binFile));
+						xml = abcReader.getXML();
+					}
+					else
+					{
+						xml = File.getContent(binFile);
+					}
 					var hxmWriter = new HxmWriter();
-					hxmWriter.debugInfo = args[4]=='true';
-					hxmWriter.sourceInfo = args[5]=='true';
-					hxmWriter.useFolders = args[6]=='true';
-					hxmWriter.showBytePos=true;
-					hxmWriter.log=false;
-					var tempFolder=args[2].split('/');
+					hxmWriter.debugInfo = debugInfo;
+					hxmWriter.sourceInfo = sourceInfo;
+					hxmWriter.useFolders = useFolders;
+					hxmWriter.showBytePos=showBytePos;
+					hxmWriter.log=log;
+					var tempFolder=hxFile.split('/');
 					tempFolder.pop();
-					hxmWriter.outputFolder=tempFolder.join('/');
+					hxmWriter.outputFolder = tempFolder.join('/');
 					hxmWriter.write(xml);
-					var hxm = hxmWriter.getHXM(args[3]);	
-					var file = File.write(hxmWriter.outputFolder+'/GenSWF.hx', false);
+					var hxm = hxmWriter.getHXM(mainClass);
+					var path = hxmWriter.outputFolder == ""?hxmWriter.outputFolder + 'GenSWF.hx':hxmWriter.outputFolder + '/GenSWF.hx';
+					var file = File.write(path, false);
 					file.writeString(hxm);
 					file.close();
 				}
 				else if(args[0] == 'xml2hxm')
 				{
-					var xml = File.getContent(args[1]);
-					
+					var xmlFile = args[1];
+					var hxFile = args[2];
+					var mainClass = args[3];
+					var debugInfo = args[4] == 'true';
+					var sourceInfo = args[5] == 'true';
+					var useFolders = args[6] == 'true';
+					var showBytePos = true;
+					var log = false;
+
 					var hxmWriter = new HxmWriter();
-					hxmWriter.debugInfo = args[4]=='true';
-					hxmWriter.sourceInfo = args[5]=='true';
-					hxmWriter.useFolders = args[6]=='true';
-					hxmWriter.showBytePos=true;
+					hxmWriter.debugInfo = debugInfo;
+					hxmWriter.sourceInfo = sourceInfo;
+					hxmWriter.useFolders = useFolders;
+					hxmWriter.showBytePos = showBytePos;
 					hxmWriter.log=false;
-					var tempFolder=args[2].split('/');
+					var tempFolder=hxFile.split('/');
 					tempFolder.pop();
 					hxmWriter.outputFolder=tempFolder.join('/');
-					hxmWriter.write(xml);
-					var hxm = hxmWriter.getHXM(args[3]);	
+					hxmWriter.write(File.getContent(xmlFile));
+					var hxm = hxmWriter.getHXM(mainClass);
+					
 					var file = File.write(hxmWriter.outputFolder+'/GenSWF.hx', false);
 					file.writeString(hxm);
 					file.close();

@@ -11,31 +11,34 @@ class AbcWriter
 	public var strict:Bool;
 	public var name:String;
 	var ctx:format.abc.Context;
-	var className:String;
-	var functionClosureName:String;
-	var curClassName:String;
-	var curClass:ClassDef;
-	var maxStack:Int;
-	var maxScopeStack:Int;
-	var currentStack:Int;
-	var currentScopeStack:Int;
+	var jumps:Hash < Void->Void > ;
+	var switches:Hash<Void->Void> ;
+	var labels:Hash<Null<JumpStyle>->Int>;
 	var imports:Hash<String>;
 	var functionClosures:Hash <Index<MethodType >> ;
 	var inits:Hash<Index<MethodType>> ;
 	var classDefs:Hash<Index<ClassDef>> ;
-	var jumps:Hash<Void->Void> ;
-	var labels:Hash<JumpStyle->Void>;
 	var abcFile:ABCData;
 	var swfTags:Array<SWFTag>;
+	var className:String;
+	var curClassName:String;
+	var curClass:ClassDef;
 	var classNames:Array<String>;
-	var swcClasses:Array<Array<String>>;
+	var swcClasses:Array < Array < String >> ;
+	var functionClosureName:String;
+	var lastBytepos:Int;
+	var maxStack:Int;
+	var maxScopeStack:Int;
+	var currentStack:Int;
+	var currentScopeStack:Int;
 	public function new ()
 	{
 	}
 	public function write(xml:String):haxe.io.Bytes
 	{
-		var lastStamp = Date.now().getTime();
-		swfTags=new Array();
+		swfTags = new Array();
+		swcClasses = new Array();
+		lastBytepos = 0;
 		var abcfiles:Xml = Xml.parse(xml).firstElement();
 		if(abcfiles.nodeName.toLowerCase()=="abcfile")
 		{
@@ -57,7 +60,7 @@ class AbcWriter
 	public function getABC():haxe.io.Bytes
 	{
 		if(swfTags.length>1)
-			return Type.enumParameters(swfTags[0])[0];
+			return Type.enumParameters(swfTags[0])[0];//todo
 		else
 			return Type.enumParameters(swfTags[0])[0];
 	}
@@ -69,6 +72,7 @@ class AbcWriter
 			tags:[]
 		};
 		swfFile.tags.push(TSandBox({useDirectBlit :false, useGPU:false, hasMetaData:false, actionscript3:true, useNetWork:false}));
+		swfFile.tags.push(TScriptLimits(1000, 60));
 		for(t in swfTags)
 			swfFile.tags.push(t);
 		swfFile.tags.push(TSymbolClass([{cid:0, className:className!=null?className:classNames.pop()}]));
@@ -78,7 +82,7 @@ class AbcWriter
 		writer.write(swfFile);
 		return swfOutput.getBytes();
 	}
-	public function getSWC():haxe.io.Bytes
+	public function getSWC(?className):haxe.io.Bytes
 	{
 		var swfFile = 
 		{
@@ -88,6 +92,7 @@ class AbcWriter
 		swfFile.tags.push(TSandBox({useDirectBlit :false, useGPU:false, hasMetaData:false, actionscript3:true, useNetWork:false}));
 		for(t in swfTags)
 			swfFile.tags.push(t);
+		swfFile.tags.push(TSymbolClass([ { cid:0, className:className != null?className:classNames.pop() } ]));
 		swfFile.tags.push(TShowFrame);
 		var swfOutput:haxe.io.BytesOutput = new haxe.io.BytesOutput();
 		var writer = new format.swf.Writer(swfOutput);
@@ -101,9 +106,6 @@ class AbcWriter
 	}
 	public function abc2swf(data:haxe.io.Bytes)
 	{
-		#if cpp
-			throw "ERROR: Due to a bug in the cpp target, abc2swf with .abc input is currently not available.";
-		#else
 		var abcReader = new format.abc.Reader(new haxe.io.BytesInput(data));
 		var abcFile = abcReader.read();
 		var inits = abcFile.inits;
@@ -127,7 +129,6 @@ class AbcWriter
 			}
 		}
 		swfTags=[TActionScript3(data, { id : 1, label : className} )];
-		#end
 	}
 	private function xml2abc(xml):SWFTag
 	{	
@@ -135,6 +136,7 @@ class AbcWriter
 		ctx = new format.abc.Context();
 		jumps = new Hash();
 		labels = new Hash();
+		switches = new Hash();
 		curClassName="";
 		var statics:Array<OpCode>=new Array();
 		imports = new Hash();
@@ -142,10 +144,10 @@ class AbcWriter
 		inits= new Hash();
 		classDefs = new Hash();
 		classNames = new Array();
-		swcClasses = new Array();
+		//swcClasses = new Array();
 		var ctx = ctx;
 		
-		//FUNCTION CLOSURES
+		//FUNCTIONS
 		for(_classNode in ctx_xml.elements())
 		{
 			switch(_classNode.nodeName)
@@ -163,18 +165,14 @@ class AbcWriter
 			{
 				default : 
 					throw ('<'+_classNode.nodeName + '> Must be <function>, <init>, <import> or <class [<var>], [<function>]>.');
-				
-				case 'function': 
-					// function closures are handled before classes because we need a reference to them.
-					
-				case 'init':
-					// function inits are handled after classes
 					
 				case 'import':
 					var n = _classNode.get('name');
 					var cn = n.split('.').pop();
 					imports.set(cn, n);
-	
+					
+				case 'function', 'init':
+
 				case 'class', 'interface':
 					className = _classNode.get('name');
 					classNames.push(className);
@@ -193,8 +191,11 @@ class AbcWriter
 					cl.isSealed = _classNode.get('sealed') == 'true';
 					//cl.Namespace = NamespaceType(_classNode.get('ns'));//ctx.Namespace(NProtected(ctx.string(curClassName)));
 					var _extends = _classNode.get('extends');
+					ctx.isExtending =false;
 					if (_extends != null)
 					{
+						if (_extends != 'Object') 
+							ctx.isExtending = true;
 						cl.superclass = ctx.type(getImport(_extends));
 						ctx.addClassSuper(getImport(_extends));
 					}
@@ -212,16 +213,17 @@ class AbcWriter
 								var value:String = member.get('value');
 								var _const:Bool = member.get('const') == 'true';
 								var ns = NamespaceType(member.get('ns'));
+								var slot = Std.parseInt(member.get('slot'));
 								var _value = (value==null)?null: switch (type)
 								{
 									case 'String': VString(ctx.string(value));
-									case 'int': VInt(ctx.int(haxe.Int32.ofInt(Std.parseInt(value))));
-									case 'uint': VUInt(ctx.uint(haxe.Int32.ofInt(Std.parseInt(value))));
+									case 'int': VInt(ctx.int(parseInt32(value)));
+									case 'uint': VUInt(ctx.uint(parseInt32(value)));
 									case 'Number':  VFloat(ctx.float(Std.parseFloat(value)));
 									case 'Boolean': VBool(value == 'true');
 									default : null; //throw('You must provide a datatype for: ' +  name +  ' if you provide a value here.(Supported types for predefined values are String, int, uint, Number, Boolean)');
 								};
-								ctx.defineField(name, ctx.type(getImport(type)), isStatic, _value, _const, ns);
+								ctx.defineField(name, ctx.type(getImport(type)), isStatic, _value, _const, ns, slot);
 
 							case 'function':
 								createFunction(member, 'method', cl.isInterface);
@@ -231,7 +233,7 @@ class AbcWriter
 						}
 					}
 
-					//check if custom init function exists:
+					//check if custom init function exists.
 					for(_classNode in ctx_xml.elements())
 					{
 						switch(_classNode.nodeName)
@@ -277,8 +279,27 @@ class AbcWriter
 		{
 			var values = defaultParameters.split(',');
 			_defaultParameters = new Array();
-			for (v in values)
-				_defaultParameters.push(null);
+			for (v in 0...values.length)
+			{
+				if (values[v] == "")
+					_defaultParameters.push(null);//_defaultParameters.push(null);
+				else
+				{
+					var pair = values[v].split(":");
+					var v = pair[0];
+					var t = pair[1];
+					var _value = switch (t)
+					{
+						case 'String': VString(ctx.string(v));
+						case 'int': VInt(ctx.int(parseInt32(v)));
+						case 'uint': VUInt(ctx.uint(parseInt32(v)));
+						case 'Number':  VFloat(ctx.float(Std.parseFloat(v)));
+						case 'Boolean': VBool(v == 'true');
+						default : null;
+					};
+					_defaultParameters.push(_value);//_defaultParameters.push(null);
+				}
+			}
 		}
 		var extra = 
 		{
@@ -391,6 +412,7 @@ class AbcWriter
 			else
 				logStack("------------------------------------------------\ncurrent class= " + className + ', method= ' + member.get('name') + "\ncurrentStack= " + currentStack + ', maxStack= ' + maxStack + "\ncurrentScopeStack= " + currentScopeStack + ', maxScopeStack= ' + maxScopeStack + "\n\n");
 		}
+		lastBytepos = ctx.bytepos.n;
 		for (o in member.elements())
 		{
 			var op:Null<OpCode> = null;
@@ -407,8 +429,11 @@ class AbcWriter
 				case	"OString":
 						Type.createEnum(OpCode, o.nodeName, [ctx.string(urlDecode(o.get('v')))]);
 												
-				case	"OIntRef", "OUIntRef" :
-						Type.createEnum(OpCode, o.nodeName, [ctx.int(haxe.Int32.ofInt(Std.parseInt(o.get('v'))))]);
+				case	"OIntRef":
+						Type.createEnum(OpCode, o.nodeName, [ctx.int(parseInt32(o.get('v')))]);
+						
+				case "OUIntRef":
+						Type.createEnum(OpCode, o.nodeName, [ctx.uint(parseInt32(o.get('v')))]);
 												
 				case	"OFloat":
 						Type.createEnum(OpCode, o.nodeName, [ctx.float(Std.parseFloat(o.get('v')))]);
@@ -480,23 +505,7 @@ class AbcWriter
 				case	"OCallMethod":
 						Type.createEnum(OpCode, o.nodeName, [Std.parseInt(o.get('v')), Std.parseInt(o.get('nargs'))]);
 												
-				case	"OJump":
-						var jumpName = o.get('name');
-						var out:Null<OpCode>=null;
-						if (jumpName != null)
-						{
-							var jumpFunc = jumps.get(jumpName);
-							jumpFunc();//make the jump
-							if (log) 
-								logStack('OJump name=' + jumpName);
-						}
-						else
-						{
-							var j = Type.createEnum(JumpStyle, o.get('jump'), []);
-							var offset = Std.parseInt(o.get('offset'));
-							out = Type.createEnum(OpCode, o.nodeName, [j, offset]);
-						}
-						out; 
+				
 							
 				case	"JNotLt", "JNotLte", "JNotGt", "JNotGte", "JAlways", "JTrue", "JFalse", "JEq", "JNeq", "JLt", "JLte", "JGt", "JGte", "JPhysEq", "JPhysNeq":
 						var jump = Type.createEnum(JumpStyle, o.nodeName);
@@ -506,8 +515,8 @@ class AbcWriter
 						if (jumpName != null)
 							jumps.set(jumpName, ctx.jump(jump));
 						else if (labelName != null)
-							labels.get(labelName)(jump);
-						updateStacks(OJump(jump,0));
+							labels.get(labelName)(jump);//labels.get(labelName)(jump, false);
+						updateStacks(OJump(jump, 0));
 						out;
 						
 				case	"OLabel":
@@ -525,13 +534,62 @@ class AbcWriter
 						{
 							Type.createEnum(OpCode, o.nodeName, []);
 						}
-
+						
+				case	"OJump":
+						var jumpName = o.get('name');
+						var out:Null<OpCode>=null;
+						if (jumpName != null)
+						{
+							var jumpFunc = jumps.get(jumpName);
+							jumpFunc();
+							if (log) 
+								logStack('OJump name=' + jumpName);
+						}
+						else
+						{
+							var j = Type.createEnum(JumpStyle, o.get('jump'), []);
+							var offset = Std.parseInt(o.get('offset'));
+							out = Type.createEnum(OpCode, o.nodeName, [j, offset]);
+						}
+						out; 
+						
 				case	"OSwitch":
-						var arr = o.get('deltas').split(',');
+						var def = Std.parseInt(o.get('default'));
+						var arr = o.get('deltas').split('[').join('').split(']').join('').split(' ').join('').split(',');
 						var deltas:Array<Int> = new Array();
 						for ( i in arr)
 							deltas.push(Std.parseInt(i));
-						Type.createEnum(OpCode, o.nodeName, [Std.parseInt(o.get('default')), deltas]);
+						Type.createEnum(OpCode, o.nodeName, [def, deltas]);
+						
+				case	"OSwitch2":
+						var def = o.get('default');
+						var _def = 0;
+						if(StringTools.startsWith(def,'label'))
+							_def = labels.get(def)(null);//_def = labels.get(def)(JAlways, true);
+						else
+							switches.set(def, ctx.switchDefault());
+						var arr = o.get('deltas').split('[').join('').split(']').join('').split(' ').join('').split(',');
+						var offsets = [];
+						for ( i in 0...arr.length)
+						{
+							if (StringTools.startsWith(arr[i],'label'))
+							{
+								offsets.push(labels.get(arr[i])(null));//offsets.push(labels.get(arr[i])(JAlways, true));
+							}
+							else
+							{
+								switches.set(arr[i], ctx.switchCase(i));
+								offsets.push(0);
+							}
+						}
+						Type.createEnum(OpCode, "OSwitch", [_def, offsets]);
+				
+				case	"OCase":
+						var out:Null<OpCode>=null;
+						var jumpName = o.get('name');
+						var jumpFunc = switches.get(jumpName);
+						jumpFunc();
+						out;
 												
 				case	"ONext":
 						Type.createEnum(OpCode, o.nodeName, [Std.parseInt(o.get('v1')), Std.parseInt(o.get('v2'))]);
@@ -565,7 +623,7 @@ class AbcWriter
 					case 'protected': NProtected(ctx.string(curClassName));
 					case 'internal': NInternal(ctx.string(""));
 					case 'Namespace': NNamespace(ctx.string(curClassName));
-					case 'explicit': NExplicit(ctx.string(""));//name todo
+					case 'explicit': NExplicit(ctx.string(""));
 					case 'staticProtected': NStaticProtected(ctx.string(curClassName));
 					default : NPublic(ctx.string(""));
 				});
@@ -607,6 +665,15 @@ class AbcWriter
 		}*/
 		return FVar();
 	}
+	static function parseInt32(s:String):haxe.Int32
+	{
+		var f=Std.parseFloat(s);
+		if(f<-1073741824)
+			return haxe.Int32.add(haxe.Int32.ofInt(-1073741824),haxe.Int32.ofInt(Std.int(f+1073741824)));
+		if(f>1073741823)
+			return haxe.Int32.add(haxe.Int32.ofInt(1073741823),haxe.Int32.ofInt(Std.int(f-1073741823)));
+		return haxe.Int32.ofInt(Std.int(f));
+	}
 	private function nonEmptyStack(fname:String)
 	{
 		var msg = '!Possible error: Function ' + fname + ' did not end with empty stack. current stack: ' + currentStack;
@@ -635,7 +702,8 @@ class AbcWriter
 	}
 	private function urlDecode(str:String):String
 	{
-		return str.split('&quot;').join('"').split('&lt;').join('<');
+		//return StringTools.urlDecode(str);
+		 return str.split('&amp;').join('&').split('&quot;').join('"').split('&lt;').join('<').split('\\t').join('\t').split('\\r').join('\r').split('\\n').join('\n').split('\\u001b').join(String.fromCharCode(0x1b));
 	}
 	private function updateStacks(opc:OpCode) 
 	{
@@ -699,9 +767,14 @@ class AbcWriter
 			//is no op (internal use only)
 			case OJump3( landingName ):
 			//is no op (internal use only)
+			
 			case OSwitch(def,deltas): //0x1B, lookupswitch, stack:-1|0, scope:0|0
 				if (--currentStack < 0) 
 					stackError(opc, 0);
+			case OSwitch2(landingName,landingNames, offsets): 
+				//is no op (internal use only)
+			case OCase(landingName): 
+				//is no op (internal use only)
 					
 			case OPushWith: //0x1C, pushwith, stack:-1|0, scope:0|+1
 				if (--currentStack < 0) 
@@ -1282,6 +1355,7 @@ class AbcWriter
 		}
 		if (log) 
 		{
+			logStack("bytepos:" + (ctx.bytepos.n-lastBytepos));
 			logStack(cast opc);
 			logStack("currentStack= " + currentStack + ', maxStack= ' + maxStack + "\ncurrentScopeStack= " + currentScopeStack + ', maxScopeStack= ' + maxScopeStack +"\n\n");
 		}

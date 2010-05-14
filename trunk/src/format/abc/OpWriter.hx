@@ -196,10 +196,12 @@ class OpWriter {
 		case ORegKill(r):
 			b(0x08);
 			reg(r);
+			
 		case OLabel:
 			b(0x09);
 		case OLabel2(landingName):
 			return;
+			
 		case OJump(j,delta):
 			b(jumpCode(j));
 			o.writeInt24(delta);
@@ -207,12 +209,18 @@ class OpWriter {
 			return;
 		case OJump3(landingName):
 			return;
+			
 		case OSwitch(def,deltas):
 			b(0x1B);
 			o.writeInt24(def);
 			int(deltas.length - 1);
-			for( d in deltas )
+			for ( d in deltas )
 				o.writeInt24(d);
+		case OSwitch2(def, deltas, offsets):
+			return;
+		case OCase(landingName):
+			return;
+			
 		case OPushWith:
 			b(0x1C);
 		case OPopScope:

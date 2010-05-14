@@ -162,7 +162,13 @@ class ShapeWriter
 		var scaleMode = scaleMode==null?"":scaleMode.toLowerCase();
 		var caps = caps==null?"":caps.toLowerCase();
 		var joints = joints==null?"":joints.toLowerCase();
-		var cap = if(caps=='none')LineCapStyle.LCNone; else if(caps=='round')LineCapStyle.LCRound; else if(caps=='square')LineCapStyle.LCSquare;else LineCapStyle.LCRound;
+		var cap = LineCapStyle.LCRound;
+		if (caps == 'none') 
+			cap=LineCapStyle.LCNone; 
+		else if (caps == 'round') 
+			cap=LineCapStyle.LCRound; 
+		else if (caps == 'square') 
+			cap=LineCapStyle.LCSquare;
 		return {
 					startCap : cap,
 					join : if(joints=='round')LJRound; else if(joints=='bevel')LJBevel;else if(joints=='miter')LJMiter(miterLimit); else LJRound,

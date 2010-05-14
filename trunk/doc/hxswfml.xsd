@@ -5,7 +5,7 @@
 	xmlns:hx="http://hxswfml.googlecode.com" 
 	targetNamespace="http://hxswfml.googlecode.com" 
 	elementFormDefault="qualified">
-	
+	<xs:include schemaLocation="hxswfml_abc.xsd"/>
 	<xs:element name="swf">
 		<xs:annotation>
 			<xs:appinfo>
@@ -19,8 +19,14 @@
 							count(//hx:swf/hx:DefineBitsJPEG[@id = current()/@id]) +
 							count(//hx:swf/hx:DefineBinaryData[@id = current()/@id]) +
 							count(//hx:swf/hx:DefineFont[@id = current()/@id]) = 1">
-							The id attribute in a SymbolClass element must reference an existing id in a DefineSound,DefineSprite,DefineButton,DefineBitsJPEG,DefineBinaryData or DefineFont element.</sch:assert>
+							The id attribute in a SymbolClass element must reference an existing id in a DefineSound,DefineSprite,DefineButton,DefineBitsJPEG,DefineBinaryData or DefineFont element.
+						</sch:assert>
 					</sch:rule>
+					<sch:rule context="hx:swf/hx:DefineABC">
+						<sch:assert test="count(//hx:swf/hx:FileAttributes)=1" >
+						The FileAttributes tag is required when a DefineABC tag is used.
+						</sch:assert>
+					</sch:rule>	
 					<sch:rule context="hx:swf/hx:ExportAssets[@id>0]">
 						<sch:assert test="
 							count(//hx:swf/hx:DefineSprite[@id = current()/@id]) +
@@ -28,7 +34,8 @@
 							count(//hx:swf/hx:DefineButton[@id = current()/@id]) +
 							count(//hx:swf/hx:DefineBitsJPEG[@id = current()/@id]) +
 							count(//hx:swf/hx:DefineFont[@id = current()/@id]) = 1">
-							The id attribute in an ExportAssets element must reference an existing id in a DefineSound,DefineSprite,DefineButton,DefineBitsJPEG, or DefineFont element.</sch:assert>
+							The id attribute in an ExportAssets element must reference an existing id in a DefineSound,DefineSprite,DefineButton,DefineBitsJPEG, or DefineFont element.
+						</sch:assert>
 					</sch:rule>
 					<sch:rule context="hx:swf/hx:RemoveObject[@depth]">
 						<sch:assert test="count(//hx:swf/hx:PlaceObject[@depth=current()/@depth])>0">The depth attribute in a RemoveObject element must reference at least one PlaceObject element (within the same scope) that has put an object on that depth.</sch:assert>
@@ -40,35 +47,10 @@
 			</xs:appinfo>
 		</xs:annotation>
 		<xs:complexType>
-		<xs:attribute name="compressed" type="xs:boolean" use="optional" default="true"/>
-			<xs:attribute name="fps" use="optional" default="30">
-				<xs:simpleType>
-					<xs:restriction base="xs:integer">
-						<xs:minInclusive value="0"/>
-						<xs:maxInclusive value="120"/>
-					</xs:restriction>
-				</xs:simpleType>
-			</xs:attribute>
-			<xs:attribute name="frameCount" type="xs:integer" use="optional" default="1"/>
-			<xs:attribute name="height" use="optional" default="600">
-				<xs:simpleType>
-					<xs:restriction base="xs:integer">
-						<xs:minInclusive value="1"/>
-						<xs:maxInclusive value="2880"/>
-					</xs:restriction>
-				</xs:simpleType>
-			</xs:attribute>
-			<xs:attribute name="version" type="xs:integer" use="optional" default="10"/>
-			<xs:attribute name="width" use="optional" default="800">
-				<xs:simpleType>
-					<xs:restriction base="xs:integer">
-						<xs:minInclusive value="1"/>
-						<xs:maxInclusive value="2880"/>
-					</xs:restriction>
-				</xs:simpleType>
-			</xs:attribute>
 			<xs:sequence>
+				<xs:sequence minOccurs="0" maxOccurs="1">
 				<xs:element ref="FileAttributes"/>
+				</xs:sequence>
 				<xs:sequence maxOccurs="unbounded">
 					<xs:choice minOccurs="0" maxOccurs="unbounded">
 						<xs:element ref="SetBackgroundColor"/>
@@ -96,6 +78,33 @@
 					<xs:element ref="ShowFrame" maxOccurs="unbounded"/>
 				</xs:sequence>
 			</xs:sequence>
+			<xs:attribute name="compressed" type="xs:boolean" use="optional" default="true"/>
+			<xs:attribute name="fps" use="optional" default="30">
+				<xs:simpleType>
+					<xs:restriction base="xs:integer">
+						<xs:minInclusive value="0"/>
+						<xs:maxInclusive value="120"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:attribute>
+			<xs:attribute name="frameCount" type="xs:integer" use="optional" default="1"/>
+			<xs:attribute name="height" use="optional" default="600">
+				<xs:simpleType>
+					<xs:restriction base="xs:integer">
+						<xs:minInclusive value="1"/>
+						<xs:maxInclusive value="2880"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:attribute>
+			<xs:attribute name="version" type="xs:integer" use="optional" default="10"/>
+			<xs:attribute name="width" use="optional" default="800">
+				<xs:simpleType>
+					<xs:restriction base="xs:integer">
+						<xs:minInclusive value="1"/>
+						<xs:maxInclusive value="2880"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:attribute>
 		</xs:complexType>
 
 		<xs:unique name="DefinitionID">
@@ -579,7 +588,15 @@
 			<xs:documentation>This element will hold a block of ActionscriptByteCode. This code must be compiled actionscript or haXe script by a compiler such as the Flash IDE, Flex compiler or the haXe compiler. Supported file formats are swf and abc. This element will be generated automatically if you provide a class for the base attribute in a SymbolClass element. If the file is an abc file you can supply a name for it. Do not include the tag header (tag or tag length).</xs:documentation>
 		</xs:annotation>
 		<xs:complexType>
-			<xs:attribute name="file" type="xs:string" use="required"/>
+			<xs:sequence>
+				<xs:sequence maxOccurs="unbounded">
+					<xs:choice minOccurs="0" maxOccurs="unbounded">
+						<xs:element ref="abcfiles"/>
+						<xs:element ref="abcfile"/>
+					</xs:choice>
+				</xs:sequence>
+			</xs:sequence>
+			<xs:attribute name="file" type="xs:string" use="optional"/>
 			<xs:attribute name="name" type="xs:string" use="optional"/>
 		</xs:complexType>
 	</xs:element>
@@ -661,7 +678,7 @@
 			<xs:documentation>This element will render everything previously put on the display list with PlaceObject.</xs:documentation>
 		</xs:annotation>
 		<xs:complexType>
-			<xs:attribute name="count" type="xs::positiveInteger" use="optional" default="1"/>
+			<xs:attribute name="count" type="xs:positiveInteger" use="optional" default="1"/>
 		</xs:complexType>
 	</xs:element>
 	<!--____________________________________________________________-->
