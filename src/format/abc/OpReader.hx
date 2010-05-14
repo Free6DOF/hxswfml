@@ -169,6 +169,7 @@ class OpReader {
 			jmp(JPhysEq);
 		case 0x1A:
 			jmp(JPhysNeq);
+		/*
 		case 0x1B:
 			bytePos+=3;
 			var def = i.readInt24();
@@ -179,6 +180,45 @@ class OpReader {
 				cases.push(i.readInt24());
 			}
 			OSwitch(def,cases);
+		*/
+		case 0x1B:
+			var base = bytePos - 1;
+			var _def = i.readInt24();
+			bytePos += 3;
+			var def = "";
+			if (_def < 0)
+			{
+				def = labels[base+_def];
+			}
+			else
+			{
+				if (switches[base + _def] == null) switches[base + _def] = [];
+				caseNameIndex++;
+				def = 'case' + caseNameIndex;
+				switches[base + _def].push(def);
+			}
+				
+			var cases = new Array();
+			var offsets = [_def];
+			var total = readInt() + 1 ;
+			for ( _ in 0...total)
+			{
+				var offset = i.readInt24();
+				bytePos += 3;
+				offsets.push(offset);
+				if (offset < 0)
+				{
+					cases.push(labels[base+offset]);
+				}
+				else
+				{
+					caseNameIndex++;
+					if (switches[base + offset] == null)switches[base + offset] = [];
+					switches[base + offset].push('case' + caseNameIndex);
+					cases.push('case' + caseNameIndex);
+				}
+			}
+			OSwitch2(def,cases,offsets);
 		case 0x1C:
 			OPushWith;
 		case 0x1D:
@@ -492,16 +532,22 @@ class OpReader {
 	}
 
 	static var bytePos:Int = 0;
-	static var jumps:Array<Array<String>>;
+	static var jumps:Array < Array < String >> ;
+	static var switches:Array < Array < String >> ;
 	static var jumpNameIndex:Int;
+	static var caseNameIndex:Int;
 	static var labels:Array<String>;
 	static var labelNameIndex:Int;
 	static var ops: Array<format.abc.OpCode>;
+	public static var positions:Array<Int>=[];
 	public static function decode( i : haxe.io.Input ) : Array<format.abc.OpCode>
 	{
 		bytePos = 0;
+		positions=[];
 		jumps = new Array();
+		switches= new Array();
 		jumpNameIndex = 0;
+		caseNameIndex= 0;
 		labels = new Array();
 		labelNameIndex = 0;
 		var opr = new OpReader(i);
@@ -509,8 +555,16 @@ class OpReader {
 		while ( true ) 
 		{
 			var op;
+			positions.push(bytePos);
 			try 
 			{
+				if (switches[bytePos] != null)
+				{
+					for (s in switches[bytePos])
+					{
+						ops.push(OCase(s));
+					}
+				}
 				if (jumps[bytePos] != null)
 				{
 					for (s in jumps[bytePos])
@@ -527,6 +581,7 @@ class OpReader {
 			}
 			var opc = opr.readOp(op);
 			ops.push(opc);
+			
 		}
 		return ops;
 	}

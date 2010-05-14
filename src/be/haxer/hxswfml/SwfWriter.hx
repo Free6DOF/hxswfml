@@ -50,8 +50,12 @@ class SwfWriter
 			var obj:Dynamic = Reflect.field(this, e.nodeName.toLowerCase())();
 			switch(Type.typeof(obj))
 			{
-				case TClass(Array) : for(i in 0...obj.length)tags.push(obj[i]);
-				default : tags.push(obj);
+				case TClass(Array) : 
+					for (i in 0...obj.length)
+						tags.push(obj[i]);
+						
+				default : 
+					tags.push(obj);
 			}
 		}
 		var swfBytesOutput = new haxe.io.BytesOutput();

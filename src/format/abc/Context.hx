@@ -50,6 +50,7 @@ private class NullOutput extends haxe.io.Output
 class Context 
 {
 	public var curFunction : { f : Function, ops : Array<OpCode> };
+	public var isExtending:Bool;
 	var data : ABCData;
 	var hstrings : Hash<Int>;
 	var curClass : ClassDef;
@@ -143,8 +144,9 @@ class Context
 		var arr = data.ints;
 		for ( i in 0...arr.length ) 
 		{
-			if (Int32.compare(cast arr[i], Int32.ofInt(cast n)) == 0) 
-			return Idx(i + 1);
+			//if (Int32.compare(cast arr[i], Int32.ofInt(cast n)) == 0) 
+			if (Int32.compare(arr[i], n) == 0) 
+				return Idx(i + 1);
 		}
 		arr.push(n);
 		return Idx(arr.length);
@@ -485,10 +487,9 @@ class Context
 	{
 		endFunction();
 	}
-	public function defineField( fname : String, t:Null < IName > , ?isStatic, ?value : Value, ?_const : Bool,?ns:Index< Namespace >) : Slot// ?value : Value, ?_const : Bool added,?ns:Index< Namespace >,
+	public function defineField( fname : String, t:Null < IName > , ?isStatic, ?value : Value, ?_const : Bool,?ns:Index< Namespace >, ?slot:Null<Int>) : Slot// ?value : Value, ?_const : Bool added,?ns:Index< Namespace >,
 	{
 		var fl = if( isStatic ) curClass.staticFields else curClass.fields;
-		var slot = fieldSlot++;
 		var kind = FVar(t);
 		if (value != null)
 		{
@@ -498,11 +499,11 @@ class Context
 		}
 		fl.push({
 			name : property(fname , ns),//ns added
-			slot : fl.length+1,//slot,
+			slot : if (slot == null)0 else slot,// if (isExtending)0 else fl.length + 1,//fieldSlot++;
 			kind : kind,//value, _const added
 			metadatas : null,
 		});
-		return fl.length;// slot;
+		return fl.length;// fieldSlot;
 	}
 	public function op(o) 
 	{
@@ -514,15 +515,77 @@ class Context
 		for( o in ops )
 			op(o);
 	}
+	public function switchDefault()
+	{
+		var ops = curFunction.ops;
+		var pos = ops.length;
+		
+		var start = bytepos.n;
+		var me = this;
+		return function() 
+		{
+			ops[pos] = 
+			switch(ops[pos])
+			{
+				default:
+					OSwitch(0, []);
+				case OSwitch(def, cases):
+					OSwitch(me.bytepos.n - start, cases);
+			}
+		};
+	}
+	public function switchCase(index)
+	{
+		var ops = curFunction.ops;
+		var pos = ops.length;
+		var start = bytepos.n;
+		var me = this;
+		return function() 
+		{
+			ops[pos] = switch(ops[pos])
+			{
+				default:
+					OSwitch(0, []);
+				case OSwitch(def, cases):
+					cases[index] = me.bytepos.n - start;
+					OSwitch(def, cases);
+			}
+		};
+	}
 	public function backwardJump() 
 	{
 		var start = bytepos.n;
 		var me = this;
 		op(OLabel);
-		return function(jcond) {
-			me.op(OJump(jcond,start - me.bytepos.n - 4));
+		return function(?jcond:Null<format.abc.JumpStyle>=null) 
+		{
+			if (jcond==null)
+				return start - me.bytepos.n
+			else
+			{
+				me.op(OJump(jcond, start - me.bytepos.n - 4));
+				return 0;
+			}
 		};
 	}
+	/*
+	public function backwardJump() 
+	{
+		var start = bytepos.n;
+		var me = this;
+		op(OLabel);
+		return function(jcond:Null<format.abc.JumpStyle>, ?isSwitch:Bool = false) 
+		{
+			if (isSwitch)
+				return start - me.bytepos.n
+			else
+			{
+				me.op(OJump(jcond, start - me.bytepos.n - 4));
+				return 0;
+			}
+		};
+	}
+	*/
 	public function jump( jcond ) 
 	{
 		var ops = curFunction.ops;

@@ -188,6 +188,8 @@ enum OpCode {
 	OJump2( j : JumpStyle, landingName : String, delta:Int );
 	OJump3( landingName : String );
 	OSwitch( def : Int, deltas : Array<Int> );
+	OSwitch2( def : String, deltas : Array<String> , offsets : Array<Int> );
+	OCase( landingName : String );
 	OPushWith;
 	OPopScope;
 	OForIn;
