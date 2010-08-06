@@ -144,7 +144,31 @@ class Server {
 	}
 	//}}}
 
+	
+	//{{{ run
+	public function run(inFile:String, outFile:String) {
+		//neko.Lib.println("Launching hXswfML...");
 
+		testCommand("hXswfML");
+
+		// args = neko.Sys.args();
+
+		try {
+			var proc = new neko.io.Process("hXswfML", [inFile, outFile]);
+
+			neko.Lib.println(proc.stdout.readAll());
+			neko.Lib.println(proc.stderr.readAll());
+
+		}
+		catch (ex:String) {
+			neko.Lib.println("Launcher Error: " + ex);
+			neko.Lib.println("stack: " + haxe.Stack.exceptionStack());
+			neko.Sys.exit(1);
+		}
+	}
+	//}}}
+		
+	/*
 	//{{{ run
 	public function run(inFile:String, outFile:String) {
 		// neko.Lib.println("Launching SwfMill...");
@@ -171,6 +195,7 @@ class Server {
 		}
 	}
 	//}}}
+	*/
 
 
 	//{{{ run

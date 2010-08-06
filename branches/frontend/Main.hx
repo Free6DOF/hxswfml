@@ -142,7 +142,7 @@ class Main extends Sprite
 	public static var cnx : HttpAsyncConnection;
 
 	public static var filename 		 : String = "Untitled_1";
-	public static var output	 	 : String = "assets.swf";
+	public static var output	 	 : String = "output.swf";
 
 	public static var window		 : Window;
 	public static var editor		 : XmlEditor;
@@ -330,11 +330,10 @@ class Main extends Sprite
 
 		trace ("Finished Initialization in " + haxe.Timer.stamp () + " sec.");
 
-
-
+		
 
 		/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		window = cast root.getChildByName ("hXswfML FrontEnd");
+		window = cast root.getChildByName ("hXswfML");
 		updateTitle();
 
 
@@ -360,12 +359,12 @@ class Main extends Sprite
 
 
 		var onReadPluginsDirectory = function(v:Array<String>) {
-			// trace(Std.string(v));
 			editor.plugins = [];
 			for(p in v) {
-				//var plug = new EditorPlugin();
 				var className = p.split(".").shift();
-				var plug : IEditorPlugin = Type.createInstance(Type.resolveClass(className), [Haxegui.baseURL+"plugins/"+p]);
+				var url = Haxegui.baseURL+"plugins/"+p;
+				trace("Loading plugin from "+url);
+				var plug : IEditorPlugin = Type.createInstance(Type.resolveClass(className), [url]);
 				plug.url = Haxegui.baseURL+"plugins/"+p;
 				editor.plugins.push(plug);
 			}
@@ -387,7 +386,7 @@ class Main extends Sprite
 
 		// throbber
 		throbber = o.getChildByName("Throbber").firstChild();
-
+		
 		// hbox
 		o = cast o.firstChild ().nextSibling ();
 
@@ -427,6 +426,7 @@ class Main extends Sprite
 		//{{{ New
 		var btn = o.getChildByName ("New");
 		var doNew = function (?e) {
+			
 			throbber.visible = true;
 			throbber.play();
 
@@ -486,14 +486,15 @@ class Main extends Sprite
 		btn = o.getChildByName ("Load");
 		var doLoad = function (?e) {
 			var dt = haxe.Timer.stamp();
-
+				
 			throbber.visible = true;
 			throbber.play();
 
 			window.updateSaturationTween(new feffects.Tween(0, 1, 500, feffects.easing.Linear.easeNone));
 
-
+			
 			filedialog = new haxegui.FileDialog ();
+			
 			filedialog.addEventListener(WindowEvent.CLOSE, function(e) {
 				throbber.visible=false;
 				window.updateSaturationTween(new feffects.Tween(1, 0, 500, feffects.easing.Linear.easeNone));
@@ -600,8 +601,9 @@ class Main extends Sprite
 					// Actions.getWebCwd(onPath);
 				}
 
-				throbber.stop();
-				throbber.visible = false;
+				//throbber.stop();
+				//throbber.visible = false;
+				
 				window.updateSaturationTween(new feffects.Tween(1, 0, 500, feffects.easing.Linear.easeNone));
 				updateTitle();
 				e.target.destroy();
@@ -802,6 +804,7 @@ class Main extends Sprite
 		updatePreview ();
 
 		window.dispatchEvent(new ResizeEvent(ResizeEvent.RESIZE));
+		
 	}
 	//}}}
 
@@ -918,6 +921,10 @@ class Main extends Sprite
 
 			canvas.resize (new Size (w, h));
 
+			var color = xml.elementsNamed("SetBackgroundColor").next().get("color");
+			canvas.color = Std.parseInt(color);
+			
+
 			var totalFrames = 0;
 
 			for (frame in xml.elementsNamed ("frame")) {
@@ -1016,6 +1023,8 @@ class Main extends Sprite
 			var ds = new DataSource();
 			ds.data = [];
 			for(mode in modes.elements()) {
+				trace("Loading "+mode.get("name")+" mode...");
+				
 				ds.data.push(mode.get("name"));
 				// 	if(mode.get("name")=="xml") {
 				// 		trace("Loading mode: " + mode.get("name") );
