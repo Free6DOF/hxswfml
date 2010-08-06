@@ -27,12 +27,13 @@
 -swf-version 9
 -swf-header 1024:768:30:3C3C3C
 #-xml output.xml
+-cmd echo "Frontend"
 
 ### Server ###
 --next
 -neko server.n
 -main Server
-
+-cmd echo "Server"
 
 ### Plugins ###
 ## WhiteSpace ##
@@ -42,6 +43,8 @@
 -lib aPath
 -lib hscript
 -lib feffects
+-cmd echo "WhiteSpacePlugin"
+
 
 ## CamelCase ##
 --next
@@ -50,6 +53,7 @@
 -lib aPath
 -lib hscript
 -lib feffects
+-cmd echo "CamelCasePlugin"
 
 ## Folding ##
 --next
@@ -58,4 +62,5 @@
 -lib aPath
 -lib hscript
 -lib feffects
+-cmd echo "FoldingPlugin"
 
