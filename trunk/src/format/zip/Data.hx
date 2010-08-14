@@ -29,6 +29,7 @@ package format.zip;
 enum ExtraField {
 	FUnknown( tag : Int, bytes : haxe.io.Bytes );
 	FInfoZipUnicodePath( name : String, crc : haxe.Int32 );
+	FUtf8;
 }
 
 typedef Entry =  {
@@ -39,7 +40,7 @@ typedef Entry =  {
 	var dataSize : Int;
 	var data : Null<haxe.io.Bytes>;
 	var crc32 : Null<Dynamic>;//Null<haxe.Int32>;
-	var extraFields : Null<List<Dynamic>>;//Null<List<ExtraField>>;
+	var extraFields : Null<List<ExtraField>>;//Null<List<Dynamic>>;//;
 }
 
 typedef Data = List<Entry>

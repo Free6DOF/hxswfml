@@ -1,5 +1,6 @@
 package be.haxer.hxswfml;
 import format.swf.Data;
+import format.swf.Tools;
 
 /**
 * 
@@ -16,6 +17,7 @@ class SwfWriter
 	private var dictionary : Array<String>;
 	private var swcClasses : Array<Array<String>>;
 	private var currentTag : Xml;
+	private var tagIndex : Int;
 	private var strict:Bool;
 	public var library : Hash<Dynamic>;
 	
@@ -28,6 +30,7 @@ class SwfWriter
 		#if (swc || air) 
 			new flash.Boot(new flash.display.MovieClip()); //for swc
 		#end 
+		tagIndex=0;
 		library = new Hash();
 		init();
 	}
@@ -57,6 +60,7 @@ class SwfWriter
 				default : 
 					tags.push(obj);
 			}
+			tagIndex++;
 		}
 		var swfBytesOutput = new haxe.io.BytesOutput();
 		var swfWriter = new format.swf.Writer(swfBytesOutput);
@@ -143,27 +147,37 @@ class SwfWriter
 		validElements.set('defineedittext', ['id', 'initialText', 'fontID', 'useOutlines', 'width', 'height', 'wordWrap', 'multiline', 'password', 'input', 'autoSize', 'selectable', 'border', 'wasStatic', 'html', 'fontClass', 'fontHeight', 'textColor', 'alpha', 'maxLength', 'align', 'leftMargin', 'rightMargin', 'indent', 'leading', 'variableName', 'file']);
 		validElements.set('defineabc', ['file', 'name']);
 		validElements.set('definescalinggrid', ['id', 'x', 'width', 'y', 'height']);
-		validElements.set('placeobject', ['id', 'depth', 'name', 'move', 'x', 'y', 'scaleX', 'scaleY', 'rotate0', 'rotate1']);
+		validElements.set('placeobject', ['id', 'depth', 'name', 'move', 'x', 'y', 'scaleX', 'scaleY', 'rotate0', 'rotate1', 'blendMode', 'bitmapCache','className', 'hasImage']);
 		validElements.set('removeobject', ['depth']);
 		validElements.set('startsound', ['id', 'stop', 'loopCount']);
 		validElements.set('symbolclass', ['id', 'class', 'base']);
 		validElements.set('exportassets', ['id', 'class']);
+		validElements.set('importassets', ['url']);
 		validElements.set('metadata', ['file']);
 		validElements.set('framelabel', ['name', 'anchor']);
 		validElements.set('showframe', ['count']);
 		validElements.set('endframe', []);
 		validElements.set('tween', ['depth', 'frameCount']);
 		validElements.set('tw', ['prop', 'start', 'end']);
-		validElements.set('custom', ['tagId', 'file', 'data', 'comment']);
 		
+		validElements.set('blur', ['blurX','blurY', 'passes']);
+		validElements.set('colormatrix',['data']);
+		validElements.set('glow', ['color','blurX','blurY', 'strength', 'inner', 'knockout', 'passes']);
+		validElements.set('dropshadow',['color','blurX','blurY', 'angle', 'distance', 'strength', 'inner', 'knockout', 'passes']);
+		validElements.set('bevel', ['color1','color2','blurX','blurY', 'angle', 'distance', 'strength', 'inner', 'knockout', 'ontop', 'passes']);
+		validElements.set('gradientglow', ['colors', 'blurX','blurY', 'angle', 'distance', 'strength', 'inner', 'knockout', 'ontop', 'passes']);
+		validElements.set('gradientbevel', ['colors', 'blurX','blurY', 'angle', 'distance', 'strength', 'inner', 'knockout', 'ontop', 'passes']);
+		validElements.set('custom', ['tagId', 'file', 'data', 'comment']);
+		//------------------------
 		validChildren = new Hash();
 		validChildren.set('swf', ['fileattributes', 'setbackgroundcolor', 'scriptlimits', 'definebitsjpeg', 'defineshape', 'definesprite', 'definebutton', 'definebinarydata', 'definesound', 'definefont', 'defineedittext', 'defineabc', 'definescalinggrid', 'placeobject', 'removeobject', 'startsound', 'symbolclass', 'exportassets', 'metadata', 'framelabel', 'showframe', 'endframe', 'custom']);
 		validChildren.set('defineshape', ['beginfill', 'begingradientfill', 'beginbitmapfill', 'linestyle', 'moveto', 'lineto', 'curveto', 'endfill', 'endline', 'clear', 'drawcircle', 'drawellipse', 'drawrect', 'drawroundrect', 'drawroundrectcomplex', 'custom']);
 		validChildren.set('definesprite', ['placeobject', 'removeobject', 'startsound', 'framelabel', 'showframe', 'endframe', 'tween', 'custom']);
 		validChildren.set('definebutton', ['buttonstate', 'custom']);
+		validChildren.set('placeobject', ['dropshadow', 'blur', 'glow', 'bevel', 'gradientglow', 'colormatrix','gradientbevel']);
 		validChildren.set('tween', ['tw', 'custom']);
 	
-		validBaseClasses = ['flash.display.MovieClip', 'flash.display.Sprite', 'flash.display.SimpleButton', 'flash.display.Bitmap', 'flash.media.Sound', 'flash.text.Font','flash.utils.ByteArray'];
+		validBaseClasses = ['flash.display.MovieClip', 'flash.display.Sprite', 'flash.display.SimpleButton', 'flash.display.Bitmap', 'flash.display.BitmapData', 'flash.media.Sound', 'flash.text.Font','flash.utils.ByteArray'];
 	}
 	
 	//FILEHEADER:
@@ -183,6 +197,8 @@ class SwfWriter
 	//FILE TAGS
 	private function fileattributes():SWFTag
 	{
+		if(strict && tagIndex!=0)
+			error('ERROR: The FileAttributes tag must be the first tag. TAG: ' + currentTag.toString()); 
 		return 
 		TSandBox (
 		{
@@ -709,6 +725,26 @@ class SwfWriter
 		var depth : Int = getInt('depth', null, true);
 		var name = getString('name', "");
 		var move = getBool('move', false);
+		var bm=getString('blendMode', "").toLowerCase();
+		var blendMode = switch(bm)
+		{
+			case 'normal':BNormal;
+			case 'layer':BLayer;
+			case 'multiply':BMultiply;
+			case 'screen':BScreen;
+			case 'lighten':BLighten;
+			case 'darken':BDarken;
+			case 'add':BAdd;
+			case 'subtract':BSubtract;
+			case 'difference':BDifference;
+			case 'invert':BInvert;
+			case 'alpha':BAlpha;
+			case 'erase':BErase;
+			case 'overlay':BOverlay;
+			case 'hardlight':BHardLight;
+			case '':null;
+			default:throw('ERROR: Unsupported blendMode' + bm + ' in PlaceObject element. Valid blendModes are: normal, layer, multiply, screen, lighten, darken, add, subtract, difference, invert, alpha, erase, overlay, hardlight. TAG: ' + currentTag.toString());
+		}
 		
 		var placeObject : PlaceObject = new PlaceObject();
 		placeObject.depth = depth;
@@ -720,12 +756,131 @@ class SwfWriter
 		placeObject.instanceName = name == ""? null : name;
 		placeObject.clipDepth = null;
 		placeObject.events = null;
-		placeObject.filters = null;
-		placeObject.blendMode = null;
-		placeObject.bitmapCache = false;
-		
-		return TPlaceObject2(placeObject);
+		placeObject.blendMode = blendMode;
+		placeObject.bitmapCache = getBool('bitmapCache', null, false);
+		placeObject.className = getString('className', null, false);
+		placeObject.hasImage = getBool('hasImage', false, false);
+		var filters:Array<Filter>=null;
+		if(currentTag.elements().hasNext()) 
+			filters=new Array();
+		for(tag in currentTag.elements())
+		{
+			setCurrentElement(tag);
+			switch(currentTag.nodeName.toLowerCase())
+			{
+				case 'blur' : filters.push(FBlur(readBlur()));
+				case 'glow' : filters.push(FGlow(readGlow()));
+				case 'bevel' : filters.push(FBevel(readBevel()));
+				case 'dropshadow' : filters.push(FDropShadow(readDropShadow()));
+				case 'gradientglow' : filters.push(FGradientGlow(readGradientGlow()));
+				case 'gradientbevel' : filters.push(FGradientBevel(readGradientBevel()));
+				case 'colormatrix' : filters.push(FColorMatrix(readColorMatrix()));
+				default : error('ERROR: ' + currentTag.nodeName + ' is not allowed inside a PlaceObject element. Valid children are: ' + validChildren.get('placeobject').toString() + '. TAG: ' + currentTag.toString());
+			}
+		}
+		placeObject.filters = filters;
+		return TPlaceObject3(placeObject);
 	}
+	private function readBlur():BlurFilterData
+	{
+		return{
+			blurX : haxe.Int32.ofInt(Tools.toFixed16(getFloat('blurX', 4.0, false))), 
+			blurY : haxe.Int32.ofInt(Tools.toFixed16(getFloat('blurY', 4.0, false))), 
+			passes : getInt('passes', 1, false)};
+	}
+	private function readGlow():FilterData
+	{
+		return{
+			 color : toRGBA(getString("color","0xFF0000FF",false)),
+			 color2 :null,
+			 blurX : haxe.Int32.ofInt(Tools.toFixed16(getFloat("blurX", 4.0,false))),
+			 blurY : haxe.Int32.ofInt(Tools.toFixed16(getFloat("blurY", 4.0, false))),
+			 angle : haxe.Int32.ofInt(0),
+			 distance: haxe.Int32.ofInt(0),
+			 strength : Tools.toFixed8(getFloat("strength",1.0,false)),
+			 flags:readFilterFlags()};
+	}
+	private function readBevel():FilterData
+	{
+		return{
+			 color : toRGBA(getString("color1","0xFFFFFFFF",false)),
+			 color2 : toRGBA(getString("color2","0x000000FF",false)),
+			 blurX : haxe.Int32.ofInt(Tools.toFixed16(getFloat("blurX", 4.0,false))),
+			 blurY : haxe.Int32.ofInt(Tools.toFixed16(getFloat("blurY", 4.0, false))),
+			 angle : haxe.Int32.ofInt(Tools.toFixed16(getFloat("angle",45.0,false)*Math.PI/180)),
+			 distance: haxe.Int32.ofInt(Tools.toFixed16(getFloat("distance",4.0,false))),
+			 strength : Tools.toFixed8(getFloat("strength",1.0,false)),
+			 flags:readFilterFlags(true,false,false,1)};
+	}
+	private function readDropShadow():FilterData
+	{
+		return{
+			 color : toRGBA(getString("color1","0x000000FF",false)),
+			 color2 : null,
+			 blurX : haxe.Int32.ofInt(Tools.toFixed16(getFloat("blurX", 4.0,false))),
+			 blurY : haxe.Int32.ofInt(Tools.toFixed16(getFloat("blurY", 4.0, false))),
+			 angle : haxe.Int32.ofInt(Tools.toFixed16(getFloat("angle",45.0,false)*Math.PI/180)),
+			 distance: haxe.Int32.ofInt(Tools.toFixed16(getFloat("distance",4.0,false))),
+			 strength : Tools.toFixed8(getFloat("strength",1.0,false)),
+			 flags:readFilterFlags()};
+	}
+	
+	private function readGradientGlow():GradientFilterData
+	{
+		return{
+			colors: readFilterColors(), 
+			data :{
+				 color :null,
+				 color2 :null,
+				 blurX : haxe.Int32.ofInt(Tools.toFixed16(getFloat("blurX", 4.0,false))),
+				 blurY : haxe.Int32.ofInt(Tools.toFixed16(getFloat("blurY", 4.0, false))),
+				 angle : haxe.Int32.ofInt(Tools.toFixed16(getFloat("angle",45.0,false)*Math.PI/180)),
+				 distance: haxe.Int32.ofInt(Tools.toFixed16(getFloat("distance",4.0,false))),
+				 strength : Tools.toFixed8(getFloat("strength",1.0,false)),
+				 flags:readFilterFlags()}};
+	}
+	private function readGradientBevel():GradientFilterData
+	{
+		return{
+			colors:readFilterColors("0:0xFFFFFFFF,128:0xFF000000,255:0x000000FF"),
+			data:{
+				color :null,
+				color2 : null,
+				blurX : haxe.Int32.ofInt(Tools.toFixed16(getFloat("blurX", 4.0,false))),
+				blurY : haxe.Int32.ofInt(Tools.toFixed16(getFloat("blurY", 4.0, false))),
+				angle : haxe.Int32.ofInt(Tools.toFixed16(getFloat("angle",45.0,false)*Math.PI/180)),
+				distance: haxe.Int32.ofInt(Tools.toFixed16(getFloat("distance",4.0,false))),
+				strength : Tools.toFixed8(getFloat("strength",1.0,false)),
+				flags:readFilterFlags(true, false, false, 1)}};
+	}
+	private function readColorMatrix(): Array<Float>
+	{
+		var arr:Array<String>=getString('data','0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1',false).split(",");
+		var data:Array<Float> =new Array();
+		for(i in arr)
+			data.push(Std.parseFloat(i));
+		return data;
+	}
+	private function readFilterFlags(?b1:Bool=false,?b2:Bool=false,?b3:Bool=false,?v:Int=1)
+	{
+		return {
+			inner: getBool("inner",b1,false),
+			knockout: getBool("knockout",b2,false),
+			ontop : getBool("ontop",b3,false),
+			passes :getInt("passes",v,false)};
+	}
+	private function readFilterColors(?v:String="0:0xFFFFFF00,255:0x000000FF")
+	{
+		var arr:Array<String> = getString("colors",v,false).split(',');
+		var colors:Array<Dynamic>=new Array();
+		for(i in arr)
+		{
+			var pair = i.split(':');
+			colors.push({position:Std.parseInt(pair[0]), color:toRGBA(pair[1])});
+		}
+		return colors;
+	}
+
 	private function moveObject(depth : Int, x : Int, y : Int, scaleX : Null<Float>, scaleY : Null<Float>, rs0 : Null<Float>, rs1 : Null<Float>):SWFTag
 	{
 		var id = null;
@@ -866,6 +1021,11 @@ class SwfWriter
 		var loopCount = getInt('loopCount', 0);
 		var hasLoops = loopCount == 0? false : true;
 		return TStartSound(id, {syncStop : stop, hasLoops : hasLoops, loopCount : loopCount});
+	}
+	private function importassets():SWFTag
+	{
+		var url = getString('url', "", true);
+		return TImportAssets(url);
 	}
 	private function symbolclass():Array<SWFTag>
 	{
@@ -1044,6 +1204,15 @@ class SwfWriter
 		translate = {x : x, y : y};
 		return {scale : scale, rotate : rotate, translate : translate};
 	}
+	function parseInt32(s:String):haxe.Int32
+	{
+		var f=Std.parseFloat(s);
+		if(f<-1073741824)
+			return haxe.Int32.add(haxe.Int32.ofInt(-1073741824),haxe.Int32.ofInt(Std.int(f+1073741824)));
+		if(f>1073741823)
+			return haxe.Int32.add(haxe.Int32.ofInt(1073741823),haxe.Int32.ofInt(Std.int(f-1073741823)));
+		return haxe.Int32.ofInt(Std.int(f));
+	}
 	private function checkDictionary(id : Int) : Void
 	{
 		if(strict)
@@ -1200,6 +1369,23 @@ class SwfWriter
 		xmlString += '</files>';
 		xmlString += '</swc>';
 		return xmlString;
+	}
+	private function toRGB(i:Int):RGB
+	{
+		return {
+				r : (i & 0xff0000) >> 16, 
+				g : (i & 0x00ff00) >>  8, 
+				b : (i & 0x0000ff) >>  0, 
+			}
+	}
+	private function toRGBA(c:String):RGBA
+	{
+		return {
+				r : Std.parseInt('0x'+c.substr(2,2)),
+				g : Std.parseInt('0x'+c.substr(4,2)),
+				b : Std.parseInt('0x'+c.substr(6,2)),
+				a: 	Std.parseInt('0x'+c.substr(8,2)),
+			}
 	}
 	private function error(msg : String):Void
 	{

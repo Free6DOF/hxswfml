@@ -536,10 +536,9 @@ class Reader {
 				strength : readFixed8(),
 				flags : readFilterFlags(true),
 			});
-			case 5:
-				// ConvolutionFilter
-				throw error('convolution filter not supported');
 			case 4: FGradientGlow(readFilterGradient());
+			case 5:	// ConvolutionFilter
+				throw error('convolution filter not supported');
 			case 6:
 				var a = new Array();
 				for( n in 0...20 )
@@ -840,9 +839,12 @@ class Reader {
 	function readPlaceObject(v3) : PlaceObject {
 		var f = i.readByte();
 		var f2 = if( v3 ) i.readByte() else 0;
-		if( f2 >> 3 != 0 ) throw error('unsupported bit flags in place object'); // unsupported bit flags
+		//if( f2 >> 1 != 0 ) throw error('unsupported bit flags in place object'); // unsupported bit flags
 		var po = new PlaceObject();
+		
 		po.depth = i.readUInt16();
+		if( f2 & 8 != 0 ) po.className = readUTF8Bytes().toString();
+		
 		if( f & 1 != 0 ) po.move = true;
 		if( f & 2 != 0 ) po.cid = i.readUInt16();
 		if( f & 4 != 0 ) po.matrix = readMatrix();
@@ -850,9 +852,12 @@ class Reader {
 		if( f & 16 != 0 ) po.ratio = i.readUInt16();
 		if( f & 32 != 0 ) po.instanceName = readUTF8Bytes().toString();
 		if( f & 64 != 0 ) po.clipDepth = i.readUInt16();
+		
 		if( f2 & 1 != 0 ) po.filters = readFilters();
 		if( f2 & 2 != 0 ) po.blendMode = readBlendMode();
 		if( f2 & 4 != 0 ) po.bitmapCache = true;
+		if(f2 & 16 != 0) po.hasImage = true;
+		
 		if( f & 128 != 0 ) po.events = readClipEvents();
 		return po;
 	}
@@ -1341,6 +1346,9 @@ class Reader {
 			TActionScript3(i.read(len),null);
 		case TagId.SymbolClass:
 			TSymbolClass(readSymbols());
+		case TagId.ImportAssets2:
+			var url = i.readUntil(0);
+			TImportAssets(url);
 		case TagId.ExportAssets:
 			TExportAssets(readSymbols());
 		case TagId.DoABC:
@@ -1383,7 +1391,6 @@ class Reader {
 			TDefineScalingGrid(id, splitter);
 		case TagId.End:
 			null;
-			
 		default:
 			var data = i.read(len);
 			TUnknown(id,data);

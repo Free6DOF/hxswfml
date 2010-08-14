@@ -1396,10 +1396,13 @@ class AbcWriter
 				ctx.addClassSuper("flash.events.EventDispatcher");
 				ctx.addClassSuper("flash.display.DisplayObject");
 				ctx.addClassSuper("flash.display.Bitmap");
-			
+
 			case 'flash.media.Sound' : 
 				ctx.addClassSuper("flash.events.EventDispatcher");
 				ctx.addClassSuper("flash.media.Sound");
+				
+			case 'flash.display.BitmapData' : 
+				ctx.addClassSuper("flash.display.BitmapData");
 				
 			case 'flash.text.Font' : 
 				ctx.addClassSuper("flash.text.Font");
@@ -1407,10 +1410,10 @@ class AbcWriter
 			case 'flash.utils.ByteArray' : 
 				ctx.addClassSuper("flash.utils.ByteArray");
 		}
-		var m = ctx.beginMethod(className, [], null, false, false, false, true);
-		m.maxStack = 2;
+		var m = baseClass!='flash.display.BitmapData'? ctx.beginMethod(className, [], null, false, false, false, true):ctx.beginMethod(className, [ctx.type('Number'),ctx.type('Number')], null, false, false, false, true);
+		m.maxStack = 3;
 		c.constructor = m.type;
-		ctx.ops( [OThis, OConstructSuper(0), ORetVoid] );
+		ctx.ops( baseClass!='flash.display.BitmapData'? [OThis,OConstructSuper(0),ORetVoid]  :  [OThis,OReg(1),OReg(2),OConstructSuper(2),ORetVoid] );
 		//ctx.finalize();
 		ctx.endClass();
 		var abcOutput = new haxe.io.BytesOutput();
