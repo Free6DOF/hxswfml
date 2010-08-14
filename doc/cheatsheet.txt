@@ -1,0 +1,286 @@
+
+			<OGetGlobalScope /><!--[object global]-->
+			<OFindDefinition v="Main" /><!--[object global]-->
+			<OFindPropStrict v="Main"/><!--[object global]-->
+			<OFindProp v="Main"/><!--[object global]-->
+			
+			<OFindProp v="Main"/><OGetProp v="Main" /><!--[class Main]-->
+			<OFindPropStrict v="Main"/><OGetProp v="Main" /><!--[class Main]-->
+			<OGetGlobalScope /><OGetProp v="Main" /><!--[class Main]-->
+			<OGetGlobalScope /><OGetSlot v="1" /><!--[class Main]-->
+			<OGetLex v="Main"/><!--[class Main]-->
+				
+			<OThis/><!--[object Main]-->
+			<OReg v="0"/><!--[object Main]-->
+			<OGetScope v="0" /><!--[object Main]-->
+//----------------------------------------------------------------		
+		Instance member:
+		---------------
+public var str:String="hello world";
+<var name="str" type="String" value="hello world" slot="1" />
+
+- read: this.str / str / this["str"]
+this
+- <OThis />
+- <OReg v="0"/>
+- <OGetScope v="0" />
+- <OFindProp v="str" />
+- <OFindPropStrict v="str" />
+.str
+- <OGetProp v="str" />
+- <OGetSlot v="1"/>
+- <OString v="str" /><OGetProp v="#arrayProp" />
+
+this.str
+- <OGetLex v="str" /> 
+
+
+- write: this.str="world" / str="world" / this["str"]="world"
+this
+- <OThis />
+- <OReg v="0"/>
+- <OGetScope v="0" />
+- <OFindProp v="str" />
+- <OFindPropStrict v="str" />
+
+value
+- <OString v="world" />
+
+.str=
+- <OSetProp v="str" />
+- <OSetSlot v="1" />
+- <OInitProp v="str" />
+
+//----------------------------------------------------------------
+		Instance method:
+		---------------		
+public function test(s:String="hello world", i:int=7):Array
+- <function name="test" args="String,int" return="Array" defaultParameters="hello world:String,7:int" slot="1" >
+
+-invocation:
+test("asdf",5); 
+test.apply(this, ["asdf",5]); 
+test.call(this, "asdf",5);
+
+this
+- <OThis />
+- <OReg v="0"/>
+- <OGetScope v="0" />
+- <OFindProp v="test" />
+- <OFindPropStrict v="test" />
+"asdf",5
+<OString v="asdf"><OSmallInt v="5"/>
+.test()
+- <OCallProperty v="test" nargs="2" />
+- <OCallPropVoid v="test" nargs="2" />
+- <OCallPropLex v="test" nargs="2" />
+- <OCall v="test" nargs="2" />
+
+
+test
+- <OGetLex v="test" />
+this, ["asdf",5]
+- <OThis /> <OString v="a" /><OSmallInt v="1" /><OArray v="2" />
+.apply()
+- <OCallPropVoid v="http://adobe.com/AS3/2006/builtin.apply" nargs="2" />
+
+
+test
+- <OGetLex v="test" />
+this, "asdf",5
+- <OThis /><OString v="a" /><OSmallInt v="1" />
+.call()
+- <OCallPropVoid v="http://adobe.com/AS3/2006/builtin.call" nargs="3" />
+
+- <OGetLex v="test" /><OThis/><OString v="a" /><OSmallInt v="1" /><OCallStack v="3"/>
+
+//----------------------------------------------------------------		
+		Class member:
+		---------------
+public static var str:String="hello world";
+<var name="str" static="true" type="String" value="hello world" slot="1" />
+
+- read: 
+Main.str 
+Main["str"]
+str 
+
+Main
+<OGetGlobalScope /><OGetSlot v="1" />
+<OFindPropStrict v="Main" /><OGetProp v="Main" />
+<OFindProp v="Main" /><OGetProp v="Main" />
+<OGetLex v="Main" />
+
+.str
+<OGetProp v="str" />
+
+["str"]
+<OString v="str" /><OGetProp v="#arrayProp" />
+
+str
+<OGetLex v="str" />
+
+//----------------------------------------------------------------		
+		Class method:
+		---------------
+public static function test(s:String="hello", i:int=7):Array;
+<function name="test" static="true" args="String,int" return="Array" defaultParameters="hello:String,7:int" slot="3" >
+
+Main.test("a", 1);
+
+Main
+<OGetGlobalScope /><OGetSlot v="1" />
+<OFindPropStrict v="Main" /><OGetProp v="Main" />
+<OFindProp v="Main" /><OGetProp v="Main" />
+<OGetLex v="Main" />
+
+"a", 1
+<OString v="a" /><OSmallInt v="1" />
+
+.test()
+- <OCallProperty v="test" nargs="2" />
+- <OCallPropVoid v="test" nargs="2" />
+- <OCallPropLex v="test" nargs="2" />
+- <OCall v="test" nargs="2" />
+- <OCallStatic v="3" nargs="2"/>
+
+test("a", 1)
+<OFindPropStrict v="test" />
+<OString v="a" />
+<OSmallInt v="1" />
+<OCallPropVoid v="test" nargs="2" />
+
+//----------------------------------------------------------------		
+		local variable:
+		---------------
+		var loc:String="hello";
+		<OString v="hello" />
+		<OSetReg v="1" />
+		
+		loc;
+		<OGetReg v="1" />
+//----------------------------------------------------------------
+		instantiation:
+		---------------
+		new Test();
+		
+		<OFindPropStrict v="Test" />
+		<OConstructProperty v="Test" nargs="0" />
+		
+		<OFindPropStrict v="Test" />
+		<OGetProp v="Test" />
+		<OConstruct v="0"/>
+		
+		<OFindProp v="Test" />
+		<OGetProp v="Test" />
+		<OConstruct v="0"/>
+		
+		<OGetLex v="Test"/>
+		<OConstruct v="0"/>
+		
+		<OGetGlobalScope /><OGetSlot v="2" />
+		<OConstruct v="0"/>
+		
+		
+//----------------------------------------------------------------		
+		Array
+		---------------
+		var arr:Array=new Array();
+		<OFindPropStrict v="Array" />
+		<OConstructProperty v="Array" nargs="0" />
+		<OCast v="Array" />
+		<OSetReg v="1" />
+		
+		var arr:Array=[0,1,2,3];
+		<OSmallInt v="0" /><OSmallInt v="1" /><OSmallInt v="2" /><OSmallInt v="3" />
+		<OArray v="4" />
+		<OCast v="Array" />
+		<OSetReg v="1" />
+		
+		arr[1];
+		<OReg v="1" />
+		<OSmallInt v="1" />
+		<OGetProp v="#arrayProp" />
+//----------------------------------------------------------------		
+		Object
+		---------------		
+		var obj:Object=new Object();
+		<OFindPropStrict v="Object" />
+		<OConstructProperty v="Object" nargs="0" />
+		<OCast v="Object" />
+		<OSetReg v="2" />
+		
+		var obj:Object={zero:0, one:1, two:2, three:3};
+		<OString v="zero" /><OSmallInt v="0" />
+		<OString v="one" /><OSmallInt v="1" />
+		<OString v="two" /><OSmallInt v="2" />
+		<OString v="three" /><OSmallInt v="3" />
+		<OObject v="4" />
+		<OCast v="Object" />
+		<OSetReg v="2" />
+		
+		obj.two;
+		<OReg v="2" />
+		<OGetProp v="two" />
+//----------------------------------------------------------------		
+		logical comparison
+		---------------	
+JLt				: 	<
+JGt				: 	>
+JLte			: 	<=
+JGte			: 	>=
+
+JNotLt		: 	!<
+JNotGt		: 	!>
+JNotLte		: 	!<=
+JNotGte		: 	!>=
+
+JEq				: 	==
+JPhysEq		: 	====
+JNeq			: 	!=
+JPhysNeq	: 	!==
+
+JTrue			:	 true
+JFalse		:	 false
+JAlways		:
+
+//----------------------------------------------------------------
+//snippets:
+//Timing, benchmark:
+
+var t=flash.utils.getTimer();
+//code
+trace(flash.utils.getImer()-t);
+
+<OFindPropStrict v="flash.utils.getTimer" />
+<OCallProperty v="flash.utils.getTimer" nargs="0" />
+<OAsAny />
+<OSetReg v="1" />
+<!--code-->
+<OFindPropStrict v="trace" />
+<OFindPropStrict v="flash.utils.getTimer" />
+<OCallProperty v="flash.utils.getTimer" nargs="0" />
+<OReg v="1" />
+<OpSub />
+<OCallPropVoid v="trace" nargs="1" />
+
+
+
+
+		
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

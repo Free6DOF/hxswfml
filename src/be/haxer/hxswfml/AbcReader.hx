@@ -50,7 +50,7 @@ class AbcReader
 		#end
 		
 		debugFile = "";
-		debugInfo = false;
+		debugInfo = true;
 		jumpInfo = false;
 		sourceInfo = false;
 		functionParseIndex = 0;
@@ -131,7 +131,7 @@ class AbcReader
 		functionClosures = new Array();
 		functionClosuresBodies = new Array();
 		indentLevel = 1;
-		var name:String=infos!=null?infos.label:"anonymous_" + Std.string(abcId++);
+		var name:String=infos!=null?infos.label:"untitled_" + Std.string(abcId++);
 		var xml = new StringBuf();
 		xml.add(indent());
 		xml.add('<abcfile name="');
@@ -203,6 +203,7 @@ class AbcReader
 						xml.add(indent());
 						xml.add('</function>\n\n');
 					default:
+						//trace("unparsed: "+ field.kind);
 				}					
 			}
 		}
@@ -905,6 +906,7 @@ class AbcReader
 							if(debugLines==null || name!=debugFile)
 							{
 								debugFile = name;
+								
 								debugFileName = fileToLines(name);
 							}
 							buf.add(indent());
@@ -1246,7 +1248,7 @@ class AbcReader
 	}
 	inline private function fileToLines(fileName:String):String
 	{
-		debugFileName = fileName.split(String.fromCharCode(92)).join("/").split(';;').join("/");
+		debugFileName = fileName.split(String.fromCharCode(92)).join("/").split(';;').join("/").split(';').join("/");
 		debugLines=[];
 		#if (flash || js)
 		sourceInfo = false;
@@ -1265,7 +1267,8 @@ class AbcReader
 			}
 			else
 			{
-				//trace(debugFileName +' cannot be found.');
+				if(fileName!="<null>")
+				trace("Source file: "+ debugFileName +' could not be found in this directory.');
 			}
 		}
 		#end

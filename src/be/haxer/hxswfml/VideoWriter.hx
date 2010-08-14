@@ -112,16 +112,24 @@ class VideoWriter
 					if(input.readByte()==2 && input.readString(input.readUInt16()) == 'onMetaData')
 					{
 						var ECMAType:Int = input.readByte();
-						var len = haxe.Int32.toInt(input.readInt32());
-						for (i in 0...len)
+						var len;
+						if(ECMAType==8)
+							len = haxe.Int32.toInt(input.readInt32());
+						while (true)
 						{
-							var key = input.readString(input.readUInt16());
+							var l=input.readUInt16();
+							var key = input.readString(l);
 							var valueType = input.readByte();
+							if(l==0) 
+							{
+								break;
+							}
 							Reflect.setField( metaDataObject, key, untyped switch(valueType)
 							{
 								case 0:input.readDouble();
-								case 1:input.readByte();
+								case 1:input.readByte()==1;
 								case 2:input.readString(input.readUInt16());
+								//default: break;
 							});
 						}
 					}
@@ -134,9 +142,13 @@ class VideoWriter
 	{
 		return outTags;
 	}
-	public function getSWF():Bytes
+	public function getSWF()
 	{
-		return swf;
+		#if flash
+			return swf.getData();
+		#else
+			return swf;
+		#end
 	}
 	public function write(flv:Bytes, ?id=1, ?defaultFPS=12, ?defaultWidth=320, ?defaultHeight=240)
 	{

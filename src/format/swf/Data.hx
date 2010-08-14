@@ -52,6 +52,7 @@ enum SWFTag {
 	TDoInitActions( id : Int, data : haxe.io.Bytes );
 	TActionScript3( data : haxe.io.Bytes, ?context : AS3Context );
 	TSymbolClass( symbols : Array<SymData> );
+	TImportAssets(url:String);
 	TExportAssets( symbols : Array<SymData> );
 	TSandBox( v : FileAttributes );
 	TBitsLossless( data : Lossless );
@@ -165,6 +166,8 @@ class PlaceObject {
 	public var filters : Null<Array<Filter>>;
 	public var blendMode : Null<BlendMode>;
 	public var bitmapCache : Bool;
+	public var className:Null<String>;
+	public var hasImage:Bool;
 	public function new() {
 	}
 }
@@ -435,9 +438,9 @@ enum BlendMode {
 	BScreen;
 	BLighten;
 	BDarken;
+	BDifference;
 	BAdd;
 	BSubtract;
-	BDifference;
 	BInvert;
 	BAlpha;
 	BErase;

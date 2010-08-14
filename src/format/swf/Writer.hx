@@ -61,8 +61,14 @@ class Writer {
 	}
 
 	function writeRect(r) {
-		var nbits = Tools.minBits([r.left, r.right, r.top, r.bottom]) + 1;
-		
+		var lr = (r.left > r.right) ? r.left : r.right;
+		var bt = (r.top > r.bottom) ? r.top : r.bottom;
+		var max = (lr > bt) ? lr : bt;
+		var nbits = 1; // sign
+		while( max > 0 ) {
+			max >>= 1;
+			nbits++;
+		}
 		bits.writeBits(5,nbits);
 		bits.writeBits(nbits,r.left);
 		bits.writeBits(nbits,r.right);
@@ -154,11 +160,12 @@ class Writer {
 			bits.writeBit(false);
 
 		var nbits = Tools.minBits([m.translate.x, m.translate.y]) + 1;
-
+		if(nbits!=1)
+		{
 		bits.writeBits(5, nbits);
 		bits.writeBits(nbits, m.translate.x);
 		bits.writeBits(nbits, m.translate.y);
-		
+		}
 		bits.flush();
 	}
 
@@ -191,7 +198,7 @@ class Writer {
 		}
 		o.writeUInt30(0);
 	}
-
+	/*
 	function writeFilterFlags(f:FilterFlags,top) {
 		var flags = 32;
 		if( f.inner ) flags |= 128;
@@ -200,7 +207,7 @@ class Writer {
 		flags |= f.passes;
 		o.writeByte(flags);
 	}
-
+	*/
 	function writeFilterGradient(f:GradientFilterData) {
 		o.writeByte(f.colors.length);
 		for( c in f.colors )
@@ -213,7 +220,11 @@ class Writer {
 		writeFixed(d.angle);
 		writeFixed(d.distance);
 		writeFixed8(d.strength);
-		writeFilterFlags(d.flags,true);
+		bits.writeBit(d.flags.inner);
+		bits.writeBit(d.flags.knockout);
+		bits.writeBit(true);//composite source (always 1)
+		bits.writeBit(d.flags.ontop);
+		bits.writeBits(4, d.flags.passes);
 	}
 
 	function writeFilter( f : Filter ) {
@@ -226,19 +237,26 @@ class Writer {
 			writeFixed(d.angle);
 			writeFixed(d.distance);
 			writeFixed8(d.strength);
-			writeFilterFlags(d.flags,false);
+			bits.writeBit(d.flags.inner);
+			bits.writeBit(d.flags.knockout);
+			bits.writeBit(true);
+			bits.writeBits(5, d.flags.passes);
 		case FBlur(d):
 			o.writeByte(1);
 			writeFixed(d.blurX);
 			writeFixed(d.blurY);
-			o.writeByte(d.passes << 3);
+			bits.writeBits(5, d.passes);
+			bits.writeBits(3, 0);
 		case FGlow(d):
 			o.writeByte(2);
 			writeRGBA(d.color);
 			writeFixed(d.blurX);
 			writeFixed(d.blurY);
 			writeFixed8(d.strength);
-			writeFilterFlags(d.flags,false);
+			bits.writeBit(d.flags.inner);
+			bits.writeBit(d.flags.knockout);
+			bits.writeBit(true);
+			bits.writeBits(5, d.flags.passes);
 		case FBevel(d):
 			o.writeByte(3);
 			writeRGBA(d.color);
@@ -248,14 +266,18 @@ class Writer {
 			writeFixed(d.angle);
 			writeFixed(d.distance);
 			writeFixed8(d.strength);
-			writeFilterFlags(d.flags,true);
+			bits.writeBit(d.flags.inner);
+			bits.writeBit(d.flags.knockout);
+			bits.writeBit(true);
+			bits.writeBit(d.flags.ontop);
+			bits.writeBits(4, d.flags.passes);
 		case FGradientGlow(d):
-			o.writeByte(5);
+			o.writeByte(4);
 			writeFilterGradient(d);
 		case FColorMatrix(d):
 			o.writeByte(6);
 			for( f in d )
-				o.writeFloat(f);
+				o.writeFloat(f);			
 		case FGradientBevel(d):
 			o.writeByte(7);
 			writeFilterGradient(d);
@@ -283,16 +305,27 @@ class Writer {
 		if( po.instanceName != null ) f |= 32;
 		if( po.clipDepth != null ) f |= 64;
 		if( po.events != null ) f |= 128;
-		
+		o.writeByte(f);
 		if( po.filters != null ) f2 |= 1;
 		if( po.blendMode != null ) f2 |= 2;
 		if( po.bitmapCache ) f2 |= 4;
-		o.writeByte(f);
+		if(po.className!=null) f2 |=8;
+		if(po.hasImage) f2 |=16;
 		if( v3 )
 			o.writeByte(f2);
 		else if( f2 != 0 )
 			throw "Invalid place object version";
 		o.writeUInt16(po.depth);
+		if(po.className!=null)
+		{	
+			o.writeString(po.className);
+			o.writeByte(0);
+		}
+		/*else if(po.image!=null && po.cid!=null)
+		{
+			o.writeUInt16(Std.parseInt(po.image));
+		}
+		*/
 		if( po.cid != null ) o.writeUInt16(po.cid);
 		if( po.matrix != null ) writeMatrix(po.matrix);
 		if( po.color != null ) writeCXA(po.color);
@@ -304,6 +337,7 @@ class Writer {
 		if( po.clipDepth != null ) o.writeUInt16(po.clipDepth);
 		if( po.filters != null ) writeFilters(po.filters);
 		if( po.blendMode != null ) writeBlendMode(po.blendMode);
+		if( v3 )o.writeByte(po.bitmapCache?1:0);
 		if( po.events != null ) writeClipEvents(po.events);
 	}
 
@@ -1325,6 +1359,19 @@ class Writer {
 			o.writeByte(0);//string ending
 		}
 	}
+	function writeImportAssets2(url:String)
+	{
+		o.writeString(url);
+		o.writeByte(0);//string ending
+		o.writeByte(1);//reserved
+		o.writeByte(0);//reserved
+		var count = 0;
+		o.writeUInt16(count);//count
+		for(i in 0...count)
+		{
+			//TODO (similar to SymbolClass list, not sure if needed for AS3)
+		}
+	}
 	
 	public function writeTag( t : SWFTag )
 	{
@@ -1382,7 +1429,7 @@ class Writer {
 				var t = openTMP();
 				writePlaceObject(po,true);
 				var bytes = closeTMP(t);
-				writeTID(TagId.PlaceObject3,bytes.length);
+				writeTIDExt(TagId.PlaceObject3,bytes.length);
 				o.write(bytes);
 
 			case TRemoveObject2(depth):
@@ -1427,6 +1474,13 @@ class Writer {
 
 			case TSymbolClass(sl):
 				writeSymbols(sl, TagId.SymbolClass);
+				
+			case TImportAssets(url):
+				var t = openTMP();
+				writeImportAssets2(url);
+				var bytes = closeTMP(t);
+				writeTIDExt(TagId.ImportAssets2,bytes.length);
+				o.write(bytes);
 				
 			case TExportAssets(sl):
 				writeSymbols(sl, TagId.ExportAssets);

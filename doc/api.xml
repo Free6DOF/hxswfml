@@ -77,7 +77,7 @@
 		The number of elements in this list.
 	</haxe_doc>
 		</length>
-		<add public="1" set="method" line="56">
+		<add public="1" set="method" line="51">
 			<f a="item">
 				<c path="List.T"/>
 				<e path="Void"/>
@@ -86,7 +86,7 @@
 		Add an element at the end of the list.
 	</haxe_doc>
 		</add>
-		<push public="1" set="method" line="76">
+		<push public="1" set="method" line="64">
 			<f a="item">
 				<c path="List.T"/>
 				<e path="Void"/>
@@ -95,21 +95,21 @@
 		Push an element at the beginning of the list.
 	</haxe_doc>
 		</push>
-		<first public="1" set="method" line="100">
+		<first public="1" set="method" line="80">
 			<f a=""><c path="List.T"/></f>
 			<haxe_doc>
 		Returns the first element of the list, or null
 		if the list is empty.
 	</haxe_doc>
 		</first>
-		<last public="1" set="method" line="108">
+		<last public="1" set="method" line="88">
 			<f a=""><c path="List.T"/></f>
 			<haxe_doc>
 		Returns the last element of the list, or null
 		if the list is empty.
 	</haxe_doc>
 		</last>
-		<pop public="1" set="method" line="118">
+		<pop public="1" set="method" line="98">
 			<f a=""><c path="List.T"/></f>
 			<haxe_doc>
 		Removes the first element of the list and
@@ -117,19 +117,19 @@
 		list is empty.
 	</haxe_doc>
 		</pop>
-		<isEmpty public="1" set="method" line="132">
+		<isEmpty public="1" set="method" line="112">
 			<f a=""><e path="Bool"/></f>
 			<haxe_doc>
 		Tells if a list is empty.
 	</haxe_doc>
 		</isEmpty>
-		<clear public="1" set="method" line="139">
+		<clear public="1" set="method" line="119">
 			<f a=""><e path="Void"/></f>
 			<haxe_doc>
 		Makes the list empty.
 	</haxe_doc>
 		</clear>
-		<remove public="1" set="method" line="149">
+		<remove public="1" set="method" line="129">
 			<f a="v">
 				<c path="List.T"/>
 				<e path="Bool"/>
@@ -139,19 +139,19 @@
 		Returns [true] if an element was removed, [false] otherwise.
 	</haxe_doc>
 		</remove>
-		<iterator public="1" set="method" line="190">
+		<iterator public="1" set="method" line="152">
 			<f a=""><t path="Iterator"><c path="List.T"/></t></f>
 			<haxe_doc>
 		Returns an iterator on the elements of the list.
 	</haxe_doc>
 		</iterator>
-		<toString public="1" set="method" line="215">
+		<toString public="1" set="method" line="173">
 			<f a=""><c path="String"/></f>
 			<haxe_doc>
 		Returns a displayable representation of the String.
 	</haxe_doc>
 		</toString>
-		<join public="1" set="method" line="235">
+		<join public="1" set="method" line="193">
 			<f a="sep">
 				<c path="String"/>
 				<c path="String"/>
@@ -160,7 +160,7 @@
 		Join the element of the list by using the separator [sep].
 	</haxe_doc>
 		</join>
-		<filter public="1" set="method" line="254">
+		<filter public="1" set="method" line="212">
 			<f a="f">
 				<f a="">
 					<c path="List.T"/>
@@ -173,7 +173,7 @@
 		will contain all elements [x] for which [f(x) = true].
 	</haxe_doc>
 		</filter>
-		<map public="1" params="X" set="method" line="270">
+		<map public="1" params="X" set="method" line="228">
 			<f a="f">
 				<f a="">
 					<c path="List.T"/>
@@ -186,7 +186,7 @@
 		by the function [f].
 	</haxe_doc>
 		</map>
-		<new public="1" set="method" line="49">
+		<new public="1" set="method" line="44">
 			<f a=""><e path="Void"/></f>
 			<haxe_doc>
 		Creates a new empty list.
@@ -272,24 +272,24 @@
 	<c path="String"/>
 	<e path="Void"/>
 </f></write>
-		<getHXM public="1" set="method" line="95"><f a="initName">
+		<getHXM public="1" set="method" line="96"><f a="initName">
 	<c path="String"/>
 	<c path="String"/>
 </f></getHXM>
-		<xml2abc set="method" line="234"><f a="xml">
+		<xml2abc set="method" line="239"><f a="xml">
 	<c path="Xml"/>
 	<e path="Void"/>
 </f></xml2abc>
-		<createFunction set="method" line="400"><f a="node:functionType:?isInterface">
+		<createFunction set="method" line="405"><f a="node:functionType:?isInterface">
 	<c path="Xml"/>
 	<c path="String"/>
 	<e path="Bool"/>
 	<t path="format.abc.Function"/>
 </f></createFunction>
-		<writeCodeBlock set="method" line="580"><f a="member:f">
+		<writeCodeBlock set="method" line="585"><f a="member:f">
 	<c path="Xml"/>
-	<a><trys><a>
-	<push><f a="">
+	<a><trys set="null"><a>
+	<push set="null"><f a="">
 	<a>
 		<variable><t path="format.abc.IName"/></variable>
 		<type><t path="format.abc.IName"/></type>
@@ -299,65 +299,65 @@
 	</a>
 	<c path="Int"/>
 </f></push>
-	<length><c path="Int"/></length>
+	<length set="null"><c path="Int"/></length>
 </a></trys></a>
 	<e path="Void"/>
 </f></writeCodeBlock>
-		<getImport set="method" line="900"><f a="name">
+		<getImport set="method" line="906"><f a="name">
 	<c path="String"/>
 	<c path="String"/>
 </f></getImport>
-		<namespaceType set="method" line="906"><f a="ns">
+		<namespaceType set="method" line="912"><f a="ns">
 	<c path="String"/>
 	<e path="format.abc.Index"><e path="format.abc.Namespace"/></e>
 </f></namespaceType>
-		<__namespaceType set="method" line="921"><f a="ns">
+		<__namespaceType set="method" line="927"><f a="ns">
 	<c path="String"/>
 	<c path="String"/>
 </f></__namespaceType>
-		<parseLocals set="method" line="937"><f a="locals">
+		<parseLocals set="method" line="943"><f a="locals">
 	<c path="String"/>
 	<t path="Null"><c path="Array"><t path="format.abc.Field"/></c></t>
 </f></parseLocals>
-		<__parseLocals set="method" line="957"><f a="locals">
+		<__parseLocals set="method" line="963"><f a="locals">
 	<c path="String"/>
 	<t path="Null"><c path="Array"><c path="String"/></c></t>
 </f></__parseLocals>
-		<parseFieldKind set="method" line="977"><f a="fld">
+		<parseFieldKind set="method" line="983"><f a="fld">
 	<c path="String"/>
 	<e path="format.abc.FieldKind"/>
 </f></parseFieldKind>
-		<nonEmptyStack set="method" line="994"><f a="fname">
+		<nonEmptyStack set="method" line="1000"><f a="fname">
 	<c path="String"/>
 	<e path="Void"/>
 </f></nonEmptyStack>
-		<stackError set="method" line="1002"><f a="op:type">
+		<stackError set="method" line="1008"><f a="op:type">
 	<e path="format.abc.OpCode"/>
 	<c path="Int"/>
 	<e path="Void"/>
 </f></stackError>
-		<scopeStackError set="method" line="1011"><f a="op:type">
+		<scopeStackError set="method" line="1017"><f a="op:type">
 	<e path="format.abc.OpCode"/>
 	<c path="Int"/>
 	<e path="Void"/>
 </f></scopeStackError>
-		<urlDecode set="method" line="1020"><f a="str">
+		<urlDecode set="method" line="1026"><f a="str">
 	<c path="String"/>
 	<c path="String"/>
 </f></urlDecode>
-		<updateStacks set="method" line="1024"><f a="opc">
+		<updateStacks set="method" line="1030"><f a="opc">
 	<e path="format.abc.OpCode"/>
 	<e path="Void"/>
 </f></updateStacks>
-		<logStack set="method" line="1880"><f a="msg">
+		<logStack set="method" line="1886"><f a="msg">
 	<c path="String"/>
 	<e path="Void"/>
 </f></logStack>
-		<fileToLines get="inline" set="null" line="1884"><f a="fileName">
+		<fileToLines get="inline" set="null" line="1891"><f a="fileName">
 	<c path="String"/>
 	<c path="String"/>
 </f></fileToLines>
-		<lineSplitter get="inline" set="null" line="1912"><f a="str">
+		<lineSplitter get="inline" set="null" line="1919"><f a="str">
 	<c path="String"/>
 	<c path="String"/>
 </f></lineSplitter>
@@ -415,7 +415,7 @@
 	</haxe_doc>
 		</charCodeAt>
 		<indexOf public="1" set="method">
-			<f a="value:?startIndex">
+			<f a="str:?startIndex">
 				<c path="String"/>
 				<c path="Int"/>
 				<c path="Int"/>
@@ -428,7 +428,7 @@
 	</haxe_doc>
 		</indexOf>
 		<lastIndexOf public="1" set="method">
-			<f a="value:?startIndex">
+			<f a="str:?startIndex">
 				<c path="String"/>
 				<c path="Int"/>
 				<c path="Int"/>
@@ -480,9 +480,9 @@
 	The basic String class.
 </haxe_doc>
 	</class>
-	<class path="Hash" params="T" file="C:\Program Files\Motion-Twin\haxe/std/Hash.hx">
+	<class path="Hash" params="T" file="C:\Program Files\Motion-Twin\haxe/std/flash9/_std/Hash.hx">
 		<h><c path="flash.utils.Dictionary"/></h>
-		<set public="1" set="method" line="63">
+		<set public="1" set="method" line="34">
 			<f a="key:value">
 				<c path="String"/>
 				<c path="Hash.T"/>
@@ -492,7 +492,7 @@
 		Set a value for the given key.
 	</haxe_doc>
 		</set>
-		<get public="1" set="method" line="80">
+		<get public="1" set="method" line="38">
 			<f a="key">
 				<c path="String"/>
 				<t path="Null"><c path="Hash.T"/></t>
@@ -501,7 +501,7 @@
 		Get a value for the given key.
 	</haxe_doc>
 		</get>
-		<exists public="1" set="method" line="102">
+		<exists public="1" set="method" line="42">
 			<f a="key">
 				<c path="String"/>
 				<e path="Bool"/>
@@ -512,7 +512,7 @@
 		a [null] value versus no value.
 	</haxe_doc>
 		</exists>
-		<remove public="1" set="method" line="133">
+		<remove public="1" set="method" line="46">
 			<f a="key">
 				<c path="String"/>
 				<e path="Bool"/>
@@ -522,30 +522,25 @@
 		there was such entry.
 	</haxe_doc>
 		</remove>
-		<keys public="1" set="method" line="165">
+		<keys public="1" set="method" line="53">
 			<f a=""><t path="Iterator"><c path="String"/></t></f>
 			<haxe_doc>
 		Returns an iterator of all keys in the hashtable.
 	</haxe_doc>
 		</keys>
-		<iterator public="1" set="method" line="195">
+		<iterator public="1" set="method" line="57">
 			<f a=""><t path="Iterator"><c path="Hash.T"/></t></f>
 			<haxe_doc>
 		Returns an iterator of all values in the hashtable.
 	</haxe_doc>
 		</iterator>
-		<toString public="1" set="method" line="240">
+		<toString public="1" set="method" line="66">
 			<f a=""><c path="String"/></f>
 			<haxe_doc>
 		Returns an displayable representation of the hashtable content.
 	</haxe_doc>
 		</toString>
-		<new public="1" set="method" line="38">
-			<f a=""><e path="Void"/></f>
-			<haxe_doc>
-		Creates a new empty hashtable.
-	</haxe_doc>
-		</new>
+		<new public="1" set="method" line="30"><f a=""><e path="Void"/></f></new>
 		<haxe_doc>
 	Hashtable over a set of elements, using [String] as keys.
 	Other kind of keys are not possible on all platforms since they
@@ -1317,7 +1312,7 @@
 		<init static="1"><f a=""><e path="Void"/></f></init>
 		<tf static="1"><c path="flash.text.TextField"/></tf>
 		<lines static="1"><c path="Array"><c path="String"/></c></lines>
-		<lastError static="1"><c path="flash.Error"/></lastError>
+		<lastError static="1"><c path="flash.errors.Error"/></lastError>
 		<skip_constructor public="1" line="34" static="1"><e path="Bool"/></skip_constructor>
 		<enum_to_string public="1" set="method" line="89" static="1"><f a="e">
 	<a>
@@ -1326,28 +1321,28 @@
 	</a>
 	<c path="String"/>
 </f></enum_to_string>
-		<__instanceof public="1" set="method" line="95" static="1"><f a="v:t">
+		<__instanceof public="1" set="method" line="98" static="1"><f a="v:t">
 	<d/>
 	<d/>
 	<e path="Bool"/>
 </f></__instanceof>
-		<__clear_trace public="1" set="method" line="105" static="1"><f a=""><e path="Void"/></f></__clear_trace>
-		<__set_trace_color public="1" set="method" line="113" static="1"><f a="rgb">
+		<__clear_trace public="1" set="method" line="108" static="1"><f a=""><e path="Void"/></f></__clear_trace>
+		<__set_trace_color public="1" set="method" line="116" static="1"><f a="rgb">
 	<t path="UInt"/>
 	<e path="Void"/>
 </f></__set_trace_color>
-		<getTrace public="1" set="method" line="117" static="1"><f a=""><c path="flash.text.TextField"/></f></getTrace>
-		<__trace public="1" set="method" line="133" static="1"><f a="v:pos">
+		<getTrace public="1" set="method" line="120" static="1"><f a=""><c path="flash.text.TextField"/></f></getTrace>
+		<__trace public="1" set="method" line="136" static="1"><f a="v:pos">
 	<d/>
 	<t path="haxe.PosInfos"/>
 	<e path="Void"/>
 </f></__trace>
-		<__string_rec public="1" set="method" line="147" static="1"><f a="v:str">
+		<__string_rec public="1" set="method" line="150" static="1"><f a="v:str">
 	<d/>
 	<c path="String"/>
 	<c path="String"/>
 </f></__string_rec>
-		<__unprotect__ set="method" line="187" static="1"><f a="s">
+		<__unprotect__ set="method" line="192" static="1"><f a="s">
 	<c path="String"/>
 	<c path="String"/>
 </f></__unprotect__>
@@ -1456,7 +1451,7 @@
 		<soundData><t path="format.swf.Sound"/></soundData>
 		<write public="1" set="method" line="23"><f a="bytes:?currentTag">
 	<c path="haxe.io.Input"/>
-	<a><toString><f a=""><c path="String"/></f></toString></a>
+	<a><toString set="null"><f a=""><c path="String"/></f></toString></a>
 	<e path="Void"/>
 </f></write>
 		<getTag public="1" set="method" line="62"><f a="?id">
@@ -1506,6 +1501,15 @@
 		<pixelBounds public="1" set="null"><c path="flash.geom.Rectangle"/></pixelBounds>
 		<new public="1" set="method"><f a="displayObject">
 	<c path="flash.display.DisplayObject"/>
+	<e path="Void"/>
+</f></new>
+	</class>
+	<class path="flash.utils.QName" params="" file="C:\Program Files\Motion-Twin\haxe/std/flash9/utils/QName.hx" extern="1">
+		<localName public="1" set="null"><c path="String"/></localName>
+		<uri public="1" set="null"><c path="String"/></uri>
+		<new public="1" set="method"><f a="p1:?localName">
+	<d/>
+	<d/>
 	<e path="Void"/>
 </f></new>
 	</class>
@@ -1922,6 +1926,7 @@
 		<zip><c path="haxe.io.Bytes"/></zip>
 		<swf><c path="haxe.io.Bytes"/></swf>
 		<pth><c path="String"/></pth>
+		<chars><c path="Array"><c path="Int"/></c></chars>
 		<outputType><c path="String"/></outputType>
 		<fontData3><e path="format.swf.FontData"/></fontData3>
 		<defineFont3SWFTag><e path="format.swf.SWFTag"/></defineFont3SWFTag>
@@ -1929,19 +1934,23 @@
 		<zipResources_charClass><c path="String"/></zipResources_charClass>
 		<zipResources_mainClass><c path="String"/></zipResources_mainClass>
 		<zipResources_buildFile><c path="String"/></zipResources_buildFile>
-		<write public="1" set="method" line="51"><f a="bytes:rangesStr:?outType">
+		<listGlyphs public="1" set="method" line="51"><f a="bytes">
+	<c path="haxe.io.Bytes"/>
+	<e path="Void"/>
+</f></listGlyphs>
+		<write public="1" set="method" line="109"><f a="bytes:rangesStr:?outType">
 	<c path="haxe.io.Bytes"/>
 	<c path="String"/>
 	<c path="String"/>
 	<e path="Void"/>
 </f></write>
-		<getPath public="1" set="method" line="501"><f a=""><c path="String"/></f></getPath>
-		<getZip public="1" set="method" line="505"><f a=""><c path="haxe.io.Bytes"/></f></getZip>
-		<getTag public="1" set="method" line="509"><f a="id">
+		<getPath public="1" set="method" line="566"><f a=""><c path="String"/></f></getPath>
+		<getZip public="1" set="method" line="570"><f a=""><c path="haxe.io.Bytes"/></f></getZip>
+		<getTag public="1" set="method" line="574"><f a="id">
 	<c path="Int"/>
 	<e path="format.swf.SWFTag"/>
 </f></getTag>
-		<getSWF public="1" set="method" line="513"><f a="?id:?className:?version:?compressed:?width:?height:?fps:?nframes">
+		<getSWF public="1" set="method" line="578"><f a="?id:?className:?version:?compressed:?width:?height:?fps:?nframes">
 	<c path="Int"/>
 	<c path="String"/>
 	<c path="Int"/>
@@ -1953,11 +1962,11 @@
 	<c path="haxe.io.Bytes"/>
 </f></getSWF>
 		<qCpoint><t path="format.ttf.Path"/></qCpoint>
-		<buildPaths set="method" line="600"><f a="data">
+		<buildPaths set="method" line="666"><f a="data">
 	<t path="format.ttf.GlyphSimple"/>
 	<c path="Array"><t path="format.ttf.Path"/></c>
 </f></buildPaths>
-		<makePath set="method" line="634"><f a="p1:p2:arr:flags:xCoordinates:yCoordinates">
+		<makePath set="method" line="700"><f a="p1:p2:arr:flags:xCoordinates:yCoordinates">
 	<c path="Int"/>
 	<c path="Int"/>
 	<c path="Array"><t path="format.ttf.Path"/></c>
@@ -1966,7 +1975,7 @@
 	<c path="Array"><c path="Float"/></c>
 	<e path="Void"/>
 </f></makePath>
-		<init set="method" line="656"><f a=""><e path="Void"/></f></init>
+		<init set="method" line="722"><f a=""><e path="Void"/></f></init>
 		<new public="1" set="method" line="47"><f a=""><e path="Void"/></f></new>
 		<haxe_doc>
  * ...
@@ -2284,6 +2293,7 @@
 		<CCIT_J17/>
 	</enum>
 	<enum path="format.zip.ExtraField" params="" file="src/format/zip/Data.hx" module="format.zip.Data">
+		<FUtf8/>
 		<FUnknown a="tag:bytes">
 			<c path="Int"/>
 			<c path="haxe.io.Bytes"/>
@@ -2297,14 +2307,14 @@
 	<fileTime><c path="Date"/></fileTime>
 	<fileSize><c path="Int"/></fileSize>
 	<fileName><c path="String"/></fileName>
-	<extraFields><t path="Null"><c path="List"><d/></c></t></extraFields>
+	<extraFields><t path="Null"><c path="List"><e path="format.zip.ExtraField"/></c></t></extraFields>
 	<dataSize><c path="Int"/></dataSize>
 	<data><t path="Null"><c path="haxe.io.Bytes"/></t></data>
 	<crc32><t path="Null"><d/></t></crc32>
 	<compressed><e path="Bool"/></compressed>
 </a></typedef>
 	<typedef path="format.zip.Data" params="" file="src/format/zip/Data.hx"><c path="List"><t path="format.zip.Entry"/></c></typedef>
-	<enum path="ValueType" params="" file="C:\Program Files\Motion-Twin\haxe/std/Type.hx" module="Type">
+	<enum path="ValueType" params="" file="C:\Program Files\Motion-Twin\haxe/std/flash9/_std/Type.hx" module="Type">
 		<TUnknown/>
 		<TObject/>
 		<TNull/>
@@ -2314,13 +2324,9 @@
 		<TEnum a="e"><c path="Enum"><d/></c></TEnum>
 		<TClass a="c"><c path="Class"><d/></c></TClass>
 		<TBool/>
-		<haxe_doc>
-	The diffent possible runtime types of a value.
-	See [Type] for the haXe Reflection API.
-</haxe_doc>
 	</enum>
-	<class path="Type" params="" file="C:\Program Files\Motion-Twin\haxe/std/Type.hx">
-		<getClass public="1" params="T" set="method" line="26" static="1">
+	<class path="Type" params="" file="C:\Program Files\Motion-Twin\haxe/std/flash9/_std/Type.hx">
+		<getClass public="1" params="T" set="method" line="40" static="1">
 			<f a="o">
 				<c path="getClass.T"/>
 				<c path="Class"><c path="getClass.T"/></c>
@@ -2329,7 +2335,7 @@
 		Returns the class of a value or [null] if this value is not a Class instance.
 	</haxe_doc>
 		</getClass>
-		<getEnum public="1" set="method" line="89" static="1">
+		<getEnum public="1" set="method" line="52" static="1">
 			<f a="o">
 				<d/>
 				<c path="Enum"><d/></c>
@@ -2338,7 +2344,7 @@
 		Returns the enum of a value or [null] if this value is not an Enum instance.
 	</haxe_doc>
 		</getEnum>
-		<getSuperClass public="1" set="method" line="129" static="1">
+		<getSuperClass public="1" set="method" line="66" static="1">
 			<f a="c">
 				<c path="Class"><d/></c>
 				<c path="Class"><d/></c>
@@ -2347,7 +2353,7 @@
 		Returns the super-class of a class, or null if no super class.
 	</haxe_doc>
 		</getSuperClass>
-		<getClassName public="1" set="method" line="152" static="1">
+		<getClassName public="1" set="method" line="73" static="1">
 			<f a="c">
 				<c path="Class"><d/></c>
 				<c path="String"/>
@@ -2356,7 +2362,7 @@
 		Returns the complete name of a class.
 	</haxe_doc>
 		</getClassName>
-		<getEnumName public="1" set="method" line="177" static="1">
+		<getEnumName public="1" set="method" line="86" static="1">
 			<f a="e">
 				<c path="Enum"><d/></c>
 				<c path="String"/>
@@ -2365,7 +2371,7 @@
 		Returns the complete name of an enum.
 	</haxe_doc>
 		</getEnumName>
-		<resolveClass public="1" set="method" line="194" static="1">
+		<resolveClass public="1" set="method" line="90" static="1">
 			<f a="name">
 				<c path="String"/>
 				<c path="Class"><d/></c>
@@ -2375,7 +2381,7 @@
 		to be accessible.
 	</haxe_doc>
 		</resolveClass>
-		<resolveEnum public="1" set="method" line="256" static="1">
+		<resolveEnum public="1" set="method" line="111" static="1">
 			<f a="name">
 				<c path="String"/>
 				<c path="Enum"><d/></c>
@@ -2385,7 +2391,7 @@
 		to be accessible.
 	</haxe_doc>
 		</resolveEnum>
-		<createInstance public="1" params="T" set="method" line="313" static="1">
+		<createInstance public="1" params="T" set="method" line="128" static="1">
 			<f a="cl:args">
 				<c path="Class"><c path="createInstance.T"/></c>
 				<c path="Array"><d/></c>
@@ -2395,7 +2401,7 @@
 		Creates an instance of the given class with the list of constructor arguments.
 	</haxe_doc>
 		</createInstance>
-		<createEmptyInstance public="1" params="T" set="method" line="365" static="1">
+		<createEmptyInstance public="1" params="T" set="method" line="149" static="1">
 			<f a="cl">
 				<c path="Class"><c path="createEmptyInstance.T"/></c>
 				<c path="createEmptyInstance.T"/>
@@ -2405,7 +2411,7 @@
 		This enables you to create an instance without any side-effect.
 	</haxe_doc>
 		</createEmptyInstance>
-		<createEnum public="1" params="T" set="method" line="421" static="1">
+		<createEnum public="1" params="T" set="method" line="162" static="1">
 			<f a="e:constr:?params">
 				<c path="Enum"><c path="createEnum.T"/></c>
 				<c path="String"/>
@@ -2416,7 +2422,7 @@
 		Create an instance of an enum by using a constructor name and parameters.
 	</haxe_doc>
 		</createEnum>
-		<createEnumIndex public="1" params="T" set="method" line="442" static="1">
+		<createEnumIndex public="1" params="T" set="method" line="174" static="1">
 			<f a="e:index:?params">
 				<c path="Enum"><c path="createEnumIndex.T"/></c>
 				<c path="Int"/>
@@ -2427,12 +2433,12 @@
 		Create an instance of an enum by using a constructor index and parameters.
 	</haxe_doc>
 		</createEnumIndex>
-		<describe set="method" line="449" static="1"><f a="t:fact">
+		<describe set="method" line="180" static="1"><f a="t:fact">
 	<d/>
 	<e path="Bool"/>
 	<c path="Array"><c path="String"/></c>
 </f></describe>
-		<getInstanceFields public="1" set="method" line="467" static="1">
+		<getInstanceFields public="1" set="method" line="197" static="1">
 			<f a="c">
 				<c path="Class"><d/></c>
 				<c path="Array"><c path="String"/></c>
@@ -2441,7 +2447,7 @@
 		Returns the list of instance fields.
 	</haxe_doc>
 		</getInstanceFields>
-		<getClassFields public="1" set="method" line="516" static="1">
+		<getClassFields public="1" set="method" line="201" static="1">
 			<f a="c">
 				<c path="Class"><d/></c>
 				<c path="Array"><c path="String"/></c>
@@ -2450,7 +2456,7 @@
 		Returns the list of a class static fields.
 	</haxe_doc>
 		</getClassFields>
-		<getEnumConstructs public="1" set="method" line="559" static="1">
+		<getEnumConstructs public="1" set="method" line="208" static="1">
 			<f a="e">
 				<c path="Enum"><d/></c>
 				<c path="Array"><c path="String"/></c>
@@ -2459,7 +2465,7 @@
 		Returns all the available constructor names for an enum.
 	</haxe_doc>
 		</getEnumConstructs>
-		<typeof public="1" set="method" line="580" static="1">
+		<typeof public="1" set="method" line="212" static="1">
 			<f a="v">
 				<d/>
 				<e path="ValueType"/>
@@ -2468,7 +2474,7 @@
 		Returns the runtime type of a value.
 	</haxe_doc>
 		</typeof>
-		<enumEq public="1" params="T" set="method" line="703" static="1">
+		<enumEq public="1" params="T" set="method" line="244" static="1">
 			<f a="a:b">
 				<c path="enumEq.T"/>
 				<c path="enumEq.T"/>
@@ -2478,7 +2484,7 @@
 		Recursively compare two enums constructors and parameters.
 	</haxe_doc>
 		</enumEq>
-		<enumConstructor public="1" set="method" line="775" static="1">
+		<enumConstructor public="1" set="method" line="261" static="1">
 			<f a="e">
 				<d/>
 				<c path="String"/>
@@ -2487,7 +2493,7 @@
 		Returns the constructor of an enum
 	</haxe_doc>
 		</enumConstructor>
-		<enumParameters public="1" set="method" line="790" static="1">
+		<enumParameters public="1" set="method" line="265" static="1">
 			<f a="e">
 				<d/>
 				<c path="Array"><d/></c>
@@ -2496,7 +2502,7 @@
 		Returns the parameters of an enum
 	</haxe_doc>
 		</enumParameters>
-		<enumIndex public="1" get="inline" set="null" line="810" static="1">
+		<enumIndex public="1" get="inline" set="null" line="269" static="1">
 			<f a="e">
 				<d/>
 				<c path="Int"/>
@@ -2509,6 +2515,32 @@
 	The haXe Reflection API enables you to retreive informations about any value,
 	Classes and Enums at runtime.
 </haxe_doc>
+	</class>
+	<class path="flash.errors.Error" params="" file="C:\Program Files\Motion-Twin\haxe/std/flash9/errors/Error.hx" extern="1">
+		<length public="1" static="1"><c path="Int"/></length>
+		<getErrorMessage public="1" set="method" static="1"><f a="index">
+	<c path="Int"/>
+	<c path="String"/>
+</f></getErrorMessage>
+		<throwError public="1" set="method" static="1"><f a="type:index:?p1:?p2:?p3:?p4:?p5">
+	<c path="Class"><d/></c>
+	<t path="UInt"/>
+	<d/>
+	<d/>
+	<d/>
+	<d/>
+	<d/>
+	<d/>
+</f></throwError>
+		<errorID public="1" set="null"><c path="Int"/></errorID>
+		<message public="1"><d/></message>
+		<name public="1"><d/></name>
+		<getStackTrace public="1" set="method"><f a=""><c path="String"/></f></getStackTrace>
+		<new public="1" set="method"><f a="?message:?id">
+	<c path="String"/>
+	<c path="Int"/>
+	<e path="Void"/>
+</f></new>
 	</class>
 	<class path="flash.display.Stage" params="" file="C:\Program Files\Motion-Twin\haxe/std/flash9/display/Stage.hx" extern="1">
 		<extends path="flash.display.DisplayObjectContainer"/>
@@ -2737,17 +2769,17 @@
 	<t path="format.zip.Entry"/>
 	<e path="Void"/>
 </f></writeEntryHeader>
-		<writeEntryData public="1" set="method" line="121"><f a="e:buf:data">
+		<writeEntryData public="1" set="method" line="130"><f a="e:buf:data">
 	<t path="format.zip.Entry"/>
 	<c path="haxe.io.Bytes"/>
 	<c path="haxe.io.Input"/>
 	<e path="Void"/>
 </f></writeEntryData>
-		<writeData public="1" set="method" line="125"><f a="files">
+		<writeData public="1" set="method" line="134"><f a="files">
 	<c path="List"><t path="format.zip.Entry"/></c>
 	<e path="Void"/>
 </f></writeData>
-		<writeCDR public="1" set="method" line="133"><f a=""><e path="Void"/></f></writeCDR>
+		<writeCDR public="1" set="method" line="142"><f a=""><e path="Void"/></f></writeCDR>
 		<new public="1" set="method" line="51"><f a="o">
 	<c path="haxe.io.Output"/>
 	<e path="Void"/>
@@ -2781,228 +2813,6 @@
 	<c path="haxe.io.Output"/>
 	<e path="Void"/>
 </f></new>
-	</class>
-	<class path="EReg" params="" file="C:\Program Files\Motion-Twin\haxe/std/EReg.hx">
-		<r><d/></r>
-		<result><c path="+Array"/></result>
-		<match public="1" set="method" line="85">
-			<f a="s">
-				<c path="String"/>
-				<e path="Bool"/>
-			</f>
-			<haxe_doc>
-		Tells if the regular expression matches the String.
-		Updates the internal state accordingly.
-	</haxe_doc>
-		</match>
-		<matched public="1" set="method" line="125">
-			<f a="n">
-				<c path="Int"/>
-				<c path="String"/>
-			</f>
-			<haxe_doc>
-		Returns a matched group or throw an expection if there
-		is no such group. If [n = 0], the whole matched substring
-		is returned.
-	</haxe_doc>
-		</matched>
-		<matchedLeft public="1" set="method" line="152">
-			<f a=""><c path="String"/></f>
-			<haxe_doc>
-		Returns the part of the string that was as the left of
-		of the matched substring.
-	</haxe_doc>
-		</matchedLeft>
-		<matchedRight public="1" set="method" line="178">
-			<f a=""><c path="String"/></f>
-			<haxe_doc>
-		Returns the part of the string that was at the right of
-		of the matched substring.
-	</haxe_doc>
-		</matchedRight>
-		<matchedPos public="1" set="method" line="210">
-			<f a=""><a>
-	<pos><c path="Int"/></pos>
-	<len><c path="Int"/></len>
-</a></f>
-			<haxe_doc>
-		Returns the position of the matched substring within the
-		original matched string.
-	</haxe_doc>
-		</matchedPos>
-		<split public="1" set="method" line="230">
-			<f a="s">
-				<c path="String"/>
-				<c path="Array"><c path="String"/></c>
-			</f>
-			<haxe_doc>
-		Split a string by using the regular expression to match
-		the separators.
-	</haxe_doc>
-		</split>
-		<replace public="1" set="method" line="273">
-			<f a="s:by">
-				<c path="String"/>
-				<c path="String"/>
-				<c path="String"/>
-			</f>
-			<haxe_doc>
-		Replaces a pattern by another string. The [by] format can
-		contains [$1] to [$9] that will correspond to groups matched
-		while replacing. [$$] means the [$] character.
-	</haxe_doc>
-		</replace>
-		<customReplace public="1" set="method" line="339">
-			<f a="s:f">
-				<c path="String"/>
-				<f a="">
-					<c path="EReg"/>
-					<c path="String"/>
-				</f>
-				<c path="String"/>
-			</f>
-			<haxe_doc>
-		For each occurence of the pattern in the string [s], the function [f] is called and
-		can return the string that needs to be replaced. All occurences are matched anyway,
-		and setting the [g] flag might cause some incorrect behavior on some platforms.
-	</haxe_doc>
-		</customReplace>
-		<new public="1" set="method" line="52">
-			<f a="r:opt">
-				<c path="String"/>
-				<c path="String"/>
-				<e path="Void"/>
-			</f>
-			<haxe_doc>
-		Creates a new regular expression with pattern [r] and
-		options [opt].
-	</haxe_doc>
-		</new>
-		<haxe_doc>
-	Regular expressions are a way to find regular patterns into
-	Strings. Have a look at the tutorial on haXe website to learn
-	how to use them.
-</haxe_doc>
-	</class>
-	<class path="flash.FlashXml__" params="" file="C:\Program Files\Motion-Twin\haxe/std/flash9/FlashXml__.hx">
-		<enode line="30" static="1"><c path="EReg"/></enode>
-		<ecdata line="31" static="1"><c path="EReg"/></ecdata>
-		<edoctype line="32" static="1"><c path="EReg"/></edoctype>
-		<eend line="33" static="1"><c path="EReg"/></eend>
-		<epcdata line="34" static="1"><c path="EReg"/></epcdata>
-		<ecomment line="35" static="1"><c path="EReg"/></ecomment>
-		<eprolog line="36" static="1"><c path="EReg"/></eprolog>
-		<eattribute line="38" static="1"><c path="EReg"/></eattribute>
-		<eclose line="39" static="1"><c path="EReg"/></eclose>
-		<ecdata_end line="40" static="1"><c path="EReg"/></ecdata_end>
-		<edoctype_elt line="41" static="1"><c path="EReg"/></edoctype_elt>
-		<ecomment_end line="42" static="1"><c path="EReg"/></ecomment_end>
-		<Element public="1" static="1"><c path="String"/></Element>
-		<PCData public="1" static="1"><c path="String"/></PCData>
-		<CData public="1" static="1"><c path="String"/></CData>
-		<Comment public="1" static="1"><c path="String"/></Comment>
-		<DocType public="1" static="1"><c path="String"/></DocType>
-		<Prolog public="1" static="1"><c path="String"/></Prolog>
-		<Document public="1" static="1"><c path="String"/></Document>
-		<parse public="1" set="method" line="63" static="1"><f a="str">
-	<c path="String"/>
-	<c path="flash.FlashXml__"/>
-</f></parse>
-		<createElement public="1" set="method" line="173" static="1"><f a="name">
-	<c path="String"/>
-	<c path="flash.FlashXml__"/>
-</f></createElement>
-		<createPCData public="1" set="method" line="182" static="1"><f a="data">
-	<c path="String"/>
-	<c path="flash.FlashXml__"/>
-</f></createPCData>
-		<createCData public="1" set="method" line="189" static="1"><f a="data">
-	<c path="String"/>
-	<c path="flash.FlashXml__"/>
-</f></createCData>
-		<createComment public="1" set="method" line="196" static="1"><f a="data">
-	<c path="String"/>
-	<c path="flash.FlashXml__"/>
-</f></createComment>
-		<createDocType public="1" set="method" line="203" static="1"><f a="data">
-	<c path="String"/>
-	<c path="flash.FlashXml__"/>
-</f></createDocType>
-		<createProlog public="1" set="method" line="210" static="1"><f a="data">
-	<c path="String"/>
-	<c path="flash.FlashXml__"/>
-</f></createProlog>
-		<createDocument public="1" set="method" line="217" static="1"><f a=""><c path="flash.FlashXml__"/></f></createDocument>
-		<nodeType public="1" set="null"><e path="XmlType"/></nodeType>
-		<nodeName public="1" get="getNodeName" set="setNodeName"><c path="String"/></nodeName>
-		<nodeValue public="1" get="getNodeValue" set="setNodeValue"><c path="String"/></nodeValue>
-		<parent public="1" get="getParent" set="null"><c path="flash.FlashXml__"/></parent>
-		<_nodeName><c path="String"/></_nodeName>
-		<_nodeValue><c path="String"/></_nodeValue>
-		<_attributes><c path="Hash"><c path="String"/></c></_attributes>
-		<_children><c path="Array"><c path="flash.FlashXml__"/></c></_children>
-		<_parent><c path="flash.FlashXml__"/></_parent>
-		<getNodeName set="method" line="224"><f a=""><c path="String"/></f></getNodeName>
-		<setNodeName set="method" line="230"><f a="n">
-	<c path="String"/>
-	<c path="String"/>
-</f></setNodeName>
-		<getNodeValue set="method" line="236"><f a=""><c path="String"/></f></getNodeValue>
-		<setNodeValue set="method" line="242"><f a="v">
-	<c path="String"/>
-	<c path="String"/>
-</f></setNodeValue>
-		<getParent set="method" line="248"><f a=""><c path="flash.FlashXml__"/></f></getParent>
-		<get public="1" set="method" line="252"><f a="att">
-	<c path="String"/>
-	<c path="String"/>
-</f></get>
-		<set public="1" set="method" line="258"><f a="att:value">
-	<c path="String"/>
-	<c path="String"/>
-	<e path="Void"/>
-</f></set>
-		<remove public="1" set="method" line="264"><f a="att">
-	<c path="String"/>
-	<e path="Void"/>
-</f></remove>
-		<exists public="1" set="method" line="270"><f a="att">
-	<c path="String"/>
-	<e path="Bool"/>
-</f></exists>
-		<attributes public="1" set="method" line="276"><f a=""><t path="Iterator"><c path="String"/></t></f></attributes>
-		<iterator public="1" set="method" line="282"><f a=""><a>
-	<next><f a=""><c path="flash.FlashXml__"/></f></next>
-	<hasNext><f a=""><e path="Bool"/></f></hasNext>
-</a></f></iterator>
-		<elements public="1" set="method" line="296"><f a=""><a>
-	<next><f a=""><c path="flash.FlashXml__"/></f></next>
-	<hasNext><f a=""><e path="Bool"/></f></hasNext>
-</a></f></elements>
-		<elementsNamed public="1" set="method" line="328"><f a="name">
-	<c path="String"/>
-	<a>
-		<next><f a=""><c path="flash.FlashXml__"/></f></next>
-		<hasNext><f a=""><e path="Bool"/></f></hasNext>
-	</a>
-</f></elementsNamed>
-		<firstChild public="1" set="method" line="361"><f a=""><c path="flash.FlashXml__"/></f></firstChild>
-		<firstElement public="1" set="method" line="366"><f a=""><c path="flash.FlashXml__"/></f></firstElement>
-		<addChild public="1" set="method" line="379"><f a="x">
-	<c path="flash.FlashXml__"/>
-	<e path="Void"/>
-</f></addChild>
-		<removeChild public="1" set="method" line="386"><f a="x">
-	<c path="flash.FlashXml__"/>
-	<e path="Bool"/>
-</f></removeChild>
-		<insertChild public="1" set="method" line="394"><f a="x:pos">
-	<c path="flash.FlashXml__"/>
-	<c path="Int"/>
-	<e path="Void"/>
-</f></insertChild>
-		<toString public="1" set="method" line="401"><f a=""><c path="String"/></f></toString>
-		<new set="method" line="170"><f a=""><e path="Void"/></f></new>
 	</class>
 	<class path="be.haxer.hxswfml.AbcWriter" params="" file="src/be/haxer/hxswfml/AbcWriter.hx">
 		<parseInt32 set="method" line="668" static="1"><f a="s">
@@ -3077,8 +2887,8 @@
 </f></createFunction>
 		<writeCodeBlock set="method" line="406"><f a="member:f">
 	<c path="Xml"/>
-	<a><trys><a>
-	<push><f a="">
+	<a><trys set="null"><a>
+	<push set="null"><f a="">
 	<a>
 		<variable><t path="format.abc.IName"/></variable>
 		<type><t path="format.abc.IName"/></type>
@@ -3088,7 +2898,7 @@
 	</a>
 	<c path="Int"/>
 </f></push>
-	<length><c path="Int"/></length>
+	<length set="null"><c path="Int"/></length>
 </a></trys></a>
 	<e path="Void"/>
 </f></writeCodeBlock>
@@ -3140,8 +2950,8 @@
  * @author Jan J. Flanders
  </haxe_doc>
 	</class>
-	<class path="Reflect" params="" file="C:\Program Files\Motion-Twin\haxe/std/Reflect.hx">
-		<hasField public="1" set="method" line="35" static="1">
+	<class path="Reflect" params="" file="C:\Program Files\Motion-Twin\haxe/std/flash9/_std/Reflect.hx">
+		<hasField public="1" set="method" line="28" static="1">
 			<f a="o:field">
 				<d/>
 				<c path="String"/>
@@ -3151,7 +2961,7 @@
 		Tells if an object has a field set. This doesn't take into account the object prototype (class methods).
 	</haxe_doc>
 		</hasField>
-		<field public="1" get="inline" set="null" line="61" static="1">
+		<field public="1" get="inline" set="null" line="32" static="1">
 			<f a="o:field">
 				<d/>
 				<c path="String"/>
@@ -3161,7 +2971,7 @@
 		Returns the field of an object, or null if [o] is not an object or doesn't have this field.
 	</haxe_doc>
 		</field>
-		<setField public="1" get="inline" set="null" line="87" static="1">
+		<setField public="1" get="inline" set="null" line="36" static="1">
 			<f a="o:field:value">
 				<d/>
 				<c path="String"/>
@@ -3172,7 +2982,7 @@
 		Set an object field value.
 	</haxe_doc>
 		</setField>
-		<callMethod public="1" get="inline" set="null" line="106" static="1">
+		<callMethod public="1" get="inline" set="null" line="40" static="1">
 			<f a="o:func:args">
 				<d/>
 				<d/>
@@ -3183,7 +2993,7 @@
 		Call a method with the given object and arguments.
 	</haxe_doc>
 		</callMethod>
-		<fields public="1" set="method" line="135" static="1">
+		<fields public="1" set="method" line="44" static="1">
 			<f a="o">
 				<d/>
 				<c path="Array"><c path="String"/></c>
@@ -3192,7 +3002,7 @@
 		Returns the list of fields of an object, excluding its prototype (class methods).
 	</haxe_doc>
 		</fields>
-		<isFunction public="1" set="method" line="210" static="1">
+		<isFunction public="1" set="method" line="57" static="1">
 			<f a="f">
 				<d/>
 				<e path="Bool"/>
@@ -3201,7 +3011,7 @@
 		Tells if a value is a function or not.
 	</haxe_doc>
 		</isFunction>
-		<compare public="1" params="T" set="method" line="231" static="1">
+		<compare public="1" params="T" set="method" line="61" static="1">
 			<f a="a:b">
 				<c path="compare.T"/>
 				<c path="compare.T"/>
@@ -3211,7 +3021,7 @@
 		Generic comparison function, does not work for methods, see [compareMethods]
 	</haxe_doc>
 		</compare>
-		<compareMethods public="1" set="method" line="243" static="1">
+		<compareMethods public="1" set="method" line="67" static="1">
 			<f a="f1:f2">
 				<d/>
 				<d/>
@@ -3222,7 +3032,7 @@
 		Does not work on Neko platform.
 	</haxe_doc>
 		</compareMethods>
-		<isObject public="1" set="method" line="275" static="1">
+		<isObject public="1" set="method" line="71" static="1">
 			<f a="v">
 				<d/>
 				<e path="Bool"/>
@@ -3232,7 +3042,7 @@
 
 	</haxe_doc>
 		</isObject>
-		<deleteField public="1" set="method" line="319" static="1">
+		<deleteField public="1" set="method" line="86" static="1">
 			<f a="o:f">
 				<d/>
 				<c path="String"/>
@@ -3242,7 +3052,7 @@
 		Delete an object field.
 	</haxe_doc>
 		</deleteField>
-		<copy public="1" params="T" set="method" line="349" static="1">
+		<copy public="1" params="T" set="method" line="92" static="1">
 			<f a="o">
 				<c path="copy.T"/>
 				<c path="copy.T"/>
@@ -3251,7 +3061,7 @@
 		Make a copy of the fields of an object.
 	</haxe_doc>
 		</copy>
-		<makeVarArgs public="1" set="method" line="372" static="1">
+		<makeVarArgs public="1" set="method" line="99" static="1">
 			<f a="f">
 				<f a="">
 					<c path="Array"><d/></c>
@@ -3270,7 +3080,7 @@
 </haxe_doc>
 	</class>
 	<class path="be.haxer.hxswfml.SwfWriter" params="" file="src/be/haxer/hxswfml/SwfWriter.hx">
-		<main public="1" set="method" line="22" static="1"><f a=""><e path="Void"/></f></main>
+		<main public="1" set="method" line="24" static="1"><f a=""><e path="Void"/></f></main>
 		<swf><t path="format.swf.SWF"/></swf>
 		<swfBytes><c path="haxe.io.Bytes"/></swfBytes>
 		<validElements><c path="Hash"><c path="Array"><c path="String"/></c></c></validElements>
@@ -3280,34 +3090,58 @@
 		<dictionary><c path="Array"><c path="String"/></c></dictionary>
 		<swcClasses><c path="Array"><c path="Array"><c path="String"/></c></c></swcClasses>
 		<currentTag><c path="Xml"/></currentTag>
+		<tagIndex><c path="Int"/></tagIndex>
 		<strict><e path="Bool"/></strict>
 		<library public="1"><c path="Hash"><d/></c></library>
-		<write public="1" set="method" line="34"><f a="input:?strict">
+		<write public="1" set="method" line="37"><f a="input:?strict">
 	<c path="String"/>
 	<e path="Bool"/>
 	<c path="haxe.io.Bytes"/>
 </f></write>
-		<getSWF public="1" set="method" line="67"><f a=""><c path="haxe.io.Bytes"/></f></getSWF>
-		<getSWC public="1" set="method" line="71"><f a=""><c path="haxe.io.Bytes"/></f></getSWC>
-		<getTags public="1" set="method" line="109"><f a=""><c path="Array"><e path="format.swf.SWFTag"/></c></f></getTags>
-		<init set="method" line="113"><f a=""><e path="Void"/></f></init>
-		<header set="method" line="170"><f a=""><t path="format.swf.SWFHeader"/></f></header>
-		<fileattributes set="method" line="184"><f a=""><e path="format.swf.SWFTag"/></f></fileattributes>
-		<setbackgroundcolor set="method" line="196"><f a=""><e path="format.swf.SWFTag"/></f></setbackgroundcolor>
-		<scriptlimits set="method" line="200"><f a=""><e path="format.swf.SWFTag"/></f></scriptlimits>
-		<metadata set="method" line="206"><f a=""><e path="format.swf.SWFTag"/></f></metadata>
-		<definebitsjpeg set="method" line="214"><f a=""><e path="format.swf.SWFTag"/></f></definebitsjpeg>
-		<defineshape set="method" line="224"><f a=""><e path="format.swf.SWFTag"/></f></defineshape>
-		<definesprite set="method" line="413"><f a=""><c path="Array"><e path="format.swf.SWFTag"/></c></f></definesprite>
-		<definebutton set="method" line="456"><f a=""><e path="format.swf.SWFTag"/></f></definebutton>
-		<definesound set="method" line="494"><f a=""><e path="format.swf.SWFTag"/></f></definesound>
-		<definebinarydata set="method" line="508"><f a=""><e path="format.swf.SWFTag"/></f></definebinarydata>
-		<definefont set="method" line="515"><f a=""><e path="format.swf.SWFTag"/></f></definefont>
-		<defineedittext set="method" line="557"><f a=""><e path="format.swf.SWFTag"/></f></defineedittext>
-		<defineabc set="method" line="609"><f a=""><c path="Array"><e path="format.swf.SWFTag"/></c></f></defineabc>
-		<definescalinggrid set="method" line="692"><f a=""><e path="format.swf.SWFTag"/></f></definescalinggrid>
-		<placeobject set="method" line="704"><f a=""><e path="format.swf.SWFTag"/></f></placeobject>
-		<moveObject set="method" line="729"><f a="depth:x:y:scaleX:scaleY:rs0:rs1">
+		<getSWF public="1" set="method" line="71"><f a=""><c path="haxe.io.Bytes"/></f></getSWF>
+		<getSWC public="1" set="method" line="75"><f a=""><c path="haxe.io.Bytes"/></f></getSWC>
+		<getTags public="1" set="method" line="113"><f a=""><c path="Array"><e path="format.swf.SWFTag"/></c></f></getTags>
+		<init set="method" line="117"><f a=""><e path="Void"/></f></init>
+		<header set="method" line="184"><f a=""><t path="format.swf.SWFHeader"/></f></header>
+		<fileattributes set="method" line="198"><f a=""><e path="format.swf.SWFTag"/></f></fileattributes>
+		<setbackgroundcolor set="method" line="212"><f a=""><e path="format.swf.SWFTag"/></f></setbackgroundcolor>
+		<scriptlimits set="method" line="216"><f a=""><e path="format.swf.SWFTag"/></f></scriptlimits>
+		<metadata set="method" line="222"><f a=""><e path="format.swf.SWFTag"/></f></metadata>
+		<definebitsjpeg set="method" line="230"><f a=""><e path="format.swf.SWFTag"/></f></definebitsjpeg>
+		<defineshape set="method" line="240"><f a=""><e path="format.swf.SWFTag"/></f></defineshape>
+		<definesprite set="method" line="429"><f a=""><c path="Array"><e path="format.swf.SWFTag"/></c></f></definesprite>
+		<definebutton set="method" line="472"><f a=""><e path="format.swf.SWFTag"/></f></definebutton>
+		<definesound set="method" line="510"><f a=""><e path="format.swf.SWFTag"/></f></definesound>
+		<definebinarydata set="method" line="524"><f a=""><e path="format.swf.SWFTag"/></f></definebinarydata>
+		<definefont set="method" line="531"><f a=""><e path="format.swf.SWFTag"/></f></definefont>
+		<defineedittext set="method" line="573"><f a=""><e path="format.swf.SWFTag"/></f></defineedittext>
+		<defineabc set="method" line="625"><f a=""><c path="Array"><e path="format.swf.SWFTag"/></c></f></defineabc>
+		<definescalinggrid set="method" line="708"><f a=""><e path="format.swf.SWFTag"/></f></definescalinggrid>
+		<placeobject set="method" line="720"><f a=""><e path="format.swf.SWFTag"/></f></placeobject>
+		<readBlur set="method" line="784"><f a=""><t path="format.swf.BlurFilterData"/></f></readBlur>
+		<readGlow set="method" line="791"><f a=""><t path="format.swf.FilterData"/></f></readGlow>
+		<readBevel set="method" line="803"><f a=""><t path="format.swf.FilterData"/></f></readBevel>
+		<readDropShadow set="method" line="815"><f a=""><t path="format.swf.FilterData"/></f></readDropShadow>
+		<readGradientGlow set="method" line="828"><f a=""><t path="format.swf.GradientFilterData"/></f></readGradientGlow>
+		<readGradientBevel set="method" line="842"><f a=""><t path="format.swf.GradientFilterData"/></f></readGradientBevel>
+		<readColorMatrix set="method" line="856"><f a=""><c path="Array"><c path="Float"/></c></f></readColorMatrix>
+		<readFilterFlags set="method" line="864"><f a="?b1:?b2:?b3:?v">
+	<e path="Bool"/>
+	<e path="Bool"/>
+	<e path="Bool"/>
+	<c path="Int"/>
+	<a>
+		<passes><t path="Null"><c path="Int"/></t></passes>
+		<ontop><t path="Null"><e path="Bool"/></t></ontop>
+		<knockout><t path="Null"><e path="Bool"/></t></knockout>
+		<inner><t path="Null"><e path="Bool"/></t></inner>
+	</a>
+</f></readFilterFlags>
+		<readFilterColors set="method" line="872"><f a="?v">
+	<c path="String"/>
+	<c path="Array"><d/></c>
+</f></readFilterColors>
+		<moveObject set="method" line="884"><f a="depth:x:y:scaleX:scaleY:rs0:rs1">
 	<c path="Int"/>
 	<c path="Int"/>
 	<c path="Int"/>
@@ -3317,24 +3151,25 @@
 	<t path="Null"><c path="Float"/></t>
 	<e path="format.swf.SWFTag"/>
 </f></moveObject>
-		<tween set="method" line="773"><f a=""><c path="Array"><e path="format.swf.SWFTag"/></c></f></tween>
-		<removeobject set="method" line="857"><f a=""><e path="format.swf.SWFTag"/></f></removeobject>
-		<startsound set="method" line="862"><f a=""><e path="format.swf.SWFTag"/></f></startsound>
-		<symbolclass set="method" line="870"><f a=""><c path="Array"><e path="format.swf.SWFTag"/></c></f></symbolclass>
-		<exportassets set="method" line="895"><f a=""><c path="Array"><e path="format.swf.SWFTag"/></c></f></exportassets>
-		<framelabel set="method" line="904"><f a=""><e path="format.swf.SWFTag"/></f></framelabel>
-		<showframe set="method" line="910"><f a=""><c path="Array"><e path="format.swf.SWFTag"/></c></f></showframe>
-		<endframe set="method" line="921"><f a=""><e path="format.swf.SWFTag"/></f></endframe>
-		<custom set="method" line="925"><f a=""><e path="format.swf.SWFTag"/></f></custom>
-		<getContent set="method" line="949"><f a="file">
+		<tween set="method" line="928"><f a=""><c path="Array"><e path="format.swf.SWFTag"/></c></f></tween>
+		<removeobject set="method" line="1012"><f a=""><e path="format.swf.SWFTag"/></f></removeobject>
+		<startsound set="method" line="1017"><f a=""><e path="format.swf.SWFTag"/></f></startsound>
+		<importassets set="method" line="1025"><f a=""><e path="format.swf.SWFTag"/></f></importassets>
+		<symbolclass set="method" line="1030"><f a=""><c path="Array"><e path="format.swf.SWFTag"/></c></f></symbolclass>
+		<exportassets set="method" line="1055"><f a=""><c path="Array"><e path="format.swf.SWFTag"/></c></f></exportassets>
+		<framelabel set="method" line="1064"><f a=""><e path="format.swf.SWFTag"/></f></framelabel>
+		<showframe set="method" line="1070"><f a=""><c path="Array"><e path="format.swf.SWFTag"/></c></f></showframe>
+		<endframe set="method" line="1081"><f a=""><e path="format.swf.SWFTag"/></f></endframe>
+		<custom set="method" line="1085"><f a=""><e path="format.swf.SWFTag"/></f></custom>
+		<getContent set="method" line="1109"><f a="file">
 	<c path="String"/>
 	<c path="String"/>
 </f></getContent>
-		<getBytes set="method" line="970"><f a="file">
+		<getBytes set="method" line="1130"><f a="file">
 	<c path="String"/>
 	<c path="haxe.io.Bytes"/>
 </f></getBytes>
-		<getInt set="method" line="992"><f a="att:defaultValue:?required:?uniqueId:?targetId">
+		<getInt set="method" line="1152"><f a="att:defaultValue:?required:?uniqueId:?targetId">
 	<c path="String"/>
 	<t path="Null"><c path="Int"/></t>
 	<e path="Bool"/>
@@ -3342,58 +3177,70 @@
 	<e path="Bool"/>
 	<t path="Null"><c path="Int"/></t>
 </f></getInt>
-		<getBool set="method" line="1006"><f a="att:defaultValue:?required">
+		<getBool set="method" line="1166"><f a="att:defaultValue:?required">
 	<c path="String"/>
 	<t path="Null"><e path="Bool"/></t>
 	<e path="Bool"/>
 	<t path="Null"><e path="Bool"/></t>
 </f></getBool>
-		<getFloat set="method" line="1013"><f a="att:defaultValue:?required">
+		<getFloat set="method" line="1173"><f a="att:defaultValue:?required">
 	<c path="String"/>
 	<t path="Null"><c path="Float"/></t>
 	<e path="Bool"/>
 	<t path="Null"><c path="Float"/></t>
 </f></getFloat>
-		<getString set="method" line="1023"><f a="att:defaultValue:?required">
+		<getString set="method" line="1183"><f a="att:defaultValue:?required">
 	<c path="String"/>
 	<c path="String"/>
 	<e path="Bool"/>
 	<c path="String"/>
 </f></getString>
-		<getMatrix set="method" line="1030"><f a=""><t path="format.swf.Matrix"/></f></getMatrix>
-		<checkDictionary set="method" line="1047"><f a="id">
+		<getMatrix set="method" line="1190"><f a=""><t path="format.swf.Matrix"/></f></getMatrix>
+		<parseInt32 set="method" line="1207"><f a="s">
+	<c path="String"/>
+	<c path="haxe.Int32"/>
+</f></parseInt32>
+		<checkDictionary set="method" line="1216"><f a="id">
 	<c path="Int"/>
 	<e path="Void"/>
 </f></checkDictionary>
-		<checkTargetId set="method" line="1062"><f a="id">
+		<checkTargetId set="method" line="1231"><f a="id">
 	<c path="Int"/>
 	<e path="Void"/>
 </f></checkTargetId>
-		<checkFileExistence set="method" line="1106"><f a="file">
+		<checkFileExistence set="method" line="1275"><f a="file">
 	<c path="String"/>
 	<e path="Void"/>
 </f></checkFileExistence>
-		<setCurrentElement set="method" line="1136"><f a="tag">
+		<setCurrentElement set="method" line="1305"><f a="tag">
 	<c path="Xml"/>
 	<e path="Void"/>
 </f></setCurrentElement>
-		<isValidAttribute set="method" line="1150"><f a="a">
+		<isValidAttribute set="method" line="1319"><f a="a">
 	<c path="String"/>
 	<e path="Bool"/>
 </f></isValidAttribute>
-		<isValidBaseClass set="method" line="1160"><f a="c">
+		<isValidBaseClass set="method" line="1329"><f a="c">
 	<c path="String"/>
 	<e path="Bool"/>
 </f></isValidBaseClass>
-		<createXML set="method" line="1169"><f a="mod">
+		<createXML set="method" line="1338"><f a="mod">
 	<c path="Float"/>
 	<c path="String"/>
 </f></createXML>
-		<error set="method" line="1204"><f a="msg">
+		<toRGB set="method" line="1373"><f a="i">
+	<c path="Int"/>
+	<t path="format.swf.RGB"/>
+</f></toRGB>
+		<toRGBA set="method" line="1381"><f a="c">
+	<c path="String"/>
+	<t path="format.swf.RGBA"/>
+</f></toRGBA>
+		<error set="method" line="1390"><f a="msg">
 	<c path="String"/>
 	<e path="Void"/>
 </f></error>
-		<new public="1" set="method" line="26"><f a=""><e path="Void"/></f></new>
+		<new public="1" set="method" line="28"><f a=""><e path="Void"/></f></new>
 		<haxe_doc>
 * 
 * @author Jan J. Flanders
@@ -3407,13 +3254,13 @@
 	<c path="List"><e path="format.zip.ExtraField"/></c>
 </f></readExtraFields>
 		<readEntryHeader public="1" set="method" line="80"><f a=""><t path="format.zip.Entry"/></f></readEntryHeader>
-		<readEntryData public="1" set="method" line="122"><f a="e:buf:out">
+		<readEntryData public="1" set="method" line="125"><f a="e:buf:out">
 	<t path="format.zip.Entry"/>
 	<c path="haxe.io.Bytes"/>
 	<c path="haxe.io.Output"/>
 	<e path="Void"/>
 </f></readEntryData>
-		<read public="1" set="method" line="126"><f a=""><t path="format.zip.Data"/></f></read>
+		<read public="1" set="method" line="129"><f a=""><t path="format.zip.Data"/></f></read>
 		<new public="1" set="method" line="36"><f a="i">
 	<c path="haxe.io.Input"/>
 	<e path="Void"/>
@@ -3493,6 +3340,15 @@
 		</read>
 		<new public="1" set="method" line="62"><f a="i">
 	<c path="haxe.io.Input"/>
+	<e path="Void"/>
+</f></new>
+	</class>
+	<class path="flash.utils.Namespace" params="" file="C:\Program Files\Motion-Twin\haxe/std/flash9/utils/Namespace.hx" extern="1">
+		<prefix public="1"><c path="String"/></prefix>
+		<uri public="1"><c path="String"/></uri>
+		<new public="1" set="method"><f a="p1:?url">
+	<d/>
+	<d/>
 	<e path="Void"/>
 </f></new>
 	</class>
@@ -4012,9 +3868,9 @@
 	<c path="haxe.io.Bytes"/>
 	<c path="Array"><d/></c>
 </f></parse>
-		<getTags public="1" set="method" line="133"><f a=""><c path="Array"><e path="format.swf.SWFTag"/></c></f></getTags>
-		<getSWF public="1" set="method" line="137"><f a=""><c path="haxe.io.Bytes"/></f></getSWF>
-		<write public="1" set="method" line="141"><f a="flv:?id:?defaultFPS:?defaultWidth:?defaultHeight">
+		<getTags public="1" set="method" line="141"><f a=""><c path="Array"><e path="format.swf.SWFTag"/></c></f></getTags>
+		<getSWF public="1" set="method" line="145"><f a=""><t path="haxe.io.BytesData"/></f></getSWF>
+		<write public="1" set="method" line="153"><f a="flv:?id:?defaultFPS:?defaultWidth:?defaultHeight">
 	<c path="haxe.io.Bytes"/>
 	<c path="Int"/>
 	<c path="Int"/>
@@ -4022,24 +3878,24 @@
 	<c path="Int"/>
 	<e path="Void"/>
 </f></write>
-		<handleNoMetaData set="method" line="285"><f a=""><e path="Void"/></f></handleNoMetaData>
-		<setCorrectHeaderInfo set="method" line="289"><f a="flvTags">
+		<handleNoMetaData set="method" line="297"><f a=""><e path="Void"/></f></handleNoMetaData>
+		<setCorrectHeaderInfo set="method" line="301"><f a="flvTags">
 	<c path="Array"><d/></c>
 	<e path="Void"/>
 </f></setCorrectHeaderInfo>
-		<findMetaInfo set="method" line="318"><f a="flvTags">
+		<findMetaInfo set="method" line="330"><f a="flvTags">
 	<c path="Array"><d/></c>
 	<unknown/>
 </f></findMetaInfo>
-		<findSoundInfo set="method" line="331"><f a="flvTags">
+		<findSoundInfo set="method" line="343"><f a="flvTags">
 	<c path="Array"><d/></c>
 	<t path="format.flv.SoundInfo"/>
 </f></findSoundInfo>
-		<findVideoInfo set="method" line="349"><f a="flvTags">
+		<findVideoInfo set="method" line="361"><f a="flvTags">
 	<c path="Array"><d/></c>
 	<t path="format.flv.VideoInfo"/>
 </f></findVideoInfo>
-		<findActualWidthHeight set="method" line="373"><f a=""><c path="Array"><c path="Int"/></c></f></findActualWidthHeight>
+		<findActualWidthHeight set="method" line="385"><f a=""><c path="Array"><c path="Int"/></c></f></findActualWidthHeight>
 		<new public="1" set="method" line="42"><f a=""><e path="Void"/></f></new>
 		<haxe_doc>
  * ...
@@ -4364,7 +4220,7 @@
 	<cx><t path="Null"><c path="Float"/></t></cx>
 </a></typedef>
 	<class path="StringBuf" params="" file="C:\Program Files\Motion-Twin\haxe/std/StringBuf.hx">
-		<add public="1" get="inline" set="null" line="54">
+		<add public="1" get="inline" set="null" line="46">
 			<f a="?x">
 				<d/>
 				<e path="Void"/>
@@ -4373,7 +4229,7 @@
 		Adds the representation of any value to the string buffer.
 	</haxe_doc>
 		</add>
-		<addSub public="1" get="inline" set="null" line="69">
+		<addSub public="1" get="inline" set="null" line="57">
 			<f a="s:pos:?len">
 				<c path="String"/>
 				<c path="Int"/>
@@ -4384,7 +4240,7 @@
 		Adds a part of a string to the string buffer.
 	</haxe_doc>
 		</addSub>
-		<addChar public="1" get="inline" set="null" line="87">
+		<addChar public="1" get="inline" set="null" line="73">
 			<f a="c">
 				<c path="Int"/>
 				<e path="Void"/>
@@ -4393,15 +4249,15 @@
 		Adds a character to the string buffer.
 	</haxe_doc>
 		</addChar>
-		<toString public="1" get="inline" set="null" line="103">
+		<toString public="1" get="inline" set="null" line="87">
 			<f a=""><c path="String"/></f>
 			<haxe_doc>
 		Returns the content of the string buffer.
 		The buffer is not emptied by this operation.
 	</haxe_doc>
 		</toString>
-		<b><c path="flash.utils.ByteArray"/></b>
-		<new public="1" set="method" line="39">
+		<b><c path="String"/></b>
+		<new public="1" set="method" line="35">
 			<f a=""><e path="Void"/></f>
 			<haxe_doc>
 		Creates a new string buffer.
@@ -4419,32 +4275,6 @@
 		<new public="1" set="method"><f a="name:labels:numFrames">
 	<c path="String"/>
 	<c path="Array"><c path="flash.display.FrameLabel"/></c>
-	<c path="Int"/>
-	<e path="Void"/>
-</f></new>
-	</class>
-	<class path="flash.Error" params="" file="C:\Program Files\Motion-Twin\haxe/std/flash9/Error.hx" extern="1">
-		<length public="1" static="1"><c path="Int"/></length>
-		<getErrorMessage public="1" set="method" static="1"><f a="index">
-	<c path="Int"/>
-	<c path="String"/>
-</f></getErrorMessage>
-		<throwError public="1" set="method" static="1"><f a="type:index:?p1:?p2:?p3:?p4:?p5">
-	<c path="Class"><d/></c>
-	<t path="UInt"/>
-	<d/>
-	<d/>
-	<d/>
-	<d/>
-	<d/>
-	<d/>
-</f></throwError>
-		<errorID public="1" set="null"><c path="Int"/></errorID>
-		<message public="1"><d/></message>
-		<name public="1"><d/></name>
-		<getStackTrace public="1" set="method"><f a=""><c path="String"/></f></getStackTrace>
-		<new public="1" set="method"><f a="?message:?id">
-	<c path="String"/>
 	<c path="Int"/>
 	<e path="Void"/>
 </f></new>
@@ -4531,6 +4361,7 @@
 		</TMorphShape>
 		<TMetadata a="data"><c path="String"/></TMetadata>
 		<TJPEGTables a="data"><c path="haxe.io.Bytes"/></TJPEGTables>
+		<TImportAssets a="url"><c path="String"/></TImportAssets>
 		<TFrameLabel a="label:anchor">
 			<c path="String"/>
 			<e path="Bool"/>
@@ -4678,7 +4509,9 @@
 		<filters public="1"><t path="Null"><c path="Array"><e path="format.swf.Filter"/></c></t></filters>
 		<blendMode public="1"><t path="Null"><e path="format.swf.BlendMode"/></t></blendMode>
 		<bitmapCache public="1"><e path="Bool"/></bitmapCache>
-		<new public="1" set="method" line="168"><f a=""><e path="Void"/></f></new>
+		<className public="1"><t path="Null"><c path="String"/></t></className>
+		<hasImage public="1"><e path="Bool"/></hasImage>
+		<new public="1" set="method" line="171"><f a=""><e path="Void"/></f></new>
 	</class>
 	<typedef path="format.swf.Rect" params="" file="src/format/swf/Data.hx" module="format.swf.Data"><a>
 	<top><c path="Int"/></top>
@@ -5341,246 +5174,245 @@
 </f></write>
 		<writeRect set="method" line="63"><f a="r">
 	<a>
-		<top><c path="Int"/></top>
-		<right><c path="Int"/></right>
-		<left><c path="Int"/></left>
-		<bottom><c path="Int"/></bottom>
+		<top set="null"><c path="Int"/></top>
+		<right set="null"><c path="Int"/></right>
+		<left set="null"><c path="Int"/></left>
+		<bottom set="null"><c path="Int"/></bottom>
 	</a>
 	<e path="Void"/>
 </f></writeRect>
-		<writeFixed8 get="inline" set="null" line="74"><f a="v">
+		<writeFixed8 get="inline" set="null" line="80"><f a="v">
 	<c path="Int"/>
 	<e path="Void"/>
 </f></writeFixed8>
-		<writeFixed get="inline" set="null" line="78"><f a="v">
+		<writeFixed get="inline" set="null" line="84"><f a="v">
 	<c path="haxe.Int32"/>
 	<e path="Void"/>
 </f></writeFixed>
-		<openTMP set="method" line="82"><f a=""><c path="haxe.io.BytesOutput"/></f></openTMP>
-		<closeTMP set="method" line="89"><f a="old">
+		<openTMP set="method" line="88"><f a=""><c path="haxe.io.BytesOutput"/></f></openTMP>
+		<closeTMP set="method" line="95"><f a="old">
 	<c path="haxe.io.BytesOutput"/>
 	<c path="haxe.io.Bytes"/>
 </f></closeTMP>
-		<writeHeader public="1" set="method" line="96"><f a="h">
+		<writeHeader public="1" set="method" line="102"><f a="h">
 	<t path="format.swf.SWFHeader"/>
 	<e path="Void"/>
 </f></writeHeader>
-		<writeRGB set="method" line="113"><f a="c">
+		<writeRGB set="method" line="119"><f a="c">
 	<t path="format.swf.RGB"/>
 	<e path="Void"/>
 </f></writeRGB>
-		<writeRGBA set="method" line="119"><f a="c">
+		<writeRGBA set="method" line="125"><f a="c">
 	<t path="format.swf.RGBA"/>
 	<e path="Void"/>
 </f></writeRGBA>
-		<writeMatrix set="method" line="126"><f a="m">
+		<writeMatrix set="method" line="132"><f a="m">
 	<t path="format.swf.Matrix"/>
 	<e path="Void"/>
 </f></writeMatrix>
-		<writeCXAColor set="method" line="165"><f a="c:nbits">
+		<writeCXAColor set="method" line="172"><f a="c:nbits">
 	<t path="format.swf.RGBA"/>
 	<c path="Int"/>
 	<e path="Void"/>
 </f></writeCXAColor>
-		<writeCXA set="method" line="172"><f a="c">
+		<writeCXA set="method" line="179"><f a="c">
 	<t path="format.swf.CXA"/>
 	<e path="Void"/>
 </f></writeCXA>
-		<writeClipEvents set="method" line="181"><f a="events">
+		<writeClipEvents set="method" line="188"><f a="events">
 	<c path="Array"><t path="format.swf.ClipEvent"/></c>
 	<e path="Void"/>
 </f></writeClipEvents>
-		<writeFilterFlags set="method" line="195"><f a="f:top">
-	<t path="format.swf.FilterFlags"/>
-	<e path="Bool"/>
-	<e path="Void"/>
-</f></writeFilterFlags>
-		<writeFilterGradient set="method" line="204"><f a="f">
+		<writeFilterGradient set="method" line="211"><f a="f">
 	<t path="format.swf.GradientFilterData"/>
 	<e path="Void"/>
 </f></writeFilterGradient>
-		<writeFilter set="method" line="219"><f a="f">
+		<writeFilter set="method" line="230"><f a="f">
 	<e path="format.swf.Filter"/>
 	<e path="Void"/>
 </f></writeFilter>
-		<writeFilters set="method" line="265"><f a="filters">
+		<writeFilters set="method" line="287"><f a="filters">
 	<c path="Array"><e path="format.swf.Filter"/></c>
 	<e path="Void"/>
 </f></writeFilters>
-		<writeBlendMode set="method" line="271"><f a="b">
+		<writeBlendMode set="method" line="293"><f a="b">
 	<e path="format.swf.BlendMode"/>
 	<e path="Void"/>
 </f></writeBlendMode>
-		<writePlaceObject set="method" line="275"><f a="po:v3">
+		<writePlaceObject set="method" line="297"><f a="po:v3">
 	<c path="format.swf.PlaceObject"/>
 	<e path="Bool"/>
 	<e path="Void"/>
 </f></writePlaceObject>
-		<writeTID set="method" line="310"><f a="id:len">
+		<writeTID set="method" line="344"><f a="id:len">
 	<c path="Int"/>
 	<c path="Int"/>
 	<e path="Void"/>
 </f></writeTID>
-		<writeTIDExt set="method" line="320"><f a="id:len">
+		<writeTIDExt set="method" line="354"><f a="id:len">
 	<c path="Int"/>
 	<c path="Int"/>
 	<e path="Void"/>
 </f></writeTIDExt>
-		<writeSymbols set="method" line="325"><f a="sl:tagid">
+		<writeSymbols set="method" line="359"><f a="sl:tagid">
 	<c path="Array"><t path="format.swf.SymData"/></c>
 	<c path="Int"/>
 	<e path="Void"/>
 </f></writeSymbols>
-		<writeSound set="method" line="338"><f a="s">
+		<writeSound set="method" line="372"><f a="s">
 	<t path="format.swf.Sound"/>
 	<e path="Void"/>
 </f></writeSound>
-		<writeGradRecord set="method" line="377"><f a="ver:grad_record">
+		<writeGradRecord set="method" line="411"><f a="ver:grad_record">
 	<c path="Int"/>
 	<e path="format.swf.GradRecord"/>
 	<e path="Void"/>
 </f></writeGradRecord>
-		<writeGradient set="method" line="393"><f a="ver:grad">
+		<writeGradient set="method" line="427"><f a="ver:grad">
 	<c path="Int"/>
 	<t path="format.swf.Gradient"/>
 	<e path="Void"/>
 </f></writeGradient>
-		<writeFocalGradient set="method" line="427"><f a="ver:grad">
+		<writeFocalGradient set="method" line="461"><f a="ver:grad">
 	<c path="Int"/>
 	<t path="format.swf.FocalGradient"/>
 	<e path="Void"/>
 </f></writeFocalGradient>
-		<writeFillStyle set="method" line="435"><f a="ver:fill_style">
+		<writeFillStyle set="method" line="469"><f a="ver:fill_style">
 	<c path="Int"/>
 	<e path="format.swf.FillStyle"/>
 	<e path="Void"/>
 </f></writeFillStyle>
-		<writeFillStyles set="method" line="484"><f a="ver:fill_styles">
+		<writeFillStyles set="method" line="518"><f a="ver:fill_styles">
 	<c path="Int"/>
 	<c path="Array"><e path="format.swf.FillStyle"/></c>
 	<e path="Void"/>
 </f></writeFillStyles>
-		<writeLineStyle set="method" line="505"><f a="ver:line_style">
+		<writeLineStyle set="method" line="539"><f a="ver:line_style">
 	<c path="Int"/>
 	<t path="format.swf.LineStyle"/>
 	<e path="Void"/>
 </f></writeLineStyle>
-		<writeLineStyles set="method" line="564"><f a="ver:line_styles">
+		<writeLineStyles set="method" line="598"><f a="ver:line_styles">
 	<c path="Int"/>
 	<c path="Array"><t path="format.swf.LineStyle"/></c>
 	<e path="Void"/>
 </f></writeLineStyles>
-		<writeShapeRecord set="method" line="585"><f a="ver:style_info:shape_record">
+		<writeShapeRecord set="method" line="619"><f a="ver:style_info:shape_record">
 	<c path="Int"/>
 	<t path="format.swf.ShapeStyleInfo"/>
 	<e path="format.swf.ShapeRecord"/>
 	<e path="Void"/>
 </f></writeShapeRecord>
-		<writeShapeWithoutStyle set="method" line="682"><f a="ver:data:?isFont">
+		<writeShapeWithoutStyle set="method" line="716"><f a="ver:data:?isFont">
 	<c path="Int"/>
 	<t path="format.swf.ShapeWithoutStyleData"/>
 	<e path="Bool"/>
 	<e path="Void"/>
 </f></writeShapeWithoutStyle>
-		<writeShapeWithStyle set="method" line="700"><f a="ver:data">
+		<writeShapeWithStyle set="method" line="734"><f a="ver:data">
 	<c path="Int"/>
 	<t path="format.swf.ShapeWithStyleData"/>
 	<e path="Void"/>
 </f></writeShapeWithStyle>
-		<writeShape public="1" set="method" line="721"><f a="id:data">
+		<writeShape public="1" set="method" line="755"><f a="id:data">
 	<c path="Int"/>
 	<e path="format.swf.ShapeData"/>
 	<e path="Void"/>
 </f></writeShape>
-		<writeMorphGradient set="method" line="770"><f a="ver:g">
+		<writeMorphGradient set="method" line="804"><f a="ver:g">
 	<c path="Int"/>
 	<t path="format.swf.MorphGradient"/>
 	<e path="Void"/>
 </f></writeMorphGradient>
-		<writeMorphGradients set="method" line="777"><f a="ver:gradients">
+		<writeMorphGradients set="method" line="811"><f a="ver:gradients">
 	<c path="Int"/>
 	<c path="Array"><t path="format.swf.MorphGradient"/></c>
 	<e path="Void"/>
 </f></writeMorphGradients>
-		<writeMorphFillStyle set="method" line="787"><f a="ver:fill_style">
+		<writeMorphFillStyle set="method" line="821"><f a="ver:fill_style">
 	<c path="Int"/>
 	<e path="format.swf.MorphFillStyle"/>
 	<e path="Void"/>
 </f></writeMorphFillStyle>
-		<writeMorphFillStyles set="method" line="822"><f a="ver:fill_styles">
+		<writeMorphFillStyles set="method" line="856"><f a="ver:fill_styles">
 	<c path="Int"/>
 	<c path="Array"><e path="format.swf.MorphFillStyle"/></c>
 	<e path="Void"/>
 </f></writeMorphFillStyles>
-		<writeMorph1LineStyle set="method" line="838"><f a="s">
+		<writeMorph1LineStyle set="method" line="872"><f a="s">
 	<t path="format.swf.Morph1LineStyle"/>
 	<e path="Void"/>
 </f></writeMorph1LineStyle>
-		<writeMorph1LineStyles set="method" line="845"><f a="line_styles">
+		<writeMorph1LineStyles set="method" line="879"><f a="line_styles">
 	<c path="Array"><t path="format.swf.Morph1LineStyle"/></c>
 	<e path="Void"/>
 </f></writeMorph1LineStyles>
-		<writeMorph2LineStyle set="method" line="861"><f a="style">
+		<writeMorph2LineStyle set="method" line="895"><f a="style">
 	<e path="format.swf.Morph2LineStyle"/>
 	<e path="Void"/>
 </f></writeMorph2LineStyle>
-		<writeMorph2LineStyles set="method" line="922"><f a="line_styles">
+		<writeMorph2LineStyles set="method" line="956"><f a="line_styles">
 	<c path="Array"><e path="format.swf.Morph2LineStyle"/></c>
 	<e path="Void"/>
 </f></writeMorph2LineStyles>
-		<writeMorphShape public="1" set="method" line="938"><f a="id:data">
+		<writeMorphShape public="1" set="method" line="972"><f a="id:data">
 	<c path="Int"/>
 	<e path="format.swf.MorphShapeData"/>
 	<e path="Void"/>
 </f></writeMorphShape>
-		<writeFontGlyphs set="method" line="1000"><f a="glyphs">
+		<writeFontGlyphs set="method" line="1034"><f a="glyphs">
 	<c path="Array"><t path="format.swf.ShapeWithoutStyleData"/></c>
 	<c path="Array"><c path="Int"/></c>
 </f></writeFontGlyphs>
-		<writeFont1 set="method" line="1026"><f a="data">
+		<writeFont1 set="method" line="1060"><f a="data">
 	<t path="format.swf.Font1Data"/>
 	<e path="Void"/>
 </f></writeFont1>
-		<writeFont2 set="method" line="1045"><f a="hasWideChars:data">
+		<writeFont2 set="method" line="1079"><f a="hasWideChars:data">
 	<e path="Bool"/>
 	<t path="format.swf.Font2Data"/>
 	<e path="Void"/>
 </f></writeFont2>
-		<writeFont public="1" set="method" line="1145"><f a="id:data">
+		<writeFont public="1" set="method" line="1179"><f a="id:data">
 	<c path="Int"/>
 	<e path="format.swf.FontData"/>
 	<e path="Void"/>
 </f></writeFont>
-		<writeFontInfo public="1" set="method" line="1178"><f a="id:data">
+		<writeFontInfo public="1" set="method" line="1212"><f a="id:data">
 	<c path="Int"/>
 	<e path="format.swf.FontInfoData"/>
 	<e path="Void"/>
 </f></writeFontInfo>
-		<writeSoundInfo set="method" line="1233"><f a="info">
+		<writeSoundInfo set="method" line="1267"><f a="info">
 	<t path="format.swf.SoundInfo"/>
 	<e path="Void"/>
 </f></writeSoundInfo>
-		<writeEnvelopeRecords set="method" line="1246"><f a="soundEnvelopes">
+		<writeEnvelopeRecords set="method" line="1280"><f a="soundEnvelopes">
 	<c path="Array"><t path="format.swf.SoundEnvelope"/></c>
 	<e path="Void"/>
 </f></writeEnvelopeRecords>
-		<writeFileAttributes set="method" line="1255"><f a="att">
+		<writeFileAttributes set="method" line="1289"><f a="att">
 	<t path="format.swf.FileAttributes"/>
 	<e path="Void"/>
 </f></writeFileAttributes>
-		<writeButtonRecord set="method" line="1266"><f a="btnRec">
+		<writeButtonRecord set="method" line="1300"><f a="btnRec">
 	<t path="format.swf.ButtonRecord"/>
 	<e path="Void"/>
 </f></writeButtonRecord>
-		<writeDefineEditText set="method" line="1278"><f a="data">
+		<writeDefineEditText set="method" line="1312"><f a="data">
 	<t path="format.swf.TextFieldData"/>
 	<e path="Void"/>
 </f></writeDefineEditText>
-		<writeTag public="1" set="method" line="1329"><f a="t">
+		<writeImportAssets2 set="method" line="1362"><f a="url">
+	<c path="String"/>
+	<e path="Void"/>
+</f></writeImportAssets2>
+		<writeTag public="1" set="method" line="1376"><f a="t">
 	<e path="format.swf.SWFTag"/>
 	<e path="Void"/>
 </f></writeTag>
-		<writeEnd public="1" set="method" line="1580"><f a=""><e path="Void"/></f></writeEnd>
+		<writeEnd public="1" set="method" line="1634"><f a=""><e path="Void"/></f></writeEnd>
 		<new public="1" set="method" line="52"><f a="o">
 	<c path="haxe.io.Output"/>
 	<e path="Void"/>
@@ -5613,88 +5445,88 @@
 		<getXML public="1" set="method" line="123"><f a=""><c path="String"/></f></getXML>
 		<abcToXml set="method" line="127"><f a="data:infos">
 	<c path="haxe.io.Bytes"/>
-	<a><label><c path="String"/></label></a>
+	<a><label set="null"><c path="String"/></label></a>
 	<c path="String"/>
 </f></abcToXml>
-		<decodeToXML set="method" line="616"><f a="ops:f">
+		<decodeToXML set="method" line="617"><f a="ops:f">
 	<c path="Array"><e path="format.abc.OpCode"/></c>
-	<a><trys><c path="Array"><t path="format.abc.TryCatch"/></c></trys></a>
+	<a><trys set="null"><c path="Array"><t path="format.abc.TryCatch"/></c></trys></a>
 	<c path="String"/>
 </f></decodeToXML>
-		<createFunctionClosure set="method" line="966"><f a="f">
+		<createFunctionClosure set="method" line="968"><f a="f">
 	<e path="format.abc.Index"><t path="format.abc.MethodType"/></e>
 	<c path="String"/>
 </f></createFunctionClosure>
-		<parseMethodExtra get="inline" set="null" line="1018"><f a="extra">
+		<parseMethodExtra get="inline" set="null" line="1020"><f a="extra">
 	<t path="format.abc.MethodTypeExtra"/>
 	<c path="String"/>
 </f></parseMethodExtra>
-		<parseLocals get="inline" set="null" line="1053"><f a="locals">
+		<parseLocals get="inline" set="null" line="1055"><f a="locals">
 	<c path="Array"><t path="format.abc.Field"/></c>
 	<c path="String"/>
 </f></parseLocals>
-		<indent get="inline" set="null" line="1100"><f a=""><c path="String"/></f></indent>
-		<getString get="inline" set="null" line="1109"><f a="id">
+		<indent get="inline" set="null" line="1102"><f a=""><c path="String"/></f></indent>
+		<getString get="inline" set="null" line="1111"><f a="id">
 	<e path="format.abc.Index"><c path="String"/></e>
 	<c path="String"/>
 </f></getString>
-		<getInt get="inline" set="null" line="1113"><f a="id">
+		<getInt get="inline" set="null" line="1115"><f a="id">
 	<e path="format.abc.Index"><c path="haxe.Int32"/></e>
 	<c path="String"/>
 </f></getInt>
-		<getUInt get="inline" set="null" line="1117"><f a="id">
+		<getUInt get="inline" set="null" line="1119"><f a="id">
 	<e path="format.abc.Index"><c path="haxe.Int32"/></e>
 	<c path="String"/>
 </f></getUInt>
-		<getFloat get="inline" set="null" line="1121"><f a="id">
+		<getFloat get="inline" set="null" line="1123"><f a="id">
 	<e path="format.abc.Index"><c path="Float"/></e>
 	<c path="String"/>
 </f></getFloat>
-		<getMethod get="inline" set="null" line="1125"><f a="id">
+		<getMethod get="inline" set="null" line="1127"><f a="id">
 	<e path="format.abc.Index"><t path="format.abc.MethodType"/></e>
 	<t path="format.abc.MethodType"/>
 </f></getMethod>
-		<getClass get="inline" set="null" line="1129"><f a="id">
+		<getClass get="inline" set="null" line="1131"><f a="id">
 	<e path="format.abc.Index"><t path="format.abc.ClassDef"/></e>
 	<t path="format.abc.ClassDef"/>
 </f></getClass>
-		<getNamespace get="inline" set="null" line="1133"><f a="id">
+		<getNamespace get="inline" set="null" line="1135"><f a="id">
 	<e path="format.abc.Index"><e path="format.abc.Namespace"/></e>
 	<c path="String"/>
 </f></getNamespace>
-		<getName set="method" line="1148"><f a="id">
+		<getName set="method" line="1150"><f a="id">
 	<t path="format.abc.IName"/>
 	<c path="String"/>
 </f></getName>
-		<getNameType set="method" line="1160"><f a="name">
+		<getNameType set="method" line="1162"><f a="name">
 	<e path="format.abc.Name"/>
 	<c path="String"/>
 </f></getNameType>
-		<getFieldName get="inline" set="null" line="1202"><f a="id">
+		<getFieldName get="inline" set="null" line="1204"><f a="id">
 	<t path="format.abc.IName"/>
 	<c path="String"/>
 </f></getFieldName>
-		<cutComma get="inline" set="null" line="1206"><f a="str">
+		<cutComma get="inline" set="null" line="1208"><f a="str">
 	<c path="String"/>
 	<c path="String"/>
 </f></cutComma>
-		<getDefaultValue set="method" line="1213"><f a="value">
+		<getDefaultValue set="method" line="1215"><f a="value">
 	<t path="Null"><e path="format.abc.Value"/></t>
 	<c path="String"/>
 </f></getDefaultValue>
-		<getValue set="method" line="1230"><f a="value">
+		<getValue set="method" line="1232"><f a="value">
 	<t path="Null"><e path="format.abc.Value"/></t>
 	<c path="String"/>
 </f></getValue>
-		<fileToLines get="inline" set="null" line="1247"><f a="fileName">
+		<fileToLines get="inline" set="null" line="1249"><f a="fileName">
 	<c path="String"/>
 	<c path="String"/>
 </f></fileToLines>
-		<urlEncode get="inline" set="null" line="1275"><f a="str">
+		<urlEncode get="inline" set="null" line="1278"><f a="str">
 	<c path="String"/>
 	<c path="String"/>
 </f></urlEncode>
-		<lineSplitter get="inline" set="null" line="1281"><f a="str">
+		<lineSplitter get="inline" set="null" line="1284"><f a="str">
 	<c path="String"/>
 	<c path="String"/>
 </f></lineSplitter>
@@ -5772,96 +5604,6 @@
 	<e path="Void"/>
 </f></new>
 	</class>
-	<class path="Math" params="" file="C:\Program Files\Motion-Twin\haxe/std/Math.hx" extern="1">
-		<PI public="1" set="null" static="1"><c path="Float"/></PI>
-		<NaN public="1" set="null" static="1"><c path="Float"/></NaN>
-		<NEGATIVE_INFINITY public="1" set="null" static="1"><c path="Float"/></NEGATIVE_INFINITY>
-		<POSITIVE_INFINITY public="1" set="null" static="1"><c path="Float"/></POSITIVE_INFINITY>
-		<abs public="1" set="method" static="1"><f a="value">
-	<c path="Float"/>
-	<c path="Float"/>
-</f></abs>
-		<min public="1" set="method" static="1"><f a="value1:value2">
-	<c path="Float"/>
-	<c path="Float"/>
-	<c path="Float"/>
-</f></min>
-		<max public="1" set="method" static="1"><f a="value1:value2">
-	<c path="Float"/>
-	<c path="Float"/>
-	<c path="Float"/>
-</f></max>
-		<sin public="1" set="method" static="1"><f a="value">
-	<c path="Float"/>
-	<c path="Float"/>
-</f></sin>
-		<cos public="1" set="method" static="1"><f a="value">
-	<c path="Float"/>
-	<c path="Float"/>
-</f></cos>
-		<atan2 public="1" set="method" static="1"><f a="value1:value2">
-	<c path="Float"/>
-	<c path="Float"/>
-	<c path="Float"/>
-</f></atan2>
-		<tan public="1" set="method" static="1"><f a="value">
-	<c path="Float"/>
-	<c path="Float"/>
-</f></tan>
-		<exp public="1" set="method" static="1"><f a="value">
-	<c path="Float"/>
-	<c path="Float"/>
-</f></exp>
-		<log public="1" set="method" static="1"><f a="value">
-	<c path="Float"/>
-	<c path="Float"/>
-</f></log>
-		<sqrt public="1" set="method" static="1"><f a="value">
-	<c path="Float"/>
-	<c path="Float"/>
-</f></sqrt>
-		<round public="1" set="method" static="1"><f a="value">
-	<c path="Float"/>
-	<c path="Int"/>
-</f></round>
-		<floor public="1" set="method" static="1"><f a="value">
-	<c path="Float"/>
-	<c path="Int"/>
-</f></floor>
-		<ceil public="1" set="method" static="1"><f a="value">
-	<c path="Float"/>
-	<c path="Int"/>
-</f></ceil>
-		<atan public="1" set="method" static="1"><f a="value">
-	<c path="Float"/>
-	<c path="Float"/>
-</f></atan>
-		<asin public="1" set="method" static="1"><f a="value">
-	<c path="Float"/>
-	<c path="Float"/>
-</f></asin>
-		<acos public="1" set="method" static="1"><f a="value">
-	<c path="Float"/>
-	<c path="Float"/>
-</f></acos>
-		<pow public="1" set="method" static="1"><f a="value1:value2">
-	<c path="Float"/>
-	<c path="Float"/>
-	<c path="Float"/>
-</f></pow>
-		<random public="1" set="method" static="1"><f a=""><c path="Float"/></f></random>
-		<isFinite public="1" set="method" static="1"><f a="f">
-	<c path="Float"/>
-	<e path="Bool"/>
-</f></isFinite>
-		<isNaN public="1" set="method" static="1"><f a="f">
-	<c path="Float"/>
-	<e path="Bool"/>
-</f></isNaN>
-		<haxe_doc>
-	This class defines mathematical functions and constants.
-</haxe_doc>
-	</class>
 	<class path="format.ttf.Reader" params="" file="src/format/ttf/Reader.hx">
 		<input><c path="haxe.io.Input"/></input>
 		<tablesHash><c path="Hash"><c path="haxe.io.Bytes"/></c></tablesHash>
@@ -5872,17 +5614,17 @@
 		<read public="1" set="method" line="23"><f a=""><t path="format.ttf.TTF"/></f></read>
 		<readHeader set="method" line="71"><f a=""><t path="format.ttf.Header"/></f></readHeader>
 		<readDirectory set="method" line="83"><f a="header">
-	<a><numTables><c path="Int"/></numTables></a>
+	<a><numTables set="null"><c path="Int"/></numTables></a>
 	<c path="Array"><t path="format.ttf.Entry"/></c>
 </f></readDirectory>
 		<sortOnOffset32 set="method" line="120"><f a="e1:e2">
-	<a><offset><c path="haxe.Int32"/></offset></a>
-	<a><offset><c path="haxe.Int32"/></offset></a>
+	<a><offset set="null"><c path="haxe.Int32"/></offset></a>
+	<a><offset set="null"><c path="haxe.Int32"/></offset></a>
 	<c path="Int"/>
 </f></sortOnOffset32>
 		<sortOnOffset16 set="method" line="130"><f a="e1:e2">
-	<a><offset><c path="Int"/></offset></a>
-	<a><offset><c path="Int"/></offset></a>
+	<a><offset set="null"><c path="Int"/></offset></a>
+	<a><offset set="null"><c path="Int"/></offset></a>
 	<c path="Int"/>
 </f></sortOnOffset16>
 		<readHheaTable set="method" line="144"><f a="bytes">
@@ -5905,8 +5647,8 @@
 </f></readLocaTable>
 		<readHmtxTable set="method" line="244"><f a="bytes:maxp:hhea">
 	<c path="haxe.io.Bytes"/>
-	<a><numGlyphs><c path="Int"/></numGlyphs></a>
-	<a><numberOfHMetrics><c path="Int"/></numberOfHMetrics></a>
+	<a><numGlyphs set="null"><c path="Int"/></numGlyphs></a>
+	<a><numberOfHMetrics set="null"><c path="Int"/></numberOfHMetrics></a>
 	<c path="Array"><t path="format.ttf.Metric"/></c>
 </f></readHmtxTable>
 		<readGlyfTable set="method" line="268"><f a="bytes:maxp:loca:cmap:hmtx">
@@ -5920,10 +5662,10 @@
 		<readGlyf set="method" line="279"><f a="glyphIndex:input:len">
 	<c path="Int"/>
 	<a>
-		<readUInt16><f a=""><c path="Int"/></f></readUInt16>
-		<readInt16><f a=""><c path="Int"/></f></readInt16>
-		<readByte><f a=""><c path="Int"/></f></readByte>
-		<read><f a="">
+		<readUInt16 set="null"><f a=""><c path="Int"/></f></readUInt16>
+		<readInt16 set="null"><f a=""><c path="Int"/></f></readInt16>
+		<readByte set="null"><f a=""><c path="Int"/></f></readByte>
+		<read set="null"><f a="">
 	<c path="Int"/>
 	<c path="haxe.io.Bytes"/>
 </f></read>
@@ -5934,10 +5676,10 @@
 		<readGlyfSimple set="method" line="312"><f a="numberOfContours:input:len">
 	<c path="Int"/>
 	<a>
-		<readUInt16><f a=""><c path="Int"/></f></readUInt16>
-		<readInt16><f a=""><c path="Int"/></f></readInt16>
-		<readByte><f a=""><c path="Int"/></f></readByte>
-		<read><f a="">
+		<readUInt16 set="null"><f a=""><c path="Int"/></f></readUInt16>
+		<readInt16 set="null"><f a=""><c path="Int"/></f></readInt16>
+		<readByte set="null"><f a=""><c path="Int"/></f></readByte>
+		<read set="null"><f a="">
 	<c path="Int"/>
 	<c path="haxe.io.Bytes"/>
 </f></read>
@@ -5946,7 +5688,7 @@
 	<t path="format.ttf.GlyphSimple"/>
 </f></readGlyfSimple>
 		<readGlyfComposite set="method" line="418"><f a="input:len:glyphIndex">
-	<a><read><f a="">
+	<a><read set="null"><f a="">
 	<c path="Int"/>
 	<c path="haxe.io.Bytes"/>
 </f></read></a>
@@ -6003,6 +5745,96 @@
 	<platformId><c path="Int"/></platformId>
 	<offset><c path="Int"/></offset>
 </a></typedef>
+	<class path="Math" params="" file="C:\Program Files\Motion-Twin\haxe/std/Math.hx" extern="1">
+		<PI public="1" set="null" static="1"><c path="Float"/></PI>
+		<NaN public="1" set="null" static="1"><c path="Float"/></NaN>
+		<NEGATIVE_INFINITY public="1" set="null" static="1"><c path="Float"/></NEGATIVE_INFINITY>
+		<POSITIVE_INFINITY public="1" set="null" static="1"><c path="Float"/></POSITIVE_INFINITY>
+		<abs public="1" set="method" static="1"><f a="v">
+	<c path="Float"/>
+	<c path="Float"/>
+</f></abs>
+		<min public="1" set="method" static="1"><f a="a:b">
+	<c path="Float"/>
+	<c path="Float"/>
+	<c path="Float"/>
+</f></min>
+		<max public="1" set="method" static="1"><f a="a:b">
+	<c path="Float"/>
+	<c path="Float"/>
+	<c path="Float"/>
+</f></max>
+		<sin public="1" set="method" static="1"><f a="v">
+	<c path="Float"/>
+	<c path="Float"/>
+</f></sin>
+		<cos public="1" set="method" static="1"><f a="v">
+	<c path="Float"/>
+	<c path="Float"/>
+</f></cos>
+		<atan2 public="1" set="method" static="1"><f a="y:x">
+	<c path="Float"/>
+	<c path="Float"/>
+	<c path="Float"/>
+</f></atan2>
+		<tan public="1" set="method" static="1"><f a="v">
+	<c path="Float"/>
+	<c path="Float"/>
+</f></tan>
+		<exp public="1" set="method" static="1"><f a="v">
+	<c path="Float"/>
+	<c path="Float"/>
+</f></exp>
+		<log public="1" set="method" static="1"><f a="v">
+	<c path="Float"/>
+	<c path="Float"/>
+</f></log>
+		<sqrt public="1" set="method" static="1"><f a="v">
+	<c path="Float"/>
+	<c path="Float"/>
+</f></sqrt>
+		<round public="1" set="method" static="1"><f a="v">
+	<c path="Float"/>
+	<c path="Int"/>
+</f></round>
+		<floor public="1" set="method" static="1"><f a="v">
+	<c path="Float"/>
+	<c path="Int"/>
+</f></floor>
+		<ceil public="1" set="method" static="1"><f a="v">
+	<c path="Float"/>
+	<c path="Int"/>
+</f></ceil>
+		<atan public="1" set="method" static="1"><f a="v">
+	<c path="Float"/>
+	<c path="Float"/>
+</f></atan>
+		<asin public="1" set="method" static="1"><f a="v">
+	<c path="Float"/>
+	<c path="Float"/>
+</f></asin>
+		<acos public="1" set="method" static="1"><f a="v">
+	<c path="Float"/>
+	<c path="Float"/>
+</f></acos>
+		<pow public="1" set="method" static="1"><f a="v:exp">
+	<c path="Float"/>
+	<c path="Float"/>
+	<c path="Float"/>
+</f></pow>
+		<random public="1" set="method" static="1"><f a=""><c path="Float"/></f></random>
+		<isFinite public="1" set="method" static="1"><f a="f">
+	<c path="Float"/>
+	<e path="Bool"/>
+</f></isFinite>
+		<isNaN public="1" set="method" static="1"><f a="f">
+	<c path="Float"/>
+	<e path="Bool"/>
+</f></isNaN>
+		<haxe_doc>
+	This class defines mathematical functions and constants.
+</haxe_doc>
+	</class>
 	<class path="format.swf.Reader" params="" file="src/format/swf/Reader.hx">
 		<i><c path="haxe.io.Input"/></i>
 		<bits><c path="format.tools.BitsInput"/></bits>
@@ -6079,13 +5911,13 @@
 </f></readFilterFlags>
 		<readFilterGradient set="method" line="478"><f a=""><t path="format.swf.GradientFilterData"/></f></readFilterGradient>
 		<readFilter set="method" line="501"><f a=""><e path="format.swf.Filter"/></f></readFilter>
-		<readFilters set="method" line="555"><f a=""><c path="Array"><e path="format.swf.Filter"/></c></f></readFilters>
-		<readShape set="method" line="562"><f a="len:ver">
+		<readFilters set="method" line="554"><f a=""><c path="Array"><e path="format.swf.Filter"/></c></f></readFilters>
+		<readShape set="method" line="561"><f a="len:ver">
 	<c path="Int"/>
 	<c path="Int"/>
 	<e path="format.swf.SWFTag"/>
 </f></readShape>
-		<readMorphGradient set="method" line="595"><f a="ver">
+		<readMorphGradient set="method" line="594"><f a="ver">
 	<c path="Int"/>
 	<a>
 		<startRatio><c path="Int"/></startRatio>
@@ -6094,37 +5926,37 @@
 		<endColor><t path="format.swf.RGBA"/></endColor>
 	</a>
 </f></readMorphGradient>
-		<readMorphGradients set="method" line="609"><f a="ver">
+		<readMorphGradients set="method" line="608"><f a="ver">
 	<c path="Int"/>
 	<c path="Array"><t path="format.swf.MorphGradient"/></c>
 </f></readMorphGradients>
-		<readMorphFillStyle set="method" line="622"><f a="ver">
+		<readMorphFillStyle set="method" line="621"><f a="ver">
 	<c path="Int"/>
 	<e path="format.swf.MorphFillStyle"/>
 </f></readMorphFillStyle>
-		<readMorphFillStyles set="method" line="663"><f a="ver">
+		<readMorphFillStyles set="method" line="662"><f a="ver">
 	<c path="Int"/>
 	<c path="Array"><e path="format.swf.MorphFillStyle"/></c>
 </f></readMorphFillStyles>
-		<readMorph1LineStyle set="method" line="676"><f a=""><a>
+		<readMorph1LineStyle set="method" line="675"><f a=""><a>
 	<startWidth><c path="Int"/></startWidth>
 	<startColor><t path="format.swf.RGBA"/></startColor>
 	<endWidth><c path="Int"/></endWidth>
 	<endColor><t path="format.swf.RGBA"/></endColor>
 </a></f></readMorph1LineStyle>
-		<readMorph2LineStyle set="method" line="690"><f a=""><e path="format.swf.Morph2LineStyle"/></f></readMorph2LineStyle>
-		<readMorph1LineStyles set="method" line="737"><f a=""><c path="Array"><t path="format.swf.Morph1LineStyle"/></c></f></readMorph1LineStyles>
-		<readMorph2LineStyles set="method" line="751"><f a=""><c path="Array"><e path="format.swf.Morph2LineStyle"/></c></f></readMorph2LineStyles>
-		<readMorphShape set="method" line="765"><f a="ver">
+		<readMorph2LineStyle set="method" line="689"><f a=""><e path="format.swf.Morph2LineStyle"/></f></readMorph2LineStyle>
+		<readMorph1LineStyles set="method" line="736"><f a=""><c path="Array"><t path="format.swf.Morph1LineStyle"/></c></f></readMorph1LineStyles>
+		<readMorph2LineStyles set="method" line="750"><f a=""><c path="Array"><e path="format.swf.Morph2LineStyle"/></c></f></readMorph2LineStyles>
+		<readMorphShape set="method" line="764"><f a="ver">
 	<c path="Int"/>
 	<e path="format.swf.SWFTag"/>
 </f></readMorphShape>
-		<readBlendMode set="method" line="820"><f a=""><e path="format.swf.BlendMode"/></f></readBlendMode>
-		<readPlaceObject set="method" line="840"><f a="v3">
+		<readBlendMode set="method" line="819"><f a=""><e path="format.swf.BlendMode"/></f></readBlendMode>
+		<readPlaceObject set="method" line="839"><f a="v3">
 	<e path="Bool"/>
 	<c path="format.swf.PlaceObject"/>
 </f></readPlaceObject>
-		<readLossless set="method" line="860"><f a="len:v2">
+		<readLossless set="method" line="865"><f a="len:v2">
 	<c path="Int"/>
 	<e path="Bool"/>
 	<a>
@@ -6135,18 +5967,18 @@
 		<cid><c path="Int"/></cid>
 	</a>
 </f></readLossless>
-		<readSymbols set="method" line="877"><f a=""><c path="Array"><t path="format.swf.SymData"/></c></f></readSymbols>
-		<readSound set="method" line="888"><f a="len">
+		<readSymbols set="method" line="882"><f a=""><c path="Array"><t path="format.swf.SymData"/></c></f></readSymbols>
+		<readSound set="method" line="893"><f a="len">
 	<c path="Int"/>
 	<e path="format.swf.SWFTag"/>
 </f></readSound>
-		<readLanguage set="method" line="932"><f a=""><e path="format.swf.LangCode"/></f></readLanguage>
-		<readGlyphs set="method" line="944"><f a="len:offsets">
+		<readLanguage set="method" line="937"><f a=""><e path="format.swf.LangCode"/></f></readLanguage>
+		<readGlyphs set="method" line="949"><f a="len:offsets">
 	<c path="Int"/>
 	<c path="Array"><c path="Int"/></c>
 	<c path="Array"><t path="format.swf.ShapeWithoutStyleData"/></c>
 </f></readGlyphs>
-		<readKerningRecord set="method" line="966"><f a="hasWideCodes">
+		<readKerningRecord set="method" line="971"><f a="hasWideCodes">
 	<e path="Bool"/>
 	<a>
 		<charCode2><c path="Int"/></charCode2>
@@ -6154,49 +5986,49 @@
 		<adjust><c path="Int"/></adjust>
 	</a>
 </f></readKerningRecord>
-		<readFont1Data set="method" line="974"><f a="len">
+		<readFont1Data set="method" line="979"><f a="len">
 	<c path="Int"/>
 	<e path="format.swf.FontData"/>
 </f></readFont1Data>
-		<readFont2Data set="method" line="989"><f a="ver">
+		<readFont2Data set="method" line="994"><f a="ver">
 	<c path="Int"/>
 	<e path="format.swf.FontData"/>
 </f></readFont2Data>
-		<readFont set="method" line="1101"><f a="len:ver">
+		<readFont set="method" line="1106"><f a="len:ver">
 	<c path="Int"/>
 	<c path="Int"/>
 	<e path="format.swf.SWFTag"/>
 </f></readFont>
-		<readFontInfo set="method" line="1116"><f a="len:ver">
+		<readFontInfo set="method" line="1121"><f a="len:ver">
 	<c path="Int"/>
 	<c path="Int"/>
 	<e path="format.swf.SWFTag"/>
 </f></readFontInfo>
-		<readSoundInfo set="method" line="1156"><f a=""><a>
+		<readSoundInfo set="method" line="1161"><f a=""><a>
 	<syncStop><e path="Bool"/></syncStop>
 	<loopCount><d/></loopCount>
 	<hasLoops><e path="Bool"/></hasLoops>
 </a></f></readSoundInfo>
-		<readEnvelopeRecords set="method" line="1184"><f a="count">
+		<readEnvelopeRecords set="method" line="1189"><f a="count">
 	<c path="Int"/>
 	<c path="Array"><t path="format.swf.SoundEnvelope"/></c>
 </f></readEnvelopeRecords>
-		<readFileAttributes set="method" line="1193"><f a=""><t path="format.swf.FileAttributes"/></f></readFileAttributes>
-		<error set="method" line="1207"><f a="?msg">
+		<readFileAttributes set="method" line="1198"><f a=""><t path="format.swf.FileAttributes"/></f></readFileAttributes>
+		<error set="method" line="1212"><f a="?msg">
 	<c path="String"/>
 	<c path="String"/>
 </f></error>
-		<readHeader public="1" set="method" line="1211"><f a=""><t path="format.swf.SWFHeader"/></f></readHeader>
-		<readTagList public="1" set="method" line="1244"><f a=""><c path="Array"><e path="format.swf.SWFTag"/></c></f></readTagList>
-		<readTag public="1" set="method" line="1254"><f a=""><e path="format.swf.SWFTag"/></f></readTag>
-		<read public="1" set="method" line="1397"><f a=""><t path="format.swf.SWF"/></f></read>
+		<readHeader public="1" set="method" line="1216"><f a=""><t path="format.swf.SWFHeader"/></f></readHeader>
+		<readTagList public="1" set="method" line="1249"><f a=""><c path="Array"><e path="format.swf.SWFTag"/></c></f></readTagList>
+		<readTag public="1" set="method" line="1259"><f a=""><e path="format.swf.SWFTag"/></f></readTag>
+		<read public="1" set="method" line="1404"><f a=""><t path="format.swf.SWF"/></f></read>
 		<new public="1" set="method" line="43"><f a="i">
 	<c path="haxe.io.Input"/>
 	<e path="Void"/>
 </f></new>
 	</class>
-	<class path="Std" params="" file="C:\Program Files\Motion-Twin\haxe/std/Std.hx">
-		<is public="1" set="method" line="34" static="1">
+	<class path="Std" params="" file="C:\Program Files\Motion-Twin\haxe/std/flash9/_std/Std.hx">
+		<is public="1" set="method" line="28" static="1">
 			<f a="v:t">
 				<d/>
 				<d/>
@@ -6206,7 +6038,7 @@
 		Tells if a value v is of the type t.
 	</haxe_doc>
 		</is>
-		<string public="1" set="method" line="54" static="1">
+		<string public="1" set="method" line="32" static="1">
 			<f a="s">
 				<d/>
 				<c path="String"/>
@@ -6215,7 +6047,7 @@
 		Convert any value to a String
 	</haxe_doc>
 		</string>
-		<int public="1" get="inline" set="null" line="74" static="1">
+		<int public="1" get="inline" set="null" line="36" static="1">
 			<f a="x">
 				<c path="Float"/>
 				<c path="Int"/>
@@ -6224,7 +6056,7 @@
 		Convert a Float to an Int, rounded down.
 	</haxe_doc>
 		</int>
-		<parseInt public="1" set="method" line="90" static="1">
+		<parseInt public="1" set="method" line="40" static="1">
 			<f a="x">
 				<c path="String"/>
 				<t path="Null"><c path="Int"/></t>
@@ -6233,7 +6065,7 @@
 		Convert a String to an Int, parsing different possible representations. Returns [null] if could not be parsed.
 	</haxe_doc>
 		</parseInt>
-		<parseFloat public="1" set="method" line="131" static="1">
+		<parseFloat public="1" set="method" line="47" static="1">
 			<f a="x">
 				<c path="String"/>
 				<c path="Float"/>
@@ -6242,7 +6074,7 @@
 		Convert a String to a Float, parsing different possible reprensations.
 	</haxe_doc>
 		</parseFloat>
-		<random public="1" set="method" line="153" static="1">
+		<random public="1" set="method" line="51" static="1">
 			<f a="x">
 				<c path="Int"/>
 				<c path="Int"/>
@@ -7002,8 +6834,8 @@
 </haxe_doc></class>
 	<typedef path="Iterator" params="T" file="C:\Program Files\Motion-Twin\haxe/std/StdTypes.hx" module="StdTypes">
 		<a>
-			<next><f a=""><c path="Iterator.T"/></f></next>
-			<hasNext><f a=""><e path="Bool"/></f></hasNext>
+			<next set="method"><f a=""><c path="Iterator.T"/></f></next>
+			<hasNext set="method"><f a=""><e path="Bool"/></f></hasNext>
 		</a>
 		<haxe_doc>
 	An Iterator is a structure that permits to list a given container
@@ -7012,7 +6844,7 @@
 </haxe_doc>
 	</typedef>
 	<typedef path="Iterable" params="T" file="C:\Program Files\Motion-Twin\haxe/std/StdTypes.hx" module="StdTypes">
-		<a><iterator><f a=""><t path="Iterator"><c path="Iterable.T"/></t></f></iterator></a>
+		<a><iterator set="method"><f a=""><t path="Iterator"><c path="Iterable.T"/></t></f></iterator></a>
 		<haxe_doc>
 	An Iterable is a data structure which has an iterator() method.
 	See [Lambda] for generic functions on iterable structures.
@@ -7166,6 +6998,18 @@
 		<readUnsignedInt public="1" set="method"><f a=""><t path="UInt"/></f></readUnsignedInt>
 		<readUnsignedShort public="1" set="method"><f a=""><t path="UInt"/></f></readUnsignedShort>
 	</class>
+	<enum path="haxe.io.Error" params="" file="C:\Program Files\Motion-Twin\haxe/std/haxe/io/Error.hx">
+		<Overflow><haxe_doc> An integer value is outside its allowed range </haxe_doc></Overflow>
+		<OutsideBounds><haxe_doc> An operation on Bytes is outside of its valid range </haxe_doc></OutsideBounds>
+		<Custom a="e">
+			<d/>
+			<haxe_doc> Other errors </haxe_doc>
+		</Custom>
+		<Blocked><haxe_doc> The IO is set into nonblocking mode and some data cannot be read or written </haxe_doc></Blocked>
+		<haxe_doc>
+	The possible IO errors that can occur
+</haxe_doc>
+	</enum>
 	<class path="flash.xml.XML" params="" file="C:\Program Files\Motion-Twin\haxe/std/flash9/xml/XML.hx" extern="1">
 		<ignoreComments public="1" static="1"><e path="Bool"/></ignoreComments>
 		<ignoreProcessingInstructions public="1" static="1"><e path="Bool"/></ignoreProcessingInstructions>
@@ -7228,8 +7072,8 @@
 		<localName public="1" set="method"><f a=""><d/></f></localName>
 		<name public="1" set="method"><f a=""><d/></f></name>
 		<namespace public="1" set="method"><f a="?prefix">
-	<d/>
-	<e path="Void"/>
+	<c path="String"/>
+	<c path="flash.utils.Namespace"/>
 </f></namespace>
 		<namespaceDeclarations public="1" set="method"><f a=""><c path="Array"><d/></c></f></namespaceDeclarations>
 		<nodeKind public="1" set="method"><f a=""><c path="String"/></f></nodeKind>
@@ -7283,18 +7127,6 @@
 </f></new>
 		<haxe_dynamic><c path="flash.xml.XMLList"/></haxe_dynamic>
 	</class>
-	<enum path="haxe.io.Error" params="" file="C:\Program Files\Motion-Twin\haxe/std/haxe/io/Error.hx">
-		<Overflow><haxe_doc> An integer value is outside its allowed range </haxe_doc></Overflow>
-		<OutsideBounds><haxe_doc> An operation on Bytes is outside of its valid range </haxe_doc></OutsideBounds>
-		<Custom a="e">
-			<d/>
-			<haxe_doc> Other errors </haxe_doc>
-		</Custom>
-		<Blocked><haxe_doc> The IO is set into nonblocking mode and some data cannot be read or written </haxe_doc></Blocked>
-		<haxe_doc>
-	The possible IO errors that can occur
-</haxe_doc>
-	</enum>
 	<class path="flash.net.URLRequest" params="" file="C:\Program Files\Motion-Twin\haxe/std/flash9/net/URLRequest.hx" extern="1">
 		<contentType public="1"><c path="String"/></contentType>
 		<data public="1"><d/></data>
@@ -8036,13 +7868,104 @@
 	<e path="Void"/>
 </f></new>
 	</class>
-	<enum path="XmlType" params="" file="C:\Program Files\Motion-Twin\haxe/std/Xml.hx" module="Xml"><haxe_doc>
-	An abstract type representing the type of the Xml
-	Node. You can compare it to [Xml] statics and can
-	use [Std.string(t)] to get a string reprensation
-	of the type.
-</haxe_doc></enum>
-	<class path="Xml" params="" file="C:\Program Files\Motion-Twin\haxe/std/Xml.hx" extern="1">
+	<class path="EReg" params="" file="C:\Program Files\Motion-Twin\haxe/std/flash9/_std/EReg.hx">
+		<r><d/></r>
+		<result><c path="+Array"/></result>
+		<match public="1" set="method" line="35">
+			<f a="s">
+				<c path="String"/>
+				<e path="Bool"/>
+			</f>
+			<haxe_doc>
+		Tells if the regular expression matches the String.
+		Updates the internal state accordingly.
+	</haxe_doc>
+		</match>
+		<matched public="1" set="method" line="40">
+			<f a="n">
+				<c path="Int"/>
+				<c path="String"/>
+			</f>
+			<haxe_doc>
+		Returns a matched group or throw an expection if there
+		is no such group. If [n = 0], the whole matched substring
+		is returned.
+	</haxe_doc>
+		</matched>
+		<matchedLeft public="1" set="method" line="44">
+			<f a=""><c path="String"/></f>
+			<haxe_doc>
+		Returns the part of the string that was as the left of
+		of the matched substring.
+	</haxe_doc>
+		</matchedLeft>
+		<matchedRight public="1" set="method" line="50">
+			<f a=""><c path="String"/></f>
+			<haxe_doc>
+		Returns the part of the string that was at the right of
+		of the matched substring.
+	</haxe_doc>
+		</matchedRight>
+		<matchedPos public="1" set="method" line="57">
+			<f a=""><a>
+	<pos><c path="Int"/></pos>
+	<len><c path="Int"/></len>
+</a></f>
+			<haxe_doc>
+		Returns the position of the matched substring within the
+		original matched string.
+	</haxe_doc>
+		</matchedPos>
+		<split public="1" set="method" line="62">
+			<f a="s">
+				<c path="String"/>
+				<c path="Array"><c path="String"/></c>
+			</f>
+			<haxe_doc>
+		Split a string by using the regular expression to match
+		the separators.
+	</haxe_doc>
+		</split>
+		<replace public="1" set="method" line="68">
+			<f a="s:by">
+				<c path="String"/>
+				<c path="String"/>
+				<c path="String"/>
+			</f>
+			<haxe_doc>
+		Replaces a pattern by another string. The [by] format can
+		contains [$1] to [$9] that will correspond to groups matched
+		while replacing. [$$] means the [$] character.
+	</haxe_doc>
+		</replace>
+		<customReplace public="1" set="method" line="72">
+			<f a="s:f">
+				<c path="String"/>
+				<f a="">
+					<c path="EReg"/>
+					<c path="String"/>
+				</f>
+				<c path="String"/>
+			</f>
+			<haxe_doc>
+		For each occurence of the pattern in the string [s], the function [f] is called and
+		can return the string that needs to be replaced. All occurences are matched anyway,
+		and setting the [g] flag might cause some incorrect behavior on some platforms.
+	</haxe_doc>
+		</customReplace>
+		<new public="1" set="method" line="31"><f a="r:opt">
+	<c path="String"/>
+	<c path="String"/>
+	<e path="Void"/>
+</f></new>
+		<haxe_doc>
+	Regular expressions are a way to find regular patterns into
+	Strings. Have a look at the tutorial on haXe website to learn
+	how to use them.
+</haxe_doc>
+	</class>
+	<enum path="XmlType" params="" file="C:\Program Files\Motion-Twin\haxe/std/flash9/_std/Xml.hx" module="Xml"/>
+	<class path="Xml" params="" file="C:\Program Files\Motion-Twin\haxe/std/flash9/_std/Xml.hx">
 		<Element public="1" set="null" static="1">
 			<e path="XmlType"/>
 			<haxe_doc>
@@ -8085,8 +8008,9 @@
 		A type of Xml node.
 	</haxe_doc>
 		</Document>
-		<parse public="1" set="method" static="1">
-			<f a="s">
+		<_map static="1"><c path="flash.utils.Dictionary"/></_map>
+		<parse public="1" set="method" line="50" static="1">
+			<f a="str">
 				<c path="String"/>
 				<c path="Xml"/>
 			</f>
@@ -8094,7 +8018,7 @@
 		Parse a String into an Xml object.
 	</haxe_doc>
 		</parse>
-		<createElement public="1" set="method" static="1">
+		<createElement public="1" set="method" line="60" static="1">
 			<f a="name">
 				<c path="String"/>
 				<c path="Xml"/>
@@ -8103,7 +8027,7 @@
 		Creates a node of the given type.
 	</haxe_doc>
 		</createElement>
-		<createPCData public="1" set="method" static="1">
+		<createPCData public="1" set="method" line="64" static="1">
 			<f a="data">
 				<c path="String"/>
 				<c path="Xml"/>
@@ -8112,7 +8036,7 @@
 		Creates a node of the given type.
 	</haxe_doc>
 		</createPCData>
-		<createCData public="1" set="method" static="1">
+		<createCData public="1" set="method" line="69" static="1">
 			<f a="data">
 				<c path="String"/>
 				<c path="Xml"/>
@@ -8121,7 +8045,7 @@
 		Creates a node of the given type.
 	</haxe_doc>
 		</createCData>
-		<createComment public="1" set="method" static="1">
+		<createComment public="1" set="method" line="73" static="1">
 			<f a="data">
 				<c path="String"/>
 				<c path="Xml"/>
@@ -8130,7 +8054,7 @@
 		Creates a node of the given type.
 	</haxe_doc>
 		</createComment>
-		<createDocType public="1" set="method" static="1">
+		<createDocType public="1" set="method" line="78" static="1">
 			<f a="data">
 				<c path="String"/>
 				<c path="Xml"/>
@@ -8139,7 +8063,7 @@
 		Creates a node of the given type.
 	</haxe_doc>
 		</createDocType>
-		<createProlog public="1" set="method" static="1">
+		<createProlog public="1" set="method" line="82" static="1">
 			<f a="data">
 				<c path="String"/>
 				<c path="Xml"/>
@@ -8148,12 +8072,21 @@
 		Creates a node of the given type.
 	</haxe_doc>
 		</createProlog>
-		<createDocument public="1" set="method" static="1">
+		<createDocument public="1" set="method" line="87" static="1">
 			<f a=""><c path="Xml"/></f>
 			<haxe_doc>
 		Creates a node of the given type.
 	</haxe_doc>
 		</createDocument>
+		<getNodeType set="method" line="91" static="1"><f a="node">
+	<c path="flash.xml.XML"/>
+	<e path="XmlType"/>
+</f></getNodeType>
+		<wrap set="method" line="146" static="1"><f a="node:?type">
+	<c path="flash.xml.XML"/>
+	<e path="XmlType"/>
+	<c path="Xml"/>
+</f></wrap>
 		<nodeType public="1" set="null">
 			<e path="XmlType"/>
 			<haxe_doc>
@@ -8168,23 +8101,40 @@
 		Returns the node name of an Element.
 	</haxe_doc>
 		</nodeName>
-		<getNodeName set="method"><f a=""><c path="String"/></f></getNodeName>
-		<setNodeName set="method"><f a="name">
-	<c path="String"/>
-	<c path="String"/>
-</f></setNodeName>
 		<nodeValue public="1" get="getNodeValue" set="setNodeValue">
 			<c path="String"/>
 			<haxe_doc>
 		Returns the node value. Only works if the Xml node is not an Element or a Document.
 	</haxe_doc>
 		</nodeValue>
-		<getNodeValue set="method"><f a=""><c path="String"/></f></getNodeValue>
-		<setNodeValue set="method"><f a="name">
+		<parent public="1" get="getParent" set="null">
+			<c path="Xml"/>
+			<haxe_doc>
+		Returns the parent object in the Xml hierarchy.
+		The parent can be [null], an Element or a Document.
+	</haxe_doc>
+		</parent>
+		<_node><c path="flash.xml.XML"/></_node>
+		<getNodeName set="method" line="107"><f a=""><c path="String"/></f></getNodeName>
+		<setNodeName set="method" line="114"><f a="n">
+	<c path="String"/>
+	<c path="String"/>
+</f></setNodeName>
+		<getNodeValue set="method" line="127"><f a=""><c path="String"/></f></getNodeValue>
+		<setNodeValue set="method" line="133"><f a="v">
 	<c path="String"/>
 	<c path="String"/>
 </f></setNodeValue>
-		<get public="1" set="method">
+		<getParent set="method" line="142"><f a=""><c path="Xml"/></f></getParent>
+		<wraps set="method" line="162"><f a="xList">
+	<c path="flash.xml.XMLList"/>
+	<c path="Array"><c path="Xml"/></c>
+</f></wraps>
+		<getAttribNS set="method" line="169"><f a="ns">
+	<c path="Array"><c path="String"/></c>
+	<c path="flash.xml.XMLList"/>
+</f></getAttribNS>
+		<get public="1" set="method" line="173">
 			<f a="att">
 				<c path="String"/>
 				<c path="String"/>
@@ -8194,7 +8144,7 @@
 		Attributes are case-sensitive.
 	</haxe_doc>
 		</get>
-		<set public="1" set="method">
+		<set public="1" set="method" line="186">
 			<f a="att:value">
 				<c path="String"/>
 				<c path="String"/>
@@ -8205,7 +8155,7 @@
 		Attributes are case-sensitive.
 	</haxe_doc>
 		</set>
-		<remove public="1" set="method">
+		<remove public="1" set="method" line="198">
 			<f a="att">
 				<c path="String"/>
 				<e path="Void"/>
@@ -8215,7 +8165,7 @@
 		Attributes are case-sensitive.
 	</haxe_doc>
 		</remove>
-		<exists public="1" set="method">
+		<exists public="1" set="method" line="208">
 			<f a="att">
 				<c path="String"/>
 				<e path="Bool"/>
@@ -8225,35 +8175,27 @@
 		Attributes are case-sensitive.
 	</haxe_doc>
 		</exists>
-		<attributes public="1" set="method">
+		<attributes public="1" set="method" line="217">
 			<f a=""><t path="Iterator"><c path="String"/></t></f>
 			<haxe_doc>
 		Returns an [Iterator] on all the attributes values.
 	</haxe_doc>
 		</attributes>
-		<parent public="1" get="getParent" set="null">
-			<c path="Xml"/>
-			<haxe_doc>
-		Returns the parent object in the Xml hierarchy.
-		The parent can be [null], an Element or a Document.
-	</haxe_doc>
-		</parent>
-		<getParent set="method"><f a=""><c path="Xml"/></f></getParent>
-		<iterator public="1" set="method">
+		<iterator public="1" set="method" line="233">
 			<f a=""><t path="Iterator"><c path="Xml"/></t></f>
 			<haxe_doc>
 		Returns an iterator of all child nodes.
 		Only works if the current node is an Element or a Document.
 	</haxe_doc>
 		</iterator>
-		<elements public="1" set="method">
+		<elements public="1" set="method" line="249">
 			<f a=""><t path="Iterator"><c path="Xml"/></t></f>
 			<haxe_doc>
 		Returns an iterator of all child nodes which are Elements.
 		Only works if the current node is an Element or a Document.
 	</haxe_doc>
 		</elements>
-		<elementsNamed public="1" set="method">
+		<elementsNamed public="1" set="method" line="265">
 			<f a="name">
 				<c path="String"/>
 				<t path="Iterator"><c path="Xml"/></t>
@@ -8263,19 +8205,19 @@
 		Only works if the current node is an Element or a Document.
 	</haxe_doc>
 		</elementsNamed>
-		<firstChild public="1" set="method">
+		<firstChild public="1" set="method" line="290">
 			<f a=""><c path="Xml"/></f>
 			<haxe_doc>
 		Returns the first child node.
 	</haxe_doc>
 		</firstChild>
-		<firstElement public="1" set="method">
+		<firstElement public="1" set="method" line="299">
 			<f a=""><c path="Xml"/></f>
 			<haxe_doc>
 		Returns the first child node which is an Element.
 	</haxe_doc>
 		</firstElement>
-		<addChild public="1" set="method">
+		<addChild public="1" set="method" line="308">
 			<f a="x">
 				<c path="Xml"/>
 				<e path="Void"/>
@@ -8285,7 +8227,7 @@
 		One node can only be inside one given node which is indicated by the [parent] property.
 	</haxe_doc>
 		</addChild>
-		<removeChild public="1" set="method">
+		<removeChild public="1" set="method" line="315">
 			<f a="x">
 				<c path="Xml"/>
 				<e path="Bool"/>
@@ -8295,7 +8237,7 @@
 		Returns true if the child was successfuly removed.
 	</haxe_doc>
 		</removeChild>
-		<insertChild public="1" set="method">
+		<insertChild public="1" set="method" line="326">
 			<f a="x:pos">
 				<c path="Xml"/>
 				<c path="Int"/>
@@ -8305,12 +8247,13 @@
 		Inserts a child at the given position among the other childs.
 	</haxe_doc>
 		</insertChild>
-		<toString public="1" set="method">
+		<toString public="1" set="method" line="336">
 			<f a=""><c path="String"/></f>
 			<haxe_doc>
 		Returns a String representation of the Xml node.
 	</haxe_doc>
 		</toString>
+		<new set="method" line="58"><f a=""><e path="Void"/></f></new>
 		<haxe_doc>
 	The standard Xml class and parsing.
 	More API to manipulate XML are available in the [haxe.xml] package.

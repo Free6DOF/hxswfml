@@ -5,7 +5,7 @@
 	xmlns:hx="http://hxswfml.googlecode.com" 
 	targetNamespace="http://hxswfml.googlecode.com" 
 	elementFormDefault="qualified">
-	<xs:include schemaLocation="hxswfml_abc.xsd"/>
+	<xs:include schemaLocation="http://hxswfml.googlecode.com/svn/trunk/doc/hxswfml_abc.xsd"/>
 	<xs:element name="swf">
 		<xs:annotation>
 			<xs:appinfo>
@@ -71,6 +71,7 @@
 						<xs:element ref="StartSound"/>
 						<xs:element ref="SymbolClass"/>
 						<xs:element ref="ExportAssets"/>
+						<xs:element ref="ImportAssets"/>
 						<xs:element ref="FrameLabel"/>
 						<xs:element ref="Tween" />
 						<xs:element ref="Custom" />
@@ -612,6 +613,15 @@
 		</xs:complexType>
 	</xs:element>
 	<!--____________________________________________________________-->
+	<xs:element name="ImportAssets">
+		<xs:annotation>
+			<xs:documentation>This element will import assets from a runtime shared library.</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:attribute name="url" type="xs:string" use="required"/>
+		</xs:complexType>
+	</xs:element>
+	<!--____________________________________________________________-->
 	<xs:element name="ExportAssets">
 		<xs:annotation>
 			<xs:documentation>This element will provide the means to link a class name to a previously created symbol such as a DefineSound (Sound), DefineButton(Button), DefineSprite(MovieClip), DefineFont(Font).</xs:documentation>
@@ -630,7 +640,27 @@
     -move = true and id is present: The character at the specified depth is removed, and a new character (id) is placed at that depth. 	</xs:documentation>
 		</xs:annotation>
 		<xs:complexType>
+			<xs:sequence maxOccurs="unbounded">
+				<xs:choice minOccurs="0" maxOccurs="unbounded">
+					<xs:element ref="Blur"/>
+					<!--<xs:element ref="blur"/>-->
+					<xs:element ref="Glow" />
+					<!--<xs:element ref="glow" />-->
+					<xs:element ref="Bevel"/>
+					<!--<xs:element ref="bevel"/>-->
+					<xs:element ref="DropShadow"/>
+					<!--<xs:element ref="dropshadow"/>-->
+					<xs:element ref="GradientGlow"/>
+					<!--<xs:element ref="gradientglow"/>-->
+					<xs:element ref="GradientBevel"/>
+					<!--<xs:element ref="gradientbevel"/>-->
+					<xs:element ref="ColorMatrix"/>
+					<!--<xs:element ref="colormatrix"/>-->
+				</xs:choice>
+			</xs:sequence>
 			<xs:attribute name="depth" type="xs:integer" use="required"/>
+			<xs:attribute name="hasImage" type="xs:boolean" use="optional" default="false"/>
+			<xs:attribute name="className" type="xs:string" use="optional" />
 			<xs:attribute name="id" type="xs:positiveInteger" use="required"/>
 			<xs:attribute name="move" type="xs:boolean" use="optional" default="false"/>
 			<xs:attribute name="name" type="xs:string" use="optional" default=""/>
@@ -640,6 +670,413 @@
 			<xs:attribute name="scaleY" type="xs:decimal" use="optional" default="1.0"/>
 			<xs:attribute name="x" type="xs:integer" use="optional" default="0"/>
 			<xs:attribute name="y" type="xs:integer" use="optional" default="0"/>
+			<xs:attribute name="bitmapCache" type="xs:boolean" use="optional" default="false"/>
+			<xs:attribute name="blendMode" use="optional" default="">
+				<xs:simpleType>
+					<xs:restriction base="xs:string">
+						<xs:enumeration value="normal"/>
+						<xs:enumeration value="layer"/>
+						<xs:enumeration value="multiply"/>
+						<xs:enumeration value="screen"/>
+						<xs:enumeration value="lighten"/>
+						<xs:enumeration value="darken"/>
+						<xs:enumeration value="add"/>
+						<xs:enumeration value="subtract"/>
+						<xs:enumeration value="difference"/>
+						<xs:enumeration value="invert"/>
+						<xs:enumeration value="alpha"/>
+						<xs:enumeration value="erase"/>
+						<xs:enumeration value="overlay"/>
+						<xs:enumeration value="hardlight"/>
+						<xs:enumeration value=""/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:attribute>
+		</xs:complexType>
+	</xs:element>
+	<!--____________________________________________________________-->
+	<xs:element name="blur" substitutionGroup="Blur"/>
+	<xs:element name="Blur">
+		<xs:annotation><xs:documentation>Blur filter.</xs:documentation></xs:annotation>
+		<xs:complexType>
+		
+			<xs:attribute name="blurX" use="optional" default="4.0">
+				<xs:simpleType>
+					<xs:restriction base="xs:decimal">
+						<xs:minInclusive value="0.0"/>
+						<xs:maxInclusive value="255.0"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:attribute>
+			
+			<xs:attribute name="blurY" use="optional" default="4.0">
+				<xs:simpleType>
+					<xs:restriction base="xs:decimal">
+						<xs:minInclusive value="0.0"/>
+						<xs:maxInclusive value="255.0"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:attribute>
+			
+			<xs:attribute name="passes" use="optional" default="1">
+				<xs:simpleType>
+					<xs:restriction base="xs:positiveInteger">
+						<xs:minInclusive value="1"/>
+						<xs:maxInclusive value="15"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:attribute>
+			
+		</xs:complexType>
+	</xs:element>
+	<!--____________________________________________________________-->
+	<xs:element name="glow" substitutionGroup="Glow"/>
+	<xs:element name="Glow" >
+		<xs:complexType>
+			<xs:annotation><xs:documentation> Glow filter.</xs:documentation></xs:annotation>
+			
+			<xs:attribute name="color" use="optional" default="0xFF0000FF">
+				<xs:simpleType>
+					<xs:restriction base="xs:string">
+						<xs:pattern value="(0x[0-9A-Fa-f]{8})"/>
+					</xs:restriction>				
+				</xs:simpleType>
+			</xs:attribute>
+			
+			<xs:attribute name="blurX" use="optional" default="6.0">
+				<xs:simpleType>
+					<xs:restriction base="xs:decimal">
+						<xs:minInclusive value="0.0"/>
+						<xs:maxInclusive value="255.0"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:attribute>
+			
+			<xs:attribute name="blurY" use="optional" default="6.0">
+				<xs:simpleType>
+					<xs:restriction base="xs:decimal">
+						<xs:minInclusive value="0.0"/>
+						<xs:maxInclusive value="255.0"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:attribute>
+
+			<xs:attribute name="strength" use="optional" default="2.0">
+				<xs:simpleType>
+					<xs:restriction base="xs:decimal">
+						<xs:minInclusive value="0.0"/>
+						<xs:maxInclusive value="255.0"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:attribute>
+
+			<xs:attribute name="inner" type="xs:boolean" use="optional" default="false"/>
+			<xs:attribute name="knockout" type="xs:boolean" use="optional" default="false"/>
+			<xs:attribute name="passes" use="optional" default="1">
+				<xs:simpleType>
+					<xs:restriction base="xs:positiveInteger">
+						<xs:minInclusive value="1"/>
+						<xs:maxInclusive value="15"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:attribute>
+			
+		</xs:complexType>
+	</xs:element>
+	
+	<!--____________________________________________________________-->
+	<xs:element name="bevel" substitutionGroup="Bevel"/>
+	<xs:element name="Bevel" >
+		<xs:complexType>
+			<xs:annotation><xs:documentation> Bevel filter.</xs:documentation></xs:annotation>
+			
+			<xs:attribute name="color1" use="optional" default="0xFFFFFFFF">
+				<xs:simpleType>
+					<xs:restriction base="xs:string">
+						<xs:pattern value="(0x[0-9A-Fa-f]{8})"/>
+					</xs:restriction>				
+				</xs:simpleType>
+			</xs:attribute>
+			
+			<xs:attribute name="color2" use="optional" default="0x000000FF">
+				<xs:simpleType>
+					<xs:restriction base="xs:string">
+						<xs:pattern value="(0x[0-9A-Fa-f]{8})"/>
+					</xs:restriction>				
+				</xs:simpleType>
+			</xs:attribute>
+			
+			<xs:attribute name="blurX" use="optional" default="4.0">
+				<xs:simpleType>
+					<xs:restriction base="xs:decimal">
+						<xs:minInclusive value="0.0"/>
+						<xs:maxInclusive value="255.0"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:attribute>
+			
+			<xs:attribute name="blurY" use="optional" default="4.0">
+				<xs:simpleType>
+					<xs:restriction base="xs:decimal">
+						<xs:minInclusive value="0.0"/>
+						<xs:maxInclusive value="255.0"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:attribute>
+
+			<xs:attribute name="distance" use="optional" default="4.0">
+				<xs:simpleType>
+					<xs:restriction base="xs:decimal">
+						<xs:minInclusive value="0.0"/>
+						<xs:maxInclusive value="8.0"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:attribute>
+			
+			<xs:attribute name="angle" use="optional" default="45.0">
+				<xs:simpleType>
+					<xs:restriction base="xs:decimal">
+						<xs:minInclusive value="0.0"/>
+						<xs:maxInclusive value="360.0"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:attribute>
+			
+			<xs:attribute name="strength" use="optional" default="1.0">
+				<xs:simpleType>
+					<xs:restriction base="xs:decimal">
+						<xs:minInclusive value="0.0"/>
+						<xs:maxInclusive value="255.0"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:attribute>
+			
+			<xs:attribute name="inner" type="xs:boolean" use="optional" default="false"/>
+			<xs:attribute name="knockout" type="xs:boolean" use="optional" default="false"/>
+			<xs:attribute name="ontop" type="xs:boolean" use="optional" default="false"/>
+			<xs:attribute name="passes" use="optional" default="1">
+				<xs:simpleType>
+					<xs:restriction base="xs:positiveInteger">
+						<xs:minInclusive value="1"/>
+						<xs:maxInclusive value="15"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:attribute>
+
+		</xs:complexType>
+	</xs:element>
+	<!--____________________________________________________________-->
+	<xs:element name="dropshadow" substitutionGroup="DropShadow"/>
+	<xs:element name="DropShadow" >
+		<xs:complexType>
+			<xs:annotation><xs:documentation> DropShadow filter.</xs:documentation></xs:annotation>
+			
+			<xs:attribute name="color" use="optional" default="0x000000FF">
+				<xs:simpleType>
+					<xs:restriction base="xs:string">
+						<xs:pattern value="(0x[0-9A-Fa-f]{8})"/>
+					</xs:restriction>				
+				</xs:simpleType>
+			</xs:attribute>
+			
+			<xs:attribute name="blurX" use="optional" default="4.0">
+				<xs:simpleType>
+					<xs:restriction base="xs:decimal">
+						<xs:minInclusive value="0.0"/>
+						<xs:maxInclusive value="255.0"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:attribute>
+			
+			<xs:attribute name="blurY" use="optional" default="4.0">
+				<xs:simpleType>
+					<xs:restriction base="xs:decimal">
+						<xs:minInclusive value="0.0"/>
+						<xs:maxInclusive value="255.0"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:attribute>
+			
+			<xs:attribute name="angle" use="optional" default="45.0">
+				<xs:simpleType>
+					<xs:restriction base="xs:decimal">
+						<xs:minInclusive value="0.0"/>
+						<xs:maxInclusive value="360.0"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:attribute>
+			
+			<xs:attribute name="distance" use="optional" default="4.0">
+				<xs:simpleType>
+					<xs:restriction base="xs:decimal">
+						<xs:minInclusive value="0.0"/>
+						<xs:maxInclusive value="8.0"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:attribute>
+
+			<xs:attribute name="strength" use="optional" default="1.0">
+				<xs:simpleType>
+					<xs:restriction base="xs:decimal">
+						<xs:minInclusive value="0.0"/>
+						<xs:maxInclusive value="255.0"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:attribute>
+			
+			<xs:attribute name="inner" type="xs:boolean" use="optional" default="false"/>
+			<xs:attribute name="knockout" type="xs:boolean" use="optional" default="false"/>
+			<xs:attribute name="passes" use="optional" default="1">
+				<xs:simpleType>
+					<xs:restriction base="xs:positiveInteger">
+						<xs:minInclusive value="1"/>
+						<xs:maxInclusive value="15"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:attribute>
+
+		</xs:complexType>
+	</xs:element>
+	<!--____________________________________________________________-->
+	<xs:element name="gradientbevel" substitutionGroup="GradientBevel"/>
+	<xs:element name="GradientBevel" >
+		<xs:complexType>
+			<xs:annotation><xs:documentation> GradientBevel filter.</xs:documentation></xs:annotation>
+			
+			<xs:attribute name="colors" type="xs:string" use="optional" default="0:0XFFFFFFFF,128:0x000000FF"/>
+			
+			<xs:attribute name="blurX" use="optional" default="4.0">
+				<xs:simpleType>
+					<xs:restriction base="xs:decimal">
+						<xs:minInclusive value="0.0"/>
+						<xs:maxInclusive value="255.0"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:attribute>
+			
+			<xs:attribute name="blurY" use="optional" default="4.0">
+				<xs:simpleType>
+					<xs:restriction base="xs:decimal">
+						<xs:minInclusive value="0.0"/>
+						<xs:maxInclusive value="255.0"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:attribute>
+
+			<xs:attribute name="distance" use="optional" default="4.0">
+				<xs:simpleType>
+					<xs:restriction base="xs:decimal">
+						<xs:minInclusive value="0.0"/>
+						<xs:maxInclusive value="8.0"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:attribute>
+			
+			<xs:attribute name="angle" use="optional" default="45.0">
+				<xs:simpleType>
+					<xs:restriction base="xs:decimal">
+						<xs:minInclusive value="0.0"/>
+						<xs:maxInclusive value="360.0"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:attribute>
+			
+			<xs:attribute name="strength" use="optional" default="1.0">
+				<xs:simpleType>
+					<xs:restriction base="xs:decimal">
+						<xs:minInclusive value="0.0"/>
+						<xs:maxInclusive value="255.0"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:attribute>
+			
+			<xs:attribute name="inner" type="xs:boolean" use="optional" default="false"/>
+			<xs:attribute name="knockout" type="xs:boolean" use="optional" default="false"/>
+			<xs:attribute name="ontop" type="xs:boolean" use="optional" default="false"/>
+			<xs:attribute name="passes" use="optional" default="1">
+				<xs:simpleType>
+					<xs:restriction base="xs:positiveInteger">
+						<xs:minInclusive value="1"/>
+						<xs:maxInclusive value="15"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:attribute>
+			
+		</xs:complexType>
+	</xs:element>
+	<!--____________________________________________________________-->
+	<xs:element name="gradientglow" substitutionGroup="GradientGlow"/>
+	<xs:element name="GradientGlow" >
+		<xs:complexType>
+			<xs:annotation><xs:documentation> GradientGlow filter.</xs:documentation></xs:annotation>
+			
+			<xs:attribute name="colors" type="xs:string" use="optional" default="0:0XFFFFFFFF,128:0x000000FF"/>
+			
+			<xs:attribute name="blurX" use="optional" default="4.0">
+				<xs:simpleType>
+					<xs:restriction base="xs:decimal">
+						<xs:minInclusive value="0.0"/>
+						<xs:maxInclusive value="255.0"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:attribute>
+			
+			<xs:attribute name="blurY" use="optional" default="4.0">
+				<xs:simpleType>
+					<xs:restriction base="xs:decimal">
+						<xs:minInclusive value="0.0"/>
+						<xs:maxInclusive value="255.0"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:attribute>
+			
+			<xs:attribute name="angle" use="optional" default="45.0">
+				<xs:simpleType>
+					<xs:restriction base="xs:decimal">
+						<xs:minInclusive value="0.0"/>
+						<xs:maxInclusive value="360.0"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:attribute>
+			
+			<xs:attribute name="distance" use="optional" default="4.0">
+				<xs:simpleType>
+					<xs:restriction base="xs:decimal">
+						<xs:minInclusive value="0.0"/>
+						<xs:maxInclusive value="8.0"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:attribute>
+
+			<xs:attribute name="strength" use="optional" default="1.0">
+				<xs:simpleType>
+					<xs:restriction base="xs:decimal">
+						<xs:minInclusive value="0.0"/>
+						<xs:maxInclusive value="255.0"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:attribute>
+			
+			<xs:attribute name="inner" type="xs:boolean" use="optional" default="false"/>
+			<xs:attribute name="knockout" type="xs:boolean" use="optional" default="false"/>
+			<xs:attribute name="ontop" type="xs:boolean" use="optional" default="false"/>
+			<xs:attribute name="passes" use="optional" default="1">
+				<xs:simpleType>
+					<xs:restriction base="xs:positiveInteger">
+						<xs:minInclusive value="1"/>
+						<xs:maxInclusive value="15"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:attribute>
+			
+		</xs:complexType>
+	</xs:element>
+	<!--____________________________________________________________-->
+	<xs:element name="colormatrix" substitutionGroup="ColorMatrix"/>
+	<xs:element name="ColorMatrix">
+		<xs:annotation><xs:documentation>ColorMatrix filter.</xs:documentation></xs:annotation>
+		<xs:complexType>
+			<xs:attribute name="data" type="xs:string" use="optional" default="0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1"/>
 		</xs:complexType>
 	</xs:element>
 	<!--____________________________________________________________-->

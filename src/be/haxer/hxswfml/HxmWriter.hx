@@ -75,6 +75,7 @@ class HxmWriter
 		buf=new StringBuf();
 		packages = new Array();
 		lastBytepos = 0;
+		debugInfo = true;
 		var abcfiles:Xml = Xml.parse(xml).firstElement();
 		if(abcfiles.nodeName.toLowerCase()=="abcfile")
 		{
@@ -137,16 +138,20 @@ class HxmWriter
 				var cn = folders.pop();
 				var p1 = if(folders.length==0)"" else folders.join("_.")+'_.';
 				
-				start+= '\t\t'+p1+cn+'_abc.write(ctx, inits,classes, localFunctions);\n';
+				start += '\t\t' + p1 + cn + '_abc.write(ctx, inits,classes, localFunctions);\n';
+				var cf = fo;
 				for(f in folders)
 				{
-					if(!FileSystem.exists(fo+f+'_'))
+					if(!FileSystem.exists(cf+f+'_'))
 					{
-						FileSystem.createDirectory(fo+f+'_');
-						fo+='/';
+						FileSystem.createDirectory(cf+f+'_');
+						//fo += '/';
+						cf += '/' + f + '_'+'/';
 					}
+					
 				}
-				var p2 = if(folders.length==0)"" else folders.join("_/")+'_/';
+				var p2 = if (folders.length == 0)"" else folders.join("_/") + '_/';
+				trace(fo + p2 + cn + '_abc.hx');
 				var file = File.write(fo+p2+cn+'_abc.hx',false);
 				var p3 = if(folders.length==0)"" else folders.join("_.")+'_';
 				var pre=''+
@@ -171,7 +176,7 @@ class HxmWriter
 				'{\n'+
 					'\tpublic static function write(ctx:format.abc.Context, inits:Hash<Index<MethodType>>,classes:Hash<Index<ClassDef>>, localFunctions:Hash<Index<MethodType>>):Void\n'+
 					'\t{\n'+
-					"\t\tvar f = null;\n"+
+					'\t\tvar f = null;\n'+
 					localFunctions+
 					'\t}\n'+
 				'}\n';
@@ -214,7 +219,7 @@ class HxmWriter
 		'\t\tvar file = File.write("'+'Main'+'.swf",true);\n'+
 		'\t\tfile.write(swfOutput.getBytes());\n'+
 		'\t\tfile.close();\n'+
-		"\t}\n";
+		'\t}\n';
 		
 		if(useFolders)
 		{
@@ -224,10 +229,10 @@ class HxmWriter
 		{
 			end+='\tfunction initLocalFunctions(localFunctions, ctx, classes)\n'+
 				'\t{\n'+
-					"\t\t\tvar f = null;\n"+
+					'\t\t\tvar f = null;\n'+
 					'\t\t\t'+localFunctions+'\n'+
 				'\t}\n'+
-				"}";
+				'}';
 		}
 		return start+middle+end;
 	}
@@ -583,9 +588,9 @@ class HxmWriter
 		if (log)
 		{
 			if(className==null)
-				logStack("------------------------------------------------\nfunction= " + functionClosureName +"\ncurrentStack= " + currentStack + ', maxStack= ' + maxStack + "\ncurrentScopeStack= " + currentScopeStack + ', maxScopeStack= ' + maxScopeStack + "\n\n");
+				logStack("------------------------------------------------\n//function= " + functionClosureName +"\n//currentStack= " + currentStack + ', maxStack= ' + maxStack + "\n//currentScopeStack= " + currentScopeStack + ', maxScopeStack= ' + maxScopeStack);
 			else
-				logStack("------------------------------------------------\ncurrent class= " + className + ', method= ' + member.get('name') + "\ncurrentStack= " + currentStack + ', maxStack= ' + maxStack + "\ncurrentScopeStack= " + currentScopeStack + ', maxScopeStack= ' + maxScopeStack + "\n\n");
+				logStack("------------------------------------------------\n//current class= " + className + ', method= ' + member.get('name') + "\n//currentStack= " + currentStack + ', maxStack= ' + maxStack + "\n//currentScopeStack= " + currentScopeStack + ', maxScopeStack= ' + maxScopeStack );
 		}
 		opStack=[];
 		scStack = [];
@@ -885,6 +890,7 @@ class HxmWriter
 			}
 			if (op != null)
 			{
+				if (showBytePos)
 				buf.add("//"+(ctx.bytepos.n-lastBytepos)+" : \n");
 				updateStacks(op);
 				ctx.op(op);
@@ -892,7 +898,7 @@ class HxmWriter
 			}
 			if(log)
 			{
-				buf.add('//Operand Stack: '+opStack.toString()+"\n");
+				buf.add('\n//Operand Stack: '+opStack.toString()+"\n");
 				buf.add('//Scope Stack: '+scStack.toString()+"\n");
 			}
 		}
@@ -1874,12 +1880,13 @@ class HxmWriter
 		if (log) 
 		{
 			logStack(cast opc);
-			logStack("currentStack= " + currentStack + ', maxStack= ' + maxStack + "\ncurrentScopeStack= " + currentScopeStack + ', maxScopeStack= ' + maxScopeStack +"\n\n");
+			logStack("currentStack= " + currentStack + ', maxStack= ' + maxStack + "\n//currentScopeStack= " + currentScopeStack + ', maxScopeStack= ' + maxScopeStack);
 		}
 	}
 	private function logStack(msg)
 	{
 		//trace(msg);
+		buf.add("//"+msg+"\n");
 	}
 	inline private function fileToLines(fileName:String):String
 	{

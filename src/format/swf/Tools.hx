@@ -147,6 +147,7 @@ class Tools {
 		case TActionScript3(data,context): ["context",context,"data",hex(data,max)];
 		case TSymbolClass(symbols): [Std.string(symbols)];
 		case TExportAssets(symbols): [Std.string(symbols)];
+		case TImportAssets(url): [Std.string(url)];
 		case TSandBox(v): [v];
 		case TBitsLossless(l),TBitsLossless2(l): ["id",l.cid,"color",l.color,"width",l.width,"height",l.height,"data",hex(l.data,max)];
 		case TJPEGTables(data): ["data", hex(data,max)];
