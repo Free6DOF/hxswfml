@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xs:schema
+	xmlns:xs="http://www.w3.org/2001/XMLSchema"
+	xmlns="http://hxswfml.googlecode.com" 
+	xmlns:hx="http://hxswfml.googlecode.com" 
+	targetNamespace="http://hxswfml.googlecode.com" 
+	elementFormDefault="qualified">
+	<xs:element name="lib">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:sequence maxOccurs="unbounded">
+					<xs:choice minOccurs="0" maxOccurs="unbounded">
+						<xs:element ref="bitmapdata"/>
+						<xs:element ref="bitmap"/>
+						<xs:element ref="sprite"/>
+						<xs:element ref="movieclip"/>
+						<xs:element ref="button"/>
+						<xs:element ref="bytearray"/>
+						<xs:element ref="sound"/>
+						<xs:element ref="font"/>
+						<xs:element ref="abc"/>
+					</xs:choice>
+				</xs:sequence>
+			</xs:sequence>
+			<xs:attribute name="backgroundcolor" use="optional" default="0xFFFFFF">
+				<xs:simpleType>
+					<xs:restriction base="xs:string">
+						<xs:pattern value="(0x[0-9A-Fa-f]{6})"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:attribute>
+			<xs:attribute name="width" use="optional" default="800">
+				<xs:simpleType>
+					<xs:restriction base="xs:integer">
+						<xs:minInclusive value="1"/>
+						<xs:maxInclusive value="2880"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:attribute>
+			<xs:attribute name="height" use="optional" default="600">
+				<xs:simpleType>
+					<xs:restriction base="xs:integer">
+						<xs:minInclusive value="1"/>
+						<xs:maxInclusive value="2880"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:attribute>		
+			<xs:attribute name="fps" use="optional" default="30">
+				<xs:simpleType>
+					<xs:restriction base="xs:integer">
+						<xs:minInclusive value="1"/>
+						<xs:maxInclusive value="120"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:attribute>
+			<xs:attribute name="compressed" type="xs:boolean" use="optional" default="false"/>
+			<xs:attribute name="actionscript3" type="xs:boolean" use="optional" default="true"/>
+			<xs:attribute name="useDirectBlit" type="xs:boolean" use="optional" default="false"/>
+			<xs:attribute name="useGPU" type="xs:boolean" use="optional" default="false"/>
+			<xs:attribute name="hasMetaData" type="xs:boolean" use="optional" default="false"/>
+			<xs:attribute name="useNetWork" type="xs:boolean" use="optional" default="false"/>
+			<xs:attribute name="frameCount" type="xs:integer" use="optional" default="1"/>
+			<xs:attribute name="version" type="xs:integer" use="optional" default="10"/>
+			<xs:attribute name="fps" use="optional" default="30">
+				<xs:simpleType>
+					<xs:restriction base="xs:integer">
+						<xs:minInclusive value="0"/>
+						<xs:maxInclusive value="120"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:attribute>	
+		</xs:complexType>
+
+	</xs:element>
+	<!--____________________________________________________________-->
+	<xs:element name="bitmapdata">
+		<xs:annotation>
+			<xs:documentation>flash.display.BitmapData</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:attribute name="file" type="xs:string" use="required"/>
+			<xs:attribute name="link" type="xs:string" use="optional"/>
+			<xs:attribute name="class" type="xs:string" use="optional"/>
+		</xs:complexType>
+	</xs:element>
+	<!--____________________________________________________________-->
+	<xs:element name="bitmap">
+		<xs:annotation>
+			<xs:documentation>flash.display.Bitmap</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:attribute name="file" type="xs:string" use="required"/>
+			<xs:attribute name="link" type="xs:string" use="optional"/>
+			<xs:attribute name="class" type="xs:string" use="optional"/>
+		</xs:complexType>
+	</xs:element>
+	<!--____________________________________________________________-->
+	<xs:element name="sprite">
+		<xs:annotation>
+			<xs:documentation>flash.display.Sprite</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:attribute name="file" type="xs:string" use="required"/>
+			<xs:attribute name="link" type="xs:string" use="optional"/>
+			<xs:attribute name="class" type="xs:string" use="optional"/>
+		</xs:complexType>
+	</xs:element>
+	<!--____________________________________________________________-->
+	<xs:element name="movieclip">
+		<xs:annotation>
+			<xs:documentation>flash.display.MovieClip</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:attribute name="file" type="xs:string" use="required"/>
+			<xs:attribute name="link" type="xs:string" use="optional"/>
+			<xs:attribute name="class" type="xs:string" use="optional"/>
+		</xs:complexType>
+	</xs:element>
+	<!--____________________________________________________________-->
+	<xs:element name="button">
+		<xs:annotation>
+			<xs:documentation>flash.display.SimpleButton</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:attribute name="file" type="xs:string" use="required"/>
+			<xs:attribute name="link" type="xs:string" use="optional"/>
+			<xs:attribute name="class" type="xs:string" use="optional"/>
+		</xs:complexType>
+	</xs:element>
+	<!--____________________________________________________________-->
+	<xs:element name="bytearray">
+		<xs:annotation>
+			<xs:documentation>flash.utils.ByteArray</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:attribute name="file" type="xs:string" use="required"/>
+			<xs:attribute name="link" type="xs:string" use="optional"/>
+			<xs:attribute name="class" type="xs:string" use="optional"/>
+		</xs:complexType>
+	</xs:element>
+	<!--____________________________________________________________-->
+	<xs:element name="font">
+		<xs:annotation>
+			<xs:documentation>flash.text.Font</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:attribute name="file" type="xs:string" use="required"/>
+			<xs:attribute name="link" type="xs:string" use="optional"/>
+			<xs:attribute name="class" type="xs:string" use="optional"/>
+		</xs:complexType>
+	</xs:element>
+	<!--____________________________________________________________-->
+	<xs:element name="sound">
+		<xs:annotation>
+			<xs:documentation>flash.media.Sound</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:attribute name="file" type="xs:string" use="required"/>
+			<xs:attribute name="link" type="xs:string" use="optional"/>
+			<xs:attribute name="class" type="xs:string" use="optional"/>
+		</xs:complexType>
+	</xs:element>
+	<!--____________________________________________________________-->
+	<xs:element name="abc">
+		<xs:annotation>
+			<xs:documentation>abc</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:attribute name="file" type="xs:string" use="required"/>
+			<xs:attribute name="link" type="xs:string" use="optional"/>
+		</xs:complexType>
+	</xs:element>
+</xs:schema>

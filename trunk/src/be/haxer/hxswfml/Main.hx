@@ -25,7 +25,9 @@ class Main
 	{
 		args = Sys.args();
 		if (args.length < 2) 
+		{
 			printUsage();
+		}
 		else
 		{
 			var op = args[0];
@@ -37,9 +39,25 @@ class Main
 					var inFile = args[1];
 					var outFile = args[2];
 					var strict = !argExists('-no-strict');//disables checking id references and valid elements
+					var str = File.getContent(inFile);
+					var swfWriter = new SwfWriter();
+					var bytes = swfWriter.write(str, strict);
+					var handle = File.write(outFile,true);
+					handle.write(bytes);
+					handle.close();
 					
-					File.write(outFile,true).write(new SwfWriter().write(File.getContent(inFile), strict));
+				case "xml2lib":
+					if (args.length < 3) printUsage();
 					
+					var inFile = args[1];
+					var outFile = args[2];
+					var str = File.getContent(inFile);
+					var libWriter = new SwfLibWriter();
+					var bytes = libWriter.write(str);
+					var handle = File.write(outFile,true);
+					handle.write(bytes);
+					handle.close();
+				
 				case "xml2swc":
 					if (args.length < 3) printUsage();
 						
@@ -199,23 +217,24 @@ class Main
 					var className = getArgValue('-class');
 					if (className == null) throw 'Missing class name for font';
 					var ranges = getArgValue('-glyphs');
-					if (ranges == null) ranges = "32-127";
+					if (ranges == null) ranges = "32-126";
 						
 					var fontWriter = new FontWriter();
 					fontWriter.write(File.getBytes(inFile),ranges, 'swf');
 					File.write(outFile,true).write(fontWriter.getSWF(1,className, 10, true, 1024, 1024, 30, 1));
 					
 				case "dumpttf":
+					if (args.length < 3) printUsage();
 					var inFile = args[1];
-					var fontWriter = new FontWriter();
-					fontWriter.listGlyphs(File.getBytes(inFile));
+					var outFile = args[2];
+					File.write(outFile, false).writeString(new FontWriter().listGlyphs(File.getBytes(inFile)));
 
 				case "ttf2hx":
 					if (args.length < 2) printUsage();
 					
 					var inFile = args[1];
 					var ranges = getArgValue('-glyphs');
-						if (ranges == null) ranges = "32-127";
+						if (ranges == null) ranges = "32-126";
 						
 					var fontWriter = new FontWriter();
 					fontWriter.write(File.getBytes(inFile), ranges, 'zip');
@@ -225,7 +244,7 @@ class Main
 					if (args.length < 2) printUsage();
 					var inFile = args[1];
 					var ranges = getArgValue('-glyphs');
-					if (ranges == null) ranges = "32-127";
+					if (ranges == null) ranges = "32-126";
 
 					var fontWriter = new FontWriter();
 					fontWriter.write(File.getBytes(inFile), ranges, 'path');
@@ -246,7 +265,7 @@ class Main
 					var videoWriter = new VideoWriter();
 					videoWriter.write(File.getBytes(inFile), Std.parseInt(fps), Std.parseInt(width), Std.parseInt(height));
 					File.write(outFile, true).write(videoWriter.getSWF());
-					
+
 				default:
 					Lib.println("Unknown operation: " + args[0]);
 					printUsage();
@@ -263,6 +282,11 @@ class Main
 			Lib.println("  in : xml file");
 			Lib.println("  out : swf file");
 			Lib.println("  options : -no-strict");
+			Lib.println("");
+			
+			Lib.println("xml2lib");
+			Lib.println("  in : xml file");
+			Lib.println("  out : swf file");
 			Lib.println("");
 
 			Lib.println("xml2swc");

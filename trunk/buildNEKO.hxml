@@ -1,8 +1,14 @@
-#neko
+#---- neko(n) ----#
 -cp src
 be.haxer.hxswfml.Main
 -main be.haxer.hxswfml.Main
 -neko bin/neko/hxswfml.n
-#--neko-source
+-cmd echo "neko(n) created"
+
+#---- neko(exe) ----#
 -cmd nekotools boot bin/neko/hxswfml.n
--cmd echo "neko created"
+-cmd echo "neko(exe) created"
+
+#---- neko(neko) ----#
+#--neko-source
+#-cmd echo "neko(neko) created"

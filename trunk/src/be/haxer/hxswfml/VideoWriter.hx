@@ -9,17 +9,6 @@ import haxe.io.Bytes;
 import haxe.io.BytesInput;
 import haxe.io.BytesOutput;
 
-#if neko
-import neko.Sys;
-import neko.Lib;
-import neko.FileSystem;
-import neko.io.File;
-#elseif cpp
-import cpp.Sys;
-import cpp.Lib;
-import cpp.FileSystem;
-import cpp.io.File;
-#end
 /**
  * ...
  * @author Jan J. Flanders

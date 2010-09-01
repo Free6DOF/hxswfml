@@ -1,0 +1,8 @@
+#---- javasript ----#
+-cp src
+be.haxer.hxswfml.AbcReader
+be.haxer.hxswfml.HxmWriter
+be.haxer.hxswfml.SwfWriter
+be.haxer.hxswfml.SwfLibWriter
+-js bin/javascript/hxswfml.js
+-cmd echo "javascript created"

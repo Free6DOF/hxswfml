@@ -1,7 +1,22 @@
 package be.haxer.hxswfml;
 import format.swf.Data;
 import format.swf.Tools;
-
+#if neko
+import neko.Sys;
+import neko.Lib;
+import neko.FileSystem;
+import neko.io.File;
+#elseif php
+import php.Sys;
+import php.Lib;
+import php.FileSystem;
+import php.io.File;
+#elseif cpp
+import cpp.Sys;
+import cpp.Lib;
+import cpp.FileSystem;
+import cpp.io.File;
+#end
 /**
 * 
 * @author Jan J. Flanders
@@ -46,7 +61,6 @@ class SwfWriter
 		setCurrentElement(root);
 		var header = header();
 		var tags:Array<Dynamic>=[];
-		
 		for(e in root.elements())
 		{
 			setCurrentElement(e);
@@ -84,7 +98,7 @@ class SwfWriter
 		var zipBytesOutput = new haxe.io.BytesOutput();
 		var zipWriter = new format.zip.Writer(zipBytesOutput);
 			
-		var data : List<format.zip.Data.Entry> = new List();
+		var data /*: List<format.zip.Data.Entry>*/ = new List();
 		
 		data.push({
 		fileName : 'catalog.xml', 
@@ -511,9 +525,9 @@ class SwfWriter
 	{
 		var file = getString('file', "", true);
 		var sid = getInt('id', null, true, true);
-		#if neko
+		#if(neko || cpp || php)
 		checkFileExistence(file);
-		var mp3FileBytes = neko.io.File.read(file, true);
+		var mp3FileBytes = File.read(file, true);
 		#else
 		var mp3FileBytes = new haxe.io.BytesInput(getBytes(file));
 		#end
@@ -559,7 +573,7 @@ class SwfWriter
 		else if(extension == 'ttf')
 		{
 			var bytes = getBytes(file);
-			var ranges = getString('charCodes', "32-127", false/*true*/);
+			var ranges = getString('charCodes', "32-126", false/*true*/);
 			var fontWriter = new FontWriter();
 			fontWriter.write(bytes, ranges, 'swf');
 			fontTag = fontWriter.getTag(_id);
@@ -748,7 +762,7 @@ class SwfWriter
 		
 		var placeObject : PlaceObject = new PlaceObject();
 		placeObject.depth = depth;
-		placeObject.move = !move? null : true;
+		placeObject.move = move;
 		placeObject.cid = id;
 		placeObject.matrix = getMatrix();
 		placeObject.color = null;
@@ -1109,12 +1123,8 @@ class SwfWriter
 	private function getContent(file:String):String
 	{
 		checkFileExistence(file);
-		#if neko
-			return neko.io.File.getContent(file);
-		#elseif php
-			return php.io.File.getContent(file);
-		#elseif cpp
-			return cpp.io.File.getContent(file);
+		#if (neko || php || cpp)
+			return File.getContent(file);
 		#elseif air
 			var f = new flash.filesystem.File();
 			f = f.resolvePath(file);
@@ -1130,12 +1140,8 @@ class SwfWriter
 	private function getBytes(file:String):haxe.io.Bytes
 	{
 		checkFileExistence(file);
-		#if neko
-			return neko.io.File.getBytes(file);
-		#elseif cpp
-			return cpp.io.File.getBytes(file);
-		#elseif php
-			return php.io.File.getBytes(file);
+		#if (neko || php || cpp)
+			return File.getBytes(file);
 		#elseif air
 			var f = new flash.filesystem.File();
 			f = f.resolvePath(file);
@@ -1240,16 +1246,16 @@ class SwfWriter
 			{
 				switch(dictionary[id])
 				{
-					case'defineshape', 'definebutton', 'definesprite', 'defineedittext' : 
+					case 'definebitsjpeg', 'defineshape', 'definebutton', 'definesprite', 'defineedittext' : 
 					default : 
-						error('ERROR: The target id ' + id + ' must be a reference to a DefineShape, DefineButton, DefineSprite or DefineEditText tag. TAG: ' + currentTag.toString()); 
+						error('ERROR: The target id ' + id + ' must be a reference to a DefineShape, DefineBitsJPEG, DefineButton, DefineSprite or DefineEditText tag. TAG: ' + currentTag.toString()); 
 				}
 			}
 			else if(currentTag.nodeName.toLowerCase() == 'definescalinggrid')
 			{
 				switch(dictionary[id])
 				{
-					case'definebutton', 'definesprite' : 
+					case 'definebutton', 'definesprite' : 
 					default : 
 						error('ERROR: The target id ' + id + ' must be a reference to a DefineButton or DefineSprite tag. TAG: ' + currentTag.toString()); 
 				}
@@ -1265,7 +1271,7 @@ class SwfWriter
 			{
 				switch(dictionary[id])
 				{
-					case'definebutton', 'definesprite', 'definebinarydata', 'definefont', 'defineabc', 'definesound', 'definebitsjpeg' : 
+					case 'definebutton', 'definesprite', 'definebinarydata', 'definefont', 'defineabc', 'definesound', 'definebitsjpeg' : 
 					default : 
 						error('ERROR: The target id ' + id + ' must be a reference to a DefineButton, DefineSprite, DefineBinaryData, DefineFont, DefineABC, DefineSound or DefineBitsJPEG tag. TAG: ' + currentTag.toString()); 
 				}
@@ -1274,18 +1280,8 @@ class SwfWriter
 	}
 	private function checkFileExistence(file : String) : Void
 	{
-		#if neko
-		if(!neko.FileSystem.exists(file))
-		{
-			error('ERROR: File: ' + file + ' could not be found at the given location. TAG: ' + currentTag.toString());
-		}
-		#elseif cpp
-		if(!cpp.FileSystem.exists(file))
-		{
-			error('ERROR: File: ' + file + ' could not be found at the given location. TAG: ' + currentTag.toString());
-		}
-		#elseif php
-		if(!php.FileSystem.exists(file))
+		#if (neko || cpp || php)
+		if(!FileSystem.exists(file))
 		{
 			error('ERROR: File: ' + file + ' could not be found at the given location. TAG: ' + currentTag.toString());
 		}

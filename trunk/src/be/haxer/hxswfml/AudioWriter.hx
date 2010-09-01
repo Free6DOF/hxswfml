@@ -16,7 +16,7 @@ import haxe.io.BytesOutput;
 
 class AudioWriter
 {
-	private var soundData:format.swf.Data.Sound;
+	private var soundData:Sound;
 	public function new()
 	{
 	}

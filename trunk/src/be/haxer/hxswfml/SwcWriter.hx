@@ -24,7 +24,7 @@ class SwcWriter
 		var zipBytesOutput = new haxe.io.BytesOutput();
 		var zipWriter = new format.zip.Writer(zipBytesOutput);
 			
-		var data : List<format.zip.Data.Entry> = new List();
+		var data /*: List<format.zip.Data.Entry>*/ = new List();
 		
 		data.push({
 		fileName : 'catalog.xml', 

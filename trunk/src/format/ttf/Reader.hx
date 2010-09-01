@@ -680,9 +680,17 @@ class Reader
 	
 	function getCharCodeFromIndex(index:Int):Int
 	{
+		//trace(index);
 		for(i in 0...glyphIndexArray.length)
+		{
+			//trace(glyphIndexArray[i]);
 			if(glyphIndexArray[i]!=null && glyphIndexArray[i].index == index)
+			{
+				//trace(glyphIndexArray[i].charCode);
+				//trace(glyphIndexArray[i].index);
 				return glyphIndexArray[i].charCode;
+			}
+		}
 		throw 'charcode not found for index '+ index;
 	}
 

@@ -275,14 +275,14 @@ typedef OS2Data=
 }
 typedef UnicodeRange=
 {
-	start:Int,
-	end:Int
+	var start:Int;
+	var end:Int;
 }
-typedef Path=
+typedef GlyfPath=
 {
-	type:Null<Int>,
-	x:Float,
-	y:Float,
-	cx:Null<Float>,
-	cy:Null<Float>
+	var type:Null<Int>;
+	var x:Float;
+	var y:Float;
+	var cx:Null<Float>;
+	var cy:Null<Float>;
 }

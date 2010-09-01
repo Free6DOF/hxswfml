@@ -11,17 +11,6 @@ import haxe.io.Bytes;
 import haxe.io.BytesInput;
 import haxe.io.BytesOutput;
 
-#if neko
-import neko.Sys;
-import neko.Lib;
-import neko.FileSystem;
-import neko.io.File;
-#elseif cpp
-import cpp.Sys;
-import cpp.Lib;
-import cpp.FileSystem;
-import cpp.io.File;
-#end
 /**
  * ...
  * @author Jan J. Flanders
@@ -48,7 +37,7 @@ class FontWriter
 	{
 		init();
 	}
-	public function listGlyphs(bytes:Bytes)
+	public function listGlyphs(bytes:Bytes):String
 	{
 		var input = new BytesInput(bytes);
 		var reader = new format.ttf.Reader(input);
@@ -56,8 +45,10 @@ class FontWriter
 		var tables = ttf.tables;
 		var cmapData=null;
 		var glyfData=null;
+		var dump = new StringBuf();
 		for(table in tables)
 		{
+			//trace(table);
 			switch(table)
 			{
 				case TGlyf(descriptions): glyfData = descriptions;
@@ -65,7 +56,7 @@ class FontWriter
 				default:
 			}
 		}
-		var dump = new StringBuf();
+		
 		dump.add("fontName = ");
 		dump.add(reader.fontName);
 		dump.add("\n\n");
@@ -81,9 +72,9 @@ class FontWriter
 			}
 		}
 		if(glyphIndexArray.length==0)
-			trace("ERROR: Cmap4 encoding table not found");
-		
-		for(i in 0...glyphIndexArray.length)
+			throw("ERROR: Cmap4 encoding table not found");
+
+		for(i in 0...glyphIndexArray.length-1)
 		{
 			if(glyphIndexArray[i]!=null)
 			{
@@ -104,7 +95,7 @@ class FontWriter
 				dump.add( "\n" );
 			}
 		}
-		trace(dump.toString());
+		return dump.toString();
 	}
 	public function write(bytes:Bytes, rangesStr:String, outType:String='swf')
 	{
@@ -156,12 +147,15 @@ class FontWriter
 
 		var charCodes:Array<Int> = new Array();
 		var parts:Array<String> = rangesStr.split('[').join("").split(']').join("").split(' ').join('').split(',');
-		var ranges:Array<format.ttf.Data.UnicodeRange> = new Array();
+		var ranges /*:Array<format.ttf.Data.UnicodeRange>*/ = new Array();
+		
 		for(i in 0... parts.length)
+		{
 			if(parts[i].indexOf('-')==-1)
 				ranges.push({start:Std.parseInt(parts[i]), end:Std.parseInt(parts[i])});
 			else
 				ranges.push({start:Std.parseInt(parts[i].split('-')[0]), end:Std.parseInt(parts[i].split('-')[1])});
+		}
 		switch(outType)
 		{
 			case 'swf', 'zip', 'path': outputType = outType;
@@ -208,27 +202,8 @@ class FontWriter
 				var idx:GlyphIndex = glyphIndexArray[j];
 				glyphIndex = 0;
 				if(idx!=null)
-				{
-					glyphIndex =	idx.index;
-					/*
-					try
-					{
-						glyphIndex =	idx.index;
-					}
-					catch(e:Dynamic)
-					{
-						try
-						{
-							idx = glyphIndexArray[j+0xf000];
-							glyphIndex =	idx.index;
-						}
-						catch(e:Dynamic)
-						{
-							glyphIndex = 0;
-						}
-					}
-					*/
-				}
+					glyphIndex = idx.index;
+
 				var advanceWidth = hmtxData[glyphIndex]==null?hmtxData[0].advanceWidth : hmtxData[glyphIndex].advanceWidth;
 				var leftSideBearing:Int = hmtxData[glyphIndex]==null?hmtxData[0].leftSideBearing : hmtxData[glyphIndex].leftSideBearing;
 
@@ -250,12 +225,12 @@ class FontWriter
 						
 					case TGlyphSimple(_header, data):
 						header = _header;
-						var paths:Array<Path> = cast buildPaths(data);
+						var paths:Array<GlyfPath> = cast buildPaths(data);
 						if(outputType =='swf')
 							shapeWriter.beginFill(0,1);//this.beginFill(0,1);
 						for(i in 0...paths.length)
 						{
-							var path:Path = paths[i];
+							var path:GlyfPath = paths[i];
 							switch(path.type)
 							{
 								case 0:
@@ -579,7 +554,7 @@ class FontWriter
 	{
 		var initialText = "";
 		var textColor = 0x000000FF;
-		//for(i in 32...127)
+		//for(i in 32...126)
 		for(i in 0...chars.length)
 			initialText+=String.fromCharCode(chars[i]);
 		initialText+=' Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.';
@@ -662,8 +637,8 @@ class FontWriter
 		var swfBytes:Bytes = swfOutput.getBytes();
 		return swfBytes;
 	}
-	var qCpoint:Path;
-	function buildPaths(data:GlyphSimple):Array<Path>
+	var qCpoint:GlyfPath;
+	function buildPaths(data:GlyphSimple):Array<GlyfPath>
 	{
 		var len:Int = data.endPtsOfContours.length;
 		var xCoordinates:Array<Float> = new Array();
@@ -681,7 +656,7 @@ class FontWriter
 		var cp=0;
 		var start=0;
 		var end=0;
-		var arr:Array<Path> = new Array();                    
+		var arr:Array<GlyfPath> = new Array();                    
 		for(i in 0...len)
 		{       
 		  start = cp;
@@ -697,7 +672,7 @@ class FontWriter
 		}
 		return arr;
 	}
-	private function makePath(p1, p2, arr:Array<Path>, flags, xCoordinates:Array<Float>, yCoordinates:Array<Float>):Void
+	private function makePath(p1, p2, arr:Array<GlyfPath>, flags, xCoordinates:Array<Float>, yCoordinates:Array<Float>):Void
 	{
 		var p1OnCurve:Bool = flags[p1] & 0x01 != 0; 
 		var p2OnCurve:Bool = flags[p2] & 0x01 != 0;
