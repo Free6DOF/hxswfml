@@ -1,7 +1,9 @@
-#neko
+#---- php ----#
 -cp src
-be.haxer.hxswfml.Main
+be.haxer.hxswfml.AbcReader
+be.haxer.hxswfml.HxmWriter
+be.haxer.hxswfml.SwfWriter
+be.haxer.hxswfml.SwfLibWriter
 -main be.haxer.hxswfml.Main
 -php bin/php
 -cmd echo "php created"
--cmd pause

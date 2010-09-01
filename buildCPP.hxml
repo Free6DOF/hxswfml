@@ -1,4 +1,4 @@
-#CPP
+#---- cpp ----#
 -cp src
 -main be.haxer.hxswfml.Main
 -cpp bin/cpp
@@ -6,5 +6,4 @@
 --next
 -cmd cd bin/cpp
 -cmd copy Main.exe hxswfmlc.exe /y
--cmd echo "cpp created"
--cmd pause
+-cmd echo "hxswfmlc created"

@@ -69,6 +69,7 @@ class Writer {
 			max >>= 1;
 			nbits++;
 		}
+		
 		bits.writeBits(5,nbits);
 		bits.writeBits(nbits,r.left);
 		bits.writeBits(nbits,r.right);
@@ -197,6 +198,7 @@ class Writer {
 			o.write(e.data);
 		}
 		o.writeUInt30(0);
+		//o.writeUInt16(0);
 	}
 	/*
 	function writeFilterFlags(f:FilterFlags,top) {
@@ -295,8 +297,7 @@ class Writer {
 	}
 
 	function writePlaceObject(po:PlaceObject,v3) {
-		var f = 0;
-		var f2 = 0;
+		var f = 0, f2 = 0;
 		if( po.move ) f |= 1;
 		if( po.cid != null ) f |= 2;
 		if( po.matrix != null ) f |= 4;
@@ -305,12 +306,12 @@ class Writer {
 		if( po.instanceName != null ) f |= 32;
 		if( po.clipDepth != null ) f |= 64;
 		if( po.events != null ) f |= 128;
-		o.writeByte(f);
 		if( po.filters != null ) f2 |= 1;
 		if( po.blendMode != null ) f2 |= 2;
 		if( po.bitmapCache ) f2 |= 4;
 		if(po.className!=null) f2 |=8;
 		if(po.hasImage) f2 |=16;
+		o.writeByte(f);
 		if( v3 )
 			o.writeByte(f2);
 		else if( f2 != 0 )
@@ -321,9 +322,9 @@ class Writer {
 			o.writeString(po.className);
 			o.writeByte(0);
 		}
-		/*else if(po.image!=null && po.cid!=null)
+		/*else if(po.hasImage && po.cid!=null)
 		{
-			o.writeUInt16(Std.parseInt(po.image));
+			o.writeUInt16(po.cid);
 		}
 		*/
 		if( po.cid != null ) o.writeUInt16(po.cid);

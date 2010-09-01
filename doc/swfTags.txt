@@ -267,9 +267,9 @@
         Children: none
         Attributes:
                 Required: id, file, charCodes
-                Default: charCodes="20-127"
+                Default: charCodes="20-126"
         Signature: <DefineFont id="?" file="path/to/file/ *.swf, *.ttf" />
-        Usage: <DefineFont id="1" file="arial.ttf" charCodes="0-10, 20-127, 130" />
+        Usage: <DefineFont id="1" file="arial.ttf" charCodes="0-10, 20-126, 130" />
 
 <DefineEditText/>
         Parent: <swf>
@@ -415,7 +415,7 @@
         
         <DefineSound id="?" file="path/to/file *.mp3" />
         
-        <DefineFont id="?" file="path/to/file/ *.swf, *.ttf" charCodes="20-127"/>
+        <DefineFont id="?" file="path/to/file/ *.swf, *.ttf" charCodes="32-126"/>
         
         <DefineEditText id="?" initialText="" fontID="" useOutlines="false"  width="100" height="100" wordWrap="true" multiline="true" password="false" input="false" autoSize="false" selectable="false" border="false" wasStatic="false" html="false" fontClass="" fontHeight="12" textColor="0x000000" alpha="1.0" maxLength="0" align="0" leftMargin="0" rightMargin="0" indent="0" leading="0" variableName="" file="" />
 

@@ -1894,7 +1894,7 @@ class HxmWriter
 		debugLines=[];
 		#if (flash || js)
 		sourceInfo = false;
-		#else
+		#elseif (neko || cpp || php)
 		if(sourceInfo)
 		{
 			if (FileSystem.exists(debugFileName))

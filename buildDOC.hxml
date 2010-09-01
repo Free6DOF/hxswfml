@@ -1,0 +1,9 @@
+#---- doc (xml) ----#
+-cp src
+be.haxer.hxswfml.AbcReader
+be.haxer.hxswfml.HxmWriter
+be.haxer.hxswfml.SwfWriter
+be.haxer.hxswfml.SwfLibWriter
+-D swf
+-xml doc/api.xml
+-cmd echo "doc created"
