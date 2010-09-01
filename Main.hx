@@ -168,7 +168,8 @@ class Main extends Sprite
 	public static var directoryCache : Dynamic ;
 
 	// public static var SERVER_URL : String = "http://localhost:2000/server.n";
-	public static var SERVER_URL : String = Haxegui.loader.node.server.att.address + ":" + Haxegui.loader.node.server.att.port + "/" + Haxegui.loader.node.server.att.file;
+	public static var SERVER_URL : String = "server.php/index.php";
+	//public static var SERVER_URL : String = Haxegui.loader.node.server.att.address + ":" + Haxegui.loader.node.server.att.port + "/" + Haxegui.loader.node.server.att.file;
 	//}}}
 
 
@@ -924,6 +925,27 @@ class Main extends Sprite
 			var color = xml.elementsNamed("SetBackgroundColor").next().get("color");
 			canvas.color = Std.parseInt(color);
 			
+			for (jpeg in xml.elementsNamed ("DefineBitsJPEG")) {
+				
+				library.addItem (jpeg);
+				library.dispatchEvent( new ResizeEvent(ResizeEvent.RESIZE));
+
+				
+				var x = 0;
+				var y = 0;
+				var name = "Jpeg";
+			
+				var image = new Image (cast canvas,
+					name + jpeg.get ("id"),
+					x,
+					y);
+
+					image.init ({
+					src: jpeg.get ("file")
+					});
+			
+			}
+						
 
 			var totalFrames = 0;
 
@@ -1035,7 +1057,8 @@ class Main extends Sprite
 			combo.dataSource = ds;
 		}
 
-		Actions.load("modes.xml", onModesLoaded);
+		//Actions.load("modes.xml", onModesLoaded);
+		Actions.load("http://localhost/frontend/modes.xml", onModesLoaded);
 
 		// var loadModes = function(s) {
 		// Actions.load(s+"modes.xml", onModesLoaded);

@@ -1,9 +1,11 @@
 <?xml version="1.0" encoding="iso-8859-1"?>
 <loader>
+	<dirty interval="500"/>
 	<layout url="Layout.xml"/>
 	<style name="default"/>
 <!--	<domain baseurl="http://haxegui.googlecode.com/svn/trunk/"/>-->
 	<domain baseurl=""/>
-	<server address="http://localhost" port="2000" file="server.n"/>
+<!--	<server address="http://localhost/frontend" port="80" file="server.n"/>-->
+	<server url="http://localhost/frontend/server.php/index.php"/>
 	<!--<GLOBAL_OBJECT>flash.Lib.current</GLOBAL_OBJECT>-->
 </loader>
