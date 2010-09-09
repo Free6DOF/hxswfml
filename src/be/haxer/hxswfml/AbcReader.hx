@@ -1114,15 +1114,15 @@ class AbcReader
 	}
 	inline private function getInt(id:Index<haxe.Int32>):String
 	{
-		return cast abcFile.get(abcFile.ints, id);
+		return Std.string(abcFile.get(abcFile.ints, id));
 	}
 	inline private function getUInt(id:Index<haxe.Int32>):String
 	{
-		return cast abcFile.get(abcFile.uints, id);
+		return Std.string(abcFile.get(abcFile.uints, id));
 	}
 	inline private function getFloat(id:Index<Float>):String
 	{
-		return cast abcFile.get(abcFile.floats, id);
+		return Std.string(abcFile.get(abcFile.floats, id));
 	}
 	inline private function getMethod(id:Index<MethodType>)
 	{

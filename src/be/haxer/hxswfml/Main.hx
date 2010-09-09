@@ -23,6 +23,10 @@ class Main
 	
 	public static function main() 
 	{
+		#if cpp
+		cpp.vm.Gc.enable(false);
+		#end
+		
 		args = Sys.args();
 		if (args.length < 2) 
 		{
@@ -274,8 +278,8 @@ class Main
 	}
 	static function printUsage()
 	{
-			Lib.println("hxswfml 0.1 - Xml based swf and abc assembler. 2009-2010");
-			Lib.println("Usage: hxswfml.exe operation in out [args] [options]");
+			Lib.println("hxswfml 0.11 - Xml based swf and abc assembler. 2009-2010");
+			Lib.println("Usage: hxswfml operation in out [args] [options]");
 			Lib.println("");
 		
 			Lib.println("xml2swf");
