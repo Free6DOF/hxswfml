@@ -37,18 +37,37 @@ class TableId
 	public static inline var vhea = Int32.ofInt(0x76686561); // Vertical Metrics header
 	public static inline var vmtx = Int32.ofInt(0x766d7478); // Vertical Metrics		
 }
+
 class CFlag
-	{
-	  public static inline var  ARG_1_AND_2_ARE_WORDS = 0x0001;
+{
+		public static inline var ARG_1_AND_2_ARE_WORDS = 0x0001;
 		public static inline var ARGS_ARE_XY_VALUES = 0x0002;
 		public static inline var ROUND_XY_TO_GRID = 0x0004;
-		public static inline var  WE_HAVE_A_SCALE = 0x0008;
-		public static inline var  MORE_COMPONENTS = 0x0020;
+		public static inline var WE_HAVE_A_SCALE = 0x0008;
+		public static inline var MORE_COMPONENTS = 0x0020;
 		public static inline var WE_HAVE_AN_X_AND_Y_SCALE = 0x0040;
 		public static inline var WE_HAVE_A_TWO_BY_TWO = 0x0080;
-		public static inline var  WE_HAVE_INSTRUCTIONS = 0x0100;
-		public static inline var  USE_MY_METRICS = 0x0200;
+		public static inline var WE_HAVE_INSTRUCTIONS = 0x0100;
+		public static inline var USE_MY_METRICS = 0x0200;
 }
+/*
+class CFlag
+{
+	inline static var ARG_1_AND_2_ARE_WORDS = 0;	// 	0	If this bit is set, the arguments are words; otherwise, they are bytes.
+	inline static var ARGS_ARE_XY_VALUES = 1;		//	1 	If this is set, the arguments are xy values; otherwise, they are points.
+	inline static var ROUND_XY_TO_GRID = 2;			//	2 	For the xy values if the preceding is true.
+	inline static var WE_HAVE_A_SCALE = 3;			//	3 	This indicates that there is a simple scale for the component. Otherwise, scale = 1.0.
+	inline static var RESERVED = 4;					// 	4 	This bit is reserved. Set it to 0.
+	inline static var MORE_COMPONENTS = 5;			// 	5 	Indicates at least one more glyph after this one.
+	inline static var WE_HAVE_AN_X_AND_Y_SCALE = 6;//	6 	The x direction will use a different scale from the y direction.
+	inline static var WE_HAVE_A_TWO_BY_TWO = 7;		// 	7 	There is a 2 by 2 transformation that will be used to scale the component.
+	inline static var WE_HAVE_INSTRUCTIONS = 8;	// 	8 	Following the last component are instructions for the composite character.
+	inline static var USE_MY_METRICS = 9;			// 	9 	If set, this forces the aw and lsb (and rsb) for the composite to be equal to those from this original glyph. This works for hinted and unhinted characters.
+	inline static var OVERLAP_COMPOUND = 10;		// 	10 	Used by Apple in GX fonts.
+	inline static var SCALED_COMPONENT_OFFSET = 11;//	11 	Composite designed to have the component offset scaled (designed for Apple rasterizer).
+	inline static var UNSCALED_COMPONENT_OFFSET = 12;//12 Composite designed not to have the component offset scaled (designed for the Microsoft TrueType rasterizer).
+}
+*/
 class MacGlyphNames
 {
 	public static inline var names:Array<String> = 

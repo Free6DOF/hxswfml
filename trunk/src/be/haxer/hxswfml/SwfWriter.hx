@@ -44,7 +44,7 @@ class SwfWriter
 	{
 		#if (swc || air) 
 			new flash.Boot(new flash.display.MovieClip()); //for swc
-		#end 
+		#end
 		tagIndex=0;
 		library = new Hash();
 		init();
@@ -60,7 +60,7 @@ class SwfWriter
 		var root: Xml = xml.firstElement();
 		setCurrentElement(root);
 		var header = header();
-		var tags:Array<Dynamic>=[];
+		var tags:Array<SWFTag>=new Array();
 		for(e in root.elements())
 		{
 			setCurrentElement(e);
@@ -69,10 +69,9 @@ class SwfWriter
 			{
 				case TClass(Array) : 
 					for (i in 0...obj.length)
-						tags.push(obj[i]);
-						
+						tags.push(cast(obj[i],SWFTag));
 				default : 
-					tags.push(obj);
+					tags.push(cast(obj,SWFTag));
 			}
 			tagIndex++;
 		}

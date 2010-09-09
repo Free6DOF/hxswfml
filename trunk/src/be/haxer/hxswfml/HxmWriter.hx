@@ -1008,7 +1008,7 @@ class HxmWriter
 	private function stackError(op, type)
 	{
 		var o = Type.getEnum(op);
-		var msg = type == 0? '!Possible error: stack underflow: ' + cast op : '!Possible error: stack overflow: ' + cast op;
+		var msg = type == 0? '!Possible error: stack underflow: ' + Std.string(op) : '!Possible error: stack overflow: ' + Std.string(op);
 		if (strict)
 			throw (msg);
 		if(log)
@@ -1017,7 +1017,7 @@ class HxmWriter
 	private function scopeStackError(op, type)
 	{
 		var o = Type.getEnum(op);
-		var msg = type == 0? '!Possible error: scopeStack underflow: ' + cast op : '!Possible error: scopeStack overflow: ' + cast op;
+		var msg = type == 0? '!Possible error: scopeStack underflow: ' + Std.string(op) : '!Possible error: scopeStack overflow: ' + Std.string(op);
 		if (strict)
 			throw (msg);
 		if(log)
@@ -1879,7 +1879,7 @@ class HxmWriter
 		}
 		if (log) 
 		{
-			logStack(cast opc);
+			logStack(Std.string(opc));
 			logStack("currentStack= " + currentStack + ', maxStack= ' + maxStack + "\n//currentScopeStack= " + currentScopeStack + ', maxScopeStack= ' + maxScopeStack);
 		}
 	}

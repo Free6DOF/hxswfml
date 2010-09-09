@@ -67,16 +67,17 @@ typedef GlyphComponent=
 {
 	flags:Int,
 	glyphIndex:Int,
-	argument1:Int,
-	argument2:Int,
-	transform:Transform
+	xtranslate:Null<Int>,
+	ytranslate:Null<Int>,
+	xscale:Null<Float>,
+	yscale:Null<Float>,
+	point1 : Null<Int>,
+	point2 : Null<Int>,
+	scale01 : Null<Float>,
+	scale10 : Null<Float>,
+	instructions:Null<Array<Int>>
 }
-enum Transform
-{
-	Transform1(scale:Float);
-	Transform2(xscale:Float, yscale:Float);
-	Transform3(xscale:Float, yscale:Float, scale01:Float, scale10:Float);
-}
+
 //HMTX
 typedef Metric=
 {

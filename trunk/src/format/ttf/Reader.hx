@@ -64,7 +64,7 @@ class Reader
 		return 
 		{
 			header : header,
-			directory: directory,
+			directory : directory,
 			tables : tables
 		};
 	}
@@ -175,7 +175,7 @@ class Reader
 		return
 		{
 			version : i.readInt32(),
-			fontRevision  : i.readInt32(),
+			fontRevision : i.readInt32(),
 			checkSumAdjustment : i.readInt32(),
 			magicNumber: i.readInt32(),//0x5F0F3CF5
 			flags: i.readUInt16(),
@@ -189,8 +189,8 @@ class Reader
 			macStyle: i.readUInt16(),
 			lowestRecPPEM : i.readUInt16(),
 			fontDirectionHint : i.readInt16(),
-			indexToLocFormat  : i.readInt16(),
-			glyphDataFormat   : i.readInt16()	    	
+			indexToLocFormat : i.readInt16(),
+			glyphDataFormat : i.readInt16()
 		};
 	}
 	//maxp (maximum profile) table
@@ -247,7 +247,7 @@ class Reader
 			throw 'no hmtx table found';
 		var input = new BytesInput(bytes);
 		input.bigEndian=true;
-    var metrics:Array<Metric>=new Array();  
+		var metrics:Array<Metric>=new Array();
 		for(i in 0...hhea.numberOfHMetrics)
 		{
 			metrics.push(
@@ -260,7 +260,7 @@ class Reader
 		var lastAdvanceWidth = metrics[metrics.length-1].advanceWidth;
 		for(i in 0...len)
 		{
-			 metrics.push({advanceWidth:lastAdvanceWidth, leftSideBearing : input.readInt16()});
+			metrics.push({advanceWidth:lastAdvanceWidth, leftSideBearing : input.readInt16()});
 		}
 		return metrics;
 	}
@@ -305,9 +305,9 @@ class Reader
 		}
 		else
 		{
-			return  TGlyphNull;
+			return TGlyphNull;
 		}
-		return  TGlyphNull;
+		return TGlyphNull;
 	}
 	function readGlyfSimple(numberOfContours, input, len):GlyphSimple
 	{
@@ -325,11 +325,10 @@ class Reader
 		{
 			instructions[i] = input.readByte();len-=1;
 		}
-					
 		var flags:Array<Int> = new Array();
 		var iindex:Int=0;
 		var jindex:Int=1;
-	  while(true)
+		while(true)
 		{
 			if(iindex < count)
 			{
@@ -354,7 +353,7 @@ class Reader
 			}
 			else
 				break;
-	  }
+		}
 		var xCoordinates:Array<Int> = new Array();
 		var yCoordinates:Array<Int> = new Array();
 		var x:Int = 0;
@@ -381,7 +380,6 @@ class Reader
 			}
 			xCoordinates[i] = x;
 		}
-					
 		for (i in 0...count)
 		{
 			if ((flags[i] & 0x20) != 0)
@@ -415,112 +413,127 @@ class Reader
 		input.read(len);
 		return glyphSimple;
 	}
-	function readGlyfComposite(input, len, glyphIndex):Array<GlyphComponent>
+	function readGlyfComposite(input, len, glyphIndex:Int):Array<GlyphComponent>
 	{
 		var components:Array<GlyphComponent>=new Array();
-		input.read(len);
-		return components;
-		/*
-		var components:Array<GlyphComponent>=new Array();
-	  var firstIndex   = 0;
-	  var firstContour = 0;
-		var flags = 0xFF;
-	  try 
-	  {
-	    while ((flags & CFlag.MORE_COMPONENTS) != 0)
-			{
-				var argument1, argument2, xtranslate, ytranslate, point1, point2, xscale, yscale, scale01, scale10;
-        var flags = input.readInt16();
-				len-=2;
-	      var glyphIndex = input.readInt16();
-				trace('glyph Composite index =' +cast glyphIndex);
-				len-=2;
-	      if ((flags & CFlag.ARG_1_AND_2_ARE_WORDS) != 0)
-	      {
-	        argument1 = input.readInt16();
-	        argument2 = input.readInt16();
-					len-=4;
-	      } 
-				else
-	      {
-	        argument1 = input.readByte();
-	        argument2 = input.readByte();
-					len-=2;
-	      }
-	      if ((flags & CFlag.ARGS_ARE_XY_VALUES) != 0)
-	      {
-					xtranslate = argument1;
-	        ytranslate = argument2;
-	      } 
-				else 
-	      {
-	        point1 = argument1;
-	        point2 = argument2;
-	      }
-				
-				var transform=null;
-	      if ((flags & CFlag.WE_HAVE_A_SCALE) != 0)
-	      {
-	        xscale = yscale = input.readInt16()/ 0x4000;
-					transform = Transform1(xscale);
-					len-=2;
-	      } 
-				else if ((flags & CFlag.WE_HAVE_AN_X_AND_Y_SCALE) != 0) 
-				{
-	        xscale = input.readInt16()/0x4000;
-	        yscale = input.readInt16()/0x4000;
-					transform = Transform2(xscale, yscale);
-					len-=4;
-	       } 
-				 else if ((flags & CFlag.WE_HAVE_A_TWO_BY_TWO) != 0) 
-				 {
-	          xscale = input.readInt16()/0x4000;
-	          scale01 = input.readInt16()/0x4000;
-	          scale10 = input.readInt16()/0x4000;
-	          yscale = input.readInt16()/ 0x4000;
-						transform = Transform3(xscale, yscale, scale01, scale10);
-						len-=8;
-	       }
-				
-				var comp:GlyphComponent= 
-				{
-					flags:flags,
-					glyphIndex:glyphIndex,
-					argument1:argument1,
-					argument2:argument1,
-					transform:transform
-				}
-	      components.push(comp);
-				
-	      var desc:GlyfDescript = descriptions[glyphindex];
-	      if (desc != null) 
-	      {
-	         firstIndex   += desc.getPointCount();
-	        firstContour += desc.getContourCount();
-	      }
-	    } 
-	    if ((flags & CFlag.WE_HAVE_INSTRUCTIONS) != 0) 
-	    {
-					var instructionLength = input.readUInt16();
-					len-=2;
-					var instructions:Array<Int> = new Array();
-					for (i in 0...instructionLength)
-					{
-						instructions[i] = input.readByte();
-						len-=1;
-					}
-	    }
-			
-			//trace('composite remaining length: '+ len);
-			input.read(len);			
-	  } 
-		catch (e:Dynamic) 
+		//input.read(len);
+		//return components;
+		var comp:GlyphComponent;
+		var firstIndex = 0;
+		var firstContour = 0;
+		var d:Bool= false;//glyphIndex==207;
+		var more:Bool=false;
+		var flags:Int;
+		do 
 		{
-	     //throw e;
-	  }
+			var desc = glyphIndex;
+			flags= input.readUInt16();
+			var glyphIdx = input.readUInt16();
+			len -= 4;
+			more = (flags & CFlag.MORE_COMPONENTS)!=0;
+			var argument1=null;
+			var argument2=null;
+			comp=
+			{
+				flags:flags,
+				glyphIndex:glyphIdx,
+				xtranslate:null,
+				ytranslate:null,
+				xscale:null,
+				yscale:null,
+				scale01 :null,
+				scale10 : null,
+				point1 : null,
+				point2 : null,
+				instructions:null
+			}
+			if ((flags & CFlag.ARG_1_AND_2_ARE_WORDS) != 0)
+			{
+				argument1 = input.readInt16();
+				argument2 = input.readInt16();
+				len -= 4;
+			} 
+			else
+			{
+				argument1 = input.readByte();
+				argument2 = input.readByte();
+				len -= 2;
+			}
+			if ((flags & CFlag.ARGS_ARE_XY_VALUES) != 0)
+			{
+				comp.xtranslate = argument1;
+				comp.ytranslate = argument2;
+			} 
+			else 
+			{
+				comp.point1 = argument1;
+				comp.point2 = argument2;
+			}
+			
+			if ((flags & CFlag.WE_HAVE_A_SCALE) != 0)
+			{
+				var s = input.readInt16() / 0x4000;
+				comp.xscale = s;
+				comp.yscale = s;
+				len -= 2;
+			}
+			else if ((flags & CFlag.WE_HAVE_AN_X_AND_Y_SCALE) != 0) 
+			{
+				comp.xscale = input.readInt16() / 0x4000;
+				comp.yscale = input.readInt16() / 0x4000;
+				len -= 4;
+			} 
+			else if ((flags & CFlag.WE_HAVE_A_TWO_BY_TWO) != 0)
+			{
+				comp.xscale = input.readInt16() / 0x4000;
+				comp.scale01 = input.readInt16() / 0x4000;
+				comp.scale10 = input.readInt16() / 0x4000;
+				comp.yscale = input.readInt16() / 0x4000;
+				len -= 8;
+			}
+			if(d)
+			{
+				trace("composite glyphIndex : " + glyphIndex);
+				trace("flags : " + flags);
+				trace("glyphIdx : " + glyphIdx);
+				if((flags & CFlag.ARG_1_AND_2_ARE_WORDS)!=0)trace("ARG_1_AND_2_ARE_WORDS");
+				if((flags & CFlag.ARGS_ARE_XY_VALUES)!=0)trace("ARGS_ARE_XY_VALUES");
+				if((flags & CFlag.ROUND_XY_TO_GRID)!=0)trace("ROUND_XY_TO_GRID");
+				if((flags & CFlag.WE_HAVE_A_SCALE)!=0)trace("WE_HAVE_A_SCALE");
+				if((flags & CFlag.MORE_COMPONENTS)!=0)trace("MORE_COMPONENTS");
+				if((flags & CFlag.WE_HAVE_AN_X_AND_Y_SCALE)!=0)trace("WE_HAVE_AN_X_AND_Y_SCALE");
+				if((flags & CFlag.WE_HAVE_A_TWO_BY_TWO)!=0)trace("WE_HAVE_A_TWO_BY_TWO");
+				if((flags & CFlag.WE_HAVE_INSTRUCTIONS)!=0)trace("WE_HAVE_INSTRUCTIONS");
+				if((flags & CFlag.USE_MY_METRICS)!=0)trace("USE_MY_METRICS");
+				trace('flags:'+comp.flags);
+				trace('glyphIndex:'+comp.glyphIndex);
+				trace('xtranslate:'+comp.xtranslate);
+				trace('ytranslate:'+comp.ytranslate);
+				trace('xscale:'+comp.xscale);
+				trace('yscale:'+comp.yscale);
+				trace('scale01 :'+comp.scale01);
+				trace('scale10 :'+ comp.scale10);
+				trace('point1 :'+ comp.point1);
+				trace('point2 :'+ comp.point2);
+				trace('instructions:'+comp.instructions);
+			}
+			components.push(comp);
+		}
+		while (more);
+		if ((flags & CFlag.WE_HAVE_INSTRUCTIONS) != 0) 
+		{
+			var instructionLength = input.readUInt16();
+			len-=2;
+			var instructions:Array<Int> = new Array();
+			for (i in 0...instructionLength)
+			{
+				instructions[i] = input.readByte();
+				len-=1;
+			}
+			components[components.length-1].instructions = instructions;
+		}
 		input.read(len);
 		return components;
-		*/
 	}
 
 	//cmap (character code mapping) table
@@ -535,7 +548,7 @@ class Reader
 		var numberSubtables = input.readUInt16();
 		
 		var directory:Array<CmapEntry> = new Array();
-    for(i in 0...numberSubtables)
+		for(i in 0...numberSubtables)
 		{
 			directory.push(
 			{
@@ -556,11 +569,9 @@ class Reader
 		var input= new BytesInput(bytes);
 		input.bigEndian=true;
 		input.read(entry.offset);
-		
 		var cmapFormat = input.readUInt16();
 		var length = input.readUInt16();
 		var language = input.readUInt16();
-		
 		var cmapHeader = 
 		{
 			platformId:entry.platformId,
@@ -569,12 +580,10 @@ class Reader
 			format: cmapFormat,
 			language: language
 		}
-
 		glyphIndexArray = new Array();
 		allGlyphs = new Array();
-		
-    if(cmapFormat == 0)
-    {
+		if(cmapFormat == 0)
+		{
 			for (j in 0...256)
 				glyphIndexArray[j]=
 				{
@@ -583,27 +592,27 @@ class Reader
 					char:MacGlyphNames.names[j],
 				};
 			return Cmap0(cmapHeader, glyphIndexArray);
-    }
+		}
 		else if(cmapFormat == 4)
 		{
-			var segCount = cast input.readUInt16() / 2;
-	   	var searchRange = input.readUInt16();
-	    var entrySelector = input.readUInt16();
-	    var rangeShift = input.readUInt16();
+			var segCount = Std.int(input.readUInt16() / 2);
+			var searchRange = input.readUInt16();
+			var entrySelector = input.readUInt16();
+			var rangeShift = input.readUInt16();
 			var endCodes = new Array();
-			var startCodes  = new Array();
+			var startCodes = new Array();
 			var idDeltas = new Array();
 			var idRangeOffsets = new Array();
 			var glyphIndices = new Array();
-	    for (i in 0...segCount)
-	      endCodes.push(input.readUInt16());
-	    input.readUInt16();
-	    for (i in 0...segCount)
-	      startCodes.push(input.readUInt16());
-	    for (i in 0...segCount)
-	      idDeltas.push(input.readUInt16());
-	    for (i in 0...segCount)
-	      idRangeOffsets.push(input.readUInt16());
+			for (i in 0...segCount)
+				endCodes.push(input.readUInt16());
+			input.readUInt16();
+			for (i in 0...segCount)
+				startCodes.push(input.readUInt16());
+			for (i in 0...segCount)
+				idDeltas.push(input.readUInt16());
+			for (i in 0...segCount)
+				idRangeOffsets.push(input.readUInt16());
 			var count = Std.int((length - (8*segCount + 16)) / 2);
 			for (i in 0...count)
 				glyphIndices[i]=input.readUInt16();
@@ -615,7 +624,7 @@ class Reader
 
 			for(i in 0...segCount)
 			{
-				//trace('segment '+i+'/'+segCount +' =>  startCode:'+startCodes[i]+',  endCode:'+endCodes[i]+',  idDelta:'+idDeltas[i]+',  idRangeOffset:'+idRangeOffsets[i]);
+				//trace('segment '+i+'/'+segCount +' => startCode:'+startCodes[i]+', endCode:'+endCodes[i]+',  idDelta:'+idDeltas[i]+',  idRangeOffset:'+idRangeOffsets[i]);
 				for(j in startCodes[i]...endCodes[i]+1)
 				{
 					var index = mapCharCode(j, glyphIndices, segCount, startCodes, endCodes, idRangeOffsets, idDeltas);
@@ -633,21 +642,21 @@ class Reader
 			return Cmap4(cmapHeader, glyphIndexArray);
 		}
 		else if(cmapFormat == 6)
-    {
+		{
 			var firstCode:Int = input.readUInt16();
 			var entryCount:Int = input.readUInt16();
 			for (j in 0...entryCount)
-      {
+			{
 				var glyphIndex:GlyphIndex = 
 				{
 					charCode : j,
 					index : input.readUInt16(),
 					char:MacGlyphNames.names[j]
 				};
-         glyphIndexArray[j]=glyphIndex;
-       }
+				glyphIndexArray[j]=glyphIndex;
+			}
 			return Cmap6(cmapHeader, glyphIndexArray, firstCode);
-    }
+		}
 		else
 		{
 			return CmapUnk(cmapHeader, bytes);
@@ -655,15 +664,15 @@ class Reader
 	}
 	function mapCharCode( charCode:Int, glyphIndices:Array<Int>, segCount:Int, startCodes:Array<Int>, endCodes:Array<Int>, idRangeOffsets:Array<Int>, idDeltas:Array<Int> ):Int
 	{
-	  try
+		try
 		{
-	    for (i in 0...segCount)
-	      if ( endCodes[i] >= charCode )
-	        if ( startCodes[i] <= charCode )
-	          if ( idRangeOffsets[i] > 0 )
+			for (i in 0...segCount)
+				if ( endCodes[i] >= charCode )
+					if ( startCodes[i] <= charCode )
+						if ( idRangeOffsets[i] > 0 )
 						{
 							var index:Int = Std.int(idRangeOffsets[i]/2 + (charCode - startCodes[i]) - (segCount - i));
-	            return glyphIndices[index];
+							return glyphIndices[index];
 						}
 						else 
 						{
@@ -677,23 +686,14 @@ class Reader
 		catch (e:Dynamic)return 0;
 		return 0;		
 	}
-	
 	function getCharCodeFromIndex(index:Int):Int
 	{
-		//trace(index);
 		for(i in 0...glyphIndexArray.length)
-		{
-			//trace(glyphIndexArray[i]);
 			if(glyphIndexArray[i]!=null && glyphIndexArray[i].index == index)
-			{
-				//trace(glyphIndexArray[i].charCode);
-				//trace(glyphIndexArray[i].index);
 				return glyphIndexArray[i].charCode;
-			}
-		}
 		throw 'charcode not found for index '+ index;
+		return 0;
 	}
-
 	//kern (kerning) table
 	function readKernTable(bytes:Bytes):Array<KernSubTable>
 	{
@@ -703,27 +703,27 @@ class Reader
 		input.bigEndian=true;
 		
 		var version = input.readUInt16();
-	  var nTables = input.readUInt16();
-	  var tables:Array<KernSubTable> = new Array();
-	  for (i in 0...nTables)
+		var nTables = input.readUInt16();
+		var tables:Array<KernSubTable> = new Array();
+		for (i in 0...nTables)
 		{
-	    var version  = input.readUInt16();
-	    var length  = input.readUInt16();
-	    var coverage = input.readUInt16();
-	    var _format  = coverage >> 8;
-	    switch (_format)
-	    {
-	      case 0:
-					var nPairs  = input.readUInt16();
-	        var searchRange  = input.readUInt16();
-	        var entrySelector  = input.readUInt16();
-	        var rangeShift  = input.readUInt16();
-	        kerningPairs = new Array();
-	        for ( i in 0...nPairs)
-	          kerningPairs.push({left  : getCharCodeFromIndex(input.readUInt16()), right : getCharCodeFromIndex(input.readUInt16()), value : input.readInt16()});
+			var version = input.readUInt16();
+			var length = input.readUInt16();
+			var coverage = input.readUInt16();
+			var _format = coverage >> 8;
+			switch (_format)
+			{
+				case 0:
+					var nPairs = input.readUInt16();
+					var searchRange = input.readUInt16();
+					var entrySelector = input.readUInt16();
+					var rangeShift = input.readUInt16();
+					kerningPairs = new Array();
+					for ( i in 0...nPairs)
+						kerningPairs.push({left : getCharCodeFromIndex(input.readUInt16()), right : getCharCodeFromIndex(input.readUInt16()), value : input.readInt16()});
 					tables.push(KernSub0(kerningPairs));
 					
-	      case 2:
+				case 2:
 					var rowWidth = input.readUInt16();
 					var leftOffsetTable = input.readUInt16();
 					var rightOffsetTable = input.readUInt16();
@@ -733,8 +733,8 @@ class Reader
 					var offsets = [];
 					for(i in 0...nGlyphs)
 						offsets.push(input.readUInt16());
-	        tables.push(KernSub1(offsets));
-      }
+					tables.push(KernSub1(offsets));
+			}
 		}
 		return tables;
 	}
@@ -745,35 +745,35 @@ class Reader
 		input.bigEndian=true;
 		var postData=
 		{
-			version     : input.readInt32(),
-	    italicAngle : input.readInt32(),
-	    underlinePosition  : input.readInt16(),//FWord
-	    underlineThickness : input.readInt16(),//FWord
-	    isFixedPitch : input.readInt32(),
-	    minMemType42 : input.readInt32(),
-	    maxMemType42 : input.readInt32(),
-	    minMemType1  : input.readInt32(),
-	    maxMemType1  : input.readInt32(),
+			version : input.readInt32(),
+			italicAngle : input.readInt32(),
+			underlinePosition : input.readInt16(),//FWord
+			underlineThickness : input.readInt16(),//FWord
+			isFixedPitch : input.readInt32(),
+			minMemType42 : input.readInt32(),
+			maxMemType42 : input.readInt32(),
+			minMemType1 : input.readInt32(),
+			maxMemType1 : input.readInt32(),
 			numGlyphs : 0,
-	    glyphNameIndex : new Array(),
+			glyphNameIndex : new Array(),
 			psGlyphName : new Array()
 		}
 		if (Int32.toInt(postData.version) == 0x00020000)
-	  {
-	    postData.numGlyphs = input.readUInt16();
-      for (i in 0...postData.numGlyphs)
-	      postData.glyphNameIndex[i] = input.readUInt16();
+		{
+			postData.numGlyphs = input.readUInt16();
+			for (i in 0...postData.numGlyphs)
+				postData.glyphNameIndex[i] = input.readUInt16();
 			var high = 0;
-	    for (i in 0...postData.numGlyphs)
-        if (high < postData.glyphNameIndex[i])
-          high = postData.glyphNameIndex[i];
-	    if (high > 257)
-	    {
-	      high -= 257;
-        for (i in 0...high)
-	        postData.psGlyphName[i] = input.readString(input.readByte());
-	    }
-	  } 
+			for (i in 0...postData.numGlyphs)
+				if (high < postData.glyphNameIndex[i])
+					high = postData.glyphNameIndex[i];
+			if (high > 257)
+			{
+				high -= 257;
+				for (i in 0...high)
+					postData.psGlyphName[i] = input.readString(input.readByte());
+			}
+		} 
 		return postData;
 	}
 	//name (name) table
@@ -838,7 +838,7 @@ class Reader
 
 					case 1, 2:// Macintosh encoding, ASCII// ISO encoding, ASCII
 						for (i in 0...nameRecord.length)
-				        stringBuf.add(String.fromCharCode(input.readByte()));
+						stringBuf.add(String.fromCharCode(input.readByte()));
 				}
 			}
 			nameRecord.record = stringBuf.toString();
@@ -871,58 +871,58 @@ class Reader
 			yStrikeoutPosition : input.readInt16(),
 			sFamilyClass : input.readInt16(),
 			
-	    //panose start
-		  bFamilyType : input.readByte(),
-		  bSerifStyle : input.readByte(),
-		  bWeight : input.readByte(),
-		  bProportion : input.readByte(),
-		  bContrast : input.readByte(),
-		  bStrokeVariation : input.readByte(),
-		  bArmStyle : input.readByte(),
-		  bLetterform : input.readByte(),
-		  bMidline : input.readByte(),
-		  bXHeight : input.readByte(),
-	    //panose end
+			//panose start
+			bFamilyType : input.readByte(),
+			bSerifStyle : input.readByte(),
+			bWeight : input.readByte(),
+			bProportion : input.readByte(),
+			bContrast : input.readByte(),
+			bStrokeVariation : input.readByte(),
+			bArmStyle : input.readByte(),
+			bLetterform : input.readByte(),
+			bMidline : input.readByte(),
+			bXHeight : input.readByte(),
+			//panose end
 			
-		  ulUnicodeRange1 : input.readInt32(),
-		  ulUnicodeRange2 : input.readInt32(),
-		  ulUnicodeRange3 : input.readInt32(),
-		  ulUnicodeRange4 : input.readInt32(),
-		  achVendorID : input.readInt32(),
-		  fsSelection : input.readInt16(),
-		  usFirstCharIndex : input.readUInt16(),
-		  usLastCharIndex : input.readUInt16(),
-		  sTypoAscender : input.readInt16(),
-		  sTypoDescender : input.readInt16(),
-		  sTypoLineGap : input.readInt16(),
-		  usWinAscent : input.readUInt16(),
-		  usWinDescent : input.readUInt16()
+			ulUnicodeRange1 : input.readInt32(),
+			ulUnicodeRange2 : input.readInt32(),
+			ulUnicodeRange3 : input.readInt32(),
+			ulUnicodeRange4 : input.readInt32(),
+			achVendorID : input.readInt32(),
+			fsSelection : input.readInt16(),
+			usFirstCharIndex : input.readUInt16(),
+			usLastCharIndex : input.readUInt16(),
+			sTypoAscender : input.readInt16(),
+			sTypoDescender : input.readInt16(),
+			sTypoLineGap : input.readInt16(),
+			usWinAscent : input.readUInt16(),
+			usWinDescent : input.readUInt16()
 			/*
-		  ulCodePageRange1 : input.readInt32(),
-		  ulCodePageRange2 : input.readInt32(),
+			ulCodePageRange1 : input.readInt32(),
+			ulCodePageRange2 : input.readInt32(),
 
 			sxHeight:-1,
-		  sCapHeight:-1,
-		  usDefaultChar:-1,
-		  usBreakChar:-1,
-		  usMaxContext:-1
+			sCapHeight:-1,
+			usDefaultChar:-1,
+			usBreakChar:-1,
+			usMaxContext:-1
 			*/
 		}
 		
 		/*
-	  if (os2Data.version == 2) 
+		if (os2Data.version == 2) 
 		{
-		  os2Data.sxHeight = input.readInt16();
-		  os2Data.sCapHeight = input.readInt16();
-		  os2Data.usDefaultChar = input.readUInt16();
-		  os2Data.usBreakChar = input.readUInt16();
-		  os2Data.usMaxContext = input.readUInt16();
+			os2Data.sxHeight = input.readInt16();
+			os2Data.sCapHeight = input.readInt16();
+			os2Data.usDefaultChar = input.readUInt16();
+			os2Data.usBreakChar = input.readUInt16();
+			os2Data.usMaxContext = input.readUInt16();
 		}
 		*/
 		return os2Data;
 	}
 }
-typedef CmapEntry  =
+typedef CmapEntry =
 {
 	platformId:Int,
 	platformSpecificId:Int,

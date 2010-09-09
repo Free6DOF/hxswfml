@@ -685,7 +685,7 @@ class AbcWriter
 	private function stackError(op, type)
 	{
 		var o = Type.getEnum(op);
-		var msg = type == 0? '!Possible error: stack underflow: ' + cast op : '!Possible error: stack overflow: ' + cast op;
+		var msg = type == 0? '!Possible error: stack underflow: ' + Std.string(op) : '!Possible error: stack overflow: ' + Std.string(op);
 		if (strict)
 			throw (msg);
 		if(log)
@@ -694,7 +694,7 @@ class AbcWriter
 	private function scopeStackError(op, type)
 	{
 		var o = Type.getEnum(op);
-		var msg = type == 0? '!Possible error: scopeStack underflow: ' + cast op : '!Possible error: scopeStack overflow: ' + cast op;
+		var msg = type == 0? '!Possible error: scopeStack underflow: ' + Std.string(op) : '!Possible error: scopeStack overflow: ' + Std.string(op);
 		if (strict)
 			throw (msg);
 		if(log)
@@ -1356,7 +1356,7 @@ class AbcWriter
 		if (log) 
 		{
 			logStack("bytepos:" + (ctx.bytepos.n-lastBytepos));
-			logStack(cast opc);
+			logStack(Std.string(opc));
 			logStack("currentStack= " + currentStack + ', maxStack= ' + maxStack + "\ncurrentScopeStack= " + currentScopeStack + ', maxScopeStack= ' + maxScopeStack +"\n\n");
 		}
 	}
