@@ -1267,8 +1267,8 @@ class AbcReader
 			}
 			else
 			{
-				if(fileName!="<null>")
-				trace("Source file: "+ debugFileName +' could not be found in this directory.');
+				//if(fileName!="<null>")
+				//trace("Source file: "+ debugFileName +' could not be found in this directory.');
 			}
 		}
 		#end

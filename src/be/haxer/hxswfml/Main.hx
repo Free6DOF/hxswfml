@@ -61,6 +61,19 @@ class Main
 					var handle = File.write(outFile,true);
 					handle.write(bytes);
 					handle.close();
+					
+				case "lib2swc":
+					if (args.length < 3) printUsage();
+					
+					var inFile = args[1];
+					var outFile = args[2];
+					var str = File.getContent(inFile);
+					var libWriter = new SwfLibWriter();
+					libWriter.write(str);
+					var bytes = libWriter.getSWC();
+					var handle = File.write(outFile,true);
+					handle.write(bytes);
+					handle.close();
 				
 				case "xml2swc":
 					if (args.length < 3) printUsage();
@@ -145,19 +158,16 @@ class Main
 					abcReader.read(extension, File.getBytes(inFile));
 					File.write(outFile, false).writeString(abcReader.getXML());
 
-				
 				case "abc2hxm":
 					if (args.length < 3) printUsage();
 					
 					var inFile = args[1];
-					var outFolder:String = args[2];
-					if (StringTools.startsWith(outFolder, '-'))
-						throw 'Missing folder name for output';
+					var outFile = args[2];
 					var mainClass = getArgValue('-main');//main class for symbol class tag
 					if (mainClass == null) throw 'Missing class for -main';
+					var useFolders = argExists('-folders');//create folders according to packages
 					var debugInfo = !argExists('-no-debug');//Filter out debug info.
 					var sourceInfo = argExists('-source');//Interweaves the original source code through the xml. (abc must have been compiled in -debug mode and source files must be available)
-					var useFolders = argExists('-folders');//create folders according to packages
 					var showBytePos = argExists('-bytepos');//show the byteposition for every opcode
 					var log = argExists('-stack');//monitor the stacks
 					var strict = argExists('-strict');//throw erros when stacks exceed set limits
@@ -176,42 +186,10 @@ class Main
 					hxmWriter.showBytePos = showBytePos;
 					hxmWriter.strict = strict;
 					hxmWriter.log = log;
-					hxmWriter.outputFolder = outFolder == null?"hxm_output":outFolder;
-					if(!FileSystem.exists(outFolder))
-						FileSystem.createDirectory(outFolder);
+					hxmWriter.outputFolder = "";
 					hxmWriter.write(xml);
-					
-					File.write(outFolder + '/GenSWF.hx', false).writeString(hxmWriter.getHXM(mainClass));
-					
-				case "xml2hxm":
-					if (args.length < 3) printUsage();
-					
-					var inFile = args[1];
-					var hxFile = args[2];
-					var mainClass = getArgValue('-main');//main class for symbol class tag
-					var debugInfo = argExists('-debug');//Show debug info (if the original abc was compiled in -debug mode )
-					var sourceInfo = argExists('-source');//Interweaves the original source code through the xml. (abc must have been compiled in -debug mode and source files must be available)
-					var useFolders = argExists('-folders');//create folders according to packages
-					var showBytePos = argExists('-bytepos');
-					var strict = argExists('-strict');
-					var log = argExists('-stack');
-
-					var hxmWriter = new HxmWriter();
-					hxmWriter.debugInfo = debugInfo;
-					hxmWriter.sourceInfo = sourceInfo;
-					hxmWriter.useFolders = useFolders;
-					hxmWriter.showBytePos = showBytePos;
-					hxmWriter.log=log;
-					hxmWriter.strict=strict;
-					var tempFolder=hxFile.split('/');
-					tempFolder.pop();
-					hxmWriter.outputFolder=tempFolder.join('/');
-					hxmWriter.write(File.getContent(inFile));
-					var hxm = hxmWriter.getHXM(mainClass);
-					
-					var file = File.write(hxmWriter.outputFolder+'/GenSWF.hx', false);
-					file.writeString(hxm);
-					file.close();
+					var zip = hxmWriter.getZIP(mainClass);
+					File.write(outFile, true).write(zip);
 					
 				case "ttf2swf":
 					if (args.length < 3) printUsage();
@@ -278,7 +256,7 @@ class Main
 	}
 	static function printUsage()
 	{
-			Lib.println("hxswfml 0.11 - Xml based swf and abc assembler. 2009-2010");
+			Lib.println("hxswfml 0.12 - Xml based swf and abc assembler. 2009-2010");
 			Lib.println("Usage: hxswfml operation in out [args] [options]");
 			Lib.println("");
 		
@@ -291,6 +269,11 @@ class Main
 			Lib.println("xml2lib");
 			Lib.println("  in : xml file");
 			Lib.println("  out : swf file");
+			Lib.println("");
+			
+			Lib.println("lib2swc");
+			Lib.println("  in : xml file");
+			Lib.println("  out : swc file");
 			Lib.println("");
 
 			Lib.println("xml2swc");
@@ -327,7 +310,7 @@ class Main
 
 			Lib.println("abc2hxm");
 			Lib.println("  in : swf, swc or abc file");
-			Lib.println("  out : folder name");
+			Lib.println("  out : zip file name");
 			Lib.println("  args : -main");
 			Lib.println("  options : -no-debug, -source, -folders");
 			Lib.println("");

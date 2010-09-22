@@ -67,12 +67,11 @@ class Writer {
 	public function writeEntryHeader( f : Entry ) {
 		var o = this.o;
 		var flags = 0;
-		if(f.extraFields!=null)
 		for( e in f.extraFields )
 			switch( e ) {
-				case FUtf8: flags |= 0x800;
-				default:
-				}
+			case FUtf8: flags |= 0x800;
+			default:
+			}
 		o.writeUInt30(0x04034B50);
 		o.writeUInt16(0x0014); // version
 		o.writeUInt16(flags); // flags
@@ -83,10 +82,14 @@ class Writer {
 			f.compressed = false;
 			f.data = haxe.io.Bytes.alloc(0);
 		} else {
-			if( f.crc32 == null ) {
+			
+			/*
+			if( f.crc32 == null ) 
+			{
 				if( f.compressed ) throw "CRC32 must be processed before compression";
 				f.crc32 = format.tools.CRC32.encode(f.data);
 			}
+			*/
 			if( !f.compressed )
 				f.fileSize = f.data.length;
 			f.dataSize = f.data.length;
@@ -98,28 +101,22 @@ class Writer {
 		o.writeUInt30(f.fileSize);
 		o.writeUInt16(f.fileName.length);
 		var e = new haxe.io.BytesOutput();
-		if(f.extraFields != null)
-		{
-			for( f in f.extraFields )
-			{
-				switch( f ) 
-				{
-					case FInfoZipUnicodePath(name,crc):
-						var namebytes = haxe.io.Bytes.ofString(name);
-						e.writeUInt16(0x7075);
-						e.writeUInt16(namebytes.length + 5);
-						e.writeByte(1); // version
-						e.writeInt32(crc);
-						e.write(namebytes);
-					case FUnknown(tag,bytes):
-						e.writeUInt16(tag);
-						e.writeUInt16(bytes.length);
-						e.write(bytes);
-					case FUtf8:
-						// nothing
-				}
+		for( f in f.extraFields )
+			switch( f ) {
+			case FInfoZipUnicodePath(name,crc):
+				var namebytes = haxe.io.Bytes.ofString(name);
+				e.writeUInt16(0x7075);
+				e.writeUInt16(namebytes.length + 5);
+				e.writeByte(1); // version
+				e.writeInt32(crc);
+				e.write(namebytes);
+			case FUnknown(tag,bytes):
+				e.writeUInt16(tag);
+				e.writeUInt16(bytes.length);
+				e.write(bytes);
+			case FUtf8:
+				// nothing
 			}
-		}
 		var ebytes = e.getBytes();
 		o.writeUInt16(ebytes.length);
 		o.writeString(f.fileName);
@@ -131,7 +128,7 @@ class Writer {
 		format.tools.IO.copy(data,o,buf,e.dataSize);
 	}
 
-	public function writeData( files:List<Entry>/*Data*/ ) {
+	public function writeData( files: Data ) {
 		for( f in files ) {
 			writeEntryHeader(f);
 			o.writeFullBytes(f.data,0,f.data.length);

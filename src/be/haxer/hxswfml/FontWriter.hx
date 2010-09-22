@@ -315,7 +315,7 @@ class FontWriter
 						dataSize : charClass.length,
 						data : Bytes.ofString(charClass),
 						crc32 : format.tools.CRC32.encode(Bytes.ofString(charClass)),
-						extraFields : null
+						extraFields : new List()
 					});
 				}
 			}
@@ -376,7 +376,7 @@ class FontWriter
 						dataSize : mainClass.length,
 						data : Bytes.ofString(mainClass),
 						crc32 : format.tools.CRC32.encode(Bytes.ofString(mainClass)),
-						extraFields : null
+						extraFields : new List()
 			});
 			var buildFile = zipResources_buildFile;
 			buildFile = buildFile.split("#0").join(fontName);
@@ -389,7 +389,7 @@ class FontWriter
 						dataSize : buildFile.length,
 						data : Bytes.ofString(buildFile),
 						crc32 : format.tools.CRC32.encode(Bytes.ofString(buildFile)),
-						extraFields : null
+						extraFields : new List()
 			});
 			
 			zipWriter.writeData( zipdata );

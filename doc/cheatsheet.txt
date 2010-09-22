@@ -21,35 +21,35 @@ public var str:String="hello world";
 
 - read: this.str / str / this["str"]
 this
-- <OThis />
-- <OReg v="0"/>
-- <OGetScope v="0" />
-- <OFindProp v="str" />
-- <OFindPropStrict v="str" />
+a) <OThis />
+b) <OReg v="0"/>
+c) <OGetScope v="0" />
+d) <OFindProp v="str" />
+e) <OFindPropStrict v="str" />
 .str
-- <OGetProp v="str" />
-- <OGetSlot v="1"/>
-- <OString v="str" /><OGetProp v="#arrayProp" />
+a) <OGetProp v="str" />
+b) <OGetSlot v="1"/>
+c) <OString v="str" /><OGetProp v="#arrayProp" />
 
 this.str
-- <OGetLex v="str" /> 
+a) <OGetLex v="str" /> 
 
 
 - write: this.str="world" / str="world" / this["str"]="world"
 this
-- <OThis />
-- <OReg v="0"/>
-- <OGetScope v="0" />
-- <OFindProp v="str" />
-- <OFindPropStrict v="str" />
+a) <OThis />
+b) <OReg v="0"/>
+c) <OGetScope v="0" />
+d) <OFindProp v="str" />
+e) <OFindPropStrict v="str" />
 
 value
-- <OString v="world" />
+a) <OString v="world" />
 
 .str=
-- <OSetProp v="str" />
-- <OSetSlot v="1" />
-- <OInitProp v="str" />
+a) <OSetProp v="str" />
+b) <OSetSlot v="1" />
+c) <OInitProp v="str" />
 
 //----------------------------------------------------------------
 		Instance method:
@@ -225,23 +225,23 @@ test("a", 1)
 //----------------------------------------------------------------		
 		logical comparison
 		---------------	
-JLt				: 	<
-JGt				: 	>
-JLte			: 	<=
-JGte			: 	>=
+JLt			: 	<
+JGt			: 	>
+JLte		: 	<=
+JGte		: 	>=
 
 JNotLt		: 	!<
 JNotGt		: 	!>
 JNotLte		: 	!<=
 JNotGte		: 	!>=
 
-JEq				: 	==
+JEq			: 	==
 JPhysEq		: 	====
-JNeq			: 	!=
+JNeq		: 	!=
 JPhysNeq	: 	!==
 
-JTrue			:	 true
-JFalse		:	 false
+JTrue		:	true
+JFalse		:	false
 JAlways		:
 
 //----------------------------------------------------------------
