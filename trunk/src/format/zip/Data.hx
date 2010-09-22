@@ -39,8 +39,8 @@ typedef Entry =  {
 	var compressed : Bool;
 	var dataSize : Int;
 	var data : Null<haxe.io.Bytes>;
-	var crc32 : Null<Dynamic>;//Null<haxe.Int32>;
-	var extraFields : Null<List<ExtraField>>;//Null<List<Dynamic>>;//;
+	var crc32 : haxe.Int32;
+	var extraFields : List<ExtraField>;
 }
 
 typedef Data = List<Entry>

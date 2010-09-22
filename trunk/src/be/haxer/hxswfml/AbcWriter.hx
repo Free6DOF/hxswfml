@@ -1412,8 +1412,9 @@ class AbcWriter
 		}
 		var m = baseClass!='flash.display.BitmapData'? ctx.beginMethod(className, [], null, false, false, false, true):ctx.beginMethod(className, [ctx.type('Number'),ctx.type('Number')], null, false, false, false, true);
 		m.maxStack = 3;
+		m.maxScope = 1;
 		c.constructor = m.type;
-		ctx.ops( baseClass!='flash.display.BitmapData'? [OThis,OConstructSuper(0),ORetVoid]  :  [OThis,OReg(1),OReg(2),OConstructSuper(2),ORetVoid] );
+		ctx.ops( baseClass!='flash.display.BitmapData'? [OThis,OScope,OThis,OConstructSuper(0),ORetVoid]  :  [OThis,OScope,OThis,OReg(1),OReg(2),OConstructSuper(2),ORetVoid] );
 		//ctx.finalize();
 		ctx.endClass();
 		var abcOutput = new haxe.io.BytesOutput();

@@ -168,7 +168,7 @@ class VideoWriter
 		metaInfoObj = findMetaInfo(flvTags);
 		if(metaInfoObj==null)
 		{
-			trace('\nNo metaData tag found in flv. Using following values for fps:'+ defaultFPS +', width:'+actualWidth +', height:'+actualHeight);
+			//trace('\nNo metaData tag found in flv. Using following values for fps:'+ defaultFPS +', width:'+actualWidth +', height:'+actualHeight);
 			metaInfoObj = {width:actualWidth, height:actualHeight, framerate:defaultFPS};
 		}
 		if(metaInfoObj.framerate==0)metaInfoObj.framerate = defaultFPS;

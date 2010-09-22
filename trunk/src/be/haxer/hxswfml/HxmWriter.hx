@@ -1,10 +1,8 @@
 package be.haxer.hxswfml;
 import format.swf.Data;
 import format.abc.Data;
-/**
- * ...
- * @author Jan J. Flanders
- */
+import haxe.io.Bytes;
+import haxe.io.BytesOutput;
 #if neko
 import neko.Sys;
 import neko.Lib;
@@ -21,6 +19,11 @@ import cpp.Lib;
 import cpp.FileSystem;
 import cpp.io.File;
 #end
+/**
+ * ...
+ * @author Jan J. Flanders
+ */
+
 
 class HxmWriter
 {
@@ -31,6 +34,7 @@ class HxmWriter
 	public var strict:Bool;
 	public var log:Bool;
 	public var outputFolder:String;
+	public var zip:Bytes;
 	var ctx:format.abc.Context;
 	var className:String;
 	var functionClosureName:String;
@@ -68,9 +72,6 @@ class HxmWriter
 	}
 	public function write(xml:String)
 	{
-		#if flash
-		useFolders=false;
-		#end
 		swfTags=new Array();
 		buf=new StringBuf();
 		packages = new Array();
@@ -93,66 +94,159 @@ class HxmWriter
 			}
 		}
 	}
-	public function getHXM(initName):String
+	public function getZIP(initName)
 	{
-		
-		var start = 
-		'/* build.hxml:\n\n'+
-		'-cp C://cygwin/home/jan/hxswfml/src\n'+ 
-		'-main GenSWF\n'+
-		'-x gen_swf.n\n\n' + 
-		'*/\n\n'+
-		'import format.abc.Data;\n'+
-		'import format.swf.Data;\n'+
-		'import neko.Sys;\n'+
-		'import neko.Lib;\n'+
-		'import neko.FileSystem;\n'+
-		'import neko.io.File;\n'+
-		'class GenSWF\n'+
-		'{\n'+
-		'\tpublic static function main()\n'+
-		'\t{\n'+
-		'\t\tnew GenSWF();\n'+
-		'\t}\n'+
-		'\tpublic function new()\n'+
-		'\t{\n'+
-		'\t\tvar inits:Hash<Index<MethodType>> = new Hash();\n'+
-		'\t\tvar classes:Hash<Index<ClassDef>> = new Hash();\n'+
-		'\t\tvar ctx:format.abc.Context = new format.abc.Context();\n'+
-		'\t\tvar localFunctions:Hash<Index<MethodType>>=new Hash();\n\t\t//------------------\n';
-
-		var middle = "";
-		if(useFolders)
+		var zipdata:List<format.zip.Data.Entry> = new List();
+		var zip=null;
+		if(!useFolders)
 		{
-			#if(neko || cpp || php)
-			if(!FileSystem.exists(outputFolder))
-				FileSystem.createDirectory(outputFolder);
-				
-			start+='\t\tLocalFunctions_abc.write(ctx, inits,classes, localFunctions);\n';
+			var start = 
+			'import format.abc.Data;\n'+
+			'import format.swf.Data;\n'+
+			'import neko.Sys;\n'+
+			'import neko.Lib;\n'+
+			'import neko.FileSystem;\n'+
+			'import neko.io.File;\n'+
+			'class GenSWF\n'+
+			'{\n'+
+			'\tpublic static function main()\n'+
+			'\t{\n'+
+			'\t\tnew GenSWF();\n'+
+			'\t}\n'+
+			'\tpublic function new()\n'+
+			'\t{\n'+
+			'\t\tvar inits:Hash<Index<MethodType>> = new Hash();\n'+
+			'\t\tvar classes:Hash<Index<ClassDef>> = new Hash();\n'+
+			'\t\tvar ctx:format.abc.Context = new format.abc.Context();\n'+
+			'\t\tvar localFunctions:Hash<Index<MethodType>>=new Hash();\n'+
+			'\t\t//------------------\n'+
+			'\t\tinitLocalFunctions(localFunctions, ctx, classes);\n'+
+			'\t\t//------------------\n';
+			var middle = "";
 			for(i in packages)
 			{
-				var fo=outputFolder+"/";
+				var path = i[0];
+				var txt = i[1];
+				middle+=txt;
+			}
+			var end = '\t\t//------------------\n\t\tvar abcOutput = new haxe.io.BytesOutput();\n'+
+			'\t\tformat.abc.Writer.write(abcOutput, ctx.getData());\n'+
+			'\t\tvar abcOutput = new haxe.io.BytesOutput();\n'+
+			'\t\tformat.abc.Writer.write(abcOutput, ctx.getData());\n'+
+			'\t\t//------------------\n'+
+			'\t\tvar swfFile = \n'+
+			'\t\t{\n'+
+				'\t\t\theader: {version:10, compressed:false, width:800, height:600, fps:30, nframes:1},\n'+
+				'\t\t\ttags:\n'+
+				'\t\t\t[\n'+
+					'\t\t\t\tTSandBox({useDirectBlit :false, useGPU:false, hasMetaData:false, actionscript3:true, useNetWork:false}),\n'+
+					'\t\t\t\tTActionScript3(abcOutput.getBytes(), { id : 1, label : "'+initName+'" } ),\n'+
+					'\t\t\t\tTSymbolClass([{cid:0, className:"'+initName+'"}]),\n'+
+					'\t\t\t\tTShowFrame\n'+
+				'\t\t\t]\n'+
+			'\t\t};\n'+
+			'\t\t//------------------\n'+
+			'\t\tvar swfOutput:haxe.io.BytesOutput = new haxe.io.BytesOutput();\n'+
+			'\t\tvar writer = new format.swf.Writer(swfOutput);\n'+
+			'\t\twriter.write(swfFile);\n'+
+			'\t\tvar file = File.write("'+'Main'+'.swf",true);\n'+
+			'\t\tfile.write(swfOutput.getBytes());\n'+
+			'\t\tfile.close();\n'+
+			'\t}\n'+
+			'\tfunction initLocalFunctions(localFunctions, ctx, classes)\n'+
+			'\t{\n'+
+				'\t\t\tvar f = null;\n'+
+				'\t\t\t'+localFunctions+'\n'+
+			'\t}\n'+
+			'}';
+			
+			var buildFile:String=
+			'-main GenSWF\n'+
+			'-cp C://cygwin/home/jan/hxswfml/src\n'+ 
+			'-x gen_swf';
+
+			
+			var data1 = Bytes.ofString(buildFile);
+			var data2 = Bytes.ofString(start+middle+end);
+			zipdata.add({
+						fileName : 'build.hxml', 
+						fileSize : data1.length, 
+						fileTime : Date.now(), 
+						compressed : false, 
+						dataSize : data1.length,
+						data : data1,
+						crc32 : format.tools.CRC32.encode(data1),
+						extraFields : new List()
+					});
+			zipdata.add({
+						fileName : 'GenSWF.hx', 
+						fileSize : data2.length, 
+						fileTime : Date.now(), 
+						compressed : false, 
+						dataSize : data2.length,
+						data : data2,
+						crc32 : format.tools.CRC32.encode(data2),
+						extraFields : new List()
+					});
+			var zipBytesOutput = new BytesOutput();
+			var zipWriter = new format.zip.Writer(zipBytesOutput);
+			zipWriter.writeData( zipdata );
+			zip = zipBytesOutput.getBytes();
+		}
+		else
+		{
+			var zipFileSystem:Hash<String>=new Hash();
+			var start = 
+			'import format.abc.Data;\n'+
+			'import format.swf.Data;\n'+
+			'import neko.Sys;\n'+
+			'import neko.Lib;\n'+
+			'import neko.FileSystem;\n'+
+			'import neko.io.File;\n'+
+			'class GenSWF\n'+
+			'{\n'+
+			'\tpublic static function main()\n'+
+			'\t{\n'+
+			'\t\tnew GenSWF();\n'+
+			'\t}\n'+
+			'\tpublic function new()\n'+
+			'\t{\n'+
+			'\t\tvar inits:Hash<Index<MethodType>> = new Hash();\n'+
+			'\t\tvar classes:Hash<Index<ClassDef>> = new Hash();\n'+
+			'\t\tvar ctx:format.abc.Context = new format.abc.Context();\n'+
+			'\t\tvar localFunctions:Hash<Index<MethodType>>=new Hash();\n\t\t//------------------\n'+
+			'\t\tLocalFunctions_abc.write(ctx, inits,classes, localFunctions);\n';
+			
+			for(i in packages)
+			{
+				var fo=outputFolder;//+"/";
 				var path = i[0];
 				var txt = i[1];
 				var folders:Array<String> = path.split('@').join('A_').split('.');
 				var cn = folders.pop();
 				var p1 = if(folders.length==0)"" else folders.join("_.")+'_.';
-				
 				start += '\t\t' + p1 + cn + '_abc.write(ctx, inits,classes, localFunctions);\n';
 				var cf = fo;
 				for(f in folders)
 				{
-					if(!FileSystem.exists(cf+f+'_'))
+					if(!zipFileSystem.exists(cf+f+'_'))
 					{
-						FileSystem.createDirectory(cf+f+'_');
-						//fo += '/';
+						zipFileSystem.set(cf+f+'_/',"");
+						//trace("folder:"+cf+f+'_/');
+						zipdata.add({
+							fileName : cf+f+'_/', 
+							fileSize : 0, 
+							fileTime : Date.now(), 
+							compressed : false, 
+							dataSize : 0,
+							data : null,
+							crc32 : haxe.Int32.ofInt(0),
+							extraFields : new List()
+						});
 						cf += '/' + f + '_'+'/';
 					}
-					
 				}
 				var p2 = if (folders.length == 0)"" else folders.join("_/") + '_/';
-				trace(fo + p2 + cn + '_abc.hx');
-				var file = File.write(fo+p2+cn+'_abc.hx',false);
 				var p3 = if(folders.length==0)"" else folders.join("_.")+'_';
 				var pre=''+
 				'package '+ p3+";\n"+
@@ -164,77 +258,99 @@ class HxmWriter
 				var post=''+
 					'\t}\n'+
 				'}\n';
-				file.writeString(pre+txt+post);
-				file.close();
+				var data3 = Bytes.ofString(pre+txt+post);
+				//trace("file:"+fo+p2+cn+'_abc.hx');
+				zipdata.add({
+						fileName : fo+p2+cn+'_abc.hx', 
+						fileSize : data3.length, 
+						fileTime : Date.now(), 
+						compressed : false, 
+						dataSize : data3.length,
+						data : data3,
+						crc32 : format.tools.CRC32.encode(data3),
+						extraFields : new List()
+					});
 			}
-
-			var file = File.write(outputFolder+'/LocalFunctions_abc.hx',false);
 			var txt=
-				'package;\n'+
-				'import format.abc.Data;\n'+
-				'class LocalFunctions_abc\n'+
-				'{\n'+
-					'\tpublic static function write(ctx:format.abc.Context, inits:Hash<Index<MethodType>>,classes:Hash<Index<ClassDef>>, localFunctions:Hash<Index<MethodType>>):Void\n'+
-					'\t{\n'+
+			'package;\n'+
+			'import format.abc.Data;\n'+
+			'class LocalFunctions_abc\n'+
+			'{\n'+
+				'\tpublic static function write(ctx:format.abc.Context, inits:Hash<Index<MethodType>>,classes:Hash<Index<ClassDef>>, localFunctions:Hash<Index<MethodType>>):Void\n'+
+				'\t{\n'+
 					'\t\tvar f = null;\n'+
 					localFunctions+
-					'\t}\n'+
-				'}\n';
-				file.writeString(txt);
-				file.close();
-			#end
-		}
-		else
-		{
-			start+='\t\tinitLocalFunctions(localFunctions, ctx, classes);\n';
-			start+='\t\t//------------------\n';
-			for(i in packages)
-			{
-				var path = i[0];
-				var txt = i[1];
-				middle+=txt;
-			}
-		}
-		
-		var end = '\t\t//------------------\n\t\tvar abcOutput = new haxe.io.BytesOutput();\n'+
-		'\t\tformat.abc.Writer.write(abcOutput, ctx.getData());\n'+
-		'\t\tvar abcOutput = new haxe.io.BytesOutput();\n'+
-		'\t\tformat.abc.Writer.write(abcOutput, ctx.getData());\n'+
-		'\t\t//------------------\n'+
-		'\t\tvar swfFile = \n'+
-		'\t\t{\n'+
-			'\t\t\theader: {version:10, compressed:false, width:800, height:600, fps:30, nframes:1},\n'+
-			'\t\t\ttags:\n'+
-			'\t\t\t[\n'+
-				'\t\t\t\tTSandBox({useDirectBlit :false, useGPU:false, hasMetaData:false, actionscript3:true, useNetWork:false}),\n'+
-				'\t\t\t\tTActionScript3(abcOutput.getBytes(), { id : 1, label : "'+initName+'" } ),\n'+
-				'\t\t\t\tTSymbolClass([{cid:0, className:"'+initName+'"}]),\n'+
-				'\t\t\t\tTShowFrame\n'+
-			'\t\t\t]\n'+
-		'\t\t};\n'+
-		'\t\t//------------------\n'+
-		'\t\tvar swfOutput:haxe.io.BytesOutput = new haxe.io.BytesOutput();\n'+
-		'\t\tvar writer = new format.swf.Writer(swfOutput);\n'+
-		'\t\twriter.write(swfFile);\n'+
-		'\t\tvar file = File.write("'+'Main'+'.swf",true);\n'+
-		'\t\tfile.write(swfOutput.getBytes());\n'+
-		'\t\tfile.close();\n'+
-		'\t}\n';
-		
-		if(useFolders)
-		{
-			end+="}";
-		}
-		else
-		{
-			end+='\tfunction initLocalFunctions(localFunctions, ctx, classes)\n'+
-				'\t{\n'+
-					'\t\t\tvar f = null;\n'+
-					'\t\t\t'+localFunctions+'\n'+
 				'\t}\n'+
-				'}';
+			'}\n';
+
+			var data4 = Bytes.ofString(txt);
+			zipdata.add({
+					fileName : outputFolder+'LocalFunctions_abc.hx', 
+					fileSize : data4.length, 
+					fileTime : Date.now(), 
+					compressed : false, 
+					dataSize : data4.length,
+					data : data4,
+					crc32 : format.tools.CRC32.encode(data4),
+					extraFields : new List()
+				});
+			var end = '\t\t//------------------\n\t\tvar abcOutput = new haxe.io.BytesOutput();\n'+
+			'\t\tformat.abc.Writer.write(abcOutput, ctx.getData());\n'+
+			'\t\tvar abcOutput = new haxe.io.BytesOutput();\n'+
+			'\t\tformat.abc.Writer.write(abcOutput, ctx.getData());\n'+
+			'\t\t//------------------\n'+
+			'\t\tvar swfFile = \n'+
+			'\t\t{\n'+
+				'\t\t\theader: {version:10, compressed:false, width:800, height:600, fps:30, nframes:1},\n'+
+				'\t\t\ttags:\n'+
+				'\t\t\t[\n'+
+					'\t\t\t\tTSandBox({useDirectBlit :false, useGPU:false, hasMetaData:false, actionscript3:true, useNetWork:false}),\n'+
+					'\t\t\t\tTActionScript3(abcOutput.getBytes(), { id : 1, label : "'+initName+'" } ),\n'+
+					'\t\t\t\tTSymbolClass([{cid:0, className:"'+initName+'"}]),\n'+
+					'\t\t\t\tTShowFrame\n'+
+				'\t\t\t]\n'+
+			'\t\t};\n'+
+			'\t\t//------------------\n'+
+			'\t\tvar swfOutput:haxe.io.BytesOutput = new haxe.io.BytesOutput();\n'+
+			'\t\tvar writer = new format.swf.Writer(swfOutput);\n'+
+			'\t\twriter.write(swfFile);\n'+
+			'\t\tvar file = File.write("'+'Main'+'.swf",true);\n'+
+			'\t\tfile.write(swfOutput.getBytes());\n'+
+			'\t\tfile.close();\n'+
+			'\t}\n'+
+			'}';
+			var buildFile:String=
+			'-main GenSWF\n'+
+			'-cp C://cygwin/home/jan/hxswfml/src\n'+ 
+			'-x gen_swf';
+			var data1 = Bytes.ofString(buildFile);
+			zipdata.add({
+						fileName : 'build.hxml', 
+						fileSize : data1.length, 
+						fileTime : Date.now(), 
+						compressed : false, 
+						dataSize : data1.length,
+						data : data1,
+						crc32 : format.tools.CRC32.encode(data1),
+						extraFields : new List()
+					});
+			var data2 = Bytes.ofString(start+end);
+			zipdata.add({
+						fileName : 'GenSWF.hx', 
+						fileSize : data2.length, 
+						fileTime : Date.now(), 
+						compressed : false, 
+						dataSize : data2.length,
+						data : data2,
+						crc32 : format.tools.CRC32.encode(data2),
+						extraFields : new List()
+					});
+			var zipBytesOutput = new BytesOutput();
+			var zipWriter = new format.zip.Writer(zipBytesOutput);
+			zipWriter.writeData( zipdata );
+			zip = zipBytesOutput.getBytes();
 		}
-		return start+middle+end;
+		return zip;
 	}
 	private function xml2abc(xml:Xml)//:SWFTag
 	{	
@@ -1885,7 +2001,6 @@ class HxmWriter
 	}
 	private function logStack(msg)
 	{
-		//trace(msg);
 		buf.add("//"+msg+"\n");
 	}
 	inline private function fileToLines(fileName:String):String

@@ -87,6 +87,8 @@ class SwfWriter
 	}
 	public function getSWC():haxe.io.Bytes
 	{
+		return new SwcWriter().write(swcClasses, swfBytes);
+		/*
 		var date : Date = Date.now();
 		var mod : Float = date.getTime();
 
@@ -97,7 +99,7 @@ class SwfWriter
 		var zipBytesOutput = new haxe.io.BytesOutput();
 		var zipWriter = new format.zip.Writer(zipBytesOutput);
 			
-		var data /*: List<format.zip.Data.Entry>*/ = new List();
+		var data : List<format.zip.Data.Entry>= new List();
 		
 		data.push({
 		fileName : 'catalog.xml', 
@@ -122,6 +124,7 @@ class SwfWriter
 		zipWriter.writeData( data );
 			
 		return zipBytesOutput.getBytes();
+		*/
 	}
 	public function getTags():Array<SWFTag>
 	{
@@ -664,46 +667,13 @@ class SwfWriter
 				var header = swfReader.readHeader();
 				var tags : Array<SWFTag> = swfReader.readTagList();
 				swfBytesInput.close();
-				
-				var lookupStrings = ["Boot", "Lib", "Type"];
 				for (tag in tags)
-				{
 					switch (tag)
 					{
 						case TActionScript3(data, ctx): 
-							if(remap == "")
-							{
 								abcTags.push(TActionScript3(data, ctx));
-							}
-							else
-							{
-								#if !cpp
-								var abcReader = new format.abc.Reader(new haxe.io.BytesInput(data));
-								var abcFile = abcReader.read();
-								var cpoolStrings = abcFile.strings;
-								for (i in 0...cpoolStrings.length)
-								{
-									for ( s in lookupStrings)
-									{
-										var regex =  new EReg('\\b' + s + '\\b', '');
-										var str = cpoolStrings[i];
-										if (regex.match(str))
-										{
-											//trace('<-' + cpoolStrings[i]);
-											cpoolStrings[i] = regex.replace(str, s + remap);
-											//trace('->' + cpoolStrings[i]);
-										}
-									}
-								}
-								var abcOutput = new haxe.io.BytesOutput();
-								format.abc.Writer.write(abcOutput, abcFile);
-								var abcBytes = abcOutput.getBytes();
-								abcTags.push(TActionScript3(abcBytes, ctx));
-								#end
-							}
 						default :
 					}
-				}
 				if(abcTags.length == 0)
 					error('ERROR: No ABC files were found inside the given file ' + file + '. TAG : ' + currentTag.toString());
 			}
@@ -1329,41 +1299,6 @@ class SwfWriter
 				return true;
 		}
 		return false;
-	}
-	private function createXML(mod : Float) : String
-	{
-		var xmlString = '';
-		xmlString += '<?xml version="1.0" encoding ="utf-8"?>';
-		xmlString += '<swc xmlns="http://www.adobe.com/flash/swccatalog/9">';
-		xmlString += '<versions>';
-		xmlString += '<swc version="1.2"/>';
-		xmlString += '<haxe version="2.05"/>';
-		xmlString += '</versions>';
-		xmlString += '<features>';
-		xmlString += '<feature-script-deps/>';
-		xmlString += '<feature-files/>';
-		xmlString += '</features>';
-		//xmlString += '<components>';
-		//xmlString += '<component className="Foo" name="foo" uri="http://foo.com" />';
-		//xmlString += '</components>';
-		xmlString += '<libraries>';
-		xmlString += '<library path="library.swf">';
-		for(i in swcClasses)
-		{
-			var dep = i[1].split('.');
-			//xmlString += '<script name="'+i[0]+'" mod="' + Std.string(mod/1000) +'000" >';
-			xmlString += '<script name="' + i[0] + '" mod="0" >';
-			xmlString += '<def id="' + i[0] + '" />';
-			xmlString += '<dep id="' + dep[0] + '.' + dep[1] + ':' + dep[2] + '" type="i" />';
-			xmlString += '<dep id="AS3" type="n" />';
-			xmlString += '</script>';
-		}
-		xmlString += '</library>';
-		xmlString += '</libraries>';
-		xmlString += '<files>';
-		xmlString += '</files>';
-		xmlString += '</swc>';
-		return xmlString;
 	}
 	private function toRGB(i:Int):RGB
 	{
