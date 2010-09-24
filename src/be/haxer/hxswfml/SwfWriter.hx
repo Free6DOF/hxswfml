@@ -43,7 +43,7 @@ class SwfWriter
 	public function new()
 	{
 		#if (swc || air) 
-			new flash.Boot(new flash.display.MovieClip()); //for swc
+			new flash.Boot(new flash.display.MovieClip());
 		#end
 		tagIndex=0;
 		library = new Hash();
@@ -88,43 +88,6 @@ class SwfWriter
 	public function getSWC():haxe.io.Bytes
 	{
 		return new SwcWriter().write(swcClasses, swfBytes);
-		/*
-		var date : Date = Date.now();
-		var mod : Float = date.getTime();
-
-		var xmlBytesOutput = new haxe.io.BytesOutput();
-		xmlBytesOutput.write(haxe.io.Bytes.ofString(createXML(mod)));
-		var xmlBytes = xmlBytesOutput.getBytes();
-			
-		var zipBytesOutput = new haxe.io.BytesOutput();
-		var zipWriter = new format.zip.Writer(zipBytesOutput);
-			
-		var data : List<format.zip.Data.Entry>= new List();
-		
-		data.push({
-		fileName : 'catalog.xml', 
-		fileSize : xmlBytes.length, 
-		fileTime : date, 
-		compressed : false, 
-		dataSize : xmlBytes.length,
-		data : xmlBytes,
-		crc32 : format.tools.CRC32.encode(xmlBytes),
-		extraFields : null});
-			
-		data.push({
-		fileName : 'library.swf', 
-		fileSize : swfBytes.length, 
-		fileTime : date, 
-		compressed : false, 
-		dataSize : swfBytes.length,
-		data : swfBytes,
-		crc32 : format.tools.CRC32.encode(swfBytes),
-		extraFields : null});
-			
-		zipWriter.writeData( data );
-			
-		return zipBytesOutput.getBytes();
-		*/
 	}
 	public function getTags():Array<SWFTag>
 	{
@@ -575,7 +538,7 @@ class SwfWriter
 		else if(extension == 'ttf')
 		{
 			var bytes = getBytes(file);
-			var ranges = getString('charCodes', "32-126", false/*true*/);
+			var ranges = getString('charCodes', "32-125", false/*true*/);
 			var fontWriter = new FontWriter();
 			fontWriter.write(bytes, ranges, 'swf');
 			fontTag = fontWriter.getTag(_id);
@@ -595,7 +558,7 @@ class SwfWriter
 		var textColor : Int = getInt('textColor', 0x000000);
 		var alpha : Int = Std.int(Math.round(getFloat('alpha', 1.0, false)*0xFF));
 		if(alpha >0xFF || alpha <0)
-			error('ERROR: A valid alpha range is 0-1.0 TAG: ' + currentTag.toString());
+			error('ERROR: The valid alpha range is 0 - 1.0 TAG: ' + currentTag.toString());
 		return TDefineEditText(
 		id, 
 		{
