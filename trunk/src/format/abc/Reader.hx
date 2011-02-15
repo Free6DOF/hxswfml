@@ -326,15 +326,25 @@ class Reader {
 			throw "invalid header";
 		var data = new ABCData();
 		data.ints = readList(opr.readInt32);
+		//trace(data.ints);
 		data.uints = readList(opr.readInt32);
+		//trace(data.uints);
 		data.floats = readList(i.readDouble);
+		//trace(data.floats);
 		data.strings = readList(readString);
+		//trace(data.strings);
 		data.namespaces = readList(readNamespace);
+		//trace(data.namespaces);
 		data.nssets = readList(readNsSet);
+		//trace(data.nssets);
 		data.names = readList(callback(readName,-1));
+		//trace(data.names);
 		data.methodTypes = readList2(readMethodType);
+		//trace(data.methodTypes);
 		data.metadatas = readList2(readMetadata);
+		//trace(data.metadatas);
 		data.classes = readList2(readClass);
+		//trace(data.classes);
 		for( c in data.classes ) {
 			c.statics = readIndex();
 			c.staticFields = readList2(readField);

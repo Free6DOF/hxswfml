@@ -43,7 +43,7 @@ class SwfWriter
 	public function new()
 	{
 		#if (swc || air) 
-			new flash.Boot(new flash.display.MovieClip());
+			new flash.Boot();
 		#end
 		tagIndex=0;
 		library = new Hash();

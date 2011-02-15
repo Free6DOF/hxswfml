@@ -46,7 +46,7 @@ class AbcReader
 	{
 		#if (swc || air)
 		Xml.parse("");//for swc
-		new flash.Boot(new MovieClip());//for swc
+		new flash.Boot();//for swc
 		#end
 		
 		debugFile = "";

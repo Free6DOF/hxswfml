@@ -148,15 +148,21 @@ class FontWriter
 			throw 'Cmap4 encoding table not found';
 
 		var charCodes:Array<Int> = new Array();
-		var parts:Array<String> = rangesStr.split('[').join("").split(']').join("").split(' ').join('').split(',');
 		var ranges /*:Array<format.ttf.Data.UnicodeRange>*/ = new Array();
-		
-		for(i in 0... parts.length)
+		if(rangesStr=="all")
 		{
-			if(parts[i].indexOf('-')==-1)
-				ranges.push({start:Std.parseInt(parts[i]), end:Std.parseInt(parts[i])});
-			else
-				ranges.push({start:Std.parseInt(parts[i].split('-')[0]), end:Std.parseInt(parts[i].split('-')[1])});
+			ranges.push({start:0, end:glyphIndexArray.length-1});
+		}
+		else
+		{
+			var parts:Array<String> = rangesStr.split('[').join("").split(']').join("").split(' ').join('').split(',');
+			for(i in 0... parts.length)
+			{
+				if(parts[i].indexOf('-')==-1)
+					ranges.push({start:Std.parseInt(parts[i]), end:Std.parseInt(parts[i])});
+				else
+					ranges.push({start:Std.parseInt(parts[i].split('-')[0]), end:Std.parseInt(parts[i].split('-')[1])});
+			}
 		}
 		switch(outType)
 		{
@@ -221,6 +227,8 @@ class FontWriter
 						shapeWriter.reset(false);
 					
 					case TGlyphComposite(_header, data):
+						if(data[0]!=null && data[1]!=null)
+						{
 						header = _header;
 						
 						var c1 = data[0];
@@ -242,7 +250,7 @@ class FontWriter
 						for(i in dat2.yCoordinates)	dat2bis.yCoordinates.push(c2.ytranslate!=null? i+c2.ytranslate : i);
 						var paths : Array<GlyfPath> = buildPaths(dat1bis).concat(buildPaths(dat2bis));
 						writePaths([outputType, paths, shapeWriter,scale,prec,graphicsBuf,commands,datas,shapeRecords,glyphs,charCode,glyphLayouts,advanceWidth]);
-						
+						}
 					case TGlyphSimple(_header, data):
 						header = _header;
 						var paths:Array<GlyfPath> = buildPaths(data);
