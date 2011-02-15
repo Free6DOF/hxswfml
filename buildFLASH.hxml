@@ -9,17 +9,17 @@ be.haxer.hxswfml.SwfLibWriter
 -cmd echo "swc(Flash) created"
 
 
-#---- swc(Air) ----#
---next
--cp src
-be.haxer.hxswfml.AbcReader
-be.haxer.hxswfml.HxmWriter
-be.haxer.hxswfml.SwfWriter
-be.haxer.hxswfml.SwfLibWriter
--swf9 bin/flash/air/hxswfml_AIR.swc
--lib air
--D air
--cmd echo "swc(Air) created"
+#---- swc(Air) ---- (broken since 2.07)#
+#--next
+#-cp src
+#be.haxer.hxswfml.AbcReader
+#be.haxer.hxswfml.HxmWriter
+#be.haxer.hxswfml.SwfWriter
+#be.haxer.hxswfml.SwfLibWriter
+#-swf9 bin/flash/air/hxswfml_AIR.swc
+#-lib air
+#-D air
+#-cmd echo "swc(Air) created"
 
 
 #---- swf ----#

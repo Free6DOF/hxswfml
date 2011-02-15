@@ -398,6 +398,9 @@ class AbcWriter
 			f.maxScope = Std.parseInt(node.get('maxScope'));
 		else
 			f.maxScope = maxScopeStack;
+			
+		if(node.get('nRegs') != null)
+			f.nRegs = Std.parseInt(node.get('nRegs'));
 									
 		if (currentStack > 0) 
 			nonEmptyStack(node.get('name'));
@@ -1362,7 +1365,7 @@ class AbcWriter
 	}
 	private function logStack(msg)
 	{
-		trace(msg);
+		//trace(msg);
 	}
 	public static function createABC(className:String, baseClass:String):SWFTag
 	{
