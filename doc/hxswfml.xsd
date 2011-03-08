@@ -586,7 +586,7 @@
 	<!--___________________________________________________________-->
 	<xs:element name="DefineABC">
 		<xs:annotation>
-			<xs:documentation>This element will hold a block of ActionscriptByteCode. This code must be compiled actionscript or haXe script by a compiler such as the Flash IDE, Flex compiler or the haXe compiler. Supported file formats are swf and abc. This element will be generated automatically if you provide a class for the base attribute in a SymbolClass element. If the file is an abc file you can supply a name for it. Do not include the tag header (tag or tag length).</xs:documentation>
+			<xs:documentation>This element will hold a block of ActionscriptByteCode. This code must be compiled actionscript or haXe script by a compiler such as the Flash IDE, Flex compiler or the haXe compiler. Supported file formats are xml, swf and abc. This element will be generated automatically if you provide a class for the base attribute in a SymbolClass element. If the file is an abc file you can supply a name for it. Do not include the tag header (tag or tag length). If the file is a swf file you can use the isBoot attribute to include the original symbol class tag that points to the document class inside the abc file.</xs:documentation>
 		</xs:annotation>
 		<xs:complexType>
 			<xs:sequence>
@@ -599,12 +599,13 @@
 			</xs:sequence>
 			<xs:attribute name="file" type="xs:string" use="optional"/>
 			<xs:attribute name="name" type="xs:string" use="optional"/>
+			<xs:attribute name="isBoot" type="xs:boolean" use="optional" default="false"/>
 		</xs:complexType>
 	</xs:element>
 	<!--____________________________________________________________-->
 	<xs:element name="SymbolClass">
 		<xs:annotation>
-			<xs:documentation>This element will provide the means to link a class name to a previously created symbol such as a DefineSound(flash.media.Sound), DefineButton(flash.display.SimpleButton), DefineSprite(flash.display.Sprite, flash.display.MovieClip), DefineFont(flash.text.Font), DefineBinaryData(flash.utils.ByteArray), DefineBitsJPEG(flash.display.Bitmap). If you supply a value for the base attribute then hXswfML will automatically generate and compile a class and will add it in DefineABC element below your SymbolClass element. If you do not supply a value for the base attribute then your script (which you add through a DefineABC element) must have a class with the correct name and that extends the correct base class. In order for the FlashPlayer to know what class should be use as the main entry point(the class that will run when the swf is loaded) you must supply a SymbolClass element with id=0 and the name="MyDocumentClass" (this always name="flash.Boot" in the case of haXe).	</xs:documentation>
+			<xs:documentation>This element will provide the means to link a class name to a previously created symbol such as a DefineSound(flash.media.Sound), DefineButton(flash.display.SimpleButton), DefineSprite(flash.display.Sprite, flash.display.MovieClip), DefineFont(flash.text.Font), DefineBinaryData(flash.utils.ByteArray), DefineBitsJPEG(flash.display.Bitmap). If you supply a value for the base attribute then hXswfML will automatically generate and compile a class and will add it in DefineABC element below your SymbolClass element. If you do not supply a value for the base attribute then your script (which you add through a DefineABC element) must have a class with the correct name and that extends the correct base class. In order for the FlashPlayer to know what class should be use as the main entry point(the class that will run when the swf is loaded) you must supply a SymbolClass element with id=0 and the name="MyDocumentClass" (this is always name="flash.Boot" in the case of haXe).Update: Since haxe 2.07 flash.Boot is replaced by a random name. To overcome the problem of not knowing what the document class is in a haXe swf, a new attribute 'isBoot' was added to the DefineAbc tag. If set to true, hxswfml will add a SymbolClass tag for the document class automatically.</xs:documentation>
 		</xs:annotation>
 		<xs:complexType>
 			<xs:attribute name="base" type="xs:string" use="optional"/>

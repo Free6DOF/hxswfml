@@ -124,7 +124,7 @@ class SwfWriter
 		validElements.set('definesound', ['id', 'file']);
 		validElements.set('definefont', ['id', 'file','charCodes']);
 		validElements.set('defineedittext', ['id', 'initialText', 'fontID', 'useOutlines', 'width', 'height', 'wordWrap', 'multiline', 'password', 'input', 'autoSize', 'selectable', 'border', 'wasStatic', 'html', 'fontClass', 'fontHeight', 'textColor', 'alpha', 'maxLength', 'align', 'leftMargin', 'rightMargin', 'indent', 'leading', 'variableName', 'file']);
-		validElements.set('defineabc', ['file', 'name']);
+		validElements.set('defineabc', ['file', 'name', 'isBoot']);
 		validElements.set('definescalinggrid', ['id', 'x', 'width', 'y', 'height']);
 		validElements.set('placeobject', ['id', 'depth', 'name', 'move', 'x', 'y', 'scaleX', 'scaleY', 'rotate0', 'rotate1', 'blendMode', 'bitmapCache','className', 'hasImage']);
 		validElements.set('removeobject', ['depth']);
@@ -624,6 +624,8 @@ class SwfWriter
 			}
 			else if(StringTools.endsWith(file, '.swf'))
 			{
+				var addDocumentClassSymbol = getBool('isBoot', false, false);
+				var docClass:SWFTag=null;
 				var swf = getBytes(file);
 				var swfBytesInput = new haxe.io.BytesInput(swf);
 				var swfReader = new format.swf.Reader(swfBytesInput);
@@ -635,10 +637,22 @@ class SwfWriter
 					{
 						case TActionScript3(data, ctx): 
 								abcTags.push(TActionScript3(data, ctx));
+						case TSymbolClass(symbols):
+							if(addDocumentClassSymbol)
+								for(s in symbols)
+									if( s.cid==0 )
+										docClass = TSymbolClass([{cid:0, className:s.className}]);
+										
 						default :
 					}
 				if(abcTags.length == 0)
 					error('ERROR: No ABC files were found inside the given file ' + file + '. TAG : ' + currentTag.toString());
+				if(addDocumentClassSymbol)
+				{
+					if(docClass==null)
+						error('ERROR: isBoot="true" but no document class was found inside the given file ' + file + '. TAG : ' + currentTag.toString());
+					abcTags.push(docClass);
+				}
 			}
 			else if(StringTools.endsWith(file, '.xml'))
 			{
