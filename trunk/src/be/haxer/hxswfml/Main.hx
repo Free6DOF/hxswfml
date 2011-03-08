@@ -266,7 +266,7 @@ class Main
 	}
 	static function printUsage()
 	{
-			Lib.println("hxswfml 0.12 - Xml based swf and abc assembler. 2009-2010");
+			Lib.println("hxswfml 0.13 - Xml based swf and abc assembler. 2009-2011");
 			Lib.println("Usage: hxswfml operation in out [args] [options]");
 			Lib.println("");
 		
