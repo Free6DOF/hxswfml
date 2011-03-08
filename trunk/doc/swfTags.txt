@@ -283,7 +283,7 @@
 <DefineABC/>
         Parent: <swf>
         Children: none
-        Attributes:file, name (name will only be parsed and used for abc files)
+        Attributes:file, name (name will only be parsed and used for abc files), isBoot
                 Required: file
                 Default:
         Signature: <DefineABC file="path/to/file/containing/as3bytecode/.swf, .abc" />

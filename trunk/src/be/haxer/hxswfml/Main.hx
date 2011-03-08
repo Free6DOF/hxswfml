@@ -247,7 +247,17 @@ class Main
 					var videoWriter = new VideoWriter();
 					videoWriter.write(File.getBytes(inFile), Std.parseInt(fps), Std.parseInt(width), Std.parseInt(height));
 					File.write(outFile, true).write(videoWriter.getSWF());
-
+					
+				case "swf2hx":
+					if (args.length < 2) printUsage();
+					var inFile = args[1];
+					Lib.println("Under construction");
+					/*
+					var haxeWriter = new HaxeWriter();
+					var outFile = args[2];
+					var outFile = inFile.split(".swf").join(".zip");
+					File.write(outFile,true).write(haxeWriter.write(File.getBytes(inFile)));
+					*/
 				default:
 					Lib.println("Unknown operation: " + args[0]);
 					printUsage();
@@ -337,6 +347,10 @@ class Main
 			Lib.println("  out : swf file");
 			Lib.println("  options : -fps, -width, -height");
 			Lib.println("");
+			
+			Lib.println("swf2hx");
+			Lib.println("  in : swf file");
+			//Lib.println("  out : zip file");
 
 			Sys.exit(1);
 		}

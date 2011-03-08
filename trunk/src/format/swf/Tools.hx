@@ -129,7 +129,11 @@ class Tools {
 	}
 
 	public static function dumpTag( t : SWFTag, ?max : Int ) {
-		var infos = switch( t ) {
+		var infos = switch( t ) 
+		{
+		default:[];
+		}
+		/*
 		case TShowFrame: [];
 		case TEnd: [];
 		case TBackgroundColor(color): [StringTools.hex(color,6)];
@@ -173,6 +177,7 @@ class Tools {
 		
 		case TUnknown(id,data): ["id",id,"data",hex(data,max)];
 		}
+		*/
 		var b = new StringBuf();
 		b.add(Type.enumConstructor(t));
 		b.add("(");
