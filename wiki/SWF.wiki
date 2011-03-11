@@ -27,7 +27,7 @@ Note that although the `<EndFrame/>` tag is available for use, under normal circ
 -Element names are not case sensitive. `<fileattributes/>` is equally valid to `<FileAttributes>`<br>
 -The attribute names are case sensitive.<br>
 -Most tags have some default values set:<br>
-Using `<swf/>` will be compiled as `<swfwidth="800" height="600" fps="30" version="10" compressed="true" frameCount="1" />`<br>
+Using `<swf/>` will be compiled as `<swf width="800" height="600" fps="30" version="10" compressed="true" frameCount="1" />`<br>
 If you only want to change the framerate you would use: `<swf fps="12"/>`<br>
 -Some tags have mandatory attributes which must be set. The program will throw an error and tell you what attribute is missing in which tag.<br>
 
