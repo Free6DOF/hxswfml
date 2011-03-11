@@ -1215,7 +1215,8 @@ class SwfWriter
 			}
 			else if(id != 0 && currentTag.nodeName.toLowerCase() == 'symbolclass')
 			{
-				switch(dictionary[id])
+				var tag = dictionary[id];
+				switch(tag)
 				{
 					case 'definebutton', 'definesprite', 'definebinarydata', 'definefont', 'defineabc', 'definesound', 'definebitsjpeg' : 
 					default : 

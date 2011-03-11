@@ -1559,31 +1559,31 @@
 	<c path="Int"/>
 	<e path="Void"/>
 </f></checkTargetId>
-		<checkFileExistence set="method" line="1227"><f a="file">
+		<checkFileExistence set="method" line="1228"><f a="file">
 	<c path="String"/>
 	<e path="Void"/>
 </f></checkFileExistence>
-		<setCurrentElement set="method" line="1247"><f a="tag">
+		<setCurrentElement set="method" line="1248"><f a="tag">
 	<c path="Xml"/>
 	<e path="Void"/>
 </f></setCurrentElement>
-		<isValidAttribute set="method" line="1261"><f a="a">
+		<isValidAttribute set="method" line="1262"><f a="a">
 	<c path="String"/>
 	<e path="Bool"/>
 </f></isValidAttribute>
-		<isValidBaseClass set="method" line="1271"><f a="c">
+		<isValidBaseClass set="method" line="1272"><f a="c">
 	<c path="String"/>
 	<e path="Bool"/>
 </f></isValidBaseClass>
-		<toRGB set="method" line="1280"><f a="i">
+		<toRGB set="method" line="1281"><f a="i">
 	<c path="Int"/>
 	<t path="format.swf.RGB"/>
 </f></toRGB>
-		<toRGBA set="method" line="1288"><f a="c">
+		<toRGBA set="method" line="1289"><f a="c">
 	<c path="String"/>
 	<t path="format.swf.RGBA"/>
 </f></toRGBA>
-		<error set="method" line="1297"><f a="msg">
+		<error set="method" line="1298"><f a="msg">
 	<c path="String"/>
 	<e path="Void"/>
 </f></error>
