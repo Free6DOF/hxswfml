@@ -131,9 +131,6 @@ class Tools {
 	public static function dumpTag( t : SWFTag, ?max : Int ) {
 		var infos = switch( t ) 
 		{
-		default:[];
-		}
-		/*
 		case TShowFrame: [];
 		case TEnd: [];
 		case TBackgroundColor(color): [StringTools.hex(color,6)];
@@ -156,7 +153,8 @@ class Tools {
 		case TBitsLossless(l),TBitsLossless2(l): ["id",l.cid,"color",l.color,"width",l.width,"height",l.height,"data",hex(l.data,max)];
 		case TJPEGTables(data): ["data", hex(data,max)];
 		case TBitsJPEG(id, jdata): 
-			switch (jdata) {
+			var d = jdata;
+			switch (d) {
 			case JDJPEG1(data): ["id", id, "ver", 1, "data", hex(data,max)];
 			case JDJPEG2(data): ["id", id, "ver", 2, "data", hex(data,max)];
 			case JDJPEG3(data, mask): ["id", id, "ver", 3, "data", hex(data,max), "mask", hex(mask,max)];
@@ -177,7 +175,7 @@ class Tools {
 		
 		case TUnknown(id,data): ["id",id,"data",hex(data,max)];
 		}
-		*/
+		
 		var b = new StringBuf();
 		b.add(Type.enumConstructor(t));
 		b.add("(");

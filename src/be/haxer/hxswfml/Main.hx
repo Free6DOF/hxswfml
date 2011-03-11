@@ -249,15 +249,17 @@ class Main
 					File.write(outFile, true).write(videoWriter.getSWF());
 					
 				case "swf2hx":
-					if (args.length < 2) printUsage();
-					var inFile = args[1];
 					Lib.println("Under construction");
 					/*
+					if (args.length < 2) printUsage();
+					var inFile = args[1];
+
 					var haxeWriter = new HaxeWriter();
 					var outFile = args[2];
 					var outFile = inFile.split(".swf").join(".zip");
 					File.write(outFile,true).write(haxeWriter.write(File.getBytes(inFile)));
 					*/
+					
 				default:
 					Lib.println("Unknown operation: " + args[0]);
 					printUsage();
