@@ -1,4 +1,5 @@
-{{{<FileAttributes/>
+{{{
+<FileAttributes/>
         Parent: <swf>
         Children: none
         Attributes:actionscript3,useNetwork,useDirectBlit,useGPU,hasMetaData
