@@ -12,7 +12,6 @@ The following classes can be linked to a tag/asset inside your swf:<br>
 Check also the example in the downloads directory : [http://hxswfml.googlecode.com/files/SymbolClass_base_test.zip]
 {{{
 <swf>
-	<Header/>
 	<FileAttributes />
 	
 	<!--flash.display.Bitmap-->
