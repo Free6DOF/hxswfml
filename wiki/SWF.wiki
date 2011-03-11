@@ -1,3 +1,6 @@
+check out the examples:
+[http://code.google.com/p/hxswfml/downloads/detail?name=examples.zip]
+
 1)SWF general:<br>
 [http://www.adobe.com/devnet/swf/pdf/swf_file_format_spec_v10.pdf] (see pages 26 to 33)<br>
 
