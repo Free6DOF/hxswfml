@@ -1,21 +1,11 @@
-{{{
-<Header/>
-        Parent: <swf>
-        Children: none
-        Attributes: width,height,fps,version,compressed,frameCount
-                Required: none
-                Default:width=800, height=600, fps=30, version=10, compressed=true, frameCount=1
-        Signature: <Header width="800" height="600" fps="30" version="10" compressed="true" frameCount="1" />
-        Usage: <Header/>
-
-<FileAttributes/>
+{{{<FileAttributes/>
         Parent: <swf>
         Children: none
         Attributes:actionscript3,useNetwork,useDirectBlit,useGPU,hasMetaData
                 Required: none
                 Default: actionscript3=true, useNetwork=false, useDirectBlit=false, useGPU=false, hasMetaData=false
         Signature: <FileAttributes actionscript3="true" useNetwork="false" useDirectBlit="false" useGPU="false" hasMetaData="false" />
-        Usage: <FileAttributes/> (You must use this tag right after the <Header/> tag if the final swf contains AS3)
+        Usage: <FileAttributes/>
 
 <SetBackgroundColor/>
         Parent: <swf>
@@ -194,11 +184,11 @@
 <DefineSprite></DefineSprite>
         Parent: <swf>
         Children: <PlaceObject/>,<RemoveObject/>,<StartSound/>,<FrameLabel/>,<ShowFrame/>,<EndFrame/>
-        Attributes: id
+        Attributes: id, frameCount, file
                 Required: id
-                Default: frameCount=1
+                Default: frameCount=1, file=""
         Signature: 
-        <DefineSprite id="?" frameCount="1">
+        <DefineSprite id="?" frameCount="1" file="./path/to/file *.flv">
                 <PlaceObject id="?" depth="?" name="" move="false" x="0" y="0" scaleX="1.0" scaleY="1.0" rotate0="0.0" rotate1="0.0" />
                 <RemoveObject depth="?" />
                 <StartSound id="?" stop="false" loopCount="0" />
@@ -276,28 +266,29 @@
         Parent: <swf>
         Children: none
         Attributes:
-                Required: id, file 
-                Default:
-        Signature: <DefineFont id="?" file="path/to/swf/containing/font.swf" />
-        Signature: <DefineFont id="1" file="arial.swf" />
+                Required: id, file, charCodes
+                Default: charCodes="20-126"
+        Signature: <DefineFont id="?" file="path/to/file/ *.swf, *.ttf" />
+        Usage: <DefineFont id="1" file="arial.ttf" charCodes="0-10, 20-126, 130" />
 
 <DefineEditText/>
         Parent: <swf>
         Children: none
-        Attributes:id, width, height, wordWrap, multiline, password, input, autoSize, selectable, border, wasStatic, html, useOutlines, fontID, fontClass, fontHeight, textColor, maxLength, align, leftMargin, rightMargin, indent, leading, variableName, initialText, file
+        Attributes:id, width, height, wordWrap, multiline, password, input, autoSize, selectable, border, wasStatic, html, useOutlines, fontID, fontClass, fontHeight, textColor, alpha, maxLength, align, leftMargin, rightMargin, indent, leading, variableName, initialText, file
                 Required: id 
-                Default:useOutlines=false, fontID=null, initialText="", file="", width=100, height=100, wordWrap=true, multiline=true, password=false, input=false, autoSize=false, selectable=false, border=false, wasStatic=false, html=false, fontClass="", fontHeight=12, textColor=0x000000ff, maxLength=0, align=0(/1/2/3), leftMargin=0, rightMargin=0, indent=0, leading=0, variableName=""
+                Default:useOutlines=false, fontID=null, initialText="", file="", width=100, height=100, wordWrap=true, multiline=true, password=false, input=false, autoSize=false, selectable=false, border=false, wasStatic=false, html=false, fontClass="", fontHeight=12, textColor=0x000000, alpha=1.0, maxLength=0, align=0(/1/2/3), leftMargin=0, rightMargin=0, indent=0, leading=0, variableName=""
         Signature: <DefineEditText id="?" fontID="?(if useOutlines)" useOutlines="false" initialText="" file="" width="100" height="100" wordWrap="true" multiline="true" password="false" input="false" autoSize="false" selectable="false" border="false" wasStatic="false" html="false" fontClass="" fontHeight="12" textColor="0x000000ff" maxLength="0" align="0" leftMargin="0" rightMargin="0" indent="0" leading="0" variableName="" />
-        Usage: <DefineEditText id="1" initialText=""/>
+        Usage: <DefineEditText id="1" initialText="hello world"/>
 
 <DefineABC/>
         Parent: <swf>
         Children: none
-        Attributes:file
+        Attributes:file, name (name will only be parsed and used for abc files), isBoot
                 Required: file
                 Default:
-        Signature: <DefineABC file="path/to/swf/containing/abc.swf" />
-        Usage: <DefineABC file="movie_with_abc.swf" />
+        Signature: <DefineABC file="path/to/file/containing/as3bytecode/.swf, .abc" />
+        Usage:	<DefineABC file="movie_with_abc.swf" />
+								<DefineABC file="Main.abc" name="Main"/>
 
 <DefineScalingGrid />
         Parent: <swf>
@@ -343,7 +334,7 @@
 <SymbolClass/>
         Parent: <swf>
         Children: none
-        Attributes:id, class
+        Attributes:id, class, base
                 Required: id, class
                 Default:
         Signature: <SymbolClass id="?" class="?" base=""/>
@@ -351,7 +342,16 @@
         <SymbolClass id="0" class="flash.boot" />
         <SymbolClass id="1" class="com.example.MyMovieClip" />
         <SymbolClass id="1" class="com.example.MyMovieClip" base="flash.display.MovieClip"/>
-
+				
+<ExportAssets/>
+        Parent: <swf>
+        Children: none
+        Attributes:id, class
+                Required: id, class
+                Default:
+        Signature: <SymbolClass id="?" class="?" />
+        Usage: 
+        <SymbolClass id="0" class="MyMovieClip" />
 
 <FrameLabel/>
         Parent: <swf> or <DefineSprite>
@@ -375,19 +375,31 @@
         Attributes:none
         Signature: <EndFrame />
         Usage: <EndFrame />
+				
+<Custom/>
+				Parent: can be in any element that allows children
+				Children: none
+				Attributes: tagId, data, file, comment (if tagId is absent, tagId AND tagLength must be present in the data or file)
+                Required: data or file
+                Default:
+        Signature: <Custom tagId="?" file="path/to/file/containing/tagbody bytes" data="?" comment=""/>
+        Usage: 
+				<Custom file="./assets/DoABC.bytes" comment="entire DoABC tag"/>
+        <Custom tagId="83" file="./assets/DefineShape4.bytes" comment="DefineShape4 tag with id:1 and contents:red square with black border"/>
+        <Custom tagId="12" data="0x07,0x00" comment="DoAction tag with following code: 0x07, 0x00 means stop(); in AS2"/>
 
 <swf></swf>
         Parent: none (root/document element)
         Children:
-                <Header/>,<FileAttributes/>,<SetBackgroundColor/>,<ScriptLimits/>,<MetaData/>
+                <FileAttributes/>,<SetBackgroundColor/>,<ScriptLimits/>,<MetaData/>
                 <DefineBitsJPEG/>,<DefineShape/>,<DefineSprite>,<DefineButton>,<DefineBinaryData/>,<DefineSound/>,<DefineFont/>,<DefineEditText/>,<DefineScalingGrid/>,<DefineABC/>,
                 <PlaceObject/>,<RemoveObject/>,<StartSound/>,<SymbolClass/>
                 <FrameLabel/><ShowFrame/><EndFrame/>
-        Attributes: none
+        Attributes: width,height,fps,version,compressed,frameCount
+								Required: none
+								Default:width=800, height=600, fps=30, version=10, compressed=true, frameCount=1
         Signature:
-<?xml version="1.0" ?>
-<swf>
-        <Header width="800" height="600" fps="30" version="10" compressed="true" frameCount="1" />
+<swf width=800, height="600", fps="30", version="10", compressed="true", frameCount="1" >
         
         <FileAttributes actionscript3="true" useNetwork="false" useDirectBlit="false" useGPU="false" hasMetaData="false" />
         
@@ -403,9 +415,9 @@
         
         <DefineSound id="?" file="path/to/file *.mp3" />
         
-        <DefineFont id="?" file="path/to/swf/containing/font.swf" />
+        <DefineFont id="?" file="path/to/file/ *.swf, *.ttf" charCodes="32-126"/>
         
-        <DefineEditText id="?" initialText="" fontID="" useOutlines="false"  width="100" height="100" wordWrap="true" multiline="true" password="false" input="false" autoSize="false" selectable="false" border="false" wasStatic="false" html="false" fontClass="" fontHeight="12" textColor="0x000000ff" maxLength="0" align="0" leftMargin="0" rightMargin="0" indent="0" leading="0" variableName="" file="" />
+        <DefineEditText id="?" initialText="" fontID="" useOutlines="false"  width="100" height="100" wordWrap="true" multiline="true" password="false" input="false" autoSize="false" selectable="false" border="false" wasStatic="false" html="false" fontClass="" fontHeight="12" textColor="0x000000" alpha="1.0" maxLength="0" align="0" leftMargin="0" rightMargin="0" indent="0" leading="0" variableName="" file="" />
 
         <DefineShape id="?" bitmapId="?" x="0" y="0" scaleX="1.0" scaleY="1.0" rotate0="0.0" rotate1="0" repeat="false" smooth="false" />
         
@@ -426,11 +438,20 @@
                 <EndFill />
         </DefineShape>
         
-        <DefineSprite id="?" frameCount="1">
+        <DefineSprite id="?" frameCount="1" file="path/to/file/ *.flv">
                 <PlaceObject id="?" depth="?" name="" move="false" x="0" y="0" scaleX="1.0" scaleY="1.0" rotate0="0.0" rotate1="0.0" />
                 <RemoveObject depth="?" />
                 <StartSound id="?" stop="false" loopCount="0" />
                 <FrameLabel name="?" anchor="false" />
+								<Custom tagId="?" file="path/to/file/containing/tagbody bytes" data="?" comment=""/>
+								<Tween depth="?" frameCount="?">
+									<Tw prop="x" start="?" end="?" />
+									<Tw prop="y" start="?" end="?" />
+									<Tw prop="scaleX" start="?" end="?" />
+									<Tw prop="scaleY" start="?" end="?" />
+									<Tw prop="rotate0" start="?" end="?" />
+									<Tw prop="rotate1" start="?" end="?" />
+                </Tween>
                 <ShowFrame />
         </DefineSprite>
         
@@ -454,6 +475,8 @@
         <SymbolClass id="?" class="?" base="" />
         
         <FrameLabel name="?" anchor="false" />
+				
+				<Custom tagId="?" file="path/to/file/containing/tagbody bytes" data="?" comment=""/>
         
         <ShowFrame />
         
