@@ -763,7 +763,7 @@ class Char#0 extends flash.display.Shape
 		
 		if(newApi)
 		{
-			graphics.drawPath(flash.Lib.vectorOfArray(commands), flash.Lib.vectorOfArray(data), flash.display.GraphicsPathWinding.EVEN_ODD);
+			graphics.drawPath(flash.Vector.ofArray(commands), flash.Vector.ofArray(data), flash.display.GraphicsPathWinding.EVEN_ODD);
 		}
 		else
 		{
