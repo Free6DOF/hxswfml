@@ -17,7 +17,23 @@ import haxe.io.BytesOutput;
  * ...
  * @author Jan J. Flanders
  */
-
+typedef GlyphData=
+{
+	var charCode:Int;
+	var ascent:Float;
+	var descent:Float;
+	var leading:Float;
+	var advanceWidth:Float;
+	var leftsideBearing:Float;
+	var xMin:Float;
+	var xMax:Float;
+	var yMin:Float;
+	var yMax:Float;
+	var _width:Float;
+	var _height:Float;
+	var commands:Array<Int>;
+	var data:Array<Float>;
+}
 class FontWriter
 {
 	public var fontName :String;
@@ -25,6 +41,7 @@ class FontWriter
 	var zip:Bytes;
 	var swf:Bytes;
 	var path:String;
+	var hash:IntHash<GlyphData>;
 	var chars:Array<Int>;
 	var outputType:String;
 	var fontData3:FontData;
@@ -166,7 +183,7 @@ class FontWriter
 		}
 		switch(outType)
 		{
-			case 'swf', 'zip', 'path': outputType = outType;
+			case 'swf', 'zip', 'path', 'hash': outputType = outType;
 			default : throw 'Unknown output type';
 		}
 		
@@ -183,6 +200,9 @@ class FontWriter
 		
 		//path setup
 		var charObjects:Array<Dynamic>=new Array();
+		
+		//hash setup
+		var charHash:IntHash<GlyphData> = new IntHash();
 		
 		var importsBuf:StringBuf=new StringBuf();
 		var graphicsBuf:StringBuf=new StringBuf();
@@ -260,7 +280,7 @@ class FontWriter
 					header = {numberOfContours:0, xMin:0, xMax:0, yMin:0, yMax:0};
 				
 				//path output:
-				if(outputType=="path")
+				if(outputType=="path" || outputType=="hash")
 				{
 					var charObj = 
 					{
@@ -280,6 +300,7 @@ class FontWriter
 						data:datas
 					}
 					charObjects.push(charObj);
+					charHash.set(Std.int(j), charObj);
 					//charObjects["char"+String.fromCharCode(j)] = charObj;
 				}
 				//zip output:
@@ -463,6 +484,10 @@ class FontWriter
 			buf.add('addChild(s);');
 			path = buf.toString();
 		}
+		if(outputType=='hash')
+		{
+			hash = charHash;
+		}
 	}
 	function writePaths(arr:Array<Dynamic>):Void //outputType:String, paths:Array<GlyfPath>, shapeWriter:ShapeWriter, scale:Float, prec:Int, graphicsBuf:StringBuf, commands:Array<Int>, datas:Array<Float>, shapeRecords:Array<ShapeRecord>, glyphs:Array<format.swf.Data.Font2GlyphData>, charCode:Int, glyphLayouts:Array<FontLayoutGlyphData>, advanceWidth:Int):Void
 	{
@@ -503,7 +528,7 @@ class FontWriter
 											datas.push(x);
 											datas.push(y);
 												
-										case 'path':
+										case 'path', 'hash':
 											var x = Std.int((path.x * scale)*prec)/prec;
 											var y = Std.int((1024 - path.y * scale)*prec)/prec;
 											commands.push(1);
@@ -528,7 +553,7 @@ class FontWriter
 											datas.push(x);
 											datas.push(y);
 											
-										case 'path':
+										case 'path', 'hash':
 											var x = Std.int((path.x * scale)*prec)/prec;
 											var y = Std.int((1024 - path.y * scale)*prec)/prec;
 											commands.push(2);
@@ -561,7 +586,7 @@ class FontWriter
 											datas.push(x);
 											datas.push(y);
 											
-										case 'path':
+										case 'path', 'hash':
 											var cx = Std.int((path.cx * scale)*prec)/prec;
 											var cy = Std.int((1024 - path.cy * scale)*prec)/prec;
 											var x = Std.int((path.x * scale)*prec)/prec;
@@ -594,6 +619,14 @@ class FontWriter
 	public function getZip():Bytes
 	{
 		return zip;
+	}
+	public function getHash(?serialize:Bool=false):Dynamic
+	{
+		if(serialize)
+		{
+			return haxe.Serializer.run(hash);
+		}
+		return hash;
 	}
 	public function getTag(id:Int):SWFTag
 	{

@@ -29,6 +29,7 @@ class ShapeWriter
 	var _lastY:Float;
 	var _stateFillStyle:Bool;
 	var _stateLineStyle:Bool;
+	public var shapeType:Int;
 	
 	public function new(?forceShape3:Bool=false)
 	{
@@ -137,7 +138,7 @@ class ShapeWriter
 		if (width > 255.0) width = 255.0;
 		if (width <= 0.0) width = 0.05;
 
-		if(pixelHinting==null && scaleMode==null && caps==null && noClose==null && _shapeType==3 || _forceShape3)
+		if(pixelHinting==null && scaleMode==null && caps==null && noClose==null && _shapeType<4 || _forceShape3)
 		{
 			_lineStyles.push({ width:Math.round(toFloat5(width)*20), data:LSRGBA(hexToRgba(color, alpha)) });
 		}
@@ -358,9 +359,16 @@ class ShapeWriter
 		var _shapeWithStyleData = { fillStyles:_fillStyles, lineStyles:_lineStyles, shapeRecords:_shapeRecords };
 		if(useWinding!=null || useNonScalingStroke!=null || useScalingStroke!=null) 
 			_shapeType=4;
-		if (_shapeType==3 || _forceShape3) 
+		if (_shapeType<4 || _forceShape3) 
 		{
-			return TShape(id, SHDShape3(_rect, _shapeWithStyleData));
+			var out = null;
+			switch(shapeType)
+			{
+				case 1: out = TShape(id, SHDShape1(_rect, _shapeWithStyleData));
+				case 2: out = TShape(id, SHDShape2(_rect, _shapeWithStyleData));
+				case 3: out = TShape(id, SHDShape3(_rect, _shapeWithStyleData));
+			}
+			return out;
 		}
 		else
 		{
