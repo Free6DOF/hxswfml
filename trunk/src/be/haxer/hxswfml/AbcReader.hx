@@ -1161,7 +1161,6 @@ class AbcReader
 	}
 	private function getNameType(name:Name):String
 	{
-		
 		var __namespace = '';
 		var __name = '';
 		switch (name)
@@ -1172,16 +1171,26 @@ class AbcReader
 					
 			case NMulti( name, nsset ):
 				__name = getString(name);
-					for(n in abcFile.names)
-					{
-						switch(n)
+				switch(nsset)
+				{
+					case Idx(index):
+						var nset=abcFile.nssets[index-1];
+						if(nset.length==1)
 						{
-							default:
-							case NName(nname, nns):
-								if(getString(nname)== __name)
-									__namespace = getNamespace(nns);
+							__namespace = getNamespace(nset[0]);
+							return __namespace + cutComma(__name);
 						}
+				}
+				for(n in abcFile.names)
+				{
+					switch(n)
+					{
+						default:
+						case NName(nname, nns):
+							if(getString(nname)== __name)
+								__namespace = getNamespace(nns);
 					}
+				}
 			case NRuntime( name):
 				__name = getString(name);
 				

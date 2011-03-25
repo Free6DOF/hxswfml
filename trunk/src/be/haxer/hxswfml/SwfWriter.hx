@@ -101,7 +101,7 @@ class SwfWriter
 		validElements.set('setbackgroundcolor', ['color']);
 		validElements.set('scriptlimits', ['maxRecursionDepth', 'scriptTimeoutSeconds']);
 		validElements.set('definebitsjpeg', ['id', 'file']);
-		validElements.set('defineshape', ['id', 'bitmapId', 'x', 'y', 'scaleX', 'scaleY', 'rotate0', 'rotate1', 'repeat', 'smooth']);
+		validElements.set('defineshape', ['id', 'bitmapId', 'x', 'y', 'scaleX', 'scaleY', 'rotate0', 'rotate1', 'repeat', 'smooth', 'shapeType']);
 		validElements.set('beginfill',  ['color', 'alpha']);
 		validElements.set('begingradientfill', ['colors', 'alphas', 'ratios', 'type', 'x', 'y', 'scaleX', 'scaleY', 'rotate0', 'rotate1']);
 		validElements.set('beginbitmapfill', ['bitmapId', 'x', 'y', 'scaleX', 'scaleY', 'rotate0', 'rotate1', 'repeat', 'smooth']);
@@ -271,7 +271,10 @@ class SwfWriter
 		}
 		else
 		{
-			var shapeWriter = new ShapeWriter();
+			var shapeType:Int = getInt('shapeType', 4, false, false, false);
+			
+			var shapeWriter = new ShapeWriter(shapeType<4);
+			shapeWriter.shapeType=shapeType;
 			for(cmd in currentTag.elements())
 			{
 				setCurrentElement(cmd);

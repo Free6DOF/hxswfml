@@ -231,6 +231,16 @@ class Main
 					var fontWriter = new FontWriter();
 					fontWriter.write(File.getBytes(inFile), ranges, 'path');
 					File.write(fontWriter.fontName+'.path',false).writeString(fontWriter.getPath());
+					
+				case "ttf2hash":
+					if (args.length < 2) printUsage();
+					var inFile = args[1];
+					var ranges = getArgValue('-glyphs');
+					if (ranges == null) ranges = "32-126";
+
+					var fontWriter = new FontWriter();
+					fontWriter.write(File.getBytes(inFile), ranges, 'hash');
+					File.write(fontWriter.fontName+'.hash',false).writeString(fontWriter.getHash(true));
 				
 				case "flv2swf":
 					if (args.length < 3) printUsage();
@@ -248,9 +258,10 @@ class Main
 					videoWriter.write(File.getBytes(inFile), Std.parseInt(fps), Std.parseInt(width), Std.parseInt(height));
 					File.write(outFile, true).write(videoWriter.getSWF());
 					
+					/*
 				case "swf2hx":
 					Lib.println("Under construction");
-					/*
+					
 					if (args.length < 2) printUsage();
 					var inFile = args[1];
 
@@ -344,15 +355,21 @@ class Main
 			Lib.println("  options : -glyphs");
 			Lib.println("");
 			
+			Lib.println("ttf2hash");
+			Lib.println("  in : ttf file");
+			Lib.println("  options : -glyphs");
+			Lib.println("");
+			
 			Lib.println("flv2swf");
 			Lib.println("  in : flv file (audioCodecs:mp3, videoCodecs: VP6, VP6+alpha, Sorenson H.263)");
 			Lib.println("  out : swf file");
 			Lib.println("  options : -fps, -width, -height");
 			Lib.println("");
-			
+			/*
 			Lib.println("swf2hx");
 			Lib.println("  in : swf file");
 			//Lib.println("  out : zip file");
+			*/
 
 			Sys.exit(1);
 		}
