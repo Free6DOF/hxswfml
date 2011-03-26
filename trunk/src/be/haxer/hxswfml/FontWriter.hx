@@ -789,14 +789,16 @@ class Char#0 extends flash.display.Shape
 
 #1
 	
-	public function new(drawEM:Bool=false, drawBbox:Bool=false, newApi:Bool=false, noFill:Bool=false)
+	public function new(color:Int=0, drawEM:Bool=false, drawBbox:Bool=false, newApi:Bool=false, noFill:Bool=false)
 	{
 		super();
-		noFill?graphics.lineStyle(1, 0):graphics.beginFill(0, 1);
-		
+		noFill?graphics.lineStyle(1, 0):graphics.beginFill(color, 1);
+		#if !flash newApi=false; #end
 		if(newApi)
 		{
+			#if flash
 			graphics.drawPath(flash.Vector.ofArray(commands), flash.Vector.ofArray(data), flash.display.GraphicsPathWinding.EVEN_ODD);
+			#end
 		}
 		else
 		{
@@ -853,14 +855,14 @@ class Main extends Sprite
 		
 		for(i in 0...charCodes.length)
 		{
-			var glyph1:Shape = Type.createInstance(Type.resolveClass("Char"+charCodes[i]),[false,false,true,false]); 
+			var glyph1:Shape = Type.createInstance(Type.resolveClass("Char"+charCodes[i]),[0,false,false,true,false]); 
 			if(index%16==0) index=0;
 			glyph1.x = index*(50+hSpace);
 			glyph1.y = Std.int(i/16)*(50+vSpace);
 			glyph1.scaleX = glyph1.scaleY=scale;
 			container1.addChild(glyph1);
 			
-			var glyph2:Shape = Type.createInstance(Type.resolveClass("Char"+charCodes[i]),[true,true,true,true]);
+			var glyph2:Shape = Type.createInstance(Type.resolveClass("Char"+charCodes[i]),[0,true,true,true,true]);
 			glyph2.x = glyph1.x;
 			glyph2.y = glyph1.y;
 			glyph2.scaleX = glyph2.scaleY=scale;
@@ -887,7 +889,7 @@ class Main extends Sprite
 '
 Main
 -main Main
--swf9 #0.swf
+-swf #0.swf
 -swf-header 1024:900:30:FFFFFF
 -swf-version 10';
 }
