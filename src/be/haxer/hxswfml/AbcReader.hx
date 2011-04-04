@@ -1284,7 +1284,7 @@ class AbcReader
 		var out:String = (debugFileName=='<null>')? "" : debugFileName;
 		return out;
 	}
-	inline private function urlEncode(str:String):String
+	#if !cpp inline #end private function urlEncode(str:String):String
 	{
 		//return StringTools.urlEncode(str);
 		 return str.split('&').join('&amp;').split('"').join('&quot;').split('<').join('&lt;').split('\t').join('\\t').split('\r').join('\\r').split('\n').join('\\n').split(String.fromCharCode(0x1b)).join('\\u001b');
