@@ -168,6 +168,7 @@
 		<xs:complexType>
 			<xs:attribute name="file" type="xs:string" use="required"/>
 			<xs:attribute name="link" type="xs:string" use="optional"/>
+			<xs:attribute name="isBoot" type="xs:boolean" use="optional" default="false"/>
 		</xs:complexType>
 	</xs:element>
 </xs:schema>

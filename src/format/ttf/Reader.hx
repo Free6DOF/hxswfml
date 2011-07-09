@@ -691,7 +691,7 @@ class Reader
 		for(i in 0...glyphIndexArray.length)
 			if(glyphIndexArray[i]!=null && glyphIndexArray[i].index == index)
 				return glyphIndexArray[i].charCode;
-		throw 'charcode not found for index '+ index;
+		/* throw trace( 'charcode not found for glyph index '+ index + ' (Replaced by 0 in kerning table).');*/ 
 		return 0;
 	}
 	//kern (kerning) table

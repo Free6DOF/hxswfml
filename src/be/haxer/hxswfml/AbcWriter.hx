@@ -40,6 +40,8 @@ class AbcWriter
 		swcClasses = new Array();
 		lastBytepos = 0;
 		var abcfiles:Xml = Xml.parse(xml).firstElement();
+		if (abcfiles == null)
+			throw("invalid input xml");
 		if(abcfiles.nodeName.toLowerCase()=="abcfile")
 		{
 			swfTags.push(xml2abc(abcfiles));
