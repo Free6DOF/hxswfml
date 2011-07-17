@@ -579,6 +579,7 @@ enum FontData {
 	FDFont1(data: Font1Data);
 	FDFont2(hasWideChars: Bool, data: Font2Data);
 	FDFont3(data: Font2Data);
+	FDFont4(data: Font4Data);
 }
 
 enum FontInfoData {
@@ -623,7 +624,14 @@ typedef Font2Data = {
 	var glyphs: Array<Font2GlyphData>;
 	var layout: Null<FontLayoutData>;
 }
-
+typedef Font4Data = 
+{
+	var hasSFNT:Bool;
+	var isItalic: Bool;
+	var isBold: Bool;
+	var name: String;
+	var bytes : haxe.io.Bytes;//OpenType CFF tables
+}
 typedef FontKerningData = {
 	var charCode1: Int;
 	var charCode2: Int;

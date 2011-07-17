@@ -921,6 +921,51 @@ class Reader
 		*/
 		return os2Data;
 	}
+	public static function readOTF(i)
+	{
+		var input: haxe.io.Input = i;
+		input.bigEndian=true;
+		var header = 
+		{
+			sfntVersion : input.readInt32(),
+			numTables : input.readUInt16(),
+			searchRange : input.readUInt16(),
+			entrySelector : input.readUInt16(),
+			rangeShift : input.readUInt16()
+		};
+		var tables = new Array();
+		for(i in 0...header.numTables) 
+		{
+			var tableId = input.readInt32();
+
+			var tableName="";
+			var bytesOutput = new haxe.io.BytesOutput();
+			bytesOutput.bigEndian=true;
+			bytesOutput.writeInt32(tableId);
+			var bytesName = bytesOutput.getBytes();
+			tableName = new haxe.io.BytesInput(bytesName).readString(4);
+			if(tableName=='name') tableName = '_name';
+
+			var checksum = input.readInt32();
+			var offset = input.readInt32();
+			var length =input.readInt32();
+			//var bytes = null;//Bytes.alloc(length).sub(haxe.Int32.toInt(offset), haxe.Int32.toInt(length));
+			tables[i] = 
+			{
+				tableId : tableId,
+				tableName : tableName,
+				checksum : checksum,
+				offset : offset,
+				length : length,
+				bytes : null
+			};
+		}
+		return 
+		{
+			header : header,
+			tables : tables
+		};
+	}
 }
 typedef CmapEntry =
 {

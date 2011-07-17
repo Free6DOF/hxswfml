@@ -265,7 +265,7 @@
 <DefineFont/>
         Parent: <swf>
         Children: none
-        Attributes:
+        Attributes: id, file, charCodes, name(required if otf)
                 Required: id, file, charCodes
                 Default: charCodes="20-126"
         Signature: <DefineFont id="?" file="path/to/file/ *.swf, *.ttf" />

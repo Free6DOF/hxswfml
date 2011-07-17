@@ -39,19 +39,26 @@ class AbcWriter
 		swfTags = new Array();
 		swcClasses = new Array();
 		lastBytepos = 0;
-		var abcfiles:Xml = Xml.parse(xml).firstElement();
+		var root = Xml.parse(xml); 
+		if (root == null)
+			throw("Invalid input xml");
+		var abcfiles:Xml = root.firstElement();
 		if (abcfiles == null)
-			throw("invalid input xml");
+			throw("Invalid input xml");
 		if(abcfiles.nodeName.toLowerCase()=="abcfile")
 		{
 			swfTags.push(xml2abc(abcfiles));
 		}
-		else
+		else if(abcfiles.nodeName.toLowerCase()=="abcfiles")
 		{
 			for (abcfile in abcfiles.elements())
 			{
 				swfTags.push(xml2abc(abcfile));
 			}
+		}
+		else
+		{
+			throw("Invalid element. Expecting <abcfile> or <abcfiles>");
 		}
 		return Type.enumParameters(swfTags[0])[0];
 	}
