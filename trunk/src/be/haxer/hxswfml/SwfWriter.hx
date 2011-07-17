@@ -122,7 +122,7 @@ class SwfWriter
 		validElements.set('buttonstate', ['id', 'depth', 'hit', 'down', 'over', 'up', 'x', 'y', 'scaleX', 'scaleY', 'rotate0', 'rotate1']);
 		validElements.set('definebinarydata', ['id', 'file']);
 		validElements.set('definesound', ['id', 'file']);
-		validElements.set('definefont', ['id', 'file','charCodes']);
+		validElements.set('definefont', ['id', 'file','charCodes', 'name']);
 		validElements.set('defineedittext', ['id', 'initialText', 'fontID', 'useOutlines', 'width', 'height', 'wordWrap', 'multiline', 'password', 'input', 'autoSize', 'selectable', 'border', 'wasStatic', 'html', 'fontClass', 'fontHeight', 'textColor', 'alpha', 'maxLength', 'align', 'leftMargin', 'rightMargin', 'indent', 'leading', 'variableName', 'file']);
 		validElements.set('defineabc', ['file', 'name', 'isBoot']);
 		validElements.set('definescalinggrid', ['id', 'x', 'width', 'y', 'height']);
@@ -541,10 +541,19 @@ class SwfWriter
 		else if(extension == 'ttf')
 		{
 			var bytes = getBytes(file);
-			var ranges = getString('charCodes', "32-125", false/*true*/);
+			var ranges = getString('charCodes', "32-125", false /* true */);
 			var fontWriter = new FontWriter();
 			fontWriter.write(bytes, ranges, 'swf');
 			fontTag = fontWriter.getTag(_id);
+		}
+		else if(extension =="otf")
+		{
+			var bytes = getBytes(file);
+			var fontWriter = new FontWriter();
+			var name = getString('name', "", true);
+			fontTag = fontWriter.writeOTF(_id, name, bytes);
+			if(fontTag==null)
+				error('ERROR: Not a valid OTTO OTF font file: ' + file + ', TAG: ' + currentTag.toString());
 		}
 		else
 		{

@@ -1076,7 +1076,18 @@ class Writer {
 
 		o.write(shape_data);
 	}
-
+	function writeFont4(data: Font4Data) 
+	{
+		bits.flush();
+		bits.writeBits(5,0);//reserved 0
+		bits.writeBit(data.hasSFNT); //Font is embedded. Font tag includes SFNT font data block.
+		bits.writeBit(data.isItalic);
+		bits.writeBit(data.isBold);
+		bits.flush();
+		o.writeString(data.name);
+		o.writeByte(0);
+		o.write(data.bytes);//tables
+	}
 	function writeFont2(hasWideChars: Bool, data: Font2Data) 
 	{
 		var glyphs = new Array<ShapeWithoutStyleData>();
@@ -1191,6 +1202,9 @@ class Writer {
 
 			case FDFont3(data):
 				writeFont2(true, data);
+				
+			case FDFont4(data):
+				writeFont4(data);
 		}
 
 		bits.flush();
@@ -1205,6 +1219,9 @@ class Writer {
 
 			case FDFont3(data):
 				writeTID(TagId.DefineFont3, font_data.length);
+			
+			case FDFont4(data):
+				writeTID(TagId.DefineFont4, font_data.length);
 		}
 
 		o.write(font_data);

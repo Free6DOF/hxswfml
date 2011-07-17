@@ -116,6 +116,47 @@ class FontWriter
 		}
 		return dump.toString();
 	}
+	public function writeOTF(id:Int, name:String, bytes:Bytes):SWFTag
+	{
+		var input = new BytesInput(bytes);
+		var otf = format.ttf.Reader.readOTF(input);
+		var header = otf.header;
+		//if(haxe.Int32.toInt(header.sfntVersion) != 1330926671)
+			//return null;
+		var tables = otf.tables;
+		var cffFound:Bool=false;
+		for(t in tables)
+		{
+			t.bytes = bytes.sub(haxe.Int32.toInt(t.offset), haxe.Int32.toInt(t.length));
+			if(t.tableName=="CFF ")
+				cffFound=true;
+		}
+		if(cffFound==false)
+			return null;
+		var output = new BytesOutput();
+		for(t in tables)
+		{
+			switch(t.tableName)
+			{
+				case 
+					"CFF ", "cmap", "head", "maxp", "OS/2", "post",
+					"hhea", "hmtx",
+					"vhea", "vmtx", "VORG",
+					"GSUB", "GPOS", "GDEF", "BASE":
+						output.write(t.bytes);
+				default:
+			}
+		}
+		var font4Data = 
+		{
+			hasSFNT:true,
+			isItalic: false,
+			isBold: false,
+			name: name,
+			bytes : bytes //output.getBytes()
+		};
+		return TFont(id, FDFont4(font4Data));
+	}
 	public function write(bytes:Bytes, rangesStr:String, outType:String='swf')
 	{
 		var input = new BytesInput(bytes);
