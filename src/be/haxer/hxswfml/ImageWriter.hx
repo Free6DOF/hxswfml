@@ -100,7 +100,7 @@ class ImageWriter
 		writer.write(swfFile);
 		return swfOutput.getBytes();
 	}
-	function getShape(id)
+	public function getShape(id):SWFTag
 	{
 			var width = width * 20;
 			var height = height * 20;

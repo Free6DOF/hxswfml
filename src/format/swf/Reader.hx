@@ -1007,6 +1007,9 @@ class Reader {
 		var num_glyphs = i.readUInt16();
 
 		var offset_table = new Array<Int>();
+		var glyphs = new Array<Font2GlyphData>();
+		if(num_glyphs!=0)
+		{
 		var shape_data_length: Int = 0;
 		if(hasWideOffsets) 
 		{
@@ -1028,7 +1031,7 @@ class Reader {
 		}
 
 		var glyph_shapes = readGlyphs(shape_data_length, offset_table);
-		var glyphs = new Array<Font2GlyphData>();
+		
 
 		if(hasWideCodes) 
 		{
@@ -1047,7 +1050,7 @@ class Reader {
 					shape: glyph_shapes[j]
 				});
 		}
-
+		}
 		var layout: Null<FontLayoutData> = null;
 		if(hasLayout) 
 		{

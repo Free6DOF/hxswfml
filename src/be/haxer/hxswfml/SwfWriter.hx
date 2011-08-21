@@ -42,9 +42,6 @@ class SwfWriter
 	}
 	public function new()
 	{
-		#if (swc || air) 
-			new flash.Boot();
-		#end
 		tagIndex=0;
 		library = new Hash();
 		init();
