@@ -265,7 +265,8 @@ class AbcWriter
 			}
 		}
 		var abcOutput = new haxe.io.BytesOutput();
-		format.abc.Writer.write(abcOutput, ctx.getData());
+		var abcWriter = new format.abc.Writer(abcOutput);
+		abcWriter.write(ctx.getData());
 		return TActionScript3(abcOutput.getBytes(), { id : 1, label : className } );
 	}
 	private function createFunction(node:Xml, functionType:String, ?isInterface:Bool=false)
@@ -1430,7 +1431,8 @@ class AbcWriter
 		//ctx.finalize();
 		ctx.endClass();
 		var abcOutput = new haxe.io.BytesOutput();
-		format.abc.Writer.write(abcOutput, ctx.getData());
+		var abcWriter = new format.abc.Writer(abcOutput);
+		abcWriter.write(ctx.getData());
 		return TActionScript3(abcOutput.getBytes(), {id : 1, label : className});
 	}
 }

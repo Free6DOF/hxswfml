@@ -5,7 +5,6 @@ be.haxer.hxswfml.HxmWriter
 be.haxer.hxswfml.SwfWriter
 be.haxer.hxswfml.SwfLibWriter
 -swf9 bin/flash/swf/hxswfml.swc
--D swc
 -cmd echo "swc(Flash) created"
 
 

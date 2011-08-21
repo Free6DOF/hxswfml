@@ -129,10 +129,11 @@ class HxmWriter
 				var txt = i[1];
 				middle+=txt;
 			}
-			var end = '\t\t//------------------\n\t\tvar abcOutput = new haxe.io.BytesOutput();\n'+
-			'\t\tformat.abc.Writer.write(abcOutput, ctx.getData());\n'+
+			var end = 
+			'\t\t//------------------\n'+
 			'\t\tvar abcOutput = new haxe.io.BytesOutput();\n'+
-			'\t\tformat.abc.Writer.write(abcOutput, ctx.getData());\n'+
+			'\t\tvar abcWriter = new format.abc.Writer(abcOutput);\n'+
+			'\t\tabcWriter.write(ctx.getData());\n'+
 			'\t\t//------------------\n'+
 			'\t\tvar swfFile = \n'+
 			'\t\t{\n'+
@@ -162,7 +163,8 @@ class HxmWriter
 			
 			var buildFile:String=
 			'-main GenSWF\n'+
-			'-cp C://cygwin/home/jan/hxswfml/src\n'+ 
+			'#replace with path to the format lib of hxswfml\n'+
+			'-cp ../../../../../src\n'+ 
 			'-x gen_swf';
 
 			
@@ -294,10 +296,11 @@ class HxmWriter
 					crc32 : format.tools.CRC32.encode(data4),
 					extraFields : new List()
 				});
-			var end = '\t\t//------------------\n\t\tvar abcOutput = new haxe.io.BytesOutput();\n'+
-			'\t\tformat.abc.Writer.write(abcOutput, ctx.getData());\n'+
+			var end = 
+			'\t\t//------------------\n'+
 			'\t\tvar abcOutput = new haxe.io.BytesOutput();\n'+
-			'\t\tformat.abc.Writer.write(abcOutput, ctx.getData());\n'+
+			'\t\tvar abcWriter = new format.abc.Writer(abcOutput);\n'+
+			'\t\tabcWriter.write(ctx.getData());\n'+
 			'\t\t//------------------\n'+
 			'\t\tvar swfFile = \n'+
 			'\t\t{\n'+
@@ -321,7 +324,8 @@ class HxmWriter
 			'}';
 			var buildFile:String=
 			'-main GenSWF\n'+
-			'-cp C://cygwin/home/jan/hxswfml/src\n'+ 
+			'#replace with path to the format lib of hxswfml\n'+
+			'-cp ../../../../../src\n'+ 
 			'-x gen_swf';
 			var data1 = Bytes.ofString(buildFile);
 			zipdata.add({

@@ -44,11 +44,6 @@ class AbcReader
 	
 	public function new ()
 	{
-		#if (swc || air)
-		Xml.parse("");//for swc
-		new flash.Boot();//for swc
-		#end
-		
 		debugFile = "";
 		debugInfo = true;
 		jumpInfo = false;
