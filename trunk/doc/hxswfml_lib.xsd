@@ -61,14 +61,6 @@
 			<xs:attribute name="useNetWork" type="xs:boolean" use="optional" default="false"/>
 			<xs:attribute name="frameCount" type="xs:integer" use="optional" default="1"/>
 			<xs:attribute name="version" type="xs:integer" use="optional" default="10"/>
-			<xs:attribute name="fps" use="optional" default="30">
-				<xs:simpleType>
-					<xs:restriction base="xs:integer">
-						<xs:minInclusive value="0"/>
-						<xs:maxInclusive value="120"/>
-					</xs:restriction>
-				</xs:simpleType>
-			</xs:attribute>	
 		</xs:complexType>
 
 	</xs:element>
@@ -148,6 +140,7 @@
 			<xs:attribute name="link" type="xs:string" use="optional"/>
 			<xs:attribute name="class" type="xs:string" use="optional"/>
 			<xs:attribute name="name" type="xs:string" use="optional"/>
+			<xs:attribute name="glyphs" type="xs:string" use="optional"/>
 		</xs:complexType>
 	</xs:element>
 	<!--____________________________________________________________-->
