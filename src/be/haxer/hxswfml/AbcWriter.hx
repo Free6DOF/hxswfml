@@ -199,6 +199,8 @@ class AbcWriter
 					cl.isInterface = _classNode.get('interface') == 'true';
 					cl.isSealed = _classNode.get('sealed') == 'true';
 					//cl.Namespace = NamespaceType(_classNode.get('ns'));//ctx.Namespace(NProtected(ctx.string(curClassName)));
+					//cl._namespace = ctx._namespace(NProtected(ctx.string(className.split(".").join(":"))));
+					//ctx._namespace(NPrivate(ctx.string(className.split(".").join(":"))));
 					var _extends = _classNode.get('extends');
 					ctx.isExtending =false;
 					if (_extends != null)
@@ -267,7 +269,7 @@ class AbcWriter
 		var abcOutput = new haxe.io.BytesOutput();
 		var abcWriter = new format.abc.Writer(abcOutput);
 		abcWriter.write(ctx.getData());
-		return TActionScript3(abcOutput.getBytes(), { id : 1, label : className } );
+		return TActionScript3(abcOutput.getBytes(), { id : 1, label : className.split(".").join("/") } );
 	}
 	private function createFunction(node:Xml, functionType:String, ?isInterface:Bool=false)
 	{
@@ -319,9 +321,9 @@ class AbcWriter
 			usesDXNS : node.get('usesDXNS')=="true",
 			newBlock : node.get('newBlock')=="true",
 			unused : node.get('unused')=="true",
-			debugName : ctx.string(node.get('debugName')==null?"":node.get('debugName')),
+			debugName : node.get('debugName')==null? ctx.string(null) : ctx.string(node.get('debugName')),
 			defaultParameters : _defaultParameters,
-			paramNames : null//Null<Array<Null<Index<String>>>>;
+			paramNames : null //Null<Array<Null<Index<String>>>>;
 		}
 		var ns = NamespaceType(node.get('ns'));
 		var f = null;
@@ -681,10 +683,10 @@ class AbcWriter
 	static function parseInt32(s:String):haxe.Int32
 	{
 		var f=Std.parseFloat(s);
-		if(f<-1073741824)
-			return haxe.Int32.add(haxe.Int32.ofInt(-1073741824),haxe.Int32.ofInt(Std.int(f+1073741824)));
-		if(f>1073741823)
-			return haxe.Int32.add(haxe.Int32.ofInt(1073741823),haxe.Int32.ofInt(Std.int(f-1073741823)));
+		if(f<-0x40000000)
+			return haxe.Int32.add(haxe.Int32.ofInt(-0x40000000), haxe.Int32.ofInt(Std.int(f+0x3fffffff)));
+		if(f>0x3fffffff)
+			return haxe.Int32.add(haxe.Int32.ofInt(0x3fffffff),haxe.Int32.ofInt(Std.int(f-0x3fffffff)));
 		return haxe.Int32.ofInt(Std.int(f));
 	}
 	private function nonEmptyStack(fname:String)

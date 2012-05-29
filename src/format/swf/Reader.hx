@@ -91,7 +91,7 @@ class Reader {
 		bits.reset();
 
 		var scale: MatrixPartScale = null;
-		if(bits.read()) {
+		if(bits.readBit()) {
 			// Scale part
 			var nbits = bits.readBits(5);
 			var _x = Tools.floatFixedBits(bits.readBits(nbits), nbits);
@@ -103,7 +103,7 @@ class Reader {
 		}
 		
 		var rotate: MatrixPartRotateSkew = null;
-		if(bits.read()) {
+		if(bits.readBit()) {
 			// Rotate part
 			var nbits = bits.readBits(5);
 			var _rs0 = Tools.floatFixedBits(bits.readBits(nbits), nbits);
@@ -158,8 +158,8 @@ class Reader {
 
 	function readCXA() : CXA {
 		bits.reset();
-		var add = bits.read();
-		var mult = bits.read();
+		var add = bits.readBit();
+		var mult = bits.readBit();
 		var nbits = bits.readBits(4);
 		return {
 			nbits : nbits,
@@ -237,15 +237,15 @@ class Reader {
 					bits.reset();
 					var startCap = getLineCap(bits.readBits(2));
 					var _join = bits.readBits(2);
-					var _fill = bits.read();
-					var noHScale = bits.read();
-					var noVScale = bits.read();
-					var pixelHinting = bits.read();
+					var _fill = bits.readBit();
+					var noHScale = bits.readBit();
+					var noVScale = bits.readBit();
+					var pixelHinting = bits.readBit();
 					
 					if (bits.readBits(5) != 0)
 						throw error('invalid nbits in line style');
 
-					var noClose = bits.read();
+					var noClose = bits.readBit();
 					var endCap = getLineCap(bits.readBits(2));
 					
 					var join = switch (_join) {
@@ -363,13 +363,13 @@ class Reader {
 
 		do {
 			//bits.reset(); // Byte-align shape records
-			if (bits.read()) {
+			if (bits.readBit()) {
 				// Edge record
-				if (bits.read()) {
+				if (bits.readBit()) {
 					// Straight
 					var nbits = bits.readBits(4) + 2;
-					var isGeneral = bits.read();
-					var isVertical = (!isGeneral) ? bits.read() : false;
+					var isGeneral = bits.readBit();
+					var isVertical = (!isGeneral) ? bits.readBit() : false;
 
 					var dx = (isGeneral || !isVertical)
 						? Tools.signExtend(bits.readBits(nbits), nbits)
@@ -576,9 +576,9 @@ class Reader {
 		var shapeBounds = readRect();
 		var edgeBounds = readRect();
 		bits.readBits(5);
-		var useWinding = bits.read();
-		var useNonScalingStroke = bits.read();
-		var useScalingStroke = bits.read();
+		var useWinding = bits.readBit();
+		var useNonScalingStroke = bits.readBit();
+		var useScalingStroke = bits.readBit();
 		var shapes = readShapeWithStyle(ver);
 		
 		return TShape(id, SHDShape4({
@@ -692,12 +692,12 @@ class Reader {
 		bits.reset();
 		var startCapStyle = bits.readBits(2);
 		var joinStyle  = bits.readBits(2);
-		var hasFill = bits.read();
-		var noHScale = bits.read();
-		var noVScale = bits.read();
-		var pixelHinting = bits.read();
+		var hasFill = bits.readBit();
+		var noHScale = bits.readBit();
+		var noVScale = bits.readBit();
+		var pixelHinting = bits.readBit();
 		bits.readBits(5);
-		var noClose = bits.read();
+		var noClose = bits.readBit();
 		var endCapStyle = bits.readBits(2);
 		bits.reset();
 
@@ -789,8 +789,8 @@ class Reader {
 				var endEdgeBounds = readRect();
 				bits.reset();
 				bits.readBits(6);
-				var useNonScalingStrokes = bits.read();
-				var useScalingStrokes = bits.read();
+				var useNonScalingStrokes = bits.readBit();
+				var useScalingStrokes = bits.readBit();
 				bits.reset();
 				i.readUInt30();
 				var fillStyles = readMorphFillStyles(ver);
@@ -824,9 +824,9 @@ class Reader {
 		case 4: BScreen;
 		case 5: BLighten;
 		case 6: BDarken;
-		case 7: BAdd;
-		case 8: BSubtract;
-		case 9: BDifference;
+		case 7: BDifference;
+		case 8: BAdd;
+		case 9: BSubtract;
 		case 10: BInvert;
 		case 11: BAlpha;
 		case 12: BErase;
@@ -911,8 +911,8 @@ class Reader {
 			case 3: SR44k;
 			default: throw error('invalid sound rate');
 		};
-		var is16bit = bits.read();
-		var isStereo = bits.read();
+		var is16bit = bits.readBit();
+		var isStereo = bits.readBit();
 		var soundSamples = i.readInt32(); // number of pairs in case of stereo
 		var sdata = switch (soundFormat) {
 			case SFMP3:
@@ -993,14 +993,14 @@ class Reader {
 
 	function readFont2Data(ver: Int) {
 		bits.reset();
-		var hasLayout = bits.read();
-		var shiftJIS = bits.read();
-		var isSmall = bits.read();
-		var isANSI = bits.read();
-		var hasWideOffsets = bits.read();
-		var hasWideCodes = bits.read();
-		var isItalic = bits.read();
-		var isBold = bits.read();
+		var hasLayout = bits.readBit();
+		var shiftJIS = bits.readBit();
+		var isSmall = bits.readBit();
+		var isANSI = bits.readBit();
+		var hasWideOffsets = bits.readBit();
+		var hasWideCodes = bits.readBit();
+		var isItalic = bits.readBit();
+		var isBold = bits.readBit();
 
 		var language = readLanguage();
 		var name = i.readString(i.readByte());
@@ -1127,12 +1127,12 @@ class Reader {
 
 		bits.reset();
 		bits.readBits(2);
-		var isSmall = bits.read();
-		var shiftJIS = bits.read();
-		var isANSI = bits.read();
-		var isItalic = bits.read();
-		var isBold = bits.read();
-		var hasWideCodes = bits.read();
+		var isSmall = bits.readBit();
+		var shiftJIS = bits.readBit();
+		var isANSI = bits.readBit();
+		var isItalic = bits.readBit();
+		var isBold = bits.readBit();
+		var hasWideCodes = bits.readBit();
 		var language = if(ver == 2) readLanguage() else LangCode.LCNone;
 
 		var num_glyphs = len - 4 - name.length;

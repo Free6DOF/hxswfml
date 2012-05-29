@@ -198,7 +198,6 @@ class Writer {
 			o.write(e.data);
 		}
 		o.writeUInt30(0);
-		//o.writeUInt16(0);
 	}
 	/*
 	function writeFilterFlags(f:FilterFlags,top) {

@@ -1,7 +1,8 @@
 #---- neko(n) ----#
 -cp src
-be.haxer.hxswfml.Main
 -main be.haxer.hxswfml.Main
+--macro include('be.haxer.hxswfml')
+--macro include('format', true)
 -neko bin/neko/hxswfml.n
 -cmd echo "neko(n) created"
 

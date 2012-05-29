@@ -1,6 +1,8 @@
 #---- cpp ----#
 -cp src
 -main be.haxer.hxswfml.Main
+--macro include('be.haxer.hxswfml', true)
+--macro include('format', true)
 -cpp bin/cpp
 
 --next

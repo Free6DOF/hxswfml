@@ -1,8 +1,6 @@
 #---- javasript ----#
 -cp src
-be.haxer.hxswfml.AbcReader
-be.haxer.hxswfml.HxmWriter
-be.haxer.hxswfml.SwfWriter
-be.haxer.hxswfml.SwfLibWriter
+--macro include('be.haxer.hxswfml', true, ['be.haxer.hxswfml.Main'])
+--macro include('format',true)
 -js bin/javascript/hxswfml.js
 -cmd echo "javascript created"

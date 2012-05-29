@@ -60,10 +60,10 @@ class SwcWriter
 	{
 		var xmlString = '';
 		xmlString += '<?xml version="1.0" encoding ="utf-8"?>\n';
-		xmlString += '<swc xmlns="http://www.adobe.com/flash/swccatalog/10">\n';
+		xmlString += '<swc xmlns="http://www.adobe.com/flash/swccatalog/9">\n';
 		xmlString += '\t<versions>\n';
 		xmlString += '\t\t<swc version="1.2"/>\n';
-		xmlString += '\t\t<haxe version="2.05"/>\n';
+		xmlString += '\t\t<haxe version="2.09"/>\n';
 		xmlString += '\t</versions>\n';
 		xmlString += '\t<features>\n';
 		xmlString += '\t\t<feature-script-deps/>\n';
@@ -74,7 +74,7 @@ class SwcWriter
 		for(i in classes)
 		{
 			//xmlString += '<script name="'+i[0]+'" mod="' + Std.string(mod/1000) +'000" >';
-			xmlString += '\t\t\t<script name="' + i[0] + '" mod="0" >\n';
+			xmlString += '\t\t\t<script name="' + i[0].split(".").join("/") + '" mod="0" >\n';
 			
 			var def:Array<String> = i[0].split('.');
 			if(def.length==1)

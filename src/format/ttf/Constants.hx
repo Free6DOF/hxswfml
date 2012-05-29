@@ -1,43 +1,44 @@
 package format.ttf;
 import haxe.Int32;
+#if !neko
 class TableId
 {
-	public static inline var BASE = Int32.ofInt(0x42415345); // Baseline data [OpenType]
-	public static inline var CFF  = Int32.ofInt(0x43464620); // PostScript font program (compact font format) [PostScript]
-	public static inline var DSIG = Int32.ofInt(0x44534947); // Digital signature
-	public static inline var EBDT = Int32.ofInt(0x45424454); // Embedded bitmap data
-	public static inline var EBLC = Int32.ofInt(0x45424c43); // Embedded bitmap location data
-	public static inline var EBSC = Int32.ofInt(0x45425343); // Embedded bitmap scaling data
-	public static inline var GDEF = Int32.ofInt(0x47444546); // Glyph definition data [OpenType]
-	public static inline var GPOS = Int32.ofInt(0x47504f53); // Glyph positioning data [OpenType]
-	public static inline var GSUB = Int32.ofInt(0x47535542); // Glyph substitution data [OpenType]
-	public static inline var JSTF = Int32.ofInt(0x4a535446); // Justification data [OpenType]
-	public static inline var LTSH = Int32.ofInt(0x4c545348); // Linear threshold table
-	public static inline var MMFX = Int32.ofInt(0x4d4d4658); // Multiple master font metrics [PostScript]
-	public static inline var MMSD = Int32.ofInt(0x4d4d5344); // Multiple master supplementary data [PostScript]
-	public static inline var OS_2 = Int32.ofInt(0x4f532f32); // OS/2 and Windows specific metrics [r]
-	public static inline var PCLT = Int32.ofInt(0x50434c54); // PCL5
-	public static inline var VDMX = Int32.ofInt(0x56444d58); // Vertical Device Metrics table
-	public static inline var cmap = Int32.ofInt(0x636d6170); // character to glyph mapping [r]
-	public static inline var cvt  = Int32.ofInt(0x63767420); // Control Value Table
-	public static inline var fpgm = Int32.ofInt(0x6670676d); // font program
-	public static inline var fvar = Int32.ofInt(0x66766172); // Apple's font variations table [PostScript]
-	public static inline var gasp = Int32.ofInt(0x67617370); // grid-fitting and scan conversion procedure (grayscale)
-	public static inline var glyf = Int32.ofInt(0x676c7966); // glyph data [r]
-	public static inline var hdmx = Int32.ofInt(0x68646d78); // horizontal device metrics
-	public static inline var head = Int32.ofInt(0x68656164); // font header [r]
-	public static inline var hhea = Int32.ofInt(0x68686561); // horizontal header [r]
-	public static inline var hmtx = Int32.ofInt(0x686d7478); // horizontal metrics [r]
-	public static inline var kern = Int32.ofInt(0x6b65726e); // kerning
-	public static inline var loca = Int32.ofInt(0x6c6f6361); // index to location [r]
-	public static inline var maxp = Int32.ofInt(0x6d617870); // maximum profile [r]
-	public static inline var _name = Int32.ofInt(0x6e616d65); // naming table [r] 
-	public static inline var prep = Int32.ofInt(0x70726570); // CVT Program
-	public static inline var post = Int32.ofInt(0x706f7374); // PostScript information [r]
-	public static inline var vhea = Int32.ofInt(0x76686561); // Vertical Metrics header
-	public static inline var vmtx = Int32.ofInt(0x766d7478); // Vertical Metrics		
+	public static inline function BASE () return Int32.ofInt(0x42415345) // Baseline data [OpenType]
+	public static inline function CFF  () return Int32.ofInt(0x43464620) // PostScript font program (compact font format) [PostScript]
+	public static inline function DSIG () return Int32.ofInt(0x44534947) // Digital signature
+	public static inline function EBDT () return Int32.ofInt(0x45424454) // Embedded bitmap data
+	public static inline function EBLC () return Int32.ofInt(0x45424c43) // Embedded bitmap location data
+	public static inline function EBSC () return Int32.ofInt(0x45425343) // Embedded bitmap scaling data
+	public static inline function GDEF () return Int32.ofInt(0x47444546) // Glyph definition data [OpenType]
+	public static inline function GPOS () return Int32.ofInt(0x47504f53) // Glyph positioning data [OpenType]
+	public static inline function GSUB () return Int32.ofInt(0x47535542) // Glyph substitution data [OpenType]
+	public static inline function JSTF () return Int32.ofInt(0x4a535446) // Justification data [OpenType]
+	public static inline function LTSH () return Int32.ofInt(0x4c545348) // Linear threshold table
+	public static inline function MMFX () return Int32.ofInt(0x4d4d4658) // Multiple master font metrics [PostScript]
+	public static inline function MMSD () return Int32.ofInt(0x4d4d5344) // Multiple master supplementary data [PostScript]
+	public static inline function OS_2 () return Int32.ofInt(0x4f532f32) // OS/2 and Windows specific metrics [r]
+	public static inline function PCLT () return Int32.ofInt(0x50434c54) // PCL5
+	public static inline function VDMX () return Int32.ofInt(0x56444d58) // Vertical Device Metrics table
+	public static inline function cmap () return Int32.ofInt(0x636d6170) // character to glyph mapping [r]
+	public static inline function cvt  () return Int32.ofInt(0x63767420) // Control Value Table
+	public static inline function fpgm () return Int32.ofInt(0x6670676d) // font program
+	public static inline function fvar () return Int32.ofInt(0x66766172) // Apple's font variations table [PostScript]
+	public static inline function gasp () return Int32.ofInt(0x67617370) // grid-fitting and scan conversion procedure (grayscale)
+	public static inline function glyf () return Int32.ofInt(0x676c7966) // glyph data [r]
+	public static inline function hdmx () return Int32.ofInt(0x68646d78) // horizontal device metrics
+	public static inline function head () return Int32.ofInt(0x68656164) // font header [r]
+	public static inline function hhea () return Int32.ofInt(0x68686561) // horizontal header [r]
+	public static inline function hmtx () return Int32.ofInt(0x686d7478) // horizontal metrics [r]
+	public static inline function kern () return Int32.ofInt(0x6b65726e) // kerning
+	public static inline function loca () return Int32.ofInt(0x6c6f6361) // index to location [r]
+	public static inline function maxp () return Int32.ofInt(0x6d617870) // maximum profile [r]
+	public static inline function _name () return Int32.ofInt(0x6e616d65) // naming table [r] 
+	public static inline function prep () return Int32.ofInt(0x70726570) // CVT Program
+	public static inline function post () return Int32.ofInt(0x706f7374) // PostScript information [r]
+	public static inline function vhea () return Int32.ofInt(0x76686561) // Vertical Metrics header
+	public static inline function vmtx () return Int32.ofInt(0x766d7478) // Vertical Metrics		
 }
-
+#end
 class CFlag
 {
 		public static inline var ARG_1_AND_2_ARE_WORDS = 0x0001;
@@ -70,7 +71,7 @@ class CFlag
 */
 class MacGlyphNames
 {
-	public static inline var names:Array<String> = 
+	public static inline function names():Array<String> return 
 	[
 	        ".notdef",      // 0
 	        "null",         // 1
@@ -330,5 +331,5 @@ class MacGlyphNames
 	        "Ccaron",       // 255
 	        "ccaron",       // 256
 	        ""              // 257
-	    ];	
+	    ]
 }

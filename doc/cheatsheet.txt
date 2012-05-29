@@ -249,15 +249,15 @@ JAlways		:
 //snippets:
 //Timing, benchmark:
 
-var t=flash.utils.getTimer();
-//code
-trace(flash.utils.getImer()-t);
+var t = flash.utils.getTimer();
+// some operations
+trace(flash.utils.getImer() - t);
 
 <OFindPropStrict v="flash.utils.getTimer" />
 <OCallProperty v="flash.utils.getTimer" nargs="0" />
 <OAsAny />
 <OSetReg v="1" />
-<!--code-->
+<!--some operations-->
 <OFindPropStrict v="trace" />
 <OFindPropStrict v="flash.utils.getTimer" />
 <OCallProperty v="flash.utils.getTimer" nargs="0" />
