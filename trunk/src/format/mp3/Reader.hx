@@ -176,7 +176,7 @@ class Reader {
       var version = bits.readBits(2);
       var layer = bits.readBits(2);
 
-      var hasCrc = !bits.read(); // prot = false means crc=1
+      var hasCrc = !bits.readBit(); // prot = false means crc=1
       
       // check validity early before processing next byte
       if (version == MPEG.Reserved || layer == CLayer.LReserved)
@@ -190,10 +190,10 @@ class Reader {
       var samplingRateIdx = bits.readBits(2);
       var samplingRate = Tools.getSamplingRate(version, samplingRateIdx);
 
-      var isPadded = bits.read();
+      var isPadded = bits.readBit();
 
       // private bit (free use)
-      var privateBit = bits.read();
+      var privateBit = bits.readBit();
 
       // check validity again before processing next byte
       if (bitrate == BR_Bad || bitrate == BR_Free || samplingRate == SR_Bad)
@@ -204,11 +204,11 @@ class Reader {
       var channelMode = bits.readBits(2);
       
       // mode extension bits
-      var isIntensityStereo = bits.read();
-      var isMSStereo = bits.read();
+      var isIntensityStereo = bits.readBit();
+      var isMSStereo = bits.readBit();
 
-      var isCopyrighted = bits.read();
-      var isOriginal = bits.read();
+      var isCopyrighted = bits.readBit();
+      var isOriginal = bits.readBit();
       var emphasis = bits.readBits(2);
 
       #if DDEBUG neko.Lib.print('.'); #end

@@ -97,7 +97,7 @@ class VideoWriter
 				case FLVMeta(bytes,  time) : 
 					var input = new BytesInput(bytes);
 					input.bigEndian = true;
-					var metaDataObject = {type:'meta', time:time, framerate:0, width:0, height:0};
+					var metaDataObject:Dynamic = {type:'meta', time:time, framerate:0, width:0, height:0};
 					if(input.readByte()==2 && input.readString(input.readUInt16()) == 'onMetaData')
 					{
 						var ECMAType:Int = input.readByte();
@@ -113,13 +113,15 @@ class VideoWriter
 							{
 								break;
 							}
-							Reflect.setField( metaDataObject, key, untyped switch(valueType)
+							var val:Dynamic = null;
+							switch(valueType)
 							{
-								case 0:input.readDouble();
-								case 1:input.readByte()==1;
-								case 2:input.readString(input.readUInt16());
+								case 0:val = input.readDouble();
+								case 1:val = input.readByte()==1;
+								case 2:val = input.readString(input.readUInt16());
 								//default: break;
-							});
+							};
+							Reflect.setField( metaDataObject, key,val);
 						}
 					}
 					flvTags.push(metaDataObject);

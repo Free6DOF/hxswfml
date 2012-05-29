@@ -589,7 +589,7 @@ class Reader
 				{
 					charCode : j,
 					index : input.readByte(),
-					char:MacGlyphNames.names[j],
+					char:MacGlyphNames.names()[j],
 				};
 			return Cmap0(cmapHeader, glyphIndexArray);
 		}
@@ -651,7 +651,7 @@ class Reader
 				{
 					charCode : j,
 					index : input.readUInt16(),
-					char:MacGlyphNames.names[j]
+					char:MacGlyphNames.names()[j]
 				};
 				glyphIndexArray[j]=glyphIndex;
 			}

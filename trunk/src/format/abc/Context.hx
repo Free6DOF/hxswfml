@@ -175,6 +175,8 @@ class Context
 	}
 	public function string( s : String ) : Index<String> 
 	{
+		if(s==null)
+			return Idx(0);
 		var n = hstrings.get(s);
 		if( n == null ) 
 		{

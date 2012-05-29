@@ -69,8 +69,22 @@ class Tools {
 		return (i << 16) | Std.int((f-i)*65536.0);
 	}
 	
+	public static function minBits(values: Array<Int>):Int
+	{
+		var max = 0;
+		for(i in values)
+		{
+			if(i==0) continue;
+			if(i < 0) i = -i;
+			var m:Int = 1;
+			while((i = (i>>1))!= 0)	++m;
+			if(m > max) max = m;
+		}
+		return max;
+	}
+	#if !neko
 	// All values are treated as unsigned! 
-	public inline static function minBits(values: Array<Int>): Int {
+	public inline static function minBitsOld(values: Array<Int>): Int {
 		var max_bits: Int = 0;
 		for(x in values) {
 			// Make sure x is positive!
@@ -84,7 +98,7 @@ class Tools {
 			x |= (x >> 16);
 
 			// Compute ones count (equals the number of bits to represent original value)
-			x -= ((x >> 1) & 0x55555555);
+			x -= ((x >> 1) & 0x55555555);// This integer is too big to be compiled to a Neko 31-bit integer. Please use a Float instead
 			x = (((x >> 2) & 0x33333333) + (x & 0x33333333));
 			x = (((x >> 4) + x) & 0x0f0f0f0f);
 			x += (x >> 8);
@@ -94,10 +108,9 @@ class Tools {
 			if(x > max_bits)
 				max_bits = x;
 		}
-
 		return max_bits;
 	}
-
+	#end
 	public static function hex( b : haxe.io.Bytes, ?max : Int ) {
 		var hex = ["0".code,"1".code,"2".code,"3".code,"4".code,"5".code,"6".code,"7".code,"8".code,"9".code,"A".code,"B".code,"C".code,"D".code,"E".code,"F".code];
 		var count = if( max == null || b.length <= max ) b.length else max;

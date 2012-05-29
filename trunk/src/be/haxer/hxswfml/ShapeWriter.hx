@@ -372,9 +372,9 @@ class ShapeWriter
 		}
 		else
 		{
-			useWinding = useWinding==null?false:useWinding;
-			useNonScalingStroke = useNonScalingStroke==null?false:useNonScalingStroke;
-			useScalingStroke = useScalingStroke==null?false:useScalingStroke;
+			var useWinding:Bool = useWinding==null?false:useWinding;
+			var useNonScalingStroke:Bool = useNonScalingStroke==null?false:useNonScalingStroke;
+			var useScalingStroke:Bool = useScalingStroke==null?false:useScalingStroke;
 			return TShape(id, SHDShape4({	shapeBounds: _rect2, edgeBounds: _rect,	useWinding: useWinding,	useNonScalingStroke: useNonScalingStroke, 
 				useScalingStroke: useScalingStroke,	shapes: _shapeWithStyleData}));
 		}

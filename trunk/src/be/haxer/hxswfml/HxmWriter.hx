@@ -154,7 +154,7 @@ class HxmWriter
 			'\t\tfile.write(swfOutput.getBytes());\n'+
 			'\t\tfile.close();\n'+
 			'\t}\n'+
-			'\tfunction initLocalFunctions(localFunctions, ctx, classes)\n'+
+			'\tfunction initLocalFunctions(localFunctions, ctx:format.abc.Context, classes)\n'+
 			'\t{\n'+
 				'\t\t\tvar f = null;\n'+
 				'\t\t\t'+localFunctions+'\n'+

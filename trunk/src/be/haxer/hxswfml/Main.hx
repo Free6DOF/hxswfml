@@ -21,7 +21,7 @@ class Main
 {
 	static var args:Array<String>;
 	
-	public static function main() 
+	public static function main():Void
 	{
 		#if cpp
 		cpp.vm.Gc.enable(false);
@@ -277,10 +277,10 @@ class Main
 			}
 		}
 	}
-	static function printUsage()
+	static function printUsage():Void
 	{
-			Lib.println("hxswfml 0.15 - Xml based swf and abc assembler. 2009-2011");
-			Lib.println("Usage: hxswfml operation in out [args] [options]");
+			Lib.println("hxswfml 0.16 - XML based swf and abc assembler. 2009-2012");
+			Lib.println("Usage: hxswfml <operation> input-file output-file [args] [options]");
 			Lib.println("");
 		
 			Lib.println("xml2swf");
@@ -373,7 +373,7 @@ class Main
 
 			Sys.exit(1);
 		}
-		static function checkFile(p:String)
+		static function checkFile(p:String):Void
 		{
 			if (!FileSystem.exists(args[1]))
 			{
@@ -394,6 +394,5 @@ class Main
 				if (args[i] == v)
 					return args[i + 1];
 			return null;
-		}
-	
+		}	
 }

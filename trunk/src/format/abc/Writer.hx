@@ -278,6 +278,8 @@ class Writer {
 		if( c._namespace != null )
 			writeIndex(c._namespace);
 		writeList2(c.interfaces,writeIndex);
+		if(c.constructor==null)
+			throw "missing constructor for class with index: " + c.name;
 		writeIndex(c.constructor);
 		writeList2(c.fields,writeField);
 	}

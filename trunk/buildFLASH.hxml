@@ -1,43 +1,35 @@
 #---- swc(Flash) ----#
 -cp src
-be.haxer.hxswfml.AbcReader
-be.haxer.hxswfml.HxmWriter
-be.haxer.hxswfml.SwfWriter
-be.haxer.hxswfml.SwfLibWriter
+--macro include('be.haxer.hxswfml', true, ['be.haxer.hxswfml.Main'])
+--macro include('format', true)
 -swf9 bin/flash/swf/hxswfml.swc
 -cmd echo "swc(Flash) created"
 
+--next
 
-#---- swc(Air) ---- (broken since 2.07)#
-#--next
-#-cp src
-#be.haxer.hxswfml.AbcReader
-#be.haxer.hxswfml.HxmWriter
-#be.haxer.hxswfml.SwfWriter
-#be.haxer.hxswfml.SwfLibWriter
-#-swf9 bin/flash/air/hxswfml_AIR.swc
-#-lib air
-#-D air
-#-cmd echo "swc(Air) created"
+#---- swc(Air) ----#
+-cp src
+--macro include('be.haxer.hxswfml', true, ['be.haxer.hxswfml.Main'])
+--macro include('format', true)
+-lib air3
+-D air
+-swf9 bin/flash/air/hxswfml_AIR.swc
+-cmd echo "swc(Air) created"
 
+--next
 
 #---- swf ----#
---next
 -cp src
-be.haxer.hxswfml.AbcReader
-be.haxer.hxswfml.HxmWriter
-be.haxer.hxswfml.SwfWriter
-be.haxer.hxswfml.SwfLibWriter
+--macro include('be.haxer.hxswfml', true, ['be.haxer.hxswfml.Main'])
+--macro include('format', true)
 -swf9 bin/flash/swf/hxswfml.swf
 -cmd echo "swf(Flash) created"
 
+--next
 
 #---- as3 ----#
---next
 -cp src
-be.haxer.hxswfml.AbcReader
-be.haxer.hxswfml.HxmWriter
-be.haxer.hxswfml.SwfWriter
-be.haxer.hxswfml.SwfLibWriter
+--macro include('be.haxer.hxswfml', true, ['be.haxer.hxswfml.Main'])
+--macro include('format', true)
 -as3 bin/flash/as3
 -cmd echo "as3 created"

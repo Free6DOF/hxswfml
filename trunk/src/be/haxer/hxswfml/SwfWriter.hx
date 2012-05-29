@@ -1085,7 +1085,7 @@ class SwfWriter
 			f = f.resolvePath(file);
 			var fileStream = new flash.filesystem.FileStream();
 			fileStream.open(f, flash.filesystem.FileMode.READ);
-			var str = fileStream.readMultiByte(f.size, flash.filesystem.File.systemCharset);
+			var str = fileStream.readMultiByte(cast(f.size,UInt), flash.filesystem.File.systemCharset);
 			fileStream.close();
 			return str;
 		#else
@@ -1168,10 +1168,10 @@ class SwfWriter
 	function parseInt32(s:String):haxe.Int32
 	{
 		var f=Std.parseFloat(s);
-		if(f<-1073741824)
-			return haxe.Int32.add(haxe.Int32.ofInt(-1073741824),haxe.Int32.ofInt(Std.int(f+1073741824)));
-		if(f>1073741823)
-			return haxe.Int32.add(haxe.Int32.ofInt(1073741823),haxe.Int32.ofInt(Std.int(f-1073741823)));
+		if(f<-0x40000000)
+			return haxe.Int32.add(haxe.Int32.ofInt(-0x40000000),haxe.Int32.ofInt(Std.int(f+0x3fffffff)));
+		if(f>0x3fffffff)
+			return haxe.Int32.add(haxe.Int32.ofInt(0x3fffffff),haxe.Int32.ofInt(Std.int(f-0x3fffffff)));
 		return haxe.Int32.ofInt(Std.int(f));
 	}
 	private function checkDictionary(id : Int) : Void
