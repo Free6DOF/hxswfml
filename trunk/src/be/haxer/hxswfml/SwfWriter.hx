@@ -458,16 +458,16 @@ class SwfWriter
 				switch(currentTag.nodeName.toLowerCase())
 				{
 					case 'buttonstate':
-						var hit = getBool('hit', false);
-						var down = getBool('down', false);
-						var over = getBool('over', false);
-						var up = getBool('up', false);
+						var hit:Bool = getBool('hit', false);
+						var down:Bool = getBool('down', false);
+						var over:Bool = getBool('over', false);
+						var up:Bool = getBool('up', false);
 						if(hit == false && down == false && over == false && up == false)
 						{
 							error('ERROR: You need to set at least one button state to true. TAG: '+currentTag.toString());
 						}
-						var id = getInt('id', null, true, false, true);
-						var depth = getInt('depth', null, true);
+						var id:Int = getInt('id', null, true, false, true);
+						var depth:Int = getInt('depth', null, true);
 						buttonRecords.push(
 						{
 							hit : hit,
@@ -857,7 +857,7 @@ class SwfWriter
 		var name = "";
 		var move = true;
 		
-		var scale;
+		var scale:{x : Null<Float>, y:Null<Float>}=null;
 		if(scaleX == null && scaleY == null)
 			scale = null;
 		else if(scaleX == null && scaleY != null) 
@@ -867,7 +867,7 @@ class SwfWriter
 		else  
 			scale = {x : scaleX, y : scaleY};
 			
-		var rotate;
+		var rotate:{rs0 : Null<Float>, rs1:Null<Float>}=null;
 		if(rs0 == null && rs1 == null) 
 			rotate = null;
 		else if(rs0 == null && rs1 != null) 
@@ -998,7 +998,7 @@ class SwfWriter
 	}
 	private function symbolclass():Array<SWFTag>
 	{
-		var cid = getInt('id', null, true, false, true);
+		var cid:Int = getInt('id', null, true, false, true);
 		var className = getString('class', "", true);
 		var symbols : Array<SymData> = [{cid : cid, className : className}];
 		var baseClass = getString('base', "");
@@ -1023,7 +1023,7 @@ class SwfWriter
 	}
 	private function exportassets():Array<SWFTag>
 	{
-		var cid = getInt('id', null, true, false, true);
+		var cid:Int = getInt('id', null, true, false, true);
 		var className = getString('class', "", true);
 		var symbols : Array<SymData> = [{cid : cid, className : className}];
 		return [TExportAssets(symbols)];
@@ -1110,7 +1110,7 @@ class SwfWriter
 			return haxe.io.Bytes.ofData(library.get(file));
 		#end
 	}
-	private function getInt(att : String, defaultValue, ?required : Bool = false, ?uniqueId : Bool = false, ?targetId : Bool = false)
+	private function getInt(att : String, defaultValue:Null<Int>, ?required : Bool = false, ?uniqueId : Bool = false, ?targetId : Bool = false)
 	{
 		if(currentTag.exists(att))
 			if(Math.isNaN(Std.parseInt(currentTag.get(att))))
