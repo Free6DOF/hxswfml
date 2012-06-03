@@ -841,7 +841,7 @@ class SwfWriter
 	private function readFilterColors(?v:String="0:0xFFFFFF00,255:0x000000FF")
 	{
 		var arr:Array<String> = getString("colors",v,false).split(',');
-		var colors:Array<Dynamic>=new Array();
+		var colors = new Array();
 		for(i in arr)
 		{
 			var pair = i.split(':');

@@ -142,7 +142,7 @@ class Tools {
 	}
 
 	public static function dumpTag( t : SWFTag, ?max : Int ) {
-		var infos = switch( t ) 
+		var infos:Array<Dynamic> = switch( t ) 
 		{
 		case TShowFrame: [];
 		case TEnd: [];

@@ -170,7 +170,7 @@ class Reader {
 				extra : null,
 			};
 		var dparams =[];
-		var pnames : Array < Null < Index < Dynamic > >> = new Array();
+		var pnames = new Array();
 		if ( (flags & 0x08) != 0 )
 		{
 			for(i in readList2(callback(readValue, true)))
