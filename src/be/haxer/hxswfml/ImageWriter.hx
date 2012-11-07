@@ -83,7 +83,7 @@ class ImageWriter
 		placeObject2.depth = 1;
 		placeObject2.move = false;
 		placeObject2.cid = id;
-		placeObject2.bitmapCache =false;
+		placeObject2.bitmapCache = null;
 		var swfFile = 
 		{
 			header: {version:10, compressed:true, width:width, height:height, fps:30, nframes:1},

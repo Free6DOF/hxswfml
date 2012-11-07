@@ -385,7 +385,7 @@ class ShapeWriter
 		placeObject2.depth = 1;
 		placeObject2.move = false;
 		placeObject2.cid = id;
-		placeObject2.bitmapCache =false;
+		placeObject2.bitmapCache = null;
 		var swfFile = 
 		{
 			header: {version:version, compressed:compressed, width:width, height:height, fps:fps, nframes:nframes},

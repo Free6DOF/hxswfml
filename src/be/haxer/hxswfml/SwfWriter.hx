@@ -727,7 +727,7 @@ class SwfWriter
 		placeObject.clipDepth = null;
 		placeObject.events = null;
 		placeObject.blendMode = blendMode;
-		placeObject.bitmapCache = getBool('bitmapCache', null, false);
+		placeObject.bitmapCache = getInt('bitmapCache', null, false);
 		placeObject.className = getString('className', null, false);
 		placeObject.hasImage = getBool('hasImage', false, false);
 		var filters:Array<Filter>=null;
@@ -892,7 +892,7 @@ class SwfWriter
 		placeObject.events = null;
 		placeObject.filters = null;
 		placeObject.blendMode = null;
-		placeObject.bitmapCache = false;
+		placeObject.bitmapCache = null;
 		return TPlaceObject2(placeObject);
 	}
 	private function tween():Array<SWFTag>

@@ -736,7 +736,7 @@ class FontWriter
 		placeObject.events = null;
 		placeObject.filters = null;
 		placeObject.blendMode = null;
-		placeObject.bitmapCache = false;
+		placeObject.bitmapCache = null;
 
 		var swfFile = 
 		{
