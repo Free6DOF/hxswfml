@@ -1158,6 +1158,8 @@ class AbcReader
 	{
 		var __namespace = '';
 		var __name = '';
+		if(name==null) __name ="*";
+		else
 		switch (name)
 		{
 			case NName(name, ns):

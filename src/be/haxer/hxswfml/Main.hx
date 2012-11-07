@@ -14,6 +14,10 @@ import php.Sys;
 import php.Lib;
 import php.FileSystem;
 import php.io.File;
+#elseif java
+typedef Lib=Sys;
+import sys.io.File;
+import sys.FileSystem;
 #end
 import be.haxer.hxswfml.SwfWriter;
 

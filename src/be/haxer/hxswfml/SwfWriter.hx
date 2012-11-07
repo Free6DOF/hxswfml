@@ -539,8 +539,9 @@ class SwfWriter
 		{
 			var bytes = getBytes(file);
 			var ranges = getString('charCodes', "32-125", false /* true */);
+			var fontName = getString('name', null, false);
 			var fontWriter = new FontWriter();
-			fontWriter.write(bytes, ranges, 'swf');
+			fontWriter.write(bytes, ranges, 'swf', fontName);
 			fontTag = fontWriter.getTag(_id);
 		}
 		else if(extension =="otf")

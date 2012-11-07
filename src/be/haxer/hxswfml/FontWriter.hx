@@ -157,7 +157,7 @@ class FontWriter
 		};
 		return TFont(id, FDFont4(font4Data));
 	}
-	public function write(bytes:Bytes, rangesStr:String, outType:String='swf')
+	public function write(bytes:Bytes, rangesStr:String, outType:String='swf', ?fontName:String)
 	{
 		var input = new BytesInput(bytes);
 		var reader = new format.ttf.Reader(input);
@@ -189,7 +189,7 @@ class FontWriter
 				default:
 			}
 		}
-		fontName = reader.fontName;
+		this.fontName = fontName!=null? fontName : reader.fontName;
 		var scale = 1024/headData.unitsPerEm;
 		var glyphIndexArray:Array<GlyphIndex>=new Array();
 		for(s in cmapData)
