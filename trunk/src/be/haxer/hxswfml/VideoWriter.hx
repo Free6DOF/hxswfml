@@ -1,9 +1,9 @@
 package be.haxer.hxswfml;
 
-import format.flv.Data;
-import format.flv.Reader;
 import format.swf.Data;
 import format.swf.Writer;
+import format.flv.Data;
+import format.flv.Reader;
 
 import haxe.io.Bytes;
 import haxe.io.BytesInput;
@@ -231,7 +231,7 @@ class VideoWriter
 				placeObject.move = i!=0;
 				placeObject.ratio = i==0?null:i;
 				placeObject.cid = id+5000;
-				placeObject.bitmapCache =false;
+				placeObject.bitmapCache = null;
 				controlTags.push(TPlaceObject2(placeObject));
 				controlTags.push(TDefineVideoFrame(id+5000, videoIndex, videoInfo.tags[videoIndex].data));
 				videoIndex++;
@@ -264,7 +264,7 @@ class VideoWriter
 		placeObject2.depth = 1;
 		placeObject2.move = false;
 		placeObject2.cid = id;
-		placeObject2.bitmapCache =false;
+		placeObject2.bitmapCache = null;
 		var swfFile = 
 		{
 			header: {version:10, compressed:true, width:Std.int(metaInfoObj.width), height:Std.int(metaInfoObj.height), fps:Std.int(metaInfoObj.framerate), nframes:1},
