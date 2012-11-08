@@ -18,12 +18,19 @@
     <xs:complexType>
       <xs:sequence>
         <xs:choice maxOccurs="unbounded">
+          <xs:element ref="import"/>
           <xs:element ref="class"/>
           <xs:element ref="init"/>
-          <xs:element maxOccurs="unbounded" ref="function"/>
+          <xs:element ref="function" maxOccurs="unbounded"/>
         </xs:choice>
       </xs:sequence>
       <xs:attribute name="name" use="optional" type="xs:string"/>
+    </xs:complexType>
+  </xs:element>
+  
+  <xs:element name="import">
+    <xs:complexType>
+      <xs:attribute name="name" type="xs:string" use="required" />
     </xs:complexType>
   </xs:element>
   
