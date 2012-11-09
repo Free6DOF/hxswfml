@@ -18,8 +18,8 @@ class VideoWriter
 {
 	var flvTags:Array<Dynamic>;
 	var flvHeader:HeaderData;
-	var soundInfo:SoundInfo;
-	var videoInfo:VideoInfo;
+	var soundInfo:format.flv.Data.SoundInfo;
+	var videoInfo:format.flv.Data.VideoInfo;
 	var metaInfoObj:Dynamic;
 	var actualWidth:Int;
 	var actualHeight:Int;
@@ -334,7 +334,7 @@ class VideoWriter
 	function findSoundInfo(flvTags:Array<Dynamic>)
 	{
 		soundInfo = {tags:[], soundFormat:0, soundRate:0, is16bit:false, isStereo:false};
-		var tags:Array<AudioData>=new Array();
+		var tags:Array<format.flv.Data.AudioData>=new Array();
 		for(i in 1...flvTags.length)
 		{
 			if(flvTags[i].type == 'audio')
@@ -352,7 +352,7 @@ class VideoWriter
 	function findVideoInfo(flvTags:Array<Dynamic>)
 	{
 		videoInfo={frameType:0, codecId:0, tags:[]};
-		var tags:Array<VideoData>=new Array();
+		var tags:Array<format.flv.Data.VideoData>=new Array();
 		for(i in 1...flvTags.length)
 		{
 			if(flvTags[i].type == 'video')
