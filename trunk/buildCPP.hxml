@@ -7,5 +7,6 @@
 
 --next
 -cmd cd bin/cpp
+-cmd cp Main hxswfmlc
+-cmd echo "hxswfmlc created. (For Linux: Ignore the copy: not found error. It comes from the copy command for Windows. We use cp in Linux which succeeded if you see this message.)"
 -cmd copy Main.exe hxswfmlc.exe /y
--cmd echo "hxswfmlc created"

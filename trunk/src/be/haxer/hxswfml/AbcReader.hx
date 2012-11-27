@@ -315,7 +315,7 @@ class AbcReader
 					case FVar(type, value, _const):
 						var _type = getName(type);
 						var _value = getValue(value);
-						var __const = _const;
+						var cnst = _const;
 						xml.add(indent());
 						xml.add('<var name="');
 						xml.add(getFieldName(field.name));
@@ -332,7 +332,7 @@ class AbcReader
 							xml.add(_value);
 							xml.add('"');
 						}
-						if(__const)
+						if(cnst)
 						{
 							xml.add(' const="true"');
 						}
@@ -350,7 +350,7 @@ class AbcReader
 					case FVar(type, value, _const):
 						var _type = getName(type);
 						var _value = getValue(value);
-						var __const = _const;
+						var cnst = _const;
 						xml.add(indent());
 						xml.add('<var name="');
 						xml.add(getFieldName(field.name));
@@ -367,7 +367,7 @@ class AbcReader
 							xml.add(_value);
 							xml.add('"');
 						}
-						if(__const)
+						if(cnst)
 						{
 							xml.add(' const="true"');
 						}

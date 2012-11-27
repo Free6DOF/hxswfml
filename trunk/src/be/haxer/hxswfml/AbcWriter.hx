@@ -447,7 +447,7 @@ class AbcWriter
 				case	"OIntRef":
 						Type.createEnum(OpCode, o.nodeName, [ctx.int(parseInt32(o.get('v')))]);
 						
-				case "OUIntRef":
+				case	"OUIntRef":
 						Type.createEnum(OpCode, o.nodeName, [ctx.uint(parseInt32(o.get('v')))]);
 												
 				case	"OFloat":
