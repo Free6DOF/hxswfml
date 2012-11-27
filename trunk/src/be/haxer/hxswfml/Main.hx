@@ -283,120 +283,133 @@ class Main
 	}
 	static function printUsage():Void
 	{
-			Lib.println("hxswfml 0.16 - XML based swf and abc assembler. 2009-2012");
-			Lib.println("Usage: hxswfml <operation> input-file output-file [args] [options]");
-			Lib.println("");
+		Lib.println("hxswfml " + getRevisionNumber() + "- XML based swf and abc assembler. 2009-2012");
+		Lib.println("Usage: hxswfml <operation> input-file output-file [args] [options]");
+		Lib.println("");
+
+		Lib.println("xml2swf");
+		Lib.println("  in : xml file");
+		Lib.println("  out : swf file");
+		Lib.println("  options : -no-strict");
+		Lib.println("");
+
+		Lib.println("xml2lib");
+		Lib.println("  in : xml file");
+		Lib.println("  out : swf file");
+		Lib.println("");
 		
-			Lib.println("xml2swf");
-			Lib.println("  in : xml file");
-			Lib.println("  out : swf file");
-			Lib.println("  options : -no-strict");
-			Lib.println("");
-			
-			Lib.println("xml2lib");
-			Lib.println("  in : xml file");
-			Lib.println("  out : swf file");
-			Lib.println("");
-			
-			Lib.println("lib2swc");
-			Lib.println("  in : xml file");
-			Lib.println("  out : swc file");
-			Lib.println("");
-
+		Lib.println("lib2swc");
+		Lib.println("  in : xml file");
+		Lib.println("  out : swc file");
+		Lib.println("");
 			Lib.println("xml2swc");
-			Lib.println("  in : xml file");
-			Lib.println("  out: swc file");
-			Lib.println("  options : -no-strict");
-			Lib.println("");
+		Lib.println("  in : xml file");
+		Lib.println("  out: swc file");
+		Lib.println("  options : -no-strict");
+		Lib.println("");
+		Lib.println("xml2abc");
+		Lib.println("  in : xml file");
+		Lib.println("  out : abc file");
+		Lib.println("  options : -strict, -stack");
+		Lib.println("");
+		Lib.println("abc2swf");
+		Lib.println("  in : xml or abc file");
+		Lib.println("  out : swf file");
+		Lib.println("  args : -main");
+		Lib.println("  options : -strict, -stack");
+		Lib.println("");
 
-			Lib.println("xml2abc");
-			Lib.println("  in : xml file");
-			Lib.println("  out : abc file");
-			Lib.println("  options : -strict, -stack");
-			Lib.println("");
+		Lib.println("abc2swc");
+		Lib.println("  in : xml file");
+		Lib.println("  out : swc file");
+		Lib.println("  args : -main");
+		Lib.println("  options : -strict, -stack");
+		Lib.println("");
 
-			Lib.println("abc2swf");
-			Lib.println("  in : xml or abc file");
-			Lib.println("  out : swf file");
-			Lib.println("  args : -main");
-			Lib.println("  options : -strict, -stack");
-			Lib.println("");
+		Lib.println("abc2xml");
+		Lib.println("  in : swf, swc or abc file");
+		Lib.println("  out : xml file");
+		Lib.println("  options : -no-debug, -source");
+		Lib.println("");
 
-			Lib.println("abc2swc");
-			Lib.println("  in : xml file");
-			Lib.println("  out : swc file");
-			Lib.println("  args : -main");
-			Lib.println("  options : -strict, -stack");
-			Lib.println("");
-
-			Lib.println("abc2xml");
-			Lib.println("  in : swf, swc or abc file");
-			Lib.println("  out : xml file");
-			Lib.println("  options : -no-debug, -source");
-			Lib.println("");
-
-			Lib.println("abc2hxm");
-			Lib.println("  in : swf, swc or abc file");
-			Lib.println("  out : zip file name");
-			Lib.println("  args : -main");
-			Lib.println("  options : -no-debug, -source, -folders");
-			Lib.println("");
+		Lib.println("abc2hxm");
+		Lib.println("  in : swf, swc or abc file");
+		Lib.println("  out : zip file name");
+		Lib.println("  args : -main");
+		Lib.println("  options : -no-debug, -source, -folders");
+		Lib.println("");
 			
-			Lib.println("ttf2swf");
-			Lib.println("  in : ttf file");
-			Lib.println("  out : swf file");
-			Lib.println("  args : -class");
-			Lib.println("  options : -glyphs");
-			Lib.println("");
+		Lib.println("ttf2swf");
+		Lib.println("  in : ttf file");
+		Lib.println("  out : swf file");
+		Lib.println("  args : -class");
+		Lib.println("  options : -glyphs");
+		Lib.println("");
 
-			Lib.println("ttf2hx");
-			Lib.println("  in : ttf file");
-			Lib.println("  options : -glyphs");
-			Lib.println("");
+		Lib.println("ttf2hx");
+		Lib.println("  in : ttf file");
+		Lib.println("  options : -glyphs");
+		Lib.println("");
 			
-			Lib.println("ttf2path");
-			Lib.println("  in : ttf file");
-			Lib.println("  options : -glyphs");
-			Lib.println("");
+		Lib.println("ttf2path");
+		Lib.println("  in : ttf file");
+		Lib.println("  options : -glyphs");
+		Lib.println("");
 			
-			Lib.println("ttf2hash");
-			Lib.println("  in : ttf file");
-			Lib.println("  options : -glyphs");
-			Lib.println("");
+		Lib.println("ttf2hash");
+		Lib.println("  in : ttf file");
+		Lib.println("  options : -glyphs");
+		Lib.println("");
 			
-			Lib.println("flv2swf");
-			Lib.println("  in : flv file (audioCodecs:mp3, videoCodecs: VP6, VP6+alpha, Sorenson H.263)");
-			Lib.println("  out : swf file");
-			Lib.println("  options : -fps, -width, -height");
-			Lib.println("");
-			/*
-			Lib.println("swf2hx");
-			Lib.println("  in : swf file");
-			//Lib.println("  out : zip file");
-			*/
+		Lib.println("flv2swf");
+		Lib.println("  in : flv file (audioCodecs:mp3, videoCodecs: VP6, VP6+alpha, Sorenson H.263)");
+		Lib.println("  out : swf file");
+		Lib.println("  options : -fps, -width, -height");
+		Lib.println("");
 
+		/*
+		Lib.println("swf2hx");
+		Lib.println("  in : swf file");
+		//Lib.println("  out : zip file");
+		*/
+
+		Sys.exit(1);
+	}
+	static function checkFile(p:String):Void
+	{
+		if (!FileSystem.exists(args[1]))
+		{
+			Lib.println("ERROR: File " + args[1] + " could not be found.");
 			Sys.exit(1);
 		}
-		static function checkFile(p:String):Void
+	}
+	static function argExists(v:String):Bool
+	{
+		for (arg in args)
+			if (arg == v)
+				return true;
+		return false;
+	}
+	static function getArgValue(v:String):Null<String>
+	{
+		for (i in 0...args.length)
+			if (args[i] == v)
+				return args[i + 1];
+		return null;
+	}
+	@:macro static function getRevisionNumber()
+	{
+		var revInfo = "";
+		if (FileSystem.exists("./version.txt"))
 		{
-			if (!FileSystem.exists(args[1]))
-			{
-				Lib.println("ERROR: File " + args[1] + " could not be found.");
-				Sys.exit(1);
-			}
+			var content = sys.io.File.getContent("./version.txt");
+			var currentVersionPart = content.split(":").pop();
+			var currentVersionStr = currentVersionPart.split("\r").join("").split("\n").join("").split("M").join("");
+			var currentVersionNr = Std.parseInt(currentVersionStr);
+			var newVersionNr = currentVersionNr+1;
+			revInfo = "r"+ newVersionNr;
+			sys.io.File.saveContent("./version.txt", Std.string(newVersionNr));
 		}
-		static function argExists(v:String):Bool
-		{
-			for (arg in args)
-				if (arg == v)
-					return true;
-			return false;
-		}
-		static function getArgValue(v:String):Null<String>
-		{
-			for (i in 0...args.length)
-				if (args[i] == v)
-					return args[i + 1];
-			return null;
-		}	
+		return haxe.macro.Context.makeExpr(revInfo, haxe.macro.Context.currentPos());
+	}
 }

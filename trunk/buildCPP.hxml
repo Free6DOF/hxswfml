@@ -7,6 +7,13 @@
 
 --next
 -cmd cd bin/cpp
+
+#FOR LINUX AND MAC:
 -cmd cp Main hxswfmlc
--cmd echo "hxswfmlc created. (For Linux: Ignore the copy: not found error. It comes from the copy command for Windows. We use cp in Linux which succeeded if you see this message.)"
+-cmd echo hxswfmlc created. 
+-cmd echo For Mac and Linux users: 
+-cmd echo Simply ignore the error: COPY command not found. 
+-cmd echo The hxml build file uses CP on Linux and Mac, but complains about the COPY command which is used on Windows.
+
+#FOR WINDOWS:
 -cmd copy Main.exe hxswfmlc.exe /y
