@@ -400,15 +400,15 @@ class Main
 	@:macro static function getRevisionNumber()
 	{
 		var revInfo = "";
-		if (FileSystem.exists("./version.txt"))
+		if (FileSystem.exists("./doc/version.txt"))
 		{
-			var content = sys.io.File.getContent("./version.txt");
+			var content = sys.io.File.getContent("./doc/version.txt");
 			var currentVersionPart = content.split(":").pop();
 			var currentVersionStr = currentVersionPart.split("\r").join("").split("\n").join("").split("M").join("");
 			var currentVersionNr = Std.parseInt(currentVersionStr);
 			var newVersionNr = currentVersionNr+1;
 			revInfo = "r"+ newVersionNr;
-			sys.io.File.saveContent("./version.txt", Std.string(newVersionNr));
+			//sys.io.File.saveContent("./version.txt", Std.string(newVersionNr));
 		}
 		return haxe.macro.Context.makeExpr(revInfo, haxe.macro.Context.currentPos());
 	}
