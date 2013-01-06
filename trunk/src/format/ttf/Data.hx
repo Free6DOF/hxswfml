@@ -19,7 +19,6 @@ typedef Header=
 }
 typedef Entry=
 {
-	tableId : Int32,
 	tableName : String,
 	checksum : Int32,
 	offset : Int32,
@@ -61,7 +60,9 @@ typedef GlyphSimple=
 	instructions:Array<Int>,
 	flags:Array<Int>,
 	xCoordinates:Array<Int>,
+	xDeltas:Array<Int>,
 	yCoordinates:Array<Int>,
+	yDeltas:Array<Int>
 }
 typedef GlyphComponent=
 {

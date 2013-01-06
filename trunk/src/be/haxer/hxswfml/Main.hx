@@ -53,7 +53,7 @@ class Main
 					var handle = File.write(outFile,true);
 					handle.write(bytes);
 					handle.close();
-					
+
 				case "xml2lib":
 					if (args.length < 3) printUsage();
 					
@@ -65,7 +65,7 @@ class Main
 					var handle = File.write(outFile,true);
 					handle.write(bytes);
 					handle.close();
-					
+
 				case "lib2swc":
 					if (args.length < 3) printUsage();
 					
@@ -78,7 +78,7 @@ class Main
 					var handle = File.write(outFile,true);
 					handle.write(bytes);
 					handle.close();
-				
+
 				case "xml2swc":
 					if (args.length < 3) printUsage();
 						
@@ -126,7 +126,7 @@ class Main
 					
 				case "abc2swc":
 					if (args.length < 3) printUsage();
-					
+
 					var inFile = args[1];
 					var outFile = args[2];
 					var main = getArgValue('-main');//main class for symbol class tag
@@ -146,7 +146,7 @@ class Main
 						default :
 					}
 					File.write(outFile, true).write(abcWriter.getSWC(main));
-				
+
 				case "abc2xml":
 					if (args.length < 3) printUsage();
 					
@@ -283,7 +283,7 @@ class Main
 	}
 	static function printUsage():Void
 	{
-		Lib.println("hxswfml " + getRevisionNumber() + "- XML based swf and abc assembler. 2009-2012");
+		Lib.println("hxswfml " + getRevisionNumber() + "- XML based swf and abc assembler. 2009-2013");
 		Lib.println("Usage: hxswfml <operation> input-file output-file [args] [options]");
 		Lib.println("");
 
@@ -302,7 +302,7 @@ class Main
 		Lib.println("  in : xml file");
 		Lib.println("  out : swc file");
 		Lib.println("");
-			Lib.println("xml2swc");
+		Lib.println("xml2swc");
 		Lib.println("  in : xml file");
 		Lib.println("  out: swc file");
 		Lib.println("  options : -no-strict");
@@ -338,7 +338,7 @@ class Main
 		Lib.println("  args : -main");
 		Lib.println("  options : -no-debug, -source, -folders");
 		Lib.println("");
-			
+
 		Lib.println("ttf2swf");
 		Lib.println("  in : ttf file");
 		Lib.println("  out : swf file");
@@ -360,7 +360,7 @@ class Main
 		Lib.println("  in : ttf file");
 		Lib.println("  options : -glyphs");
 		Lib.println("");
-			
+
 		Lib.println("flv2swf");
 		Lib.println("  in : flv file (audioCodecs:mp3, videoCodecs: VP6, VP6+alpha, Sorenson H.263)");
 		Lib.println("  out : swf file");
@@ -407,7 +407,7 @@ class Main
 			var currentVersionStr = currentVersionPart.split("\r").join("").split("\n").join("").split("M").join("");
 			var currentVersionNr = Std.parseInt(currentVersionStr);
 			var newVersionNr = currentVersionNr+1;
-			revInfo = "r"+ newVersionNr;
+			revInfo = "r"+ newVersionNr + " ";
 			//sys.io.File.saveContent("./version.txt", Std.string(newVersionNr));
 		}
 		return haxe.macro.Context.makeExpr(revInfo, haxe.macro.Context.currentPos());

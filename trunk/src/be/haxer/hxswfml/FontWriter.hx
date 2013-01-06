@@ -67,7 +67,6 @@ class FontWriter
 		var dump = new StringBuf();
 		for(table in tables)
 		{
-			//trace(table);
 			switch(table)
 			{
 				case TGlyf(descriptions): glyfData = descriptions;
@@ -153,7 +152,7 @@ class FontWriter
 			isItalic: false,
 			isBold: false,
 			name: name,
-			bytes : bytes //output.getBytes()
+			bytes : bytes
 		};
 		return TFont(id, FDFont4(font4Data));
 	}
@@ -284,33 +283,45 @@ class FontWriter
 				{
 					case TGlyphNull: 
 						glyphs.push({charCode:charCode, shape:{shapeRecords: [SHREnd]}});
-						glyphLayouts.push({advance:Std.int(advanceWidth*scale)*20, bounds:{left:0, right:0, top:0, bottom:0}});
+						glyphLayouts.push({advance:Std.int(advanceWidth*scale*20), bounds:{left:0, right:0, top:0, bottom:0}});
 						shapeWriter.reset(false);
 					
 					case TGlyphComposite(_header, data):
-						if(data[0]!=null && data[1]!=null)
+						var paths1=[];
+						var paths2=[];
+						if (!(data[0]==null && data[1]==null))
 						{
-						header = _header;
-						
-						var c1 = data[0];
-						var part1 = glyfData[c1.glyphIndex];
-						var dat1:GlyphSimple = Type.enumParameters(part1)[1];
-						var dat1bis:GlyphSimple={endPtsOfContours:[],instructions:[],xCoordinates:[],yCoordinates:[],flags:dat1.flags}
-						for(i in dat1.endPtsOfContours) dat1bis.endPtsOfContours.push(i);
-						for(i in dat1.instructions) dat1bis.instructions.push(i);
-						for(i in dat1.xCoordinates) dat1bis.xCoordinates.push(c1.xtranslate!=null? i+c1.xtranslate : i);
-						for(i in dat1.yCoordinates) dat1bis.yCoordinates.push(c1.ytranslate!=null? i+c1.ytranslate : i);
-							
-						var c2 = data[1];
-						var part2 = glyfData[c2.glyphIndex];
-						var dat2:GlyphSimple = Type.enumParameters(part2)[1];
-						var dat2bis:GlyphSimple={endPtsOfContours:[],instructions:[],xCoordinates:[],yCoordinates:[],flags:dat2.flags}
-						for(i in dat2.endPtsOfContours)	dat2bis.endPtsOfContours.push(i);
-						for(i in dat2.instructions)	dat2bis.instructions.push(i);
-						for(i in dat2.xCoordinates)	dat2bis.xCoordinates.push(c2.xtranslate!=null? i+c2.xtranslate : i);
-						for(i in dat2.yCoordinates)	dat2bis.yCoordinates.push(c2.ytranslate!=null? i+c2.ytranslate : i);
-						var paths : Array<GlyfPath> = buildPaths(dat1bis).concat(buildPaths(dat2bis));
-						writePaths([outputType, paths, shapeWriter,scale,prec,graphicsBuf,commands,datas,shapeRecords,glyphs,charCode,glyphLayouts,advanceWidth]);
+							header = _header;
+							if(data[0]!=null)
+							{
+								var c1 = data[0];
+								var part1 = glyfData[c1.glyphIndex];
+								var dat1:GlyphSimple = Type.enumParameters(part1)[1];
+								var dat1bis:GlyphSimple={endPtsOfContours:[],instructions:[],xCoordinates:[],yCoordinates:[],flags:dat1.flags, xDeltas:[], yDeltas:[]}
+								if(dat1.endPtsOfContours != null)
+									for(i in dat1.endPtsOfContours) dat1bis.endPtsOfContours.push(i);
+								if(dat1.instructions != null)
+									for(i in dat1.instructions) dat1bis.instructions.push(i);
+								if(dat1.xCoordinates != null)
+									for(i in dat1.xCoordinates) dat1bis.xCoordinates.push(c1.xtranslate!=null? i+c1.xtranslate : i);
+								if(dat1.yCoordinates != null)
+									for(i in dat1.yCoordinates) dat1bis.yCoordinates.push(c1.ytranslate!=null? i+c1.ytranslate : i);
+								paths1 = buildPaths(dat1bis);
+							}
+							if(data.length > 1 && data[1]!=null)
+							{
+								var c2 = data[1];
+								var part2 = glyfData[c2.glyphIndex];
+								var dat2:GlyphSimple = Type.enumParameters(part2)[1];
+								var dat2bis:GlyphSimple={endPtsOfContours:[],instructions:[],xCoordinates:[],yCoordinates:[],flags:dat2.flags, xDeltas:[], yDeltas:[]}
+								for(i in dat2.endPtsOfContours)	dat2bis.endPtsOfContours.push(i);
+								for(i in dat2.instructions)	dat2bis.instructions.push(i);
+								for(i in dat2.xCoordinates)	dat2bis.xCoordinates.push(c2.xtranslate!=null? i+c2.xtranslate : i);
+								for(i in dat2.yCoordinates)	dat2bis.yCoordinates.push(c2.ytranslate!=null? i+c2.ytranslate : i);
+								paths2 = buildPaths(dat2bis);
+							}
+							var paths : Array<GlyfPath> = paths1.concat(paths2);
+							writePaths([outputType, paths, shapeWriter,scale,prec,graphicsBuf,commands,datas,shapeRecords,glyphs,charCode,glyphLayouts,advanceWidth]);
 						}
 					case TGlyphSimple(_header, data):
 						header = _header;
@@ -342,7 +353,6 @@ class FontWriter
 					}
 					charObjects.push(charObj);
 					charHash.set(Std.int(j), charObj);
-					//charObjects["char"+String.fromCharCode(j)] = charObj;
 				}
 				//zip output:
 				if(outputType=='zip')
@@ -356,7 +366,7 @@ class FontWriter
 					varsBuf.add(";\n\tpublic static inline var descent = "); varsBuf.add(Std.int(os2Data.usWinDescent * scale * prec)/prec);
 					varsBuf.add(";\n\tpublic static inline var leading = "); varsBuf.add((Std.int((os2Data.usWinAscent + os2Data.usWinDescent - headData.unitsPerEm) *scale * prec)/prec));
 					varsBuf.add(";\n\tpublic static inline var advanceWidth = "); varsBuf.add(Std.int(advanceWidth*scale* prec)/prec);
-					varsBuf.add(";\n\tpublic static inline var leftsideBearing = ");	varsBuf.add(Std.int(leftSideBearing*scale* prec)/prec);
+					varsBuf.add(";\n\tpublic static inline var leftsideBearing = "); varsBuf.add(Std.int(leftSideBearing*scale* prec)/prec);
 					varsBuf.add(";\n");
 					
 					varsBuf.add("\n\tpublic static inline var xMin = "); varsBuf.add(Std.int(header.xMin*scale* prec)/prec);
@@ -366,7 +376,7 @@ class FontWriter
 					
 					varsBuf.add(";\n");
 					varsBuf.add("\n\tpublic static inline var _width = "); varsBuf.add(Std.int(advanceWidth*scale* prec)/prec);
-					varsBuf.add(";\n\tpublic static inline var _height = ");varsBuf.add(Std.int((header.yMax - header.xMin)*scale* prec)/prec);
+					varsBuf.add(";\n\tpublic static inline var _height = "); varsBuf.add(Std.int((header.yMax - header.xMin)*scale* prec)/prec);
 					varsBuf.add(";");
 					
 					var charClass = zipResources_charClass;
@@ -374,8 +384,8 @@ class FontWriter
 					charClass = charClass.split("#0").join(Std.string(j));
 					charClass = charClass.split("#commands").join(#if flash "[" +#end commands.toString() #if flash +"]" #end );
 					charClass = charClass.split("#datas").join(#if flash "[" +#end datas.toString() #if flash +"]" #end );
-					charClass = charClass.split("#1").join(Std.string(varsBuf.toString()));
-					charClass = charClass.split("#2").join(Std.string(graphicsBuf.toString()));
+					charClass = charClass.split("#1").join(varsBuf.toString());
+					charClass = charClass.split("#2").join(graphicsBuf.toString());
 					zipdata.add(
 					{
 						fileName : 'Char'+j+'.hx', 
@@ -399,17 +409,17 @@ class FontWriter
 			{
 				case KernSub0(kerningPairs):
 					for (pair in kerningPairs)
-						kerning.push({charCode1:pair.left,	charCode2:pair.right,	adjust:Std.int(pair.value*scale)*20});
+						kerning.push({charCode1:pair.left,	charCode2:pair.right,	adjust:Std.int(pair.value*scale*20)});
 				default:
 			}
 		}
 		
 		//SWFTAG OUTPUT
-		leading = Std.int( (os2Data.usWinAscent + os2Data.usWinDescent - headData.unitsPerEm) *scale)*20;
+		leading = Std.int( (os2Data.usWinAscent + os2Data.usWinDescent - headData.unitsPerEm) *scale *20);
 		var fontLayoutData = 
 		{
-			ascent: Std.int(os2Data.usWinAscent * scale) * 20, 
-			descent: Std.int(os2Data.usWinDescent * scale) * 20,
+			ascent: Std.int(os2Data.usWinAscent * scale * 20) , 
+			descent: Std.int(os2Data.usWinDescent * scale * 20) ,
 			leading: leading,
 			glyphs: glyphLayouts,
 			kerning:kerning 
@@ -422,7 +432,7 @@ class FontWriter
 			isItalic:false,
 			isBold: false,
 			language: LangCode.LCNone,//LangCode.LCLatin,//,
-			name: fontName,
+			name: this.fontName,
 			glyphs: glyphs,
 			layout:fontLayoutData
 		}
@@ -449,7 +459,7 @@ class FontWriter
 						extraFields : new List()
 			});
 			var buildFile = zipResources_buildFile;
-			buildFile = buildFile.split("#0").join(fontName);
+			buildFile = buildFile.split("#0").join(this.fontName);
 			zipdata.add(
 			{
 						fileName : 'build.hxml', 
@@ -472,7 +482,7 @@ class FontWriter
 			var buf = new StringBuf();
 			buf.add('//Usage: see example below \n\n');
 			buf.add('var ');
-			buf.add(fontName);
+			buf.add(this.fontName);
 			buf.add('=\n{\n');
 			
 			for(char in charObjects)
@@ -517,9 +527,9 @@ class FontWriter
 			buf.add('var s=new Sprite();\n');
 			buf.add('s.graphics.lineStyle(2,1);//s.graphics.beginFill(0,1);\n');
 			buf.add('s.graphics.drawPath(Vector.<int>(');
-			buf.add(fontName);
+			buf.add(this.fontName);
 			buf.add('.char35.commands), Vector.<Number>(');
-			buf.add(fontName);
+			buf.add(this.fontName);
 			buf.add('.char35.data), flash.display.GraphicsPathWinding.EVEN_ODD);\n');
 			buf.add('s.scaleX=s.scaleY = 0.1;\n');
 			buf.add('addChild(s);');
@@ -545,113 +555,109 @@ class FontWriter
 		var charCode:Int= arr[10]; 
 		var glyphLayouts:Array<FontLayoutGlyphData>= arr[11]; 
 		var advanceWidth:Int= arr[12];
+		if(outputType =='swf')
+			shapeWriter.beginFill(0,1);
+		for(i in 0...paths.length)
+		{
+			var path:GlyfPath = paths[i];
+			switch(path.type)
+			{
+				case 0:
+					switch (outputType)
+					{
+						case 'zip':
+							var x = Std.int((path.x * scale)*prec)/prec;
+							var y = Std.int((1024 - path.y * scale)*prec)/prec;
+							graphicsBuf.add( "\t\t\tgraphics.moveTo(");
+							graphicsBuf.add(Std.string(x));
+							graphicsBuf.add(", ");
+							graphicsBuf.add(Std.string(y));
+							graphicsBuf.add(");\n");
+							commands.push(1);
+							datas.push(x);
+							datas.push(y);
 
-		
-						if(outputType =='swf')
-							shapeWriter.beginFill(0,1);//this.beginFill(0,1);
-						for(i in 0...paths.length)
-						{
-							var path:GlyfPath = paths[i];
-							switch(path.type)
-							{
-								case 0:
-									switch (outputType)
-									{
-										case 'zip':
-											var x = Std.int((path.x * scale)*prec)/prec;
-											var y = Std.int((1024 - path.y * scale)*prec)/prec;
-											graphicsBuf.add( "\t\t\tgraphics.moveTo(");
-											graphicsBuf.add(Std.string(x));
-											graphicsBuf.add(", ");
-											graphicsBuf.add(Std.string(y));
-											graphicsBuf.add(");\n");
-											commands.push(1);
-											datas.push(x);
-											datas.push(y);
-												
-										case 'path', 'hash':
-											var x = Std.int((path.x * scale)*prec)/prec;
-											var y = Std.int((1024 - path.y * scale)*prec)/prec;
-											commands.push(1);
-											datas.push(x);
-											datas.push(y);
-											
-										case 'swf':
-											shapeWriter.moveTo(path.x * scale, -1 * path.y * scale);//this.moveTo(path.x * scale, -1 * path.y * scale);
-									}
-								case 1:
-									switch(outputType)
-									{
-										case 'zip':
-											var x = Std.int((path.x * scale)*prec)/prec;
-											var y = Std.int((1024 - path.y * scale)*prec)/prec;
-											graphicsBuf.add( "\t\t\tgraphics.lineTo(");
-											graphicsBuf.add(Std.string(x));
-											graphicsBuf.add( ", " ); 
-											graphicsBuf.add(Std.string(y)); 
-											graphicsBuf.add(");\n");
-											commands.push(2);
-											datas.push(x);
-											datas.push(y);
-											
-										case 'path', 'hash':
-											var x = Std.int((path.x * scale)*prec)/prec;
-											var y = Std.int((1024 - path.y * scale)*prec)/prec;
-											commands.push(2);
-											datas.push(x);
-											datas.push(y);
-											
-										case 'swf':
-											shapeWriter.lineTo(path.x * scale, -1 * path.y*scale);//this.lineTo(path.x * scale, -1 * path.y*scale);
-									}
-								case 2:
-									switch (outputType)
-									{
-										case 'zip':
-											var cx = Std.int((path.cx * scale)*prec)/prec;
-											var cy = Std.int((1024 - path.cy * scale)*prec)/prec;
-											var x = Std.int((path.x * scale)*prec)/prec;
-											var y = Std.int((1024 - path.y * scale)*prec)/prec;
-											graphicsBuf.add( "\t\t\tgraphics.curveTo(" );
-											graphicsBuf.add(Std.string(cx));
-											graphicsBuf.add(", "); 
-											graphicsBuf.add(Std.string(cy));
-											graphicsBuf.add(", " );
-											graphicsBuf.add(Std.string(x));
-											graphicsBuf.add(", " );
-											graphicsBuf.add(Std.string(y));
-											graphicsBuf.add(");\n");
-											commands.push(3);
-											datas.push(cx);
-											datas.push(cy);
-											datas.push(x);
-											datas.push(y);
-											
-										case 'path', 'hash':
-											var cx = Std.int((path.cx * scale)*prec)/prec;
-											var cy = Std.int((1024 - path.cy * scale)*prec)/prec;
-											var x = Std.int((path.x * scale)*prec)/prec;
-											var y = Std.int((1024 - path.y * scale)*prec)/prec;
-											commands.push(3);
-											datas.push(cx);
-											datas.push(cy);
-											datas.push(x);
-											datas.push(y);
-											
-										case 'swf':
-											shapeWriter.curveTo(path.cx * scale, -1 * path.cy * scale, path.x * scale, -1 * path.y * scale);//this.curveTo(path.cx * scale, -1 * path.cy * scale, path.x * scale, -1 * path.y * scale);
-									}
-							}
-						}
-						
-						var shapeRecs:Array<ShapeRecord> = shapeWriter.getShapeRecords();
-						for(s in 0...shapeRecs.length)
-							shapeRecords.push(shapeRecs[s]) ;
-						shapeRecords.push(SHREnd);
-						glyphs.push({charCode:charCode, shape:{shapeRecords: shapeRecords}});
-						glyphLayouts.push({advance:Std.int(advanceWidth*scale)*20, bounds:{left:0, right:0, top:0, bottom:0}});//bounds:{left:header.xMin, right:header.xMax, top:header.yMin, bottom:header.yMax}
-						shapeWriter.reset(false);
-						
+						case 'path', 'hash':
+							var x = Std.int((path.x * scale)*prec)/prec;
+							var y = Std.int((1024 - path.y * scale)*prec)/prec;
+							commands.push(1);
+							datas.push(x);
+							datas.push(y);
+
+						case 'swf':
+							shapeWriter.moveTo(path.x * scale, -1 * path.y * scale);
+					}
+				case 1:
+					switch(outputType)
+					{
+						case 'zip':
+							var x = Std.int((path.x * scale)*prec)/prec;
+							var y = Std.int((1024 - path.y * scale)*prec)/prec;
+							graphicsBuf.add( "\t\t\tgraphics.lineTo(");
+							graphicsBuf.add(Std.string(x));
+							graphicsBuf.add( ", " ); 
+							graphicsBuf.add(Std.string(y)); 
+							graphicsBuf.add(");\n");
+							commands.push(2);
+							datas.push(x);
+							datas.push(y);
+
+						case 'path', 'hash':
+							var x = Std.int((path.x * scale)*prec)/prec;
+							var y = Std.int((1024 - path.y * scale)*prec)/prec;
+							commands.push(2);
+							datas.push(x);
+							datas.push(y);
+
+						case 'swf':
+							shapeWriter.lineTo(path.x * scale, -1 * path.y*scale);
+					}
+				case 2:
+					switch (outputType)
+					{
+						case 'zip':
+							var cx = Std.int((path.cx * scale)*prec)/prec;
+							var cy = Std.int((1024 - path.cy * scale)*prec)/prec;
+							var x = Std.int((path.x * scale)*prec)/prec;
+							var y = Std.int((1024 - path.y * scale)*prec)/prec;
+							graphicsBuf.add( "\t\t\tgraphics.curveTo(" );
+							graphicsBuf.add(Std.string(cx));
+							graphicsBuf.add(", "); 
+							graphicsBuf.add(Std.string(cy));
+							graphicsBuf.add(", " );
+							graphicsBuf.add(Std.string(x));
+							graphicsBuf.add(", " );
+							graphicsBuf.add(Std.string(y));
+							graphicsBuf.add(");\n");
+							commands.push(3);
+							datas.push(cx);
+							datas.push(cy);
+							datas.push(x);
+							datas.push(y);
+
+						case 'path', 'hash':
+							var cx = Std.int((path.cx * scale)*prec)/prec;
+							var cy = Std.int((1024 - path.cy * scale)*prec)/prec;
+							var x = Std.int((path.x * scale)*prec)/prec;
+							var y = Std.int((1024 - path.y * scale)*prec)/prec;
+							commands.push(3);
+							datas.push(cx);
+							datas.push(cy);
+							datas.push(x);
+							datas.push(y);
+
+						case 'swf':
+							shapeWriter.curveTo(path.cx * scale, -1 * path.cy * scale, path.x * scale, -1 * path.y * scale);
+					}
+			}
+		}
+		var shapeRecs:Array<ShapeRecord> = shapeWriter.getShapeRecords();
+		for(s in 0...shapeRecs.length)
+			shapeRecords.push(shapeRecs[s]) ;
+		shapeRecords.push(SHREnd);
+		glyphs.push({charCode:charCode, shape:{shapeRecords: shapeRecords}});
+		glyphLayouts.push({advance:Std.int(advanceWidth*scale*20), bounds:{left:0, right:0, top:0, bottom:0}});
+		shapeWriter.reset(false);
 	}
 	public function getPath():String
 	{
@@ -677,7 +683,6 @@ class FontWriter
 	{
 		var initialText = "";
 		var textColor = 0x000000FF;
-		//for(i in 32...126)
 		for(i in 0...chars.length)
 			initialText+=String.fromCharCode(chars[i]);
 		initialText+=' Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.';
@@ -761,6 +766,10 @@ class FontWriter
 		return swfBytes;
 	}
 	var qCpoint:GlyfPath;
+	var implicitStart:Bool;
+	var implicitEnd:Bool;
+	var startPoint:{x:Float, y:Float};
+	var implicitCP:{x:Float, y:Float};
 	function buildPaths(data:GlyphSimple):Array<GlyfPath>
 	{
 		var len:Int = data.endPtsOfContours.length;
@@ -774,30 +783,40 @@ class FontWriter
 		{
 			yCoordinates.push(i);
 		}
-		var p1OnCurve:Bool;
-		var p2OnCurve:Bool;
 		var cp=0;
 		var start=0;
 		var end=0;
-		var arr:Array<GlyfPath> = new Array();                    
+		var arr:Array<GlyfPath> = new Array();
 		for(i in 0...len)
-		{       
-		  start = cp;
-		  end = data.endPtsOfContours[i];
-		  arr.push({type:0, x: xCoordinates[start], y:yCoordinates[start], cx:null, cy:null});
-		  for(j in 0...end-start)
-		  {
-			makePath(cp, cp + 1, arr, data.flags, xCoordinates, yCoordinates);
+		{
+			start = cp;
+			end = data.endPtsOfContours[i];
+			qCpoint = {type:null, x: xCoordinates[cp], y: yCoordinates[cp], cx:null, cy:null}; 
+			if((data.flags[start] & 0x01 != 0) == false)
+			{
+				implicitStart = true;
+				implicitEnd = true;
+				implicitCP = {x: xCoordinates[cp], y:yCoordinates[cp]};
+			}
+			else
+			{
+				implicitStart = false;
+				implicitEnd = false;
+				arr.push({type:0, x: xCoordinates[cp], y:yCoordinates[cp], cx:null, cy:null});
+			}
+			for(j in 0...end-start)
+			{
+				makePath(cp, cp + 1, arr, data.flags, xCoordinates, yCoordinates, false);
+				cp++;
+			}
+			makePath(end, start, arr, data.flags, xCoordinates, yCoordinates, true);
 			cp++;
-		  }
-		  makePath(end, start, arr, data.flags, xCoordinates, yCoordinates);
-		  cp++;
 		}
 		return arr;
 	}
-	private function makePath(p1:Int, p2:Int, arr:Array<GlyfPath>, flags:Array<Int>, xCoordinates:Array<Float>, yCoordinates:Array<Float>):Void
+	private function makePath(p1:Int, p2:Int, arr:Array<GlyfPath>, flags:Array<Int>, xCoordinates:Array<Float>, yCoordinates:Array<Float>, isEndPoint:Bool):Void
 	{
-		var p1OnCurve:Bool = flags[p1] & 0x01 != 0; 
+		var p1OnCurve:Bool = flags[p1] & 0x01 != 0;
 		var p2OnCurve:Bool = flags[p2] & 0x01 != 0;
 		if(p1OnCurve && p2OnCurve)
 		{
@@ -805,16 +824,49 @@ class FontWriter
 		}
 		else if(!p1OnCurve && !p2OnCurve)
 		{
-		  arr.push({type:2, cx: qCpoint.x, cy: qCpoint.y, x:(xCoordinates[p1] + xCoordinates[p2])/2, y:(yCoordinates[p1] + yCoordinates[p2])/2});
-		  qCpoint = {x: xCoordinates[p2], y: yCoordinates[p2], cx:null, cy:null, type:null};
+			if(implicitStart)
+			{
+				implicitStart = false;
+				arr.push({type:0, x: (xCoordinates[p1] + xCoordinates[p2])/2 , y:(yCoordinates[p1] + yCoordinates[p2])/2, cx:null, cy:null});
+				startPoint = {x: (xCoordinates[p1] + xCoordinates[p2])/2 , y:(yCoordinates[p1] + yCoordinates[p2])/2}
+			}
+			else
+			{
+				arr.push({type:2, x:(xCoordinates[p1] + xCoordinates[p2])/2, y:(yCoordinates[p1] + yCoordinates[p2])/2, cx: qCpoint.x, cy:qCpoint.y});
+			}
+			qCpoint = {x: xCoordinates[p2], y: yCoordinates[p2], cx:null, cy:null, type:null};
+			if(isEndPoint && implicitEnd)
+			{
+				implicitEnd = false;
+				arr.push({type:2, x:startPoint.x, y:startPoint.y, cx:implicitCP.x, cy:implicitCP.y});
+			}
 		}
 		else if(p1OnCurve && !p2OnCurve)
 		{
-		   qCpoint = {x: xCoordinates[p2], y: yCoordinates[p2], cx:null, cy:null, type:null};
+			qCpoint = {type:null, x: xCoordinates[p2], y: yCoordinates[p2], cx:null, cy:null};
+			if(isEndPoint && implicitEnd)
+			{
+				implicitEnd = false;
+				arr.push({type:2, x:startPoint.x, y:startPoint.y, cx:implicitCP.x, cy:implicitCP.y});
+			}
 		}
 		else if(!p1OnCurve && p2OnCurve)
 		{
-			arr.push({type:2, cx: qCpoint.x, cy: qCpoint.y, x: xCoordinates[p2], y: yCoordinates[p2]});
+			if(implicitStart)
+			{
+				implicitStart = false;
+				arr.push({type:0, x: xCoordinates[p2], y: yCoordinates[p2], cx: null, cy: null});
+				startPoint = {x: xCoordinates[p2], y: yCoordinates[p2]};
+			}
+			else
+			{
+				arr.push({type:2, x: xCoordinates[p2], y: yCoordinates[p2], cx: qCpoint.x, cy: qCpoint.y});
+			}
+			if(isEndPoint && implicitEnd)
+			{
+				implicitEnd = false;
+				arr.push({type:2, x:startPoint.x, y:startPoint.y, cx:implicitCP.x, cy:implicitCP.y});
+			}
 		}
 	}
 	private function init()
@@ -928,7 +980,6 @@ class Main extends Sprite
 //------------
 	zipResources_buildFile =
 '
-Main
 -main Main
 -swf #0.swf
 -swf-header 1024:900:30:FFFFFF
