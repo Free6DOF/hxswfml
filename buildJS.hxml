@@ -2,5 +2,6 @@
 -cp src
 --macro include('be.haxer.hxswfml', true, ['be.haxer.hxswfml.Main'])
 --macro include('format',true)
+-D no-pattern-matching
 -js bin/javascript/hxswfml.js
 -cmd echo "javascript created"

@@ -184,14 +184,14 @@ class Tools
 	{
 		buf.add('\n================================= post table =================================\n');
 		buf.add('version : ');		buf.add(data.version);
-    buf.add('\nitalicAngle : ' );		buf.add(data.italicAngle);
-    buf.add('\nunderlinePosition : ' );		buf.add(data.underlinePosition);
-    buf.add('\nunderlineThickness : ' );		buf.add(data.underlineThickness);
-    buf.add('\nisFixedPitch : ' );		buf.add(data.isFixedPitch);
+		buf.add('\nitalicAngle : ' );		buf.add(data.italicAngle);
+		buf.add('\nunderlinePosition : ' );		buf.add(data.underlinePosition);
+		buf.add('\nunderlineThickness : ' );		buf.add(data.underlineThickness);
+		buf.add('\nisFixedPitch : ' );		buf.add(data.isFixedPitch);
 		buf.add('\nminMemType42 : ' );		buf.add(data.minMemType42);
-    buf.add('\nmaxMemType42 : ' );		buf.add(data.maxMemType42);
-    buf.add('\nminMemType1 : ' );		buf.add(data.minMemType1);
-    buf.add('\nmaxMemType1 : ' );		buf.add(data.maxMemType1);
+		buf.add('\nmaxMemType42 : ' );		buf.add(data.maxMemType42);
+		buf.add('\nminMemType1 : ' );		buf.add(data.minMemType1);
+		buf.add('\nmaxMemType1 : ' );		buf.add(data.maxMemType1);
 		buf.add('\nnumGlyphs : ' );		buf.add(data.numGlyphs);
 		buf.add('\n');
 		
@@ -339,6 +339,32 @@ class Tools
 	static function dumpTUnk(bytes):String
 	{
 		return '\n================================= unknown table =================================\n';
+	}
+	public static function dumpComponent(comp:GlyphComponent, glyphIndex:Int, flags:Int, glyphIdx:Int)
+	{
+		trace("composite glyphIndex : " + glyphIndex);
+		trace("flags : " + flags);
+		trace("glyphIdx : " + glyphIdx);
+		if((flags & CFlag.ARG_1_AND_2_ARE_WORDS)!=0)trace("ARG_1_AND_2_ARE_WORDS");
+		if((flags & CFlag.ARGS_ARE_XY_VALUES)!=0)trace("ARGS_ARE_XY_VALUES");
+		if((flags & CFlag.ROUND_XY_TO_GRID)!=0)trace("ROUND_XY_TO_GRID");
+		if((flags & CFlag.WE_HAVE_A_SCALE)!=0)trace("WE_HAVE_A_SCALE");
+		if((flags & CFlag.MORE_COMPONENTS)!=0)trace("MORE_COMPONENTS");
+		if((flags & CFlag.WE_HAVE_AN_X_AND_Y_SCALE)!=0)trace("WE_HAVE_AN_X_AND_Y_SCALE");
+		if((flags & CFlag.WE_HAVE_A_TWO_BY_TWO)!=0)trace("WE_HAVE_A_TWO_BY_TWO");
+		if((flags & CFlag.WE_HAVE_INSTRUCTIONS)!=0)trace("WE_HAVE_INSTRUCTIONS");
+		if((flags & CFlag.USE_MY_METRICS)!=0)trace("USE_MY_METRICS");
+		trace('flags:'+comp.flags);
+		trace('glyphIndex:'+comp.glyphIndex);
+		trace('xtranslate:'+comp.xtranslate);
+		trace('ytranslate:'+comp.ytranslate);
+		trace('xscale:'+comp.xscale);
+		trace('yscale:'+comp.yscale);
+		trace('scale01 :'+comp.scale01);
+		trace('scale10 :'+ comp.scale10);
+		trace('point1 :'+ comp.point1);
+		trace('point2 :'+ comp.point2);
+		trace('instructions:'+comp.instructions);
 	}
 }
 enum Platform

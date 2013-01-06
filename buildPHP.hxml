@@ -3,5 +3,6 @@
 -main be.haxer.hxswfml.Main
 --macro include('be.haxer.hxswfml', true)
 --macro include('format', true)
+-D no-pattern-matching
 -php bin/php
 -cmd echo "php created"

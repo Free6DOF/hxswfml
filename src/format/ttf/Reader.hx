@@ -22,9 +22,9 @@ class Reader
 	}
 	public function read() : TTF
 	{
-		var header:Header = readHeader();//trace(header);
+		var header:Header = readHeader();
 		
-		var directory = readDirectory(header);//for(i in directory) trace(i);
+		var directory = readDirectory(header);
 		
 		var tables:Array<Table> = new Array();
 		
@@ -86,16 +86,10 @@ class Reader
 		var directory:Array<Entry> = new Array();
 		for(i in 0...header.numTables) 
 		{
-			var tableId = input.readInt32();
-			var bytesOutput = new haxe.io.BytesOutput();
-			bytesOutput.bigEndian=true;
-			bytesOutput.writeInt32(tableId);
-			var bytesName = bytesOutput.getBytes();
-			var tableName:String = new haxe.io.BytesInput(bytesName).readString(4);
+			var tableName = input.readString(4);
 			if(tableName=='name') tableName = '_name';
 			directory[i] = 
 			{
-				tableId : tableId,
 				tableName : tableName,
 				checksum : input.readInt32(),
 				offset : input.readInt32(),
@@ -150,16 +144,16 @@ class Reader
 		return
 		{
 			version:input.readInt32(),
-			ascender:input.readInt16(),//FWord (F-Units Int16)
-			descender:input.readInt16(),//FWord
-			lineGap:input.readInt16(),//FWord
-			advanceWidthMax:input.readUInt16(),//UFWord
-			minLeftSideBearing:input.readInt16(),//FWord
-			minRightSideBearing:input.readInt16(),//FWord
-			xMaxExtent:input.readInt16(),//FWord
+			ascender:input.readInt16(),
+			descender:input.readInt16(),
+			lineGap:input.readInt16(),
+			advanceWidthMax:input.readUInt16(),
+			minLeftSideBearing:input.readInt16(),
+			minRightSideBearing:input.readInt16(),
+			xMaxExtent:input.readInt16(),
 			caretSlopeRise:input.readInt16(),
 			caretSlopeRun:input.readInt16(),
-			caretOffset:input.readInt16(),//FWord
+			caretOffset:input.readInt16(),
 			reserved:input.read(8),
 			metricDataFormat:input.readInt16(),
 			numberOfHMetrics:input.readUInt16()
@@ -182,10 +176,10 @@ class Reader
 			unitsPerEm : i.readUInt16(),//range from 64 to 16384
 			created: i.readDouble(),
 			modified: i.readDouble(),
-			xMin : i.readInt16(),//FWord
-			yMin : i.readInt16(),//FWord
-			xMax : i.readInt16(),//FWord
-			yMax : i.readInt16(),//FWord
+			xMin : i.readInt16(),
+			yMin : i.readInt16(),
+			xMax : i.readInt16(),
+			yMax : i.readInt16(),
 			macStyle: i.readUInt16(),
 			lowestRecPPEM : i.readUInt16(),
 			fontDirectionHint : i.readInt16(),
@@ -253,7 +247,7 @@ class Reader
 			metrics.push(
 			{
 				advanceWidth: input.readUInt16(),
-				leftSideBearing : input.readInt16()//FWord
+				leftSideBearing : input.readInt16()
 			});
 		}
 		var len = maxp.numGlyphs - hhea.numberOfHMetrics;
@@ -273,21 +267,23 @@ class Reader
 		input.bigEndian=true;
 		var descriptions:Array<GlyfDescription> = new Array();
 		for (i in 0...maxp.numGlyphs)
+		{
 			descriptions.push(readGlyf(i, input, loca.offsets[i+1] - loca.offsets[i]));
+		}
 		return descriptions;
 	}
 	function readGlyf(glyphIndex, input, len):GlyfDescription
 	{
 		if(len>0)
 		{
-			var numberOfContours=input.readInt16();
+			var numberOfContours:Int = input.readInt16();
 			var glyphHeader=
 			{
 				numberOfContours:numberOfContours,
-				xMin:input.readInt16(),//FWord
-				yMin:input.readInt16(),//FWord
-				xMax:input.readInt16(),//FWord
-				yMax:input.readInt16()//FWord
+				xMin:input.readInt16(),
+				yMin:input.readInt16(),
+				xMax:input.readInt16(),
+				yMax:input.readInt16()
 			}
 			len-=10;
 			if(numberOfContours>=0)
@@ -355,52 +351,65 @@ class Reader
 				break;
 		}
 		var xCoordinates:Array<Int> = new Array();
-		var yCoordinates:Array<Int> = new Array();
+		var xDeltas:Array<Int> = new Array();
 		var x:Int = 0;
-		var y:Int = 0;
 		for (i in 0...count)
 		{
+			
+			var xDelta = 0;
 			if ((flags[i] & 0x10) != 0)
 			{
 				if ((flags[i] & 0x02) != 0)
 				{
-					x += input.readByte();len-=1;
+					xDelta = input.readByte();len-=1;
+					x += xDelta;
 				}
 			} 
 			else 
 			{
 				if ((flags[i] & 0x02) != 0)
 				{
-					x += -(input.readByte());len-=1;
+					xDelta = -(input.readByte());len-=1;
+					x += xDelta;
 				} 
 				else
 				{
-					x += input.readInt16();len-=2;
+					xDelta = input.readInt16();len-=2;
+					x += xDelta;
 				}
 			}
 			xCoordinates[i] = x;
+			xDeltas[i] = xDelta;
 		}
+		var yCoordinates:Array<Int> = new Array();
+		var yDeltas:Array<Int> = new Array();
+		var y:Int = 0;
 		for (i in 0...count)
 		{
+			var yDelta = 0;
 			if ((flags[i] & 0x20) != 0)
 			{
 				if ((flags[i] & 0x04) != 0)
 				{
-					y += input.readByte();len-=1;
+					yDelta = input.readByte();len-=1;
+					y += yDelta;
 				}
 			} 
 			else
 			{
 				if ((flags[i] & 0x04) != 0)
 				{
-					y += -(input.readByte());len-=1;
+					yDelta = -(input.readByte());len-=1;
+					y += yDelta;
 				} 
 				else
 				{
-					y += input.readInt16();len-=2;
+					yDelta = input.readInt16();len-=2;
+					y += yDelta;
 				}
 			}
 			yCoordinates[i] = y;
+			yDeltas[i] = yDelta;
 		}
 		var glyphSimple:GlyphSimple=
 		{
@@ -408,7 +417,9 @@ class Reader
 			flags:flags,
 			instructions:instructions,
 			xCoordinates:xCoordinates,
-			yCoordinates:yCoordinates
+			yCoordinates:yCoordinates,
+			xDeltas:xDeltas,
+			yDeltas:yDeltas
 		}
 		input.read(len);
 		return glyphSimple;
@@ -416,12 +427,9 @@ class Reader
 	function readGlyfComposite(input, len, glyphIndex:Int):Array<GlyphComponent>
 	{
 		var components:Array<GlyphComponent>=new Array();
-		//input.read(len);
-		//return components;
 		var comp:GlyphComponent;
 		var firstIndex = 0;
 		var firstContour = 0;
-		var d:Bool= false;//glyphIndex==207;
 		var more:Bool=false;
 		var flags:Int;
 		do 
@@ -491,33 +499,8 @@ class Reader
 				comp.yscale = input.readInt16() / 0x4000;
 				len -= 8;
 			}
-			if(d)
-			{
-				trace("composite glyphIndex : " + glyphIndex);
-				trace("flags : " + flags);
-				trace("glyphIdx : " + glyphIdx);
-				if((flags & CFlag.ARG_1_AND_2_ARE_WORDS)!=0)trace("ARG_1_AND_2_ARE_WORDS");
-				if((flags & CFlag.ARGS_ARE_XY_VALUES)!=0)trace("ARGS_ARE_XY_VALUES");
-				if((flags & CFlag.ROUND_XY_TO_GRID)!=0)trace("ROUND_XY_TO_GRID");
-				if((flags & CFlag.WE_HAVE_A_SCALE)!=0)trace("WE_HAVE_A_SCALE");
-				if((flags & CFlag.MORE_COMPONENTS)!=0)trace("MORE_COMPONENTS");
-				if((flags & CFlag.WE_HAVE_AN_X_AND_Y_SCALE)!=0)trace("WE_HAVE_AN_X_AND_Y_SCALE");
-				if((flags & CFlag.WE_HAVE_A_TWO_BY_TWO)!=0)trace("WE_HAVE_A_TWO_BY_TWO");
-				if((flags & CFlag.WE_HAVE_INSTRUCTIONS)!=0)trace("WE_HAVE_INSTRUCTIONS");
-				if((flags & CFlag.USE_MY_METRICS)!=0)trace("USE_MY_METRICS");
-				trace('flags:'+comp.flags);
-				trace('glyphIndex:'+comp.glyphIndex);
-				trace('xtranslate:'+comp.xtranslate);
-				trace('ytranslate:'+comp.ytranslate);
-				trace('xscale:'+comp.xscale);
-				trace('yscale:'+comp.yscale);
-				trace('scale01 :'+comp.scale01);
-				trace('scale10 :'+ comp.scale10);
-				trace('point1 :'+ comp.point1);
-				trace('point2 :'+ comp.point2);
-				trace('instructions:'+comp.instructions);
-			}
 			components.push(comp);
+			//if(glyphIndex==1010) Tools.dumpComponent(comp, glyphIndex, flags, glyphIdx);
 		}
 		while (more);
 		if ((flags & CFlag.WE_HAVE_INSTRUCTIONS) != 0) 
@@ -595,7 +578,8 @@ class Reader
 		}
 		else if(cmapFormat == 4)
 		{
-			var segCount = Std.int(input.readUInt16() / 2);
+			var segCount2x = input.readUInt16();
+			var segCount = Std.int(segCount2x / 2);
 			var searchRange = input.readUInt16();
 			var entrySelector = input.readUInt16();
 			var rangeShift = input.readUInt16();
@@ -606,7 +590,7 @@ class Reader
 			var glyphIndices = new Array();
 			for (i in 0...segCount)
 				endCodes.push(input.readUInt16());
-			input.readUInt16();
+			var reserved = input.readUInt16();
 			for (i in 0...segCount)
 				startCodes.push(input.readUInt16());
 			for (i in 0...segCount)
@@ -614,6 +598,8 @@ class Reader
 			for (i in 0...segCount)
 				idRangeOffsets.push(input.readUInt16());
 			var count = Std.int((length - (8*segCount + 16)) / 2);
+			if(reserved!=0)
+				count = Std.int((count-6)/2);//just a temp hack
 			for (i in 0...count)
 				glyphIndices[i]=input.readUInt16();
 			
@@ -671,7 +657,7 @@ class Reader
 					if ( startCodes[i] <= charCode )
 						if ( idRangeOffsets[i] > 0 )
 						{
-							var index:Int = Std.int(idRangeOffsets[i]/2 + (charCode - startCodes[i]) - (segCount - i));
+							var index:Int = Std.int(idRangeOffsets[i]/2 + charCode - startCodes[i] - segCount + i);
 							return glyphIndices[index];
 						}
 						else 
@@ -747,8 +733,8 @@ class Reader
 		{
 			version : input.readInt32(),
 			italicAngle : input.readInt32(),
-			underlinePosition : input.readInt16(),//FWord
-			underlineThickness : input.readInt16(),//FWord
+			underlinePosition : input.readInt16(),
+			underlineThickness : input.readInt16(),
 			isFixedPitch : input.readInt32(),
 			minMemType42 : input.readInt32(),
 			maxMemType42 : input.readInt32(),
@@ -936,23 +922,14 @@ class Reader
 		var tables = new Array();
 		for(i in 0...header.numTables) 
 		{
-			var tableId = input.readInt32();
-
-			var tableName="";
-			var bytesOutput = new haxe.io.BytesOutput();
-			bytesOutput.bigEndian=true;
-			bytesOutput.writeInt32(tableId);
-			var bytesName = bytesOutput.getBytes();
-			tableName = new haxe.io.BytesInput(bytesName).readString(4);
+			var tableName = input.readString(4);
 			if(tableName=='name') tableName = '_name';
-
 			var checksum = input.readInt32();
 			var offset = input.readInt32();
 			var length =input.readInt32();
 			//var bytes = null;//Bytes.alloc(length).sub(haxe.Int32.toInt(offset), haxe.Int32.toInt(length));
 			tables[i] = 
 			{
-				tableId : tableId,
 				tableName : tableName,
 				checksum : checksum,
 				offset : offset,
