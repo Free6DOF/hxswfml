@@ -47,6 +47,7 @@ class FontWriter
 	var fontData3:FontData;
 	var defineFont3SWFTag:SWFTag;
 	var leading:Int;
+	public var precision:Int;
 	
 	var zipResources_charClass:String;
 	var zipResources_mainClass:String;
@@ -278,7 +279,7 @@ class FontWriter
 				var shapeRecords: Array<ShapeRecord> = new Array();
 				var shapeWriter:ShapeWriter=new ShapeWriter(false);
 				var header:GlyphHeader=null;
-				var prec:Int = 1000; 
+				var prec:Int = Std.int(Math.pow(10, Std.int(this.precision))); 
 				switch(glyfData[glyphIndex])
 				{
 					case TGlyphNull: 
@@ -871,6 +872,7 @@ class FontWriter
 	}
 	private function init()
 	{
+		precision = 3;
 		zipResources_charClass =
 "
 package;

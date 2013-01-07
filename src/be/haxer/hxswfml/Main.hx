@@ -220,9 +220,11 @@ class Main
 					
 					var inFile = args[1];
 					var ranges = getArgValue('-glyphs');
-						if (ranges == null) ranges = "32-126";
-						
+					if (ranges == null) ranges = "32-126";
+					var precision = getArgValue('-precision');
+					
 					var fontWriter = new FontWriter();
+					if(precision != null) fontWriter.precision = Std.parseInt(precision);
 					fontWriter.write(File.getBytes(inFile), ranges, 'zip');
 					File.write(fontWriter.fontName+'.zip', true).write(fontWriter.getZip());
 					
@@ -231,8 +233,10 @@ class Main
 					var inFile = args[1];
 					var ranges = getArgValue('-glyphs');
 					if (ranges == null) ranges = "32-126";
+					var precision = getArgValue('-precision');
 
 					var fontWriter = new FontWriter();
+					if(precision != null) fontWriter.precision = Std.parseInt(precision);
 					fontWriter.write(File.getBytes(inFile), ranges, 'path');
 					File.write(fontWriter.fontName+'.path',false).writeString(fontWriter.getPath());
 					
@@ -241,8 +245,10 @@ class Main
 					var inFile = args[1];
 					var ranges = getArgValue('-glyphs');
 					if (ranges == null) ranges = "32-126";
-
+					var precision = getArgValue('-precision');
+					
 					var fontWriter = new FontWriter();
+					if(precision != null) fontWriter.precision = Std.parseInt(precision);
 					fontWriter.write(File.getBytes(inFile), ranges, 'hash');
 					File.write(fontWriter.fontName+'.hash',false).writeString(fontWriter.getHash(true));
 				
@@ -302,16 +308,19 @@ class Main
 		Lib.println("  in : xml file");
 		Lib.println("  out : swc file");
 		Lib.println("");
+		
 		Lib.println("xml2swc");
 		Lib.println("  in : xml file");
 		Lib.println("  out: swc file");
 		Lib.println("  options : -no-strict");
 		Lib.println("");
+		
 		Lib.println("xml2abc");
 		Lib.println("  in : xml file");
 		Lib.println("  out : abc file");
 		Lib.println("  options : -strict, -stack");
 		Lib.println("");
+		
 		Lib.println("abc2swf");
 		Lib.println("  in : xml or abc file");
 		Lib.println("  out : swf file");
@@ -348,17 +357,17 @@ class Main
 
 		Lib.println("ttf2hx");
 		Lib.println("  in : ttf file");
-		Lib.println("  options : -glyphs");
+		Lib.println("  options : -glyphs, -precision");
 		Lib.println("");
 			
 		Lib.println("ttf2path");
 		Lib.println("  in : ttf file");
-		Lib.println("  options : -glyphs");
+		Lib.println("  options : -glyphs, -precision");
 		Lib.println("");
 			
 		Lib.println("ttf2hash");
 		Lib.println("  in : ttf file");
-		Lib.println("  options : -glyphs");
+		Lib.println("  options : -glyphs, -precision");
 		Lib.println("");
 
 		Lib.println("flv2swf");
@@ -406,7 +415,7 @@ class Main
 			var currentVersionPart = content.split(":").pop();
 			var currentVersionStr = currentVersionPart.split("\r").join("").split("\n").join("").split("M").join("");
 			var currentVersionNr = Std.parseInt(currentVersionStr);
-			var newVersionNr = currentVersionNr+1;
+			var newVersionNr = currentVersionNr + 1;
 			revInfo = "r"+ newVersionNr + " ";
 			//sys.io.File.saveContent("./version.txt", Std.string(newVersionNr));
 		}
