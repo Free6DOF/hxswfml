@@ -3,18 +3,23 @@ import format.swf.Data;
 import format.abc.Data;
 import haxe.io.BytesInput;
 
-#if php
-import php.io.File;
-import php.FileSystem;
-#elseif neko
-import neko.io.File;
-import neko.FileSystem;
-#elseif cpp
-import cpp.Lib;
-import cpp.io.File;
-import cpp.FileSystem;
-#elseif flash
-import flash.display.MovieClip;
+#if (haxe3 && (neko || cpp || php || java))
+	import sys.io.File;
+	import sys.FileSystem;
+#else
+	#if php
+	import php.io.File;
+	import php.FileSystem;
+	#elseif neko
+	import neko.io.File;
+	import neko.FileSystem;
+	#elseif cpp
+	import cpp.Lib;
+	import cpp.io.File;
+	import cpp.FileSystem;
+	#elseif flash
+	import flash.display.MovieClip;
+	#end
 #end
 /**
  * ...
@@ -1107,11 +1112,11 @@ class AbcReader
 	{
 		return abcFile.get(abcFile.strings, id);
 	}
-	inline private function getInt(id:Index<haxe.Int32>):String
+	inline private function getInt(id:Index<Int32>):String
 	{
 		return Std.string(abcFile.get(abcFile.ints, id));
 	}
-	inline private function getUInt(id:Index<haxe.Int32>):String
+	inline private function getUInt(id:Index<Int32>):String
 	{
 		return Std.string(abcFile.get(abcFile.uints, id));
 	}

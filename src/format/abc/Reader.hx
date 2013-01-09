@@ -27,7 +27,6 @@
  */
 package format.abc;
 import format.abc.Data;
-import haxe.Int32;
 
 class Reader {
 
@@ -173,8 +172,13 @@ class Reader {
 		var pnames = new Array();
 		if ( (flags & 0x08) != 0 )
 		{
+			#if haxe3
+			for(i in readList2(readValue.callback(true)))
+				dparams.push(i);
+			#else
 			for(i in readList2(callback(readValue, true)))
 				dparams.push(i);
+			#end
 		}
 		if( (flags & 0x80) != 0 ) {
 			pnames = new Array();
@@ -321,9 +325,13 @@ class Reader {
 
 	public function read() 
 	{
-		//#if !cpp
+		#if haxe3
+		if( i.readInt32() != 0x002E0010 )
+			throw "invalid header";
+		#else
 		if( i.readUInt30() != 0x002E0010 )
 			throw "invalid header";
+		#end
 		var data = new ABCData();
 		data.ints = readList(opr.readInt32);
 		//trace(data.ints);
@@ -337,7 +345,11 @@ class Reader {
 		//trace(data.namespaces);
 		data.nssets = readList(readNsSet);
 		//trace(data.nssets);
+		#if haxe3
+		data.names = readList(readName.callback(-1));
+		#else
 		data.names = readList(callback(readName,-1));
+		#end
 		//trace(data.names);
 		data.methodTypes = readList2(readMethodType);
 		//trace(data.methodTypes);
@@ -352,46 +364,5 @@ class Reader {
 		data.inits = readList2(readInit);
 		data.functions = readList2(readFunction);
 		return data;
-		/*
-		#else
-		
-		if ( i.readUInt30() != 0x002E0010 )
-			throw "invalid header";
-		
-		var data = new ABCData();
-		data.ints = [];
-		data.uints = [];
-		data.floats= [];
-		data.strings = [];
-		data.nssets = [];
-		data.namespaces = [];
-		data.names= [];
-		data.methodTypes = [];
-		data.metadatas = [];
-		data.classes= [];
-		data.inits= [];
-		data.functions= [];
-		
-		data.ints.concat(readList(opr.readInt32));
-		data.uints.concat(readList(opr.readInt32));
-		data.floats.concat(readList(i.readDouble));
-		data.strings.concat(readList(readString));
-		data.namespaces.concat(readList(readNamespace));
-		data.nssets.concat(readList(readNsSet));
-		data.names.concat(readList(callback(readName,-1)));
-		data.methodTypes.concat(readList2(readMethodType));
-		data.metadatas.concat(readList2(readMetadata));
-		data.classes.concat(readList2(readClass));
-		for( c in data.classes ) 
-		{
-			c.statics = readIndex();
-			c.staticFields=[];
-			c.staticFields.concat(readList2(readField));
-		}
-		data.inits.concat(readList2(readInit));
-		data.functions.concat(readList2(readFunction));
-		return data;
-		#end
-		*/
 	}
 }

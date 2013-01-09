@@ -61,9 +61,9 @@ class OpWriter {
 			o.writeByte(a);
 	}
 
-	public function writeInt32( n : haxe.Int32 ) {
-		var e = haxe.Int32.toInt(haxe.Int32.ushr(n,28));
-		var n = haxe.Int32.toInt(haxe.Int32.and(n,haxe.Int32.ofInt((1 << 28) - 1)));
+	public function writeInt32( n : Int32 ) {
+		var e = #if haxe3 n>>>28; #else Int32.toInt(Int32.ushr(n,28)); #end
+		var n = #if haxe3 n & ((1 << 28) - 1); #else haxe.Int32.toInt(haxe.Int32.and(n,haxe.Int32.ofInt((1 << 28) - 1))); #end
 		var d = (n >> 21) & 0x7F;
 		var c = (n >> 14) & 0x7F;
 		var b = (n >> 7) & 0x7F;

@@ -46,13 +46,21 @@ class Writer {
 	inline static var LOCAL_FILE_HEADER_FIELDS_SIZE = 30;
 
 	var o : haxe.io.Output;
-	var files : List<{ name : String, compressed : Bool, clen : Int, size : Int, crc : haxe.Int32, date : Date, fields : haxe.io.Bytes }>;
+	var files : List<{ name : String, compressed : Bool, clen : Int, size : Int, crc : Int32, date : Date, fields : haxe.io.Bytes }>;
 
 	public function new( o : haxe.io.Output ) {
 		this.o = o;
 		files = new List();
 	}
 
+	inline function writeInt( v : Int ) {
+		#if haxe3
+			o.writeInt32(v);
+		#else
+			o.writeUInt30(v);
+		#end
+	}
+	
 	function writeZipDate( date : Date ) {
 		var hour = date.getHours();
 		var min = date.getMinutes();
@@ -72,13 +80,13 @@ class Writer {
 			case FUtf8: flags |= 0x800;
 			default:
 			}
-		o.writeUInt30(0x04034B50);
+		writeInt(0x04034B50);
 		o.writeUInt16(0x0014); // version
 		o.writeUInt16(flags); // flags
 		if( f.data == null ) {
 			f.fileSize = 0;
 			f.dataSize = 0;
-			f.crc32 = haxe.Int32.ofInt(0);
+			f.crc32 = #if haxe3 0; #else haxe.Int32.ofInt(0);#end
 			f.compressed = false;
 			f.data = haxe.io.Bytes.alloc(0);
 		} else {
@@ -97,8 +105,8 @@ class Writer {
 		o.writeUInt16(f.compressed?8:0);
 		writeZipDate(f.fileTime);
 		o.writeInt32(f.crc32);
-		o.writeUInt30(f.dataSize);
-		o.writeUInt30(f.fileSize);
+		writeInt(f.dataSize);
+		writeInt(f.fileSize);
 		o.writeUInt16(f.fileName.length);
 		var e = new haxe.io.BytesOutput();
 		for( f in f.extraFields )
@@ -142,29 +150,29 @@ class Writer {
 		for ( f in files ) {
 			var namelen = f.name.length;
 			var extraFieldsLength = f.fields.length;
-			o.writeUInt30(0x02014B50); // header
+			writeInt(0x02014B50); // header
 			o.writeUInt16(0x0014); // version made-by
 			o.writeUInt16(0x0014); // version
 			o.writeUInt16(0); // flags
 			o.writeUInt16(f.compressed?8:0);
 			writeZipDate(f.date);
 			o.writeInt32(f.crc);
-			o.writeUInt30(f.clen);
-			o.writeUInt30(f.size);
+			writeInt(f.clen);
+			writeInt(f.size);
 			o.writeUInt16(namelen);
 			o.writeUInt16(extraFieldsLength);
 			o.writeUInt16(0); //comment length always 0
 			o.writeUInt16(0); //disk number start
 			o.writeUInt16(0); //internal file attributes
-			o.writeUInt30(0); //external file attributes
-			o.writeUInt30(cdr_offset); //relative offset of local header
+			writeInt(0); //external file attributes
+			writeInt(cdr_offset); //relative offset of local header
 			o.writeString(f.name);
 			o.write(f.fields);
 			cdr_size += CENTRAL_DIRECTORY_RECORD_FIELDS_SIZE + namelen + extraFieldsLength;
 			cdr_offset += LOCAL_FILE_HEADER_FIELDS_SIZE + namelen + extraFieldsLength + f.clen;
 		}
 		//end of central dir signature
-		o.writeUInt30(0x06054B50);
+		writeInt(0x06054B50);
 		//number of this disk
 		o.writeUInt16(0);
 		//number of the disk with the start of the central directory
@@ -174,9 +182,9 @@ class Writer {
 		//total number of entries in the central directory
 		o.writeUInt16(files.length);
 		//size of the central directory record
-		o.writeUInt30(cdr_size);
+		writeInt(cdr_size);
 		//offset of start of central directory with respect to the starting disk number
-		o.writeUInt30(cdr_offset);
+		writeInt(cdr_offset);
 		// .ZIP file comment length
 		o.writeUInt16(0);
 	}

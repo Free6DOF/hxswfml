@@ -25,8 +25,46 @@
  * DAMAGE.
  */
 package format.tools;
-import haxe.Int32;
+#if haxe3
+class CRC32 {
 
+	var crc : Int;
+	
+	public function new() {	}
+
+	public function run( b : haxe.io.Bytes ) {
+		var crc = 0xFFFFFFFF;
+		var polynom = 0xEDB88320;
+		for( i in 0...b.length ) {
+			var tmp = (crc ^ b.get(i)) & 0xFF;
+			//var tmp = haxe.Int32.and( haxe.Int32.xor(crc,i32(b.get(i))), i32(0xFF) );
+			for( j in 0...8 ) {
+				//if( haxe.Int32.and(tmp,i32(1)) == i32(1) )
+				if((tmp & i) == 1)
+					//tmp = haxe.Int32.xor(haxe.Int32.ushr(tmp,1),polynom);
+					tmp = (tmp >>> 1) ^ polynom;
+				else
+					//tmp = haxe.Int32.ushr(tmp,1);
+					tmp = tmp >>> 1;
+			}
+			//crc = haxe.Int32.xor(haxe.Int32.ushr(crc,8), tmp);
+			crc = (crc >>> 8) ^ tmp;
+		}
+		this.crc = crc;
+	}
+
+	public function get() {
+		//return haxe.Int32.xor(crc, haxe.Int32.make(0xFFFF,0xFFFF));
+		return crc ^ 0xFFFFFFFF;
+	}
+	public static function encode( b : haxe.io.Bytes ) : Int {
+		var c = new CRC32();
+		c.run(b);
+		return c.get();
+	}
+}
+#else
+import haxe.Int32;
 class CRC32 {
 
 	static inline function POLYNOM() return Int32.make(0xEDB8, 0x8320)
@@ -87,3 +125,4 @@ class CRC32 {
 		return c.get();
 	}
 }
+#end

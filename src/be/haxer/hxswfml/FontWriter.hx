@@ -127,7 +127,11 @@ class FontWriter
 		var cffFound:Bool=false;
 		for(t in tables)
 		{
+			#if haxe3
+			t.bytes = bytes.sub(t.offset, t.length);
+			#else
 			t.bytes = bytes.sub(haxe.Int32.toInt(t.offset), haxe.Int32.toInt(t.length));
+			#end
 			if(t.tableName=="CFF ")
 				cffFound=true;
 		}

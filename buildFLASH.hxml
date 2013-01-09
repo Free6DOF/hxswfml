@@ -3,6 +3,7 @@
 --macro include('be.haxer.hxswfml', true, ['be.haxer.hxswfml.Main'])
 --macro include('format', true)
 -D no-pattern-matching
+#-D haxe3
 -swf bin/flash/swf/hxswfml.swc
 -cmd echo "swc(Flash) created"
 
@@ -15,6 +16,7 @@
 -D no-pattern-matching
 -lib air3
 -D air
+#-D haxe3
 -swf9 bin/flash/air/hxswfml_AIR.swc
 -cmd echo "swc(Air) created"
 
@@ -25,6 +27,7 @@
 --macro include('be.haxer.hxswfml', true, ['be.haxer.hxswfml.Main'])
 --macro include('format', true)
 -D no-pattern-matching
+#-D haxe3
 -swf bin/flash/swf/hxswfml.swf
 -cmd echo "swf(Flash) created"
 
@@ -35,5 +38,6 @@
 --macro include('be.haxer.hxswfml', true, ['be.haxer.hxswfml.Main'])
 --macro include('format', true)
 -D no-pattern-matching
+#-D haxe3
 -as3 bin/flash/as3
 -cmd echo "as3 created"

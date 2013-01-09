@@ -82,7 +82,7 @@ class Reader {
 			out;
 		case 0x03,0x08:
 			var ismixed = (id == 0x08);
-			var size = if( ismixed ) i.readUInt30() else null;
+			var size = if( ismixed ) #if haxe3 i.readInt32(); #else i.readUInt30() #end else null;
 			var out = AObject(readObject(),size);
 			if(!inObj) i.readByte();
 			out;
@@ -97,7 +97,7 @@ class Reader {
 		case 0x07:
 			throw "Not supported : Reference";
 		case 0x0A:
-			var out = AArray(readArray(i.readUInt30()));
+			var out = AArray(readArray(#if haxe3 i.readInt32() #else i.readUInt30() #end));
 			if(!inObj) i.readByte();
 			out;
 			
@@ -108,7 +108,7 @@ class Reader {
 			if(!inObj) i.readByte();
 			out;
 		case 0x0C:
-			var out = AString( i.readString(i.readUInt30()) );
+			var out = AString( i.readString(#if haxe3 i.readInt32() #else i.readUInt30() #end) );
 			if(!inObj) i.readByte();
 			out;
 		default:
