@@ -680,14 +680,18 @@ class AbcWriter
 		}*/
 		return FVar();
 	}
-	static function parseInt32(s:String):haxe.Int32
+	static function parseInt32(s:String):Int32
 	{
+		#if haxe3 
+			return Std.parseInt(s); 
+		#else
 		var f=Std.parseFloat(s);
 		if(f<-0x40000000)
 			return haxe.Int32.add(haxe.Int32.ofInt(-0x40000000), haxe.Int32.ofInt(Std.int(f+0x3fffffff)));
 		if(f>0x3fffffff)
 			return haxe.Int32.add(haxe.Int32.ofInt(0x3fffffff),haxe.Int32.ofInt(Std.int(f-0x3fffffff)));
 		return haxe.Int32.ofInt(Std.int(f));
+		#end
 	}
 	private function nonEmptyStack(fname:String)
 	{

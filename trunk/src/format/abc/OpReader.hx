@@ -27,7 +27,6 @@
  */
 package format.abc;
 import format.abc.Data;
-import haxe.Int32;
 
 class OpReader {
 
@@ -64,6 +63,31 @@ class OpReader {
 		return Idx(readInt());
 	}
 
+	#if haxe3
+	public function readInt32() : Int  {
+		var a = i.readByte(); ++bytePos;
+		if( a < 128 )
+			return a;
+		a &= 0x7F;
+		var b = i.readByte(); ++bytePos;
+		if( b < 128 )
+			return  (b << 7) | a;
+		b &= 0x7F;
+		var c = i.readByte(); ++bytePos;
+		if( c < 128 )
+			return  (c << 14) | (b << 7) | a;
+		c &= 0x7F;
+		var d = i.readByte(); ++bytePos;
+		if( d < 128 )
+			return (d << 21) | (c << 14) | (b << 7) | a;
+		d &= 0x7F;
+		var e = i.readByte(); ++bytePos;
+		if( e > 15 ) throw "assert";
+		var small = (d << 21) | (c << 14) | (b << 7) | a;
+		var big = e<<28;
+		return big|small;
+	}
+	#else
 	public function readInt32() : Int32 {
 		var a = i.readByte(); ++bytePos;
 		if( a < 128 )
@@ -87,6 +111,7 @@ class OpReader {
 		var big = Int32.shl(Int32.ofInt(e),28);
 		return Int32.or(big,small);
 	}
+	#end
 
 	inline function reg() {
 		++bytePos;

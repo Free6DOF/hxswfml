@@ -1,23 +1,27 @@
 package be.haxer.hxswfml;
 import format.swf.Data;
 import format.abc.Data;
-import haxe.io.Bytes;
-import haxe.io.BytesOutput;
-#if neko
-import neko.Sys;
-import neko.Lib;
-import neko.FileSystem;
-import neko.io.File;
-#elseif php
-import php.Sys;
-import php.Lib;
-import php.FileSystem;
-import php.io.File;
-#elseif cpp
-import cpp.Sys;
-import cpp.Lib;
-import cpp.FileSystem;
-import cpp.io.File;
+
+#if (haxe3 && (neko || cpp || php || java))
+	import sys.FileSystem;
+	import sys.io.File;
+#else
+	#if neko
+	import neko.Sys;
+	import neko.Lib;
+	import neko.FileSystem;
+	import neko.io.File;
+	#elseif php
+	import php.Sys;
+	import php.Lib;
+	import php.FileSystem;
+	import php.io.File;
+	#elseif cpp
+	import cpp.Sys;
+	import cpp.Lib;
+	import cpp.FileSystem;
+	import cpp.io.File;
+	#end
 #end
 /**
  * ...
@@ -34,7 +38,7 @@ class HxmWriter
 	public var strict:Bool;
 	public var log:Bool;
 	public var outputFolder:String;
-	public var zip:Bytes;
+	public var zip:haxe.io.Bytes;
 	var ctx:format.abc.Context;
 	var className:String;
 	var functionClosureName:String;
@@ -168,8 +172,8 @@ class HxmWriter
 			'-x gen_swf';
 
 			
-			var data1 = Bytes.ofString(buildFile);
-			var data2 = Bytes.ofString(start+middle+end);
+			var data1 = haxe.io.Bytes.ofString(buildFile);
+			var data2 = haxe.io.Bytes.ofString(start+middle+end);
 			zipdata.add({
 						fileName : 'build.hxml', 
 						fileSize : data1.length, 
@@ -190,7 +194,7 @@ class HxmWriter
 						crc32 : format.tools.CRC32.encode(data2),
 						extraFields : new List()
 					});
-			var zipBytesOutput = new BytesOutput();
+			var zipBytesOutput = new haxe.io.BytesOutput();
 			var zipWriter = new format.zip.Writer(zipBytesOutput);
 			zipWriter.writeData( zipdata );
 			zip = zipBytesOutput.getBytes();
@@ -242,7 +246,7 @@ class HxmWriter
 							compressed : false, 
 							dataSize : 0,
 							data : null,
-							crc32 : haxe.Int32.ofInt(0),
+							crc32 : #if haxe3 0 #else haxe.Int32.ofInt(0) #end,
 							extraFields : new List()
 						});
 						cf += '/' + f + '_'+'/';
@@ -260,7 +264,7 @@ class HxmWriter
 				var post=''+
 					'\t}\n'+
 				'}\n';
-				var data3 = Bytes.ofString(pre+txt+post);
+				var data3 = haxe.io.Bytes.ofString(pre+txt+post);
 				//trace("file:"+fo+p2+cn+'_abc.hx');
 				zipdata.add({
 						fileName : fo+p2+cn+'_abc.hx', 
@@ -285,7 +289,7 @@ class HxmWriter
 				'\t}\n'+
 			'}\n';
 
-			var data4 = Bytes.ofString(txt);
+			var data4 = haxe.io.Bytes.ofString(txt);
 			zipdata.add({
 					fileName : outputFolder+'LocalFunctions_abc.hx', 
 					fileSize : data4.length, 
@@ -327,7 +331,7 @@ class HxmWriter
 			'#replace with path to the format lib of hxswfml\n'+
 			'-cp ../../../../../src\n'+ 
 			'-x gen_swf';
-			var data1 = Bytes.ofString(buildFile);
+			var data1 = haxe.io.Bytes.ofString(buildFile);
 			zipdata.add({
 						fileName : 'build.hxml', 
 						fileSize : data1.length, 
@@ -338,7 +342,7 @@ class HxmWriter
 						crc32 : format.tools.CRC32.encode(data1),
 						extraFields : new List()
 					});
-			var data2 = Bytes.ofString(start+end);
+			var data2 = haxe.io.Bytes.ofString(start+end);
 			zipdata.add({
 						fileName : 'GenSWF.hx', 
 						fileSize : data2.length, 
@@ -349,7 +353,7 @@ class HxmWriter
 						crc32 : format.tools.CRC32.encode(data2),
 						extraFields : new List()
 					});
-			var zipBytesOutput = new BytesOutput();
+			var zipBytesOutput = new haxe.io.BytesOutput();
 			var zipWriter = new format.zip.Writer(zipBytesOutput);
 			zipWriter.writeData( zipdata );
 			zip = zipBytesOutput.getBytes();
@@ -468,8 +472,8 @@ class HxmWriter
 								var _value = (value==null)?null: switch (type)
 								{
 									case 'String': VString(ctx.string(value));
-									case 'int': VInt(ctx.int(haxe.Int32.ofInt(Std.parseInt(value))));
-									case 'uint': VUInt(ctx.uint(haxe.Int32.ofInt(Std.parseInt(value))));
+									case 'int': #if haxe3 VInt(ctx.int(Std.parseInt(value))); #else VInt(ctx.int(haxe.Int32.ofInt(Std.parseInt(value))));#end
+									case 'uint': #if haxe3 VUInt(ctx.uint(Std.parseInt(value))); #else VUInt(ctx.uint(haxe.Int32.ofInt(Std.parseInt(value))));#end
 									case 'Number':  VFloat(ctx.float(Std.parseFloat(value)));
 									case 'Boolean': VBool(value == 'true');
 									default : null; //throw('You must provide a datatype for: ' +  name +  ' if you provide a value here.(Supported types for predefined values are String, int, uint, Number, Boolean)');
@@ -477,8 +481,8 @@ class HxmWriter
 								var _svalue = (value==null)?"null": switch (type)
 								{
 									case 'String': "VString(ctx.string('"+value+"'))";
-									case 'int': "VInt(ctx.int(haxe.Int32.ofInt("+Std.parseInt(value)+")))";
-									case 'uint': "VUInt(ctx.uint(haxe.Int32.ofInt("+Std.parseInt(value)+")))";
+									case 'int': "VInt(ctx.int(#if haxe3 " + Std.parseInt(value) + " #else haxe.Int32.ofInt("+Std.parseInt(value)+") #end ))";
+									case 'uint': "VUInt(ctx.uint(#if haxe3 "+ Std.parseInt(value) + " #else haxe.Int32.ofInt("+Std.parseInt(value)+") #end ))";
 									case 'Number':  "VFloat(ctx.float("+Std.parseFloat(value)+"))";
 									case 'Boolean': "VBool("+(value == 'true')+")";
 									default : "null"; //throw('You must provide a datatype for: ' +  name +  ' if you provide a value here.(Supported types for predefined values are String, int, uint, Number, Boolean)');
@@ -736,8 +740,13 @@ class HxmWriter
 						Type.createEnum(OpCode, o.nodeName, [ctx.string(urlDecode(o.get('v')))]);
 												
 				case	"OIntRef", "OUIntRef" :
-						__op=o.nodeName+"(ctx.int(haxe.Int32.ofInt("+Std.parseInt(o.get('v'))+")))";
+						var v = Std.parseInt(o.get('v'));
+						__op=o.nodeName+"(ctx.int(#if haxe3 " + v + " #else haxe.Int32.ofInt("+v+") #end))";
+						#if haxe3
+						Type.createEnum(OpCode, o.nodeName, [ctx.int(Std.parseInt(o.get('v')))]);
+						#else
 						Type.createEnum(OpCode, o.nodeName, [ctx.int(haxe.Int32.ofInt(Std.parseInt(o.get('v'))))]);
+						#end
 												
 				case	"OFloat":
 						__op=o.nodeName+"(ctx.float(Std.parseFloat('"+o.get('v')+"')))";

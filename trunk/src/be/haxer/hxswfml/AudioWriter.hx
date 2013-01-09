@@ -55,7 +55,7 @@ class AudioWriter
 				case DualChannel : true;
 				case Mono : false;
 			},
-			samples : haxe.Int32.ofInt(mp3.sampleCount),
+			samples : #if haxe3 mp3.sampleCount, #else haxe.Int32.ofInt(mp3.sampleCount), #end
 			data : SDMp3(0, output.getBytes())
 		};
 	}

@@ -1,25 +1,33 @@
 package be.haxer.hxswfml;
-#if neko
-import neko.Sys;
-import neko.Lib;
-import neko.FileSystem;
-import neko.io.File;
-#elseif cpp
-import cpp.Sys;
-import cpp.Lib;
-import cpp.FileSystem;
-import cpp.io.File;
-#elseif php
-import php.Sys;
-import php.Lib;
-import php.FileSystem;
-import php.io.File;
-#elseif java
-typedef Lib=Sys;
-import sys.io.File;
-import sys.FileSystem;
-#end
+
 import be.haxer.hxswfml.SwfWriter;
+
+#if (haxe3 && (neko || cpp || php || java))
+	import sys.FileSystem;
+	import sys.io.File;
+	typedef Lib=Sys;
+#else
+	#if neko
+	import neko.Sys;
+	import neko.Lib;
+	import neko.FileSystem;
+	import neko.io.File;
+	#elseif cpp
+	import cpp.Sys;
+	import cpp.Lib;
+	import cpp.FileSystem;
+	import cpp.io.File;
+	#elseif php
+	import php.Sys;
+	import php.Lib;
+	import php.FileSystem;
+	import php.io.File;
+	#elseif java
+	typedef Lib=Sys;
+	import sys.io.File;
+	import sys.FileSystem;
+	#end
+#end
 
 class Main
 {

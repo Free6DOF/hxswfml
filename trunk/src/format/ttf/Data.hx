@@ -1,6 +1,6 @@
 package format.ttf;
-import haxe.Int32;
-import haxe.io.Bytes;
+
+typedef Int32 = #if haxe3 Int; #else haxe.Int32; #end
 
 typedef TTF = 
 {
@@ -37,7 +37,7 @@ enum Table
 	TMaxp(data:MaxpData);
 	TPost(data:PostData);
 	TOS2(data:OS2Data);
-	TUnkn(bytes:Bytes);
+	TUnkn(bytes:haxe.io.Bytes);
 }
 //GLYF
 enum GlyfDescription
@@ -95,7 +95,7 @@ enum CmapSubTable
 	Cmap8(header:CmapHeader, groups:Array<CmapGroup>, is32:Array<Int>);
 	Cmap10(header:CmapHeader, glyphIndexArray:Array<Int>, startCharCode:Int,	numChars:Int);
 	Cmap12(header:CmapHeader, groups:Array<CmapGroup>);
-	CmapUnk(header:CmapHeader, bytes:Bytes);
+	CmapUnk(header:CmapHeader, bytes:haxe.io.Bytes);
 }
 typedef CmapHeader=
 {
@@ -175,7 +175,7 @@ typedef HheaData=
 	caretSlopeRise:Int,
 	caretSlopeRun:Int,
 	caretOffset:Int,
-	reserved:Bytes,
+	reserved:haxe.io.Bytes,
 	metricDataFormat:Int,
 	numberOfHMetrics:Int
 }
@@ -188,7 +188,7 @@ typedef LocaData=
 //MAXP
 typedef MaxpData=
 {
-	  versionNumber:haxe.Int32,
+	  versionNumber:Int32,
 	  numGlyphs:Int,
 	  maxPoints:Int,
 	  maxContours:Int,

@@ -191,13 +191,13 @@ class Writer {
 		var all = 0;
 		for( e in events )
 			all |= e.eventsFlags;
-		o.writeUInt30(all);
+		writeInt(all);
 		for( e in events ) {
-			o.writeUInt30(e.eventsFlags);
-			o.writeUInt30(e.data.length);
+			writeInt(e.eventsFlags);
+			writeInt(e.data.length);
 			o.write(e.data);
 		}
-		o.writeUInt30(0);
+		writeInt(0);
 	}
 	/*
 	function writeFilterFlags(f:FilterFlags,top) {
@@ -340,20 +340,28 @@ class Writer {
 		if( po.bitmapCache != null ) o.writeByte(po.bitmapCache);
 		if( po.events != null ) writeClipEvents(po.events);
 	}
-
+	
+	inline function writeInt( v : Int ) {
+		#if haxe3
+			o.writeInt32(v);
+		#else
+			o.writeUInt30(v);
+		#end
+	}
+	
 	function writeTID( id : Int, len : Int ) {
 		var h = (id << 6);
 		if( len < 63 )
 			o.writeUInt16(h|len);
 		else {
 			o.writeUInt16(h|63);
-			o.writeUInt30(len);
+			writeInt(len);
 		}
 	}
 
 	function writeTIDExt( id : Int, len : Int ) {
 		o.writeUInt16((id << 6)|63);
-		o.writeUInt30(len);
+		writeInt(len);
 	}
 
 	function writeSymbols( sl : Array<SymData>, tagid : Int ) {
@@ -988,7 +996,7 @@ class Writer {
 				
 				var part_data = closeTMP(old);
 
-				o.writeUInt30(part_data.length);
+				writeInt(part_data.length);
 				o.write(part_data);
 				writeShapeWithoutStyle(3, sh1data.endEdges);
 
@@ -1011,7 +1019,7 @@ class Writer {
 				
 				var part_data = closeTMP(old);
 
-				o.writeUInt30(part_data.length);
+				writeInt(part_data.length);
 				o.write(part_data);
 				writeShapeWithoutStyle(4, sh2data.endEdges);
 		}
@@ -1127,8 +1135,8 @@ class Writer {
 		{
 			var first_glyph_offset = num_glyphs * 4 + 4;
 			for(offset in offset_table) 
-				o.writeUInt30(first_glyph_offset + offset);
-			o.writeUInt30(first_glyph_offset + shape_data.length);
+				writeInt(first_glyph_offset + offset);
+			writeInt(first_glyph_offset + shape_data.length);
 		} 
 		else // OffsetTable size + CodeTabbleOffset field (16bit version)
 		{
@@ -1298,7 +1306,7 @@ class Writer {
 	{
 		for(env in 0...soundEnvelopes.length)
 		{
-			o.writeUInt30(soundEnvelopes[env].pos44);
+			writeInt(soundEnvelopes[env].pos44);
 			o.writeUInt16(soundEnvelopes[env].leftLevel);
 			o.writeUInt16(soundEnvelopes[env].rightLevel);
 		}
@@ -1426,7 +1434,7 @@ class Writer {
 			case TBinaryData(id, data):
 				writeTID(TagId.DefineBinaryData, data.length + 6);
 				o.writeUInt16(id);
-				o.writeUInt30(0);
+				writeInt(0);
 				o.write(data);
 
 			case TBackgroundColor(color):
@@ -1483,7 +1491,7 @@ class Writer {
 				else {
 					var len = data.length + 4 + ctx.label.length + 1;
 					writeTID(TagId.DoABC,len);
-					o.writeUInt30(ctx.id);
+					writeInt(ctx.id);
 					o.writeString(ctx.label);
 					o.writeByte(0);
 				}
@@ -1554,7 +1562,7 @@ class Writer {
 					case JDJPEG3(data, mask):	
 						writeTIDExt(TagId.DefineBitsJPEG3, data.length + mask.length + 6);
 						o.writeUInt16(id);
-						o.writeUInt30(data.length);
+						writeInt(data.length);
 						o.write(data);
 						o.write(mask);
 				}
@@ -1653,7 +1661,11 @@ class Writer {
 		var bytes = o.getBytes();
 		var size = bytes.length;
 		if( compressed ) bytes = format.tools.Deflate.run(bytes);
+		#if haxe3 
+		output.writeInt32 (size + 8); 
+		#else 
 		output.writeUInt30(size + 8);
+		#end
 		output.write(bytes);
 	}
 

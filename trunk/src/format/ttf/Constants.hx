@@ -1,6 +1,5 @@
 package format.ttf;
-import haxe.Int32;
-#if !neko
+/*
 class TableId
 {
 	public static inline function BASE () return Int32.ofInt(0x42415345) // Baseline data [OpenType]
@@ -38,7 +37,7 @@ class TableId
 	public static inline function vhea () return Int32.ofInt(0x76686561) // Vertical Metrics header
 	public static inline function vmtx () return Int32.ofInt(0x766d7478) // Vertical Metrics		
 }
-#end
+*/
 class CFlag
 {
 		public static inline var ARG_1_AND_2_ARE_WORDS = 0x0001;

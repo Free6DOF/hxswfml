@@ -2,6 +2,7 @@
 -cp src
 -main be.haxer.hxswfml.Main
 -D no-pattern-matching
+#-D haxe3
 --macro include('be.haxer.hxswfml', true)
 --macro include('format', true)
 -cpp bin/cpp

@@ -453,12 +453,12 @@ class Reader {
 
 	function readClipEvents() : Array<ClipEvent> {
 		if( i.readUInt16() != 0 ) throw error('invalid clip events');
-		i.readUInt30(); // all events flags
+		readInt(); // all events flags
 		var a = new Array();
 		while( true ) {
-			var code = i.readUInt30();
+			var code = readInt();
 			if( code == 0 ) break;
-			var data = i.read(i.readUInt30());
+			var data = i.read(readInt());
 			a.push({ eventsFlags : code, data : data });
 		}
 		return a;
@@ -521,8 +521,8 @@ class Reader {
 				color2 : null,
 				blurX : readFixed(),
 				blurY : readFixed(),
-				angle : haxe.Int32.ofInt(0),
-				distance : haxe.Int32.ofInt(0),
+				angle : #if haxe3 0, #else haxe.Int32.ofInt(0), #end
+				distance : #if haxe3 0, #else haxe.Int32.ofInt(0), #end
 				strength : readFixed8(),
 				flags : readFilterFlags(false),
 			});
@@ -768,7 +768,7 @@ class Reader {
 		var endBounds = readRect();
 		switch(ver) {
 			case 1:
-				i.readUInt30();
+				readInt();
 				var fillStyles = readMorphFillStyles(ver);
 				var lineStyles = readMorph1LineStyles();
 				var startEdges = readShapeWithoutStyle(3); // Assume DefineShape3
@@ -792,7 +792,7 @@ class Reader {
 				var useNonScalingStrokes = bits.readBit();
 				var useScalingStrokes = bits.readBit();
 				bits.reset();
-				i.readUInt30();
+				readInt();
 				var fillStyles = readMorphFillStyles(ver);
 				var lineStyles = readMorph2LineStyles();
 				var startEdges = readShapeWithoutStyle(4); // Assume DefineShape4
@@ -1015,8 +1015,8 @@ class Reader {
 		{
 			var first_glyph_offset = num_glyphs * 4 + 4;
 			for(j in 0...num_glyphs)
-				offset_table.push(i.readUInt30() - first_glyph_offset);
-			var code_table_offset = i.readUInt30();
+				offset_table.push(readInt() - first_glyph_offset);
+			var code_table_offset = readInt();
 			shape_data_length = code_table_offset - first_glyph_offset;
 		} 
 		else 
@@ -1177,9 +1177,9 @@ class Reader {
 		var envPoints;
 		var envelopeRecords;
 		if(hasInPoint==1) 
-			inPoint = i.readUInt30();
+			inPoint = readInt();
 		if(hasOutPoint==1) 
-			outPoint = i.readUInt30();
+			outPoint = readInt();
 		if(hasLoops) 
 			loopCount = i.readUInt16();
 		if(hasEnvelope==1)
@@ -1194,7 +1194,7 @@ class Reader {
 		var envelopeRecords:Array<SoundEnvelope> = new Array();
 		for(env in 0...count)
 		{
-			envelopeRecords.push({pos44:i.readUInt30(), leftLevel:i.readUInt16(), rightLevel:i.readUInt16()});
+			envelopeRecords.push({pos44:readInt(), leftLevel:i.readUInt16(), rightLevel:i.readUInt16()});
 		}
 		return envelopeRecords;
 	}
@@ -1216,6 +1216,14 @@ class Reader {
 		return "Invalid SWF: " + msg;
 	}
 
+	inline function readInt() {
+		#if haxe3
+			return i.readInt32();
+		#else
+			return i.readUInt30();
+		#end
+	}
+	
 	public function readHeader() : SWFHeader {
 		var tag = i.readString(3);
 		var compressed;
@@ -1226,7 +1234,7 @@ class Reader {
 		else
 			throw error('invalid file signature');
 		version = i.readByte();
-		var size = i.readUInt30();
+		var size = readInt();
 		if( compressed ) {
 			var bytes = format.tools.Inflate.run(i.readAll());
 			if( bytes.length + 8 != size ) throw error('wrong bytes length after decompression');
@@ -1265,7 +1273,7 @@ class Reader {
 		var len = h & 63;
 		var ext = false;
 		if( len == 63 ) {
-			len = i.readUInt30();
+			len = readInt();
 			if( len < 63 ) ext = true;
 		}
 		/*
@@ -1320,7 +1328,7 @@ class Reader {
 			TBitsJPEG(cid, JDJPEG2(i.read(len - 2)));
 		case TagId.DefineBitsJPEG3:
 			var cid = i.readUInt16();
-			var dataSize = i.readUInt30();
+			var dataSize = readInt();
 			var data = i.read(dataSize);
 			var mask = i.read(len - dataSize - 6);
 			TBitsJPEG(cid, JDJPEG3(data, mask));
@@ -1343,7 +1351,7 @@ class Reader {
 			var cid = i.readUInt16();
 			TDoInitActions(cid,i.read(len-2));
 		case TagId.FileAttributes:
-			//TSandBox(i.readUInt30());
+			//TSandBox(readInt());
 			TSandBox(readFileAttributes());
 		case TagId.RawABC:
 			TActionScript3(i.read(len),null);
@@ -1356,14 +1364,14 @@ class Reader {
 			TExportAssets(readSymbols());
 		case TagId.DoABC:
 			var infos = {
-				id : i.readUInt30(),
+				id : readInt(),
 				label : i.readUntil(0),
 			};
 			len -= 4 + infos.label.length + 1;
 			TActionScript3(i.read(len),infos);
 		case TagId.DefineBinaryData:
 			var id = i.readUInt16();
-			if( i.readUInt30() != 0 ) throw error('invalid binary data tag');
+			if( readInt() != 0 ) throw error('invalid binary data tag');
 			TBinaryData(id, i.read(len - 6));
 		case TagId.DefineSound:
 			readSound(len);

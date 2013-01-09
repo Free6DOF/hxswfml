@@ -1,10 +1,8 @@
 package format.ttf;
 import format.ttf.Data;
 import format.ttf.Constants;
-import haxe.Int32;
 import haxe.io.Bytes;
 import haxe.io.BytesInput;
-import haxe.Int32;
 
 class Reader
 {
@@ -100,12 +98,12 @@ class Reader
 		for(i in 0...directory.length) 
 		{
 			var entry = directory[i];
-			var start = Int32.toInt(entry.offset);
+			var start = #if haxe3 entry.offset; #else haxe.Int32.toInt(entry.offset);#end
 			var end : Int;
 			if(i== directory.length-1)
-				end = start+Int32.toInt(entry.length);
+				end = start+ #if haxe3 entry.length #else haxe.Int32.toInt(entry.length); #end
 			else
-				end = Int32.toInt(directory[i+1].offset);
+				end = #if haxe3 directory[i+1].offset; #else haxe.Int32.toInt(directory[i+1].offset);#end
 			var bytes = input.read(end-start);
 			tablesHash.set(entry.tableName.split('/').join('_'), bytes);
 		}
@@ -113,8 +111,8 @@ class Reader
 	}
 	function sortOnOffset32(e1, e2):Int
 	{
-		var x = Int32.toInt(e1.offset);
-		var y = Int32.toInt(e2.offset);
+		var x = #if haxe3 e1.offset; #else haxe.Int32.toInt(e1.offset); #end
+		var y = #if haxe3 e2.offset; #else haxe.Int32.toInt(e2.offset); #end
 		var result = 0;
 		if(x<y) result= -1;
 		if(x==y) result= 0;
@@ -537,7 +535,7 @@ class Reader
 			{
 				platformId : input.readUInt16(),
 				platformSpecificId : input.readUInt16(),
-				offset : input.readUInt30()
+				offset : #if haxe3 input.readInt32() #else input.readUInt30() #end
 			});
 		}
 		var subTables:Array<CmapSubTable> = new Array();
@@ -744,7 +742,11 @@ class Reader
 			glyphNameIndex : new Array(),
 			psGlyphName : new Array()
 		}
-		if (Int32.toInt(postData.version) == 0x00020000)
+		#if haxe3
+			if (postData.version == 0x00020000)
+		#else
+			if (haxe.Int32.toInt(postData.version) == 0x00020000)
+		#end
 		{
 			postData.numGlyphs = input.readUInt16();
 			for (i in 0...postData.numGlyphs)

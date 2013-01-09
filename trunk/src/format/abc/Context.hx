@@ -27,7 +27,6 @@
 */
 package format.abc;
 import format.abc.Data;
-import haxe.Int32;
 
 private class NullOutput extends haxe.io.Output 
 {
@@ -145,7 +144,11 @@ class Context
 		for ( i in 0...arr.length ) 
 		{
 			//if (Int32.compare(cast arr[i], Int32.ofInt(cast n)) == 0) 
-			if (Int32.compare(arr[i], n) == 0) 
+			#if haxe3 
+			if(arr[i] == n) 
+			#else 
+			if (haxe.Int32.compare(arr[i], n) == 0) 
+			#end
 				return Idx(i + 1);
 		}
 		arr.push(n);
@@ -157,7 +160,11 @@ class Context
 		var arr = data.uints;
 		for ( i in 0...arr.length ) 
 		{
-			if (Int32.compare(cast arr[i], Int32.ofInt(cast n)) == 0) 
+			#if haxe3
+			if (arr[i] == n) 
+			#else
+			if (haxe.Int32.compare(cast arr[i], haxe.Int32.ofInt(cast n)) == 0) 
+			#end
 			return Idx(i + 1);
 		}			
 		arr.push(n);
