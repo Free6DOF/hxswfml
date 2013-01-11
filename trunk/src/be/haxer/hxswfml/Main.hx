@@ -258,7 +258,7 @@ class Main
 					var fontWriter = new FontWriter();
 					if(precision != null) fontWriter.precision = Std.parseInt(precision);
 					fontWriter.write(File.getBytes(inFile), ranges, 'hash');
-					File.write(fontWriter.fontName+'.hash',false).writeString(fontWriter.getHash(true));
+					File.write(inFile+'.hash',false).writeString(fontWriter.getHash(true));
 				
 				case "flv2swf":
 					if (args.length < 3) printUsage();
