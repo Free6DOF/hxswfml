@@ -104,6 +104,7 @@ class SwfWriter
 		validElements.set('setbackgroundcolor', ['color']);
 		validElements.set('scriptlimits', ['maxRecursionDepth', 'scriptTimeoutSeconds']);
 		validElements.set('definebitsjpeg', ['id', 'file']);
+		validElements.set('definebitslossless', ['id', 'file']);
 		validElements.set('defineshape', ['id', 'bitmapId', 'x', 'y', 'scaleX', 'scaleY', 'rotate0', 'rotate1', 'repeat', 'smooth', 'shapeType']);
 		validElements.set('beginfill',  ['color', 'alpha']);
 		validElements.set('begingradientfill', ['colors', 'alphas', 'ratios', 'type', 'x', 'y', 'scaleX', 'scaleY', 'rotate0', 'rotate1']);
@@ -152,7 +153,7 @@ class SwfWriter
 		validElements.set('custom', ['tagId', 'file', 'data', 'comment']);
 		//------------------------
 		validChildren = new Hash();
-		validChildren.set('swf', ['fileattributes', 'setbackgroundcolor', 'scriptlimits', 'definebitsjpeg', 'defineshape', 'definesprite', 'definebutton', 'definebinarydata', 'definesound', 'definefont', 'defineedittext', 'defineabc', 'definescalinggrid', 'placeobject', 'removeobject', 'startsound', 'symbolclass', 'exportassets', 'metadata', 'framelabel', 'showframe', 'endframe', 'custom']);
+		validChildren.set('swf', ['fileattributes', 'setbackgroundcolor', 'scriptlimits', 'definebitsjpeg', 'definebitslossless', 'defineshape', 'definesprite', 'definebutton', 'definebinarydata', 'definesound', 'definefont', 'defineedittext', 'defineabc', 'definescalinggrid', 'placeobject', 'removeobject', 'startsound', 'symbolclass', 'exportassets', 'metadata', 'framelabel', 'showframe', 'endframe', 'custom']);
 		validChildren.set('defineshape', ['beginfill', 'begingradientfill', 'beginbitmapfill', 'linestyle', 'moveto', 'lineto', 'curveto', 'endfill', 'endline', 'clear', 'drawcircle', 'drawellipse', 'drawrect', 'drawroundrect', 'drawroundrectcomplex', 'custom']);
 		validChildren.set('definesprite', ['placeobject', 'removeobject', 'startsound', 'framelabel', 'showframe', 'endframe', 'tween', 'custom']);
 		validChildren.set('definebutton', ['buttonstate', 'custom']);
@@ -217,7 +218,17 @@ class SwfWriter
 		var imageWriter = new ImageWriter();
 		imageWriter.write(bytes, file, currentTag);
 		bitmapIds[id] = [imageWriter.width, imageWriter.height];
-		return imageWriter.getTag(id);
+		return imageWriter.getTag(id,false);
+	}
+	private function definebitslossless():SWFTag
+	{
+		var id = getInt('id', null, true, true);
+		var file = getString('file', "", true);
+		var bytes = getBytes(file);
+		var imageWriter = new ImageWriter();
+		imageWriter.write(bytes, file, currentTag);
+		bitmapIds[id] = [imageWriter.width, imageWriter.height];
+		return imageWriter.getTag(id,true);
 	}
 	private function defineshape():SWFTag
 	{
@@ -227,8 +238,8 @@ class SwfWriter
 		if(currentTag.exists('bitmapId'))
 		{
 			var bitmapId = getInt('bitmapId', null);
-			if(strict && dictionary[bitmapId] != 'definebitsjpeg')
-				error('ERROR: bitmapId ' + bitmapId + ' must be a reference to a DefineBitsJPEG tag. TAG: ' + currentTag.toString());
+			if(strict && !(dictionary[bitmapId] == 'definebitsjpeg' || dictionary[bitmapId] == 'definebitslossless'))
+				error('ERROR: bitmapId ' + bitmapId + ' must be a reference to a DefineBitsJPEG or DefineBitsLossless tag. TAG: ' + currentTag.toString());
 			var width = bitmapIds[bitmapId][0] * 20;
 			var height = bitmapIds[bitmapId][1] * 20;
 			var scaleX = getFloat('scaleX', 1.0) * 20;
@@ -310,8 +321,8 @@ class SwfWriter
 						
 					case 'beginbitmapfill':
 						var bitmapId = getInt('bitmapId', null, true);
-						if(strict && dictionary[bitmapId] != 'definebitsjpeg')
-							error('ERROR: bitmapId ' + bitmapId + ' must be a reference to a DefineBitsJPEG tag. TAG: ' + currentTag.toString());
+						if(strict && !(dictionary[bitmapId] == 'definebitsjpeg' || dictionary[bitmapId] == 'definebitslossless'))
+							error('ERROR: bitmapId ' + bitmapId + ' must be a reference to a DefineBitsJPEG or DefineBitsLossless tag. TAG: ' + currentTag.toString());
 						var scaleX = getFloat('scaleX', 1.0);
 						var scaleY = getFloat('scaleY', 1.0);
 						var scale = {x : scaleX, y : scaleY};
@@ -1212,9 +1223,9 @@ class SwfWriter
 			{
 				switch(dictionary[id])
 				{
-					case 'definebitsjpeg', 'defineshape', 'definebutton', 'definesprite', 'defineedittext' : 
+					case 'definebitsjpeg', 'definebitslossless', 'defineshape', 'definebutton', 'definesprite', 'defineedittext' : 
 					default : 
-						error('ERROR: The target id ' + id + ' must be a reference to a DefineShape, DefineBitsJPEG, DefineButton, DefineSprite or DefineEditText tag. TAG: ' + currentTag.toString()); 
+						error('ERROR: The target id ' + id + ' must be a reference to a DefineShape, DefineBitsJPEG, DefineBitsLossless, DefineButton, DefineSprite or DefineEditText tag. TAG: ' + currentTag.toString()); 
 				}
 			}
 			else if(currentTag.nodeName.toLowerCase() == 'definescalinggrid')
@@ -1238,9 +1249,9 @@ class SwfWriter
 				var tag = dictionary[id];
 				switch(tag)
 				{
-					case 'definebutton', 'definesprite', 'definebinarydata', 'definefont', 'defineabc', 'definesound', 'definebitsjpeg' : 
+					case 'definebutton', 'definesprite', 'definebinarydata', 'definefont', 'defineabc', 'definesound', 'definebitsjpeg','definebitslossless' : 
 					default : 
-						error('ERROR: The target id ' + id + ' must be a reference to a DefineButton, DefineSprite, DefineBinaryData, DefineFont, DefineABC, DefineSound or DefineBitsJPEG tag. TAG: ' + currentTag.toString()); 
+						error('ERROR: The target id ' + id + ' must be a reference to a DefineButton, DefineSprite, DefineBinaryData, DefineFont, DefineABC, DefineSound, DefineBitsJPEG or DefineBitsLossless tag. TAG: ' + currentTag.toString()); 
 				}
 			}
 		}
