@@ -17,9 +17,10 @@
 							count(//hx:swf/hx:DefineSound[@id = current()/@id]) +
 							count(//hx:swf/hx:DefineButton[@id = current()/@id]) +
 							count(//hx:swf/hx:DefineBitsJPEG[@id = current()/@id]) +
+							count(//hx:swf/hx:DefineBitsLossless[@id = current()/@id]) +
 							count(//hx:swf/hx:DefineBinaryData[@id = current()/@id]) +
 							count(//hx:swf/hx:DefineFont[@id = current()/@id]) = 1">
-							The id attribute in a SymbolClass element must reference an existing id in a DefineSound,DefineSprite,DefineButton,DefineBitsJPEG,DefineBinaryData or DefineFont element.
+							The id attribute in a SymbolClass element must reference an existing id in a DefineSound,DefineSprite,DefineButton,DefineBitsJPEG,DefineBitsLossless,DefineBinaryData or DefineFont element.
 						</sch:assert>
 					</sch:rule>
 					<sch:rule context="hx:swf/hx:DefineABC">
@@ -33,8 +34,9 @@
 							count(//hx:swf/hx:DefineSound[@id = current()/@id]) +
 							count(//hx:swf/hx:DefineButton[@id = current()/@id]) +
 							count(//hx:swf/hx:DefineBitsJPEG[@id = current()/@id]) +
+							count(//hx:swf/hx:DefineBitsLossless[@id = current()/@id]) +
 							count(//hx:swf/hx:DefineFont[@id = current()/@id]) = 1">
-							The id attribute in an ExportAssets element must reference an existing id in a DefineSound,DefineSprite,DefineButton,DefineBitsJPEG, or DefineFont element.
+							The id attribute in an ExportAssets element must reference an existing id in a DefineSound,DefineSprite,DefineButton,DefineBitsJPEG,DefineBitsLossless or DefineFont element.
 						</sch:assert>
 					</sch:rule>
 					<sch:rule context="hx:swf/hx:RemoveObject[@depth]">
@@ -57,6 +59,7 @@
 						<xs:element ref="ScriptLimits"/>
 						<xs:element ref="MetaData"/>
 						<xs:element ref="DefineBitsJPEG"/>
+						<xs:element ref="DefineBitsLossless"/>
 						<xs:element ref="DefineBinaryData"/>
 						<xs:element ref="DefineSound"/>
 						<xs:element ref="DefineFont"/>
@@ -109,7 +112,7 @@
 		</xs:complexType>
 
 		<xs:unique name="DefinitionID">
-			<xs:selector xpath="hx:DefineSound|hx:DefineEditText|hx:DefineShape|hx:DefineSprite|hx:DefineButton|hx:DefineBitsJPEG|hx:DefineBinaryData|hx:DefineFont"/>
+			<xs:selector xpath="hx:DefineSound|hx:DefineEditText|hx:DefineShape|hx:DefineSprite|hx:DefineButton|hx:DefineBitsJPEG|hx:DefineBitsLossless|hx:DefineBinaryData|hx:DefineFont"/>
 			<xs:field xpath="@id"/>
 		</xs:unique>
 		<xs:unique name="DefineSoundID">
@@ -132,7 +135,15 @@
 			<xs:selector xpath="hx:DefineBitsJPEG"/>
 			<xs:field xpath="@id"/>
 		</xs:unique>
+		<xs:unique name="DefineBitsLosslessID">
+			<xs:selector xpath="hx:DefineBitsLossless"/>
+			<xs:field xpath="@id"/>
+		</xs:unique>
 		<xs:keyref name="DefineShapeTarget" refer="DefineBitsJPEGID">
+			<xs:selector xpath="hx:DefineShape|hx:DefineShape/hx:BeginBitmapFill"/>
+			<xs:field xpath="@bitmapId"/>
+		</xs:keyref>
+		<xs:keyref name="DefineShapeTarget2" refer="DefineBitsLosslessID">
 			<xs:selector xpath="hx:DefineShape|hx:DefineShape/hx:BeginBitmapFill"/>
 			<xs:field xpath="@bitmapId"/>
 		</xs:keyref>
@@ -203,6 +214,16 @@
 	<xs:element name="DefineBitsJPEG">
 		<xs:annotation>
 			<xs:documentation>This element will store the raw(compressed) image bytes. You can not display these bytes directly but you must use a DefineShape element where the bitmapId refers to this element (width and height will be read from the jpeg file). Supported file formats are jpg, png, gif. With a SymbolClass element you can link a class that extends flash.display.Bitmap to this element..</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:attribute name="file" type="xs:string" use="required"/>
+			<xs:attribute name="id" type="xs:positiveInteger" use="required"/>
+		</xs:complexType>
+	</xs:element>
+	<!--____________________________________________________________-->
+	<xs:element name="DefineBitsLossless">
+		<xs:annotation>
+			<xs:documentation>This element will store the raw(compressed) image bytes. You can not display these bytes directly but you must use a DefineShape element where the bitmapId refers to this element (width and height will be read from the png file). Supported file formats is png. With a SymbolClass element you can link a class that extends flash.display.Bitmap to this element..</xs:documentation>
 		</xs:annotation>
 		<xs:complexType>
 			<xs:attribute name="file" type="xs:string" use="required"/>
@@ -293,7 +314,7 @@
 	</xs:element>
 	<xs:element name="DefineShape">
 		<xs:annotation>
-			<xs:documentation>This element will create a Shape object with a solid fill or a bitmap fill. The bitmapId for the bitmap fill must be a reference to an id in a previously created DefineBitsJPEG element. 
+			<xs:documentation>This element will create a Shape object with a solid fill or a bitmap fill. The bitmapId for the bitmap fill must be a reference to an id in a previously created DefineBitsJPEG or DefineBitsLossless element. 
 	The usage is as follows:
 	1) if you provide a bitmapId no other attributes are required.
 	2) if you do not provide a bitmapId then then you must use the drawing api in the child elements. Use a PlaceObject element to put the shape on the display list.</xs:documentation>
@@ -607,7 +628,7 @@
 	<!--____________________________________________________________-->
 	<xs:element name="SymbolClass">
 		<xs:annotation>
-			<xs:documentation>This element will link a class name to a previously created symbol such as a DefineSound(flash.media.Sound), DefineButton(flash.display.SimpleButton), DefineSprite(flash.display.Sprite, flash.display.MovieClip), DefineFont(flash.text.Font), DefineBinaryData(flash.utils.ByteArray), DefineBitsJPEG(flash.display.Bitmap). If you supply a value for the base attribute then hXswfML will automatically generate and compile a class and will add it in DefineABC element before your SymbolClass element. If you do not supply a value for the base attribute then your script (which you added through a DefineABC element) must have a class with the correct name and which extends the correct base class. In order for the FlashPlayer to know what class should be used as the main entry point(the class that will run when the swf is loaded) you must supply a SymbolClass element with id=0 and the name="MyDocumentClass" (this is always name="flash.Boot" in the case of haxe).Update: Since haxe 2.07 flash.Boot is replaced by a random name. To overcome the problem of not knowing what the document class is in a haxe swf, a new attribute 'isBoot' was added to the DefineAbc tag. If set to true, hxswfml will add a SymbolClass tag for the document class automatically.</xs:documentation>
+			<xs:documentation>This element will link a class name to a previously created symbol such as a DefineSound(flash.media.Sound), DefineButton(flash.display.SimpleButton), DefineSprite(flash.display.Sprite, flash.display.MovieClip), DefineFont(flash.text.Font), DefineBinaryData(flash.utils.ByteArray), DefineBitsJPEG or DefineBitsLossless(flash.display.Bitmap). If you supply a value for the base attribute then hXswfML will automatically generate and compile a class and will add it in DefineABC element before your SymbolClass element. If you do not supply a value for the base attribute then your script (which you added through a DefineABC element) must have a class with the correct name and which extends the correct base class. In order for the FlashPlayer to know what class should be used as the main entry point(the class that will run when the swf is loaded) you must supply a SymbolClass element with id=0 and the name="MyDocumentClass" (this is always name="flash.Boot" in the case of haxe).Update: Since haxe 2.07 flash.Boot is replaced by a random name. To overcome the problem of not knowing what the document class is in a haxe swf, a new attribute 'isBoot' was added to the DefineAbc tag. If set to true, hxswfml will add a SymbolClass tag for the document class automatically.</xs:documentation>
 		</xs:annotation>
 		<xs:complexType>
 			<xs:attribute name="base" type="xs:string" use="optional"/>

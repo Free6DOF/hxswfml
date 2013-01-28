@@ -43,6 +43,15 @@
                 Default:
         Signature: <DefineBitsJPEG id="?" file="./path/to/file *.jpg, *.png, *.gif" />
         Usage: <DefineBitsJPEG id="1" file="picture.jpg" />
+		
+<DefineBitsLossless/>
+        Parent: <swf>
+        Children: none
+        Attributes:id,file
+                Required: id,file
+                Default:
+        Signature: <DefineBitsLossless id="?" file="./path/to/file *.png />
+        Usage: <DefineBitsLossless id="1" file="picture.png" />
 
 <DefineShape/>
         Parent: <swf>
@@ -392,7 +401,7 @@
         Parent: none (root/document element)
         Children:
                 <FileAttributes/>,<SetBackgroundColor/>,<ScriptLimits/>,<MetaData/>
-                <DefineBitsJPEG/>,<DefineShape/>,<DefineSprite>,<DefineButton>,<DefineBinaryData/>,<DefineSound/>,<DefineFont/>,<DefineEditText/>,<DefineScalingGrid/>,<DefineABC/>,
+                <DefineBitsJPEG/>,<DefineBitsLossless/>,<DefineShape/>,<DefineSprite>,<DefineButton>,<DefineBinaryData/>,<DefineSound/>,<DefineFont/>,<DefineEditText/>,<DefineScalingGrid/>,<DefineABC/>,
                 <PlaceObject/>,<RemoveObject/>,<StartSound/>,<SymbolClass/>
                 <FrameLabel/><ShowFrame/><EndFrame/>
         Attributes: width,height,fps,version,compressed,frameCount
@@ -410,6 +419,8 @@
         <MetaData file="path/to/file/containing/rdf_metadata *.txt, *.xml" />
         
         <DefineBitsJPEG id="?" file="path/to/file *.jpg, *.png, *.gif" />
+		
+		<DefineBitsLossless id="?" file="path/to/file *.png />
         
         <DefineBinaryData id="?" file="path/to/file *.any " />
         

@@ -19,13 +19,14 @@ class ImageWriter
 	public var width:Int;
 	public var height:Int;
 	var bytes:Bytes;
+	var extension:String;
 	public function new()
 	{
 	}
 	public function write(bytes:Bytes, fileName:String, ?currentTag:Xml=null):Void
 	{
 		this.bytes=bytes;
-		var extension = fileName.substr(fileName.lastIndexOf('.') + 1).toLowerCase();
+		extension = fileName.substr(fileName.lastIndexOf('.') + 1).toLowerCase();
 		height = 0;
 		width = 0;
 		var input = new BytesInput(bytes);
@@ -76,9 +77,66 @@ class ImageWriter
 			height = input.readUInt16();
 		}
 	}
-	public function getTag(?id:Int=1):SWFTag
+	public function getTag(?id:Int=1, ?lossless:Bool=false):SWFTag
 	{
-		return TBitsJPEG(id, JDJPEG2(bytes));
+		var tag:SWFTag = null;
+		if(!lossless)
+		{
+			tag = TBitsJPEG(id, JDJPEG2(bytes));
+		}
+		else
+		{
+			#if (js || php)
+				tag = TBitsJPEG(id, JDJPEG2(bytes));
+			#else
+			if(extension=="png")
+			{
+				var input = new haxe.io.BytesInput(bytes);
+				var reader = new format.png.Reader(input);
+				var pngData = reader.read();
+				var w:Int=0;
+				var h:Int=0;
+				for( chunk in pngData )
+				{
+					switch( chunk ) 
+					{
+						case CHeader( header ):
+							w = header.width;
+							h = header.height;
+						default:
+					}
+				}
+				var bitmapData:haxe.io.Bytes = format.png.Tools.rgba2argbmult(w,h,format.png.Tools.extract32(pngData));
+				var zlibBitmapData = null;
+				#if neko
+				zlibBitmapData = neko.zip.Compress.run(bitmapData, 1);
+				#elseif cpp
+				zlibBitmapData = cpp.zip.Compress.run(bitmapData, 1);
+				//#elseif php
+				//var zlibBitmapData = haxe.io.Bytes.ofData(untyped __call__("zlib_encode",bitmapData.getData(), 15, 1));
+				#elseif flash9
+				var byteArray = bitmapData.getData();
+				byteArray.compress();
+				zlibBitmapData = haxe.io.Bytes.ofData(byteArray);
+				#end
+				var data =
+				{
+					cid : id,
+					color : CM32Bits,
+					width : width,
+					height : height,
+					data : zlibBitmapData
+				}
+				tag = TBitsLossless2(data);
+			}
+			else
+			{
+				tag = TBitsJPEG(id, JDJPEG2(bytes));
+				//tag = TBitsJPEG(id, JDJPEG3(bytes,Bytes.alloc(0)));
+			}
+			#end
+		}
+		return tag;
 	}
 	public function getSWF(?id:Int=1):Bytes
 	{
@@ -92,7 +150,7 @@ class ImageWriter
 			header: {version:10, compressed:true, width:width, height:height, fps:30, nframes:1},
 			tags: 
 			[
-				getTag(id),
+				getTag(id,true),
 				getShape(id),
 				TPlaceObject2(placeObject2),
 				TShowFrame
