@@ -15,12 +15,6 @@ class SwcWriter
 	{
 		var date : Date = Date.now();
 		var mod : Float = date.getTime();
-		/*
-		var xmlBytesOutput = new haxe.io.BytesOutput();
-		
-		xmlBytesOutput.write(haxe.io.Bytes.ofString(xmlString));
-		var xmlBytes = xmlBytesOutput.getBytes();
-		*/
 		var xmlString = createXML(mod, classes);
 		var xmlBytes = haxe.io.Bytes.ofString(xmlString);
 		var zipBytesOutput = new haxe.io.BytesOutput();
@@ -35,7 +29,7 @@ class SwcWriter
 		compressed : false, 
 		dataSize : xmlBytes.length,
 		data : xmlBytes,
-		crc32 : format.tools.CRC32.encode(xmlBytes),
+		crc32 : haxe.crypto.Crc32.make(xmlBytes),
 		extraFields : new List()});
 			
 		data.push({
@@ -45,7 +39,7 @@ class SwcWriter
 		compressed : false, 
 		dataSize : library.length,
 		data : library,
-		crc32 : format.tools.CRC32.encode(library),
+		crc32 : haxe.crypto.Crc32.make(library),
 		extraFields : new List()});
 			
 		zipWriter.writeData( data );

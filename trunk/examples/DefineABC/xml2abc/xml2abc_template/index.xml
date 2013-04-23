@@ -1,0 +1,6 @@
+<swf>
+	<FileAttributes actionscript3="true"/>
+	<DefineABC file="script.xml" />
+	<SymbolClass id="0" class="Main"/>
+	<ShowFrame/>
+</swf>

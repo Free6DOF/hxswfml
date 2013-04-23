@@ -1,0 +1,176 @@
+<!--package 
+{
+    import flash.display.MovieClip;
+
+    public class Main extends MovieClip
+    {
+		public var nr:int = 2;
+		
+        public function Main()
+        {
+			if(nr==1)//<JNeq jump="neq1" />
+			{
+				trace("one");
+				//<JAlways jump="always1" />
+			}
+			
+			//<OJump name="neq1" />
+			else if(nr==2)<JNeq jump="neq2"/>
+			{
+				trace("two");
+				//<JAlways name="always2" />
+			}
+			
+			//<OJump name="neq2"/>
+			else if(nr==3)//<JNeq jump="neq3"/>
+			{
+				trace("three");
+				//<JAlways name="always3" />
+			}
+			
+			<OJump name="neq3"/>
+			else
+			{
+				trace('other');
+			}
+			
+			//<OJump name="always1"/>
+			//<OJump name="always2"/>
+			//<OJump name="always3"/>
+			
+			var i:int=0;
+			<JAlways jump="whileCond"/>
+
+			<OLabel name="whileBody" />
+			{
+				trace(i);
+				i++;
+			}
+			
+			<OJump name="whileCond"/>
+			while(i<5) <JLt label="whileBody"/>
+			
+			<ORetVoid/>
+        }
+    }
+}-->
+<swf>
+	<FileAttributes/>
+	
+	<DefineABC name="Main">
+		<abcfiles>
+			<abcfile>
+			<import name="flash.display.MovieClip" />
+
+			<class name="Main" extends="MovieClip">
+				
+				<var name="nr1" type="int" value="2" />
+				
+				<function name="Main" >
+					<OThis/><OScope/>
+					<OThis/><OConstructSuper v="0" />
+
+					<OThis/>
+					<OGetProp v="nr1"/>
+					<OSmallInt v="1" />
+					<JNeq jump="neq1" />
+						<OFindPropStrict v="trace" />
+						<OString v="one"/>
+						<OCallPropVoid v="trace" nargs="1" />
+						<JAlways jump="always1" />
+					
+					<OJump name="neq1" />
+					<OThis/>
+					<OGetProp v="nr1"/>
+					<OSmallInt v="2" />
+					<JNeq jump="neq2"/>
+							<OFindPropStrict v="trace" />
+							<OString v="two"/>
+							<OCallPropVoid v="trace" nargs="1" />
+							<JAlways jump="always2" />
+					
+					<OJump name="neq2"/>
+					<OThis/>
+					<OGetProp v="nr1"/>
+					<OSmallInt v="3" />
+					<JNeq jump="neq3"/>
+						<OFindPropStrict v="trace" />
+						<OString v="three"/>
+						<OCallPropVoid v="trace" nargs="1" />
+						<JAlways jump="always3" />
+					
+					<OJump name="neq3"/>
+					<OFindPropStrict v="trace" />
+					<OString v="other"/>
+					<OCallPropVoid v="trace" nargs="1" />
+					
+					<OJump name="always1"/>
+					<OJump name="always2"/>
+					<OJump name="always3"/>
+					
+					
+					<OSmallInt v="0" />
+					<OSetReg v="1"/>
+					<JAlways jump="whileCond"/>
+
+					<OLabel name="whileBody" />
+					<OFindPropStrict v="trace" />
+					<OReg v="1"/>
+					<OCallPropVoid v="trace" nargs="1" />
+					<OIncrIReg v="1"/>
+					
+					<OJump name="whileCond"/>
+					<OReg v="1" />
+					<OSmallInt v="5"/>
+					<JLt label="whileBody"/>
+					
+					<ORetVoid/>
+					</function>
+			</class>
+			</abcfile>
+		</abcfiles>
+	</DefineABC>
+	
+	<SymbolClass id="0" class="Main"/>
+	
+	<ShowFrame/>
+	
+</swf>
+<!--
+package 
+{
+    import flash.display.MovieClip;
+
+    public class Main extends MovieClip
+    {
+		public var nr:int = 2;
+		
+        public function Main()
+        {
+			if(nr==1)
+			{
+				trace("one");
+			}
+			else if(nr==2)
+			{
+				trace("two");
+			}
+			else if(nr==3)
+			{
+				trace("three");
+			}
+			else
+			{
+				trace('other');
+			}
+			
+			var i:int=0;
+			while(i<5)
+			{
+				trace(i);
+				i++;
+			}
+        }
+    }
+}
+-->

@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<swf width="1100" height="100" xmlns="http://hxswfml.googlecode.com">
+<SetBackgroundColor color="0xeeeeee"/>
+
+<DefineShape id="1">
+	<BeginFill color="0x0000FF"/>
+	<DrawRect width="40" height="40"/>
+	<EndFill/>
+</DefineShape>
+<DefineSprite id="2" frameCount="1">
+	<PlaceObject id="1" depth="1" />
+	<ShowFrame/>
+</DefineSprite>
+
+<DefineShape id="3">
+	<BeginFill color="0xFF0000"/>
+	<DrawRect width="40" height="40"/>
+	<EndFill/>
+</DefineShape>
+<DefineSprite id="4" frameCount="1">
+	<PlaceObject id="3" depth="1" />
+	<ShowFrame/>
+</DefineSprite>
+
+<PlaceObject id="2" depth="1"  />
+<PlaceObject id="4" depth="2" x="20" y="20" blendMode="normal"/>
+
+<PlaceObject id="2" depth="3" x="80" />
+<PlaceObject id="4" depth="4" x="100" y="20" blendMode="layer"/>
+
+<PlaceObject id="2" depth="5" x="160" />
+<PlaceObject id="4" depth="6" x="180" y="20" blendMode="multiply"/>
+
+<PlaceObject id="2" depth="7" x="240" />
+<PlaceObject id="4" depth="8" x="260" y="20" blendMode="screen"/>
+
+<PlaceObject id="2" depth="9" x="320" />
+<PlaceObject id="4" depth="10" x="340" y="20" blendMode="lighten"/>
+
+<PlaceObject id="2" depth="11" x="400" />
+<PlaceObject id="4" depth="12" x="420" y="20" blendMode="darken"/>
+
+<PlaceObject id="2" depth="13" x="480" />
+<PlaceObject id="4" depth="14" x="500" y="20" blendMode="difference"/>
+
+<PlaceObject id="2" depth="15" x="560" />
+<PlaceObject id="4" depth="16" x="580" y="20" blendMode="add"/>
+
+<PlaceObject id="2" depth="17" x="640" />
+<PlaceObject id="4" depth="18" x="660" y="20" blendMode="subtract"/>
+
+<PlaceObject id="2" depth="19" x="720" />
+<PlaceObject id="4" depth="20" x="740" y="20" blendMode="invert"/>
+
+<PlaceObject id="2" depth="21" x="800" />
+<PlaceObject id="4" depth="22" x="820" y="20" blendMode="alpha"/>
+
+<PlaceObject id="2" depth="23" x="880" />
+<PlaceObject id="4" depth="24" x="900" y="20" blendMode="erase"/>
+
+<PlaceObject id="2" depth="25" x="960" />
+<PlaceObject id="4" depth="26" x="980" y="20" blendMode="overlay"/>
+
+<PlaceObject id="2" depth="27" x="1040" />
+<PlaceObject id="4" depth="28" x="1060" y="20" blendMode="hardlight"/>
+
+<ShowFrame/>
+</swf>

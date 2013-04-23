@@ -52,7 +52,7 @@ class Writer {
 				o.writeUInt16(s.length);
 			} else {
 				o.writeByte(0x0C);
-				#if haxe3 o.writeInt32(s.length); #else o.writeUInt30(s.length);#end
+				o.writeInt32(s.length);
 			}
 			o.writeString(s);
 
@@ -61,7 +61,7 @@ class Writer {
 				o.writeByte(0x03);
 			else {
 				o.writeByte(0x08);
-				#if haxe3 o.writeInt32(size); #else o.writeUInt30(size); #end
+				o.writeInt32(size);
 			}
 			for( f in h.keys() ) {
 				o.writeUInt16(f.length);
@@ -85,7 +85,7 @@ class Writer {
 			
 		case AArray(a):
 			o.writeByte(0x0A);
-			#if haxe3 o.writeInt32(a.length); #else o.writeUInt30(a.length);#end
+			o.writeInt32(a.length);
 			for(f in a)
 				write(f, true);
 		}

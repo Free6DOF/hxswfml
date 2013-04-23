@@ -1,0 +1,9 @@
+<?xml version="1.0"?>
+<swf xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+xsi:schemaLocation="http://hxswfml.googlecode.com http://hxswfml.googlecode.com/svn/trunk/hxswfml.xsd" 	
+xmlns="http://hxswfml.googlecode.com">	
+	<FileAttributes />
+	<ImportAssets url="library.swf"/>
+	<PlaceObject className="NekoJpg" hasImage="true" depth="1"/>
+	<ShowFrame/>
+</swf>

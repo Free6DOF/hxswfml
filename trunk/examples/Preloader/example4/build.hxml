@@ -1,0 +1,8 @@
+-main Preloader
+-swf preloader.swf
+
+--next
+-main Movie
+-swf movie.swf
+
+-cmd hxswfml xml2swf index.xml index.swf

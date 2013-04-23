@@ -1,0 +1,3 @@
+#-cmd xmllint --schema C:\cygwin\home\jan\hxswfml\doc\hxswfml.xsd --noout index.xml 
+-cmd hxswfml xml2swf index.xml index.swf
+#-cmd pause

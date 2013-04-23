@@ -103,7 +103,7 @@ class VideoWriter
 						var ECMAType:Int = input.readByte();
 						var len;
 						if(ECMAType==8)
-							len = #if haxe3 input.readInt32(); #else haxe.Int32.toInt(input.readInt32()); #end
+							len = input.readInt32();
 						while (true)
 						{
 							var l=input.readUInt16();

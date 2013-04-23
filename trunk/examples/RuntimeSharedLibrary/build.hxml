@@ -1,0 +1,7 @@
+#-cmd xmllint --schema C:\cygwin\home\jan\hxswfml\doc\hxswfml.xsd --noout movie1.xml
+-cmd hxswfml xml2swf library.xml library.swf
+-cmd hxswfml xml2swf movie1.xml movie1.swf
+#-cmd hxswfml xml2swf movie2.xml movie2.swf
+#-cmd hxswfml xml2swf movie3.xml movie3.swf
+#-cmd pause
+

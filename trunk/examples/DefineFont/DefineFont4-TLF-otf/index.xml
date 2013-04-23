@@ -1,0 +1,9 @@
+<?xml version="1.0" ?>
+<swf version="10">
+	<FileAttributes/>
+	<DefineFont id="1" file="../../assets/File.otf" name="File"/>
+	<SymbolClass id="1" class="FileFont" base="flash.text.Font"/>
+	<DefineABC file="Main.swf" isBoot="true"/>
+	<ShowFrame/>
+</swf>
+

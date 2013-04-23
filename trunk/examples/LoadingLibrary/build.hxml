@@ -1,0 +1,8 @@
+-cmd hxswfml xml2swf library.xml library.swf
+
+--next
+Main
+-main Main
+-swf index.swf
+-swf-version 10
+-swf-header 800:600:30:FFFFFF

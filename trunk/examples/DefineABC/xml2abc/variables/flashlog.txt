@@ -1,0 +1,14 @@
+undefined
+0
+-10
+0
+10
+NaN
+10.5
+false
+true
+null
+null
+null
+11
+12

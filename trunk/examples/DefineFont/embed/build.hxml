@@ -1,0 +1,7 @@
+-main Main
+-D flash-use-stage
+-swf Main.swf
+
+-cmd hxswfml xml2swf index.xml index.swf
+-cmd del Main.swf
+#-cmd pause

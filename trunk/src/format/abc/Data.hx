@@ -27,8 +27,6 @@
  */
 package format.abc;
 
-typedef Int32 = #if haxe3 Int; #else haxe.Int32; #end
-
 enum Index<T> {
 	Idx( v : Int );
 }
@@ -77,8 +75,8 @@ enum Value {
 	VNull;
 	VBool( b : Bool );
 	VString( i : Index<String> );
-	VInt( i : Index<Int32> );
-	VUInt( i : Index<Int32> );
+	VInt( i : Index<Int> );
+	VUInt( i : Index<Int> );
 	VFloat( f : Index<Float> );
 	VNamespace( kind : Int, ns : Index<Namespace> );
 }
@@ -147,8 +145,8 @@ typedef Init = {
 }
 
 class ABCData {
-	public var ints : Array<Int32>;
-	public var uints : Array<Int32>;
+	public var ints : Array<Int>;
+	public var uints : Array<Int>;
 	public var floats : Array<Float>;
 	public var strings : Array<String>;
 	
@@ -208,8 +206,8 @@ enum OpCode {
 	ODup;
 	OSwap;
 	OString( v : Index<String> );
-	OIntRef( v : Index<Int32> );
-	OUIntRef( v : Index<Int32> );
+	OIntRef( v : Index<Int> );
+	OUIntRef( v : Index<Int> );
 	OFloat( v : Index<Float> );
 	OScope;
 	ONamespace( v : Index<Namespace> );

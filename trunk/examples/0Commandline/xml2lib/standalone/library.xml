@@ -1,0 +1,11 @@
+<lib width="1600" height="800" backgroundcolor="0xeeeeee" >
+	<bitmapdata	file="../../../assets/haxe.png" class="MyBitmapData"/>	<!--flash.display.BitmapData -->
+	<bitmap		file="../../../assets/haxe.png" class="MyBitmap"/>		<!--flash.display.Bitmap -->
+	<sprite		file="../../../assets/haxe.png" class="MySprite"/>		<!--flash.display.Sprite -->
+	<movieclip	file="../../../assets/haxe.png" class="MyMovieClip"/>	<!--flash.display.MovieClip -->
+	<button		file="../../../assets/haxe.png" class="MySimpleButton"/><!--flash.display.SimpleButton -->
+	<bytearray	file="../../../assets/haxe.png" class="MyByteArray"/>	<!--flash.utils.ByteArray -->
+	<sound		file="../../../assets/chopin.mp3" class="MySound"/>		<!--flash.media.Sound -->
+	<font		file="../../../assets/chopin.ttf" class="MyFont"/>		<!--flash.text.Font -->
+	<abc		file="main.swf" isBoot="true"/>
+</lib>

@@ -1,0 +1,11 @@
+-cmd hxswfml xml2lib lib.xml lib.swf
+
+--next
+Main
+-main Main
+-swf-lib lib.swf
+-swf index.swf
+-swf-version 10
+
+-cmd del lib.swf
+-cmd index.swf

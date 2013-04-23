@@ -79,11 +79,7 @@ class Reader {
 
 	public function readEntryHeader() : Entry {
 		var i = this.i;
-		#if haxe3
 		var h = i.readInt32();
-		#else
-		var h = i.readInt31();
-		#end
 		if( h == 0x02014B50 || h == 0x06054B50 )
 			return null;
 		if( h != 0x04034B50 )
@@ -99,13 +95,8 @@ class Reader {
 			throw "Unsupported compression "+compression;
 		var mtime = readZipDate();
 		var crc32 = i.readInt32();
-		#if haxe3
 		var csize = i.readInt32();
 		var usize = i.readInt32();
-		#else
-		var csize = i.readUInt30();
-		var usize = i.readUInt30();
-		#end
 		var fnamelen = i.readInt16();
 		var elen = i.readInt16();
 		var fname = i.readString(fnamelen);
@@ -185,17 +176,10 @@ class Reader {
 				e.data = out.getBytes();
 				#end
 				e.crc32 = i.readInt32();
-				#if haxe3
 				if(e.crc32 == 0x08074b50)
 					e.crc32 = i.readInt32();
 				e.dataSize = i.readInt32();
 				e.fileSize = i.readInt32();
-				#else
-				if( haxe.Int32.compare(e.crc32,haxe.Int32.ofInt(0x08074b50)) == 0 )
-					e.crc32 = i.readInt32();
-				e.dataSize = i.readUInt30();
-				e.fileSize = i.readUInt30();
-				#end
 				// set data to uncompressed
 				e.dataSize = e.fileSize;
 				e.compressed = false;

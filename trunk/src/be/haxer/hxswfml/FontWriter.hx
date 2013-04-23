@@ -41,7 +41,7 @@ class FontWriter
 	var zip:Bytes;
 	var swf:Bytes;
 	var path:String;
-	var hash:IntHash<GlyphData>;
+	var hash:Map<Int,GlyphData>;
 	var chars:Array<Int>;
 	var outputType:String;
 	var fontData3:FontData;
@@ -121,17 +121,11 @@ class FontWriter
 		var input = new BytesInput(bytes);
 		var otf = format.ttf.Reader.readOTF(input);
 		var header = otf.header;
-		//if(haxe.Int32.toInt(header.sfntVersion) != 1330926671)
-			//return null;
 		var tables = otf.tables;
 		var cffFound:Bool=false;
 		for(t in tables)
 		{
-			#if haxe3
 			t.bytes = bytes.sub(t.offset, t.length);
-			#else
-			t.bytes = bytes.sub(haxe.Int32.toInt(t.offset), haxe.Int32.toInt(t.length));
-			#end
 			if(t.tableName=="CFF ")
 				cffFound=true;
 		}
@@ -247,7 +241,7 @@ class FontWriter
 		var charObjects:Array<Dynamic>=new Array();
 		
 		//hash setup
-		var charHash:IntHash<GlyphData> = new IntHash();
+		var charHash:Map<Int,GlyphData> = new Map();
 		
 		var importsBuf:StringBuf=new StringBuf();
 		var graphicsBuf:StringBuf=new StringBuf();
@@ -399,7 +393,7 @@ class FontWriter
 						compressed : false, 
 						dataSize : charClass.length,
 						data : Bytes.ofString(charClass),
-						crc32 : format.tools.CRC32.encode(Bytes.ofString(charClass)),
+						crc32 : haxe.crypto.Crc32.make(Bytes.ofString(charClass)),
 						extraFields : new List()
 					});
 				}
@@ -460,7 +454,7 @@ class FontWriter
 						compressed : false, 
 						dataSize : mainClass.length,
 						data : Bytes.ofString(mainClass),
-						crc32 : format.tools.CRC32.encode(Bytes.ofString(mainClass)),
+						crc32 : haxe.crypto.Crc32.make(Bytes.ofString(mainClass)),
 						extraFields : new List()
 			});
 			var buildFile = zipResources_buildFile;
@@ -473,7 +467,7 @@ class FontWriter
 						compressed : false, 
 						dataSize : buildFile.length,
 						data : Bytes.ofString(buildFile),
-						crc32 : format.tools.CRC32.encode(Bytes.ofString(buildFile)),
+						crc32 : haxe.crypto.Crc32.make(Bytes.ofString(buildFile)),
 						extraFields : new List()
 			});
 			
@@ -883,8 +877,8 @@ package;
 // this is character: #C
 class Char#0 extends flash.display.Shape
 {
-	public static inline var commands:Array<Int> = #commands;
-	public static inline var data:Array<Float> = #datas;
+	public static inline function commands():Array<Int>{return #commands;}
+	public static inline function data():Array<Float>{return #datas;}
 
 #1
 	
@@ -896,7 +890,7 @@ class Char#0 extends flash.display.Shape
 		if(newApi)
 		{
 			#if flash
-			graphics.drawPath(flash.Vector.ofArray(commands), flash.Vector.ofArray(data), flash.display.GraphicsPathWinding.EVEN_ODD);
+			graphics.drawPath(flash.Vector.ofArray(commands()), flash.Vector.ofArray(data()), flash.display.GraphicsPathWinding.EVEN_ODD);
 			#end
 		}
 		else
@@ -935,7 +929,7 @@ class Char#0 extends flash.display.Shape
 package;
 import flash.display.Sprite;
 import flash.display.Shape;
-
+#1
 class Main extends Sprite
 {
 	public function new()
@@ -982,7 +976,7 @@ class Main extends Sprite
 		flash.Lib.current.addChild(new Main());
 	}
 }
-#1';
+';
 //------------
 	zipResources_buildFile =
 '

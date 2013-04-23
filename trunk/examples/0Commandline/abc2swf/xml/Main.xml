@@ -1,0 +1,260 @@
+<abcfiles>
+	<abcfile name="frame1">
+		<init name="Main" return="*" ><!-- maxStack="2" nRegs="1" initScope="1" maxScope="9" -->
+			<OThis />
+			<OScope />
+			<OGetScope v="0" />
+			<OGetLex v="Object" />
+			<OScope />
+			<OGetLex v="flash.events.EventDispatcher" />
+			<OScope />
+			<OGetLex v="flash.display.DisplayObject" />
+			<OScope />
+			<OGetLex v="flash.display.InteractiveObject" />
+			<OScope />
+			<OGetLex v="flash.display.DisplayObjectContainer" />
+			<OScope />
+			<OGetLex v="flash.display.Sprite" />
+			<OScope />
+			<OGetLex v="flash.display.MovieClip" />
+			<OScope />
+			<OGetLex v="flash.display.MovieClip" />
+			<OClassDef v="Main" />
+			<OPopScope />
+			<OPopScope />
+			<OPopScope />
+			<OPopScope />
+			<OPopScope />
+			<OPopScope />
+			<OPopScope />
+			<OInitProp v="Main" />
+			<ORetVoid />
+		</init>
+		<class name="Main" extends="flash.display.MovieClip" sealed="true">
+			<var name="tf" type="flash.text.TextField"/>
+			<var name="bool" type="Boolean" value="true"/>
+			<var name="nr" type="int" value="7"/>
+			<var name="cnst" type="String" value="Constant" const="true"/>
+			<var name="TEXT" type="String" value="Hello World" static="true" />
+			<function name="Main" args="" return="*" newBlock="true" locals="value:*::false,i:int::false,loc_btn:flash.display.MovieClip::false" > <!-- maxStack="12" nRegs="4" initScope="11" maxScope="16" -->
+				<OThis />
+				<OScope />
+				<ONewBlock />
+				<ODup />
+				<OSetReg v="1" />
+				<OScope />
+				<OGetScope v="1" />
+				<OUndefined />
+				<OAsAny />
+				<OSetSlot v="3" />
+				<OThis />
+				<OFindPropStrict v="flash.text.TextField" />
+				<OConstructProperty v="flash.text.TextField" nargs="0" />
+				<OInitProp v="tf" />
+				<OThis />
+				<OConstructSuper v="0" />
+				<OThis />
+				<OGetProp v="tf" />
+				<OTrue />
+				<OSetProp v="border" />
+				<OThis />
+				<OGetProp v="tf" />
+				<OGetLex v="flash.text.TextFieldAutoSize" />
+				<OGetProp v="LEFT" />
+				<OSetProp v="autoSize" />
+				<OThis />
+				<OGetProp v="tf" />
+				<OGetLex v="TEXT" />
+				<OSetProp v="text" />
+				<OFindPropStrict v="addChild" />
+				<OThis />
+				<OGetProp v="tf" />
+				<OCallPropVoid v="addChild" nargs="1" />
+				<OGetScope v="1" />
+				<OFindPropStrict v="flash.display.MovieClip" />
+				<OConstructProperty v="flash.display.MovieClip" nargs="0" />
+				<OCast v="flash.display.MovieClip" />
+				<OSetSlot v="1" />
+				<OGetScope v="1" />
+				<OGetSlot v="1" />
+				<OGetScope v="1" />
+				<OGetSlot v="1" />
+				<OSmallInt v="100" />
+				<ODup />
+				<OSetReg v="2" />
+				<OSetProp v="y" />
+				<OReg v="2" />
+				<ORegKill v="2" />
+				<OSetProp v="x" />
+				<OGetScope v="1" />
+				<OGetSlot v="1" />
+				<OGetProp v="graphics" />
+				<OInt v="255" />
+				<OFloat v="0.5" />
+				<OCallPropVoid v="beginFill" nargs="2" />
+				<OGetScope v="1" />
+				<OGetSlot v="1" />
+				<OGetProp v="graphics" />
+				<OSmallInt v="0" />
+				<ODup />
+				<OSmallInt v="100" />
+				<ODup />
+				<OCallPropVoid v="drawRect" nargs="4" />
+				<OGetScope v="1" />
+				<OGetSlot v="1" />
+				<OTrue />
+				<OSetProp v="buttonMode" />
+				<OGetScope v="1" />
+				<OGetSlot v="1" />
+				<OGetLex v="flash.events.MouseEvent" />
+				<OGetProp v="CLICK" />
+				<OThis />
+				<OGetProp v="onClick" />
+				<OCallPropVoid v="addEventListener" nargs="2" />
+				<OFindPropStrict v="addChild" />
+				<OGetScope v="1" />
+				<OGetSlot v="1" />
+				<OCallPropVoid v="addChild" nargs="1" />
+				<OFindPropStrict v="trace" />
+				<OThis />
+				<OGetGlobalScope />
+				<OGetSlot v="1" />
+				<OGetLex v="TEXT" />
+				<OGetGlobalScope />
+				<OGetSlot v="1" />
+				<OGetProp v="TEXT" />
+				<OThis />
+				<OGetProp v="bool" />
+				<OThis />
+				<OGetProp v="nr" />
+				<OThis />
+				<OGetProp v="tf" />
+				<OGetScope v="1" />
+				<OGetSlot v="1" />
+				<OThis />
+				<OGetProp v="onClick" />
+				<OGetLex v="staticFunc" />
+				<OGetGlobalScope />
+				<OGetSlot v="1" />
+				<OGetProp v="staticFunc" />
+				<OCallPropVoid v="trace" nargs="11" />
+				<OGetScope v="1" />
+				<OFindPropStrict v="Array" />
+				<OConstructProperty v="Array" nargs="0" />
+				<OAsAny />
+				<OSetSlot v="3" />
+				<OGetScope v="1" />
+				<OGetSlot v="3" />
+				<OSmallInt v="0" />
+				<OCallPropVoid v="getChildAt" nargs="1" />
+				<JAlways jump="jump1" offset="28" />
+				<OThis />
+				<OScope />
+				<OReg v="1" />
+				<OScope />
+				<OCatch v="0" start="181" end="200" handle="204" type="TypeError" variable="error" />
+				<ODup />
+				<OSetReg v="2" />
+				<ODup />
+				<OScope />
+				<OSwap />
+				<OSetSlot v="1" />
+				<OFindPropStrict v="trace" />
+				<OString v="TypeError catch: " />
+				<OGetScope v="2" />
+				<OGetSlot v="1" />
+				<OpAdd />
+				<OCallPropVoid v="trace" nargs="1" />
+				<OPopScope />
+				<ORegKill v="2" />
+				<OJump name="jump1"/>
+				<OFindPropStrict v="trace" />
+				<OString v="Continuing with script..." />
+				<OCallPropVoid v="trace" nargs="1" />
+				<JAlways jump="jump2" offset="35" />
+				<OLabel name="label1"/>
+				<OThis />
+				<ODup />
+				<OSetReg v="2" />
+				<OGetProp v="nr" />
+				<OpIIncr />
+				<ODup />
+				<OSetReg v="3" />
+				<OReg v="2" />
+				<OReg v="3" />
+				<OSetProp v="nr" />
+				<ORegKill v="3" />
+				<ORegKill v="2" />
+				<OSmallInt v="2" />
+				<OpMod />
+				<JFalse jump="jump3" offset="11" />
+				<OFindPropStrict v="trace" />
+				<OString v="while:" />
+				<OThis />
+				<OGetProp v="nr" />
+				<OpAdd />
+				<OCallPropVoid v="trace" nargs="1" />
+				<OJump name="jump2"/>
+				<OJump name="jump3"/>
+				<OThis />
+				<OGetProp v="nr" />
+				<OSmallInt v="20" />
+				<JLt label="label1" offset="-44" />
+				<OGetScope v="1" />
+				<OSmallInt v="0" />
+				<OSetSlot v="2" />
+				<JAlways jump="jump5" offset="23" />
+				<OLabel name="label2"/>
+				<OFindPropStrict v="trace" />
+				<OString v="for:" />
+				<OGetScope v="1" />
+				<OGetSlot v="2" />
+				<OpAdd />
+				<OCallPropVoid v="trace" nargs="1" />
+				<OGetScope v="1" />
+				<OGetSlot v="2" />
+				<OpIIncr />
+				<OGetScope v="1" />
+				<OSwap />
+				<OSetSlot v="2" />
+				<OJump name="jump5"/>
+				<OGetScope v="1" />
+				<OGetSlot v="2" />
+				<OSmallInt v="10" />
+				<JLt label="label2" offset="-33" />
+				<ORetVoid />
+			</function>
+
+			<function name="Main" static="true" args="" return="*" > <!-- maxStack="2" nRegs="1" initScope="9" maxScope="10" -->
+				<OThis />
+				<OScope />
+				<OFindProp v="TEXT" />
+				<OString v="Hello World" />
+				<OSetProp v="TEXT" />
+				<ORetVoid />
+			</function>
+
+			<function name="onClick" args="flash.events.MouseEvent" return="void" > <!-- maxStack="2" nRegs="2" initScope="10" maxScope="11" -->
+				<OThis />
+				<OScope />
+				<OThis />
+				<OGetProp v="tf" />
+				<OGetGlobalScope />
+				<OGetSlot v="1" />
+				<OGetProp v="TEXT" />
+				<OCallPropVoid v="appendText" nargs="1" />
+				<ORetVoid />
+			</function>
+
+			<function name="staticFunc" static="true" final="true" args="int" return="int" defaultParameters="null" > <!-- maxStack="2" nRegs="2" initScope="9" maxScope="10" -->
+				<OThis />
+				<OScope />
+				<OReg v="1" />
+				<OSmallInt v="2" />
+				<OpMul />
+				<ORet />
+			</function>
+
+		</class>
+	</abcfile>
+</abcfiles>

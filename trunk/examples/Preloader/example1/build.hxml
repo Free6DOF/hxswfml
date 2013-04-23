@@ -1,0 +1,11 @@
+-main Preloader
+-D flash-use-stage
+-swf preloader.swf
+
+--next
+-main Movie
+-D flash-use-stage
+-swf movie.swf
+
+-cmd hxswfml xml2swf movie.xml movie.swf
+-cmd hxswfml xml2swf index.xml index.swf

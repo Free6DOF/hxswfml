@@ -46,7 +46,7 @@ class Writer {
 	inline static var LOCAL_FILE_HEADER_FIELDS_SIZE = 30;
 
 	var o : haxe.io.Output;
-	var files : List<{ name : String, compressed : Bool, clen : Int, size : Int, crc : Int32, date : Date, fields : haxe.io.Bytes }>;
+	var files : List<{ name : String, compressed : Bool, clen : Int, size : Int, crc : Int, date : Date, fields : haxe.io.Bytes }>;
 
 	public function new( o : haxe.io.Output ) {
 		this.o = o;
@@ -54,11 +54,7 @@ class Writer {
 	}
 
 	inline function writeInt( v : Int ) {
-		#if haxe3
-			o.writeInt32(v);
-		#else
-			o.writeUInt30(v);
-		#end
+		o.writeInt32(v);
 	}
 	
 	function writeZipDate( date : Date ) {
@@ -86,7 +82,7 @@ class Writer {
 		if( f.data == null ) {
 			f.fileSize = 0;
 			f.dataSize = 0;
-			f.crc32 = #if haxe3 0; #else haxe.Int32.ofInt(0);#end
+			f.crc32 = 0; 
 			f.compressed = false;
 			f.data = haxe.io.Bytes.alloc(0);
 		} else {

@@ -2,31 +2,10 @@ package be.haxer.hxswfml;
 
 import be.haxer.hxswfml.SwfWriter;
 
-#if (haxe3 && (neko || cpp || php || java))
+#if (neko || cpp || php || java)
 	import sys.FileSystem;
 	import sys.io.File;
 	typedef Lib=Sys;
-#else
-	#if neko
-	import neko.Sys;
-	import neko.Lib;
-	import neko.FileSystem;
-	import neko.io.File;
-	#elseif cpp
-	import cpp.Sys;
-	import cpp.Lib;
-	import cpp.FileSystem;
-	import cpp.io.File;
-	#elseif php
-	import php.Sys;
-	import php.Lib;
-	import php.FileSystem;
-	import php.io.File;
-	#elseif java
-	typedef Lib=Sys;
-	import sys.io.File;
-	import sys.FileSystem;
-	#end
 #end
 
 class Main
@@ -258,7 +237,7 @@ class Main
 					var fontWriter = new FontWriter();
 					if(precision != null) fontWriter.precision = Std.parseInt(precision);
 					fontWriter.write(File.getBytes(inFile), ranges, 'hash');
-					File.write(inFile+'.hash',false).writeString(fontWriter.getHash(true));
+					File.write(fontWriter.fontName+'.hash',false).writeString(fontWriter.getHash(true));
 				
 				case "flv2swf":
 					if (args.length < 3) printUsage();
@@ -297,7 +276,7 @@ class Main
 	}
 	static function printUsage():Void
 	{
-		Lib.println("hxswfml " + getRevisionNumber() + "- XML based swf and abc assembler. 2009-2013");
+		Lib.println("hxswfml - xml based swf and abc assembler. 2009-2013");
 		Lib.println("Usage: hxswfml <operation> input-file output-file [args] [options]");
 		Lib.println("");
 
@@ -413,20 +392,5 @@ class Main
 			if (args[i] == v)
 				return args[i + 1];
 		return null;
-	}
-	@:macro static function getRevisionNumber()
-	{
-		var revInfo = "";
-		if (FileSystem.exists("./doc/version.txt"))
-		{
-			var content = sys.io.File.getContent("./doc/version.txt");
-			var currentVersionPart = content.split(":").pop();
-			var currentVersionStr = currentVersionPart.split("\r").join("").split("\n").join("").split("M").join("");
-			var currentVersionNr = Std.parseInt(currentVersionStr);
-			var newVersionNr = currentVersionNr + 1;
-			revInfo = "r"+ newVersionNr + " ";
-			//sys.io.File.saveContent("./version.txt", Std.string(newVersionNr));
-		}
-		return haxe.macro.Context.makeExpr(revInfo, haxe.macro.Context.currentPos());
 	}
 }

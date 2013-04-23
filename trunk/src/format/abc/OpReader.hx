@@ -63,7 +63,6 @@ class OpReader {
 		return Idx(readInt());
 	}
 
-	#if haxe3
 	public function readInt32() : Int  {
 		var a = i.readByte(); ++bytePos;
 		if( a < 128 )
@@ -87,31 +86,6 @@ class OpReader {
 		var big = e<<28;
 		return big|small;
 	}
-	#else
-	public function readInt32() : Int32 {
-		var a = i.readByte(); ++bytePos;
-		if( a < 128 )
-			return Int32.ofInt(a);
-		a &= 0x7F;
-		var b = i.readByte(); ++bytePos;
-		if( b < 128 )
-			return Int32.ofInt((b << 7) | a);
-		b &= 0x7F;
-		var c = i.readByte(); ++bytePos;
-		if( c < 128 )
-			return Int32.ofInt((c << 14) | (b << 7) | a);
-		c &= 0x7F;
-		var d = i.readByte(); ++bytePos;
-		if( d < 128 )
-			return Int32.ofInt((d << 21) | (c << 14) | (b << 7) | a);
-		d &= 0x7F;
-		var e = i.readByte(); ++bytePos;
-		if( e > 15 ) throw "assert";
-		var small = Int32.ofInt((d << 21) | (c << 14) | (b << 7) | a);
-		var big = Int32.shl(Int32.ofInt(e),28);
-		return Int32.or(big,small);
-	}
-	#end
 
 	inline function reg() {
 		++bytePos;

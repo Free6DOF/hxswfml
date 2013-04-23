@@ -330,5 +330,5 @@ class MacGlyphNames
 	        "Ccaron",       // 255
 	        "ccaron",       // 256
 	        ""              // 257
-	    ]
+	    ];
 }

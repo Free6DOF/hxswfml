@@ -11,13 +11,13 @@ class AbcWriter
 	public var strict:Bool;
 	public var name:String;
 	var ctx:format.abc.Context;
-	var jumps:Hash < Void->Void > ;
-	var switches:Hash<Void->Void> ;
-	var labels:Hash<Null<JumpStyle>->Int>;
-	var imports:Hash<String>;
-	var functionClosures:Hash <Index<MethodType >> ;
-	var inits:Hash<Index<MethodType>> ;
-	var classDefs:Hash<Index<ClassDef>> ;
+	var jumps:Map<String,Void->Void> ;
+	var switches:Map<String,Void->Void> ;
+	var labels:Map<String,Null<JumpStyle>->Int>;
+	var imports:Map<String,String>;
+	var functionClosures:Map<String,Index<MethodType >> ;
+	var inits:Map<String,Index<MethodType>> ;
+	var classDefs:Map<String,Index<ClassDef>> ;
 	var abcFile:ABCData;
 	var swfTags:Array<SWFTag>;
 	var className:String;
@@ -143,15 +143,15 @@ class AbcWriter
 	{	
 		var ctx_xml:Xml = xml;
 		ctx = new format.abc.Context();
-		jumps = new Hash();
-		labels = new Hash();
-		switches = new Hash();
+		jumps = new Map();
+		labels = new Map();
+		switches = new Map();
 		curClassName="";
 		var statics:Array<OpCode>=new Array();
-		imports = new Hash();
-		functionClosures = new Hash();
-		inits= new Hash();
-		classDefs = new Hash();
+		imports = new Map();
+		functionClosures = new Map();
+		inits= new Map();
+		classDefs = new Map();
 		classNames = new Array();
 		//swcClasses = new Array();
 		var ctx = ctx;
@@ -228,8 +228,8 @@ class AbcWriter
 								var _value = (value==null)?null: switch (type)
 								{
 									case 'String': VString(ctx.string(value));
-									case 'int': VInt(ctx.int(parseInt32(value)));
-									case 'uint': VUInt(ctx.uint(parseInt32(value)));
+									case 'int': VInt(ctx.int(Std.parseInt(value)));
+									case 'uint': VUInt(ctx.uint(Std.parseInt(value)));
 									case 'Number':  VFloat(ctx.float(Std.parseFloat(value)));
 									case 'Boolean': VBool(value == 'true');
 									default : null; //throw('You must provide a datatype for: ' +  name +  ' if you provide a value here.(Supported types for predefined values are String, int, uint, Number, Boolean)');
@@ -294,7 +294,7 @@ class AbcWriter
 			for (v in 0...values.length)
 			{
 				if (values[v] == "")
-					_defaultParameters.push(null);//_defaultParameters.push(null);
+					_defaultParameters.push(null);
 				else
 				{
 					var pair = values[v].split(":");
@@ -303,8 +303,8 @@ class AbcWriter
 					var _value = switch (t)
 					{
 						case 'String': VString(ctx.string(v));
-						case 'int': VInt(ctx.int(parseInt32(v)));
-						case 'uint': VUInt(ctx.uint(parseInt32(v)));
+						case 'int': VInt(ctx.int(Std.parseInt(v)));
+						case 'uint': VUInt(ctx.uint(Std.parseInt(v)));
 						case 'Number':  VFloat(ctx.float(Std.parseFloat(v)));
 						case 'Boolean': VBool(v == 'true');
 						default : null;
@@ -445,10 +445,10 @@ class AbcWriter
 						Type.createEnum(OpCode, o.nodeName, [ctx.string(urlDecode(o.get('v')))]);
 												
 				case	"OIntRef":
-						Type.createEnum(OpCode, o.nodeName, [ctx.int(parseInt32(o.get('v')))]);
+						Type.createEnum(OpCode, o.nodeName, [ctx.int(Std.parseInt(o.get('v')))]);
 						
 				case	"OUIntRef":
-						Type.createEnum(OpCode, o.nodeName, [ctx.uint(parseInt32(o.get('v')))]);
+						Type.createEnum(OpCode, o.nodeName, [ctx.uint(Std.parseInt(o.get('v')))]);
 												
 				case	"OFloat":
 						Type.createEnum(OpCode, o.nodeName, [ctx.float(Std.parseFloat(o.get('v')))]);
@@ -679,19 +679,6 @@ class AbcWriter
 			
 		}*/
 		return FVar();
-	}
-	static function parseInt32(s:String):Int32
-	{
-		#if haxe3 
-			return Std.parseInt(s); 
-		#else
-		var f=Std.parseFloat(s);
-		if(f<-0x40000000)
-			return haxe.Int32.add(haxe.Int32.ofInt(-0x40000000), haxe.Int32.ofInt(Std.int(f+0x3fffffff)));
-		if(f>0x3fffffff)
-			return haxe.Int32.add(haxe.Int32.ofInt(0x3fffffff),haxe.Int32.ofInt(Std.int(f-0x3fffffff)));
-		return haxe.Int32.ofInt(Std.int(f));
-		#end
 	}
 	private function nonEmptyStack(fname:String)
 	{

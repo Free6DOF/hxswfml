@@ -1,0 +1,9 @@
+<?xml version="1.0" ?>
+<swf frameCount="2">
+	<DefineSWF file="preloader.swf"/><!-- Expands swf / imports all the tags here. Only the End-tag is excluded -->
+	
+	<DefineBinaryData id="1000" file="movie.swf" />
+	<SymbolClass id="1000" class="MovieBytes" />
+	
+	<ShowFrame/>
+</swf>

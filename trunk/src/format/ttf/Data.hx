@@ -1,7 +1,5 @@
 package format.ttf;
 
-typedef Int32 = #if haxe3 Int; #else haxe.Int32; #end
-
 typedef TTF = 
 {
 	header:Header,
@@ -20,9 +18,9 @@ typedef Header=
 typedef Entry=
 {
 	tableName : String,
-	checksum : Int32,
-	offset : Int32,
-	length : Int32,
+	checksum : Int,
+	offset : Int,
+	length : Int,
 }
 enum Table
 {
@@ -143,10 +141,10 @@ typedef NameRecord=
 //HEAD
 typedef HeadData=
 {
-	version:Int32,
-	fontRevision:Int32,
-	checkSumAdjustment:Int32,
-	magicNumber:Int32,
+	version:Int,
+	fontRevision:Int,
+	checkSumAdjustment:Int,
+	magicNumber:Int,
 	flags:Int,
 	unitsPerEm:Int,
 	created:Float,
@@ -164,7 +162,7 @@ typedef HeadData=
 //HHEA
 typedef HheaData=
 {
-	version:Int32,
+	version:Int,
 	ascender:Int,
 	descender:Int,
 	lineGap:Int,
@@ -188,7 +186,7 @@ typedef LocaData=
 //MAXP
 typedef MaxpData=
 {
-	  versionNumber:Int32,
+	  versionNumber:Int,
 	  numGlyphs:Int,
 	  maxPoints:Int,
 	  maxContours:Int,
@@ -207,15 +205,15 @@ typedef MaxpData=
 //POST
 typedef PostData=
 {
-	version:Int32,
-	italicAngle:Int32,
+	version:Int,
+	italicAngle:Int,
 	underlinePosition:Int,
 	underlineThickness:Int,
-	isFixedPitch:Int32,
-	minMemType42:Int32,
-	maxMemType42:Int32,
-	minMemType1:Int32,
-	maxMemType1:Int32,
+	isFixedPitch:Int,
+	minMemType42:Int,
+	maxMemType42:Int,
+	minMemType1:Int,
+	maxMemType1:Int,
 	numGlyphs:Int,
 	glyphNameIndex:Array<Int>,
 	psGlyphName:Array<String>
@@ -251,11 +249,11 @@ typedef OS2Data=
   bMidline : Int,
   bXHeight : Int,
 	
-  ulUnicodeRange1 : Int32,
-  ulUnicodeRange2 : Int32,
-  ulUnicodeRange3 : Int32,
-  ulUnicodeRange4 : Int32,
-  achVendorID : Int32,
+  ulUnicodeRange1 : Int,
+  ulUnicodeRange2 : Int,
+  ulUnicodeRange3 : Int,
+  ulUnicodeRange4 : Int,
+  achVendorID : Int,
   fsSelection : Int,
   usFirstCharIndex : Int,
   usLastCharIndex : Int,
@@ -265,8 +263,8 @@ typedef OS2Data=
   usWinAscent : Int,
   usWinDescent : Int,
 	/*
-  ulCodePageRange1 : Int32,
-  ulCodePageRange2 : Int32,
+  ulCodePageRange1 : Int,
+  ulCodePageRange2 : Int,
 
   sxHeight : Null<Int>,
   sCapHeight : Null<Int>,

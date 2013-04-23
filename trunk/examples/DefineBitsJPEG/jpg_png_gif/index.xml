@@ -1,0 +1,19 @@
+<swf>	
+	
+	<DefineBitsJpeg id="1" file="../../assets/haxe.jpg" />
+	<DefineBitsJpeg id="2" file="../../assets/haxe.gif" />
+	<DefineBitsJpeg id="3" file="../../assets/haxe.png" />
+	<DefineBitsJpeg id="4" file="../../assets/nightly.png" />
+	
+	<DefineShape id="5" bitmapId="1" />
+	<DefineShape id="6" bitmapId="2" />
+	<DefineShape id="7" bitmapId="3" />
+	<DefineShape id="8" bitmapId="4" />
+	
+	<PlaceObject id="5" depth="1" />
+	<PlaceObject id="6" depth="2" y="150"  />
+	<PlaceObject id="7" depth="3" x="250" y="150" />
+	<PlaceObject id="8" depth="4" x="100" y="250" />
+
+	<ShowFrame/>
+</swf>

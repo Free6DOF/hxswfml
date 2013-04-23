@@ -1,0 +1,42 @@
+Example1: 
+In Main.as an instance of class MyPNG is added(addchild) and MyPNG is not known at compile time.
+1)Flex gets a reference to the class with : ApplicationDomain.currentDomain.getDefinition("MyPNG") as Class;
+2)The generated (as3) bytecode is automatically extracted from the flex generated swf and injected into the final swf created by hXswfML : <DefineABC file="Main.swf" />
+3)hXswfML creates the class for MyPNG : <SymbolClass id="1" class="MyPNG" base="flash.display.Bitmap" />
+
+Example2: 
+In Main.as an instance of class MyPNG is added and MyPNG is known at compile time but is an external class (not compiled into Main.swf)
+1)Flex gets a reference to it with : new MyPNG()
+2)The generated (as3) bytecode is automatically extracted from the flex generated swf and injected into the final swf created by hXswfML : <DefineABC file="Main.swf" />
+3)hXswfML creates the class for MyPNG : <SymbolClass id="1" class="MyPNG" base="flash.display.Bitmap" />
+
+Example3:
+In Main.as an instance of class MyPNG is added and MyPNG is known at compile time and compiled into Main.swf
+1)Flex gets a reference to it with : new MyPNG()
+2)The generated (as3) bytecode is automatically extracted from the flex generated swf and injected into the final swf created by hXswfML : <DefineABC file="Main.swf" />
+3)hXswfML does NOT create the class for MyPNG but only links the png asset to the class name: <SymbolClass id="1" class="MyPNG" />
+
+Example4:
+In Main.as an instance of class MyPNG is added and MyPNG is not known at compile time because it will be in an external library.swf that will be loaded.
+1)Flex gets a reference to it with : event.target.applicationDomain.getDefinition("MyPNG") as Class (default)
+2)hXswfML creates the library.swf and in it also the class for MyPNG : <SymbolClass id="1" class="MyPNG" base="flash.display.Bitmap"/>
+
+Example5:
+In Main.as an instance of class MyPNG is added and MyPNG is not known at compile time because it will be in an external library.swf that will be loaded
+1)Flex gets a reference to it with : ApplicationDomain.currentDomain.getDefinition("MyPNG") as Class; (library.swf will be loaded into the same (System) ApplicationDomain)
+2)hXswfML creates the library.swf and in it also the class for MyPNG : <SymbolClass id="1" class="MyPNG" base="flash.display.Bitmap"/>
+
+Example6:
+In Main.as an instance of class MyPNG is added and MyPNG is not known at compile time because it will be in an external library.swf that will be loaded
+1)Flex gets a reference to it with : appDom.getDefinition("MyPNG") as Class; (library.swf will be loaded into a seperate ApplicationDomain)
+2)hXswfML creates the library.swf and in it also the class for MyPNG : <SymbolClass id="1" class="MyPNG" base="flash.display.Bitmap"/>
+
+Example7:
+In Main.as an instance of class MyPNG is added and MyPNG is known at compile time but it will not be included in the Main.swf.
+1)Flex gets a reference to it with : new MyPNG() (library.swf will be loaded in the same (System) ApplicationDomain)
+2)hXswfML creates the library.swf and in it also the class for MyPNG : <SymbolClass id="1" class="MyPNG" base="flash.display.Bitmap"/>
+
+Example8:
+In Main.as an instance of class MyPNG is added and MyPNG is known at compile time and also compiled by flex into Main.swf.
+1)Flex gets a reference to it with : new MyPNG() (but only calls it when it knows the library.swf is loaded and the asset that is linked to that class name is available)
+2)hXswfML creates the library.swf and in it the asset with only a linkage to the classname "MyPNG" and does not generate the class itself(flex already did) <SymbolClass id="1" class="MyPNG" />

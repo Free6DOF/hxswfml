@@ -1,0 +1,117 @@
+<!--
+package 
+{
+    import flash.display.*;
+
+    public class Main extends MovieClip
+    {
+        public var str1:String = "hello";
+        public var str2:String = "world";
+
+        public function Main()
+        {
+            trace(this, this, this, this, , , );
+            this.str1 = "foo";
+            this.str1 = "foo";
+            ;
+            trace(this.str1, this.str1, str1, str1, str1, );
+            return;
+        }// end function
+    }
+}
+-->
+<swf>
+	<FileAttributes/>
+	
+	<DefineABC name="Main">
+		<abcfiles>
+			<abcfile>
+			<import name="flash.display.MovieClip" />
+
+			<class name="Main" extends="MovieClip">
+				
+				<var name="str1"  type="String" value="hello" />
+				<var name="str2"  type="String" value="world" />
+
+				<function name="Main" >
+					<OThis/><OScope/>
+					<OThis/><OConstructSuper v="0" />
+					
+					<OFindPropStrict v="trace"/>
+						<OGetGlobalScope/>
+						<OGetScope v="0"/>
+						<OReg v="0" />
+						<OThis/>
+						<OFindPropStrict v="str1"/>
+						<OFindProp v="str1"/>
+						<OFindPropStrict v="trace"/>
+					<OCallPropVoid v="trace" nargs="7" />
+						
+					<OFindPropStrict v="trace"/>	
+						<OGetScope v="0"/>
+						<!--The scope at that index is retrieved and pushed onto the stack.-->
+						<OGetProp v="str1" />
+						<!--returns : value. 
+						The property with the name specified by the multiname will be resolved in Object, and the value of that property will be pushed onto the stack. 
+						If the property is unresolved, undefined is pushed onto the stack. -->
+						
+						<OThis/>
+						<!--returns: Object. 
+						Register 0 holds the "this" object.  This value is never null.--> 
+						<OGetProp v="str1" />
+						
+							
+						<OFindProp v="str1"/>
+						<!--returns: Object. 
+						If the property is unresolved in all objects on the scope stack then the global object is pushed onto the stack.-->
+						<OGetProp v="str1" />
+							
+						
+						<OFindPropStrict v="str1"/>
+						<!--returns: Object. 
+						throws: A ReferenceError is thrown if the property is not resolved in any object on the scope stack.
+						Functions save the scope stack when they are created, and this saved scope stack is searched if no match is found in the current scope stack. -->
+						<OGetProp v="str1" />
+
+						
+						<OGetLex v="str1"/>
+						<!--returns : value. 
+						This is the equivalent of doing a findpropstict followed by a getproperty. -->
+							
+						<OThis/>
+						<OGetSlot v="1"/>
+						<!--returns: Value. 
+						This will retrieve the value stored in the slot at slotindex on obj. This value is pushed onto the stack.-->	
+							
+						<OThis/>
+						<OString v="foo"/>
+						<OSetProp v="str1" />
+						<!--The property with the name specified by the multiname will be resolved in obj, and will be set to value. 
+						If the property is not found in obj, and obj is dynamic then the property will be created and set to value.-->
+						
+						<OThis/>
+						<OString v="foo"/>
+						<OInitProp v="str1" />
+						<!--The property with the name specified by the multiname will be resolved in object, and will be set to value. 
+						throws : A ReferenceError is thrown if the property is not found and object is not dynamic, 
+						or if the instruction is used to set a const property outside an initializer method.-->
+						
+						<OThis/>
+						<OString v="foo"/>
+						<OSetSlot v="1"/>
+						<!--This will set the value stored in the slot at slotindex on obj to value. value is first coerced to the type of the slot at slotindex.-->
+
+					<OCallPropVoid v="trace" nargs="6" />
+						
+					<ORetVoid/>
+				</function>
+			</class>
+			</abcfile>
+		</abcfiles>
+	</DefineABC>
+	
+	<SymbolClass id="0" class="Main"/>
+	
+	<ShowFrame/>
+	
+</swf>

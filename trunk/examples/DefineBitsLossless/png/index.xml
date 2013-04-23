@@ -1,0 +1,14 @@
+<swf>	
+	<SetBackgroundColor color="0x000000" />
+	
+	<DefineBitsLossless id="1" file="../../assets/haxe.png" />
+	<DefineBitsLossless id="2" file="../../assets/nightly.png" />
+	
+	<DefineShape id="3" bitmapId="1" />
+	<DefineShape id="4" bitmapId="2" />
+	
+	<PlaceObject id="3" depth="1" x="20" y="20" />
+	<PlaceObject id="4" depth="2" x="300" y="50" />
+
+	<ShowFrame/>
+</swf>

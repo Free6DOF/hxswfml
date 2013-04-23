@@ -2,26 +2,9 @@ package be.haxer.hxswfml;
 import format.swf.Data;
 import format.swf.Tools;
 
-#if (haxe3 && (neko || cpp || php || java))
+#if (neko || cpp || php || java)
 	import sys.FileSystem;
 	import sys.io.File;
-#else
-	#if neko
-	import neko.Sys;
-	import neko.Lib;
-	import neko.FileSystem;
-	import neko.io.File;
-	#elseif php
-	import php.Sys;
-	import php.Lib;
-	import php.FileSystem;
-	import php.io.File;
-	#elseif cpp
-	import cpp.Sys;
-	import cpp.Lib;
-	import cpp.FileSystem;
-	import cpp.io.File;
-	#end
 #end
 /**
 * 
@@ -31,8 +14,8 @@ class SwfWriter
 {
 	private var swf:SWF;
 	private var swfBytes:haxe.io.Bytes;
-	private var validElements : Hash<Array<String>>;
-	private var validChildren : Hash<Array<String>>;
+	private var validElements : Map<String,Array<String>>;
+	private var validChildren : Map<String,Array<String>>;
 	private var validBaseClasses : Array<String>;
 	private var bitmapIds : Array<Array<Int>>;
 	private var dictionary : Array<String>;
@@ -40,7 +23,7 @@ class SwfWriter
 	private var currentTag : Xml;
 	private var tagIndex : Int;
 	private var strict:Bool;
-	public var library : Hash<Dynamic>;
+	public var library : haxe.ds.StringMap<Dynamic>;
 	
 	public static function main()
 	{
@@ -49,7 +32,7 @@ class SwfWriter
 	public function new()
 	{
 		tagIndex=0;
-		library = new Hash();
+		library = new haxe.ds.StringMap();
 		init();
 	}
 	public function write(input:String, ?strict:Bool=true):haxe.io.Bytes
@@ -98,7 +81,7 @@ class SwfWriter
 	}
 	private function init():Void
 	{
-		validElements = new Hash();
+		validElements = new Map();
 		validElements.set('swf', ['width', 'height', 'fps', 'version', 'compressed', 'frameCount']);
 		validElements.set('fileattributes', ['actionscript3', 'useNetwork', 'useDirectBlit', 'useGPU', 'hasMetaData']);
 		validElements.set('setbackgroundcolor', ['color']);
@@ -151,9 +134,10 @@ class SwfWriter
 		validElements.set('gradientglow', ['colors', 'blurX','blurY', 'angle', 'distance', 'strength', 'inner', 'knockout', 'ontop', 'passes']);
 		validElements.set('gradientbevel', ['colors', 'blurX','blurY', 'angle', 'distance', 'strength', 'inner', 'knockout', 'ontop', 'passes']);
 		validElements.set('custom', ['tagId', 'file', 'data', 'comment']);
+		validElements.set('defineswf', ['file', 'data']);
 		//------------------------
-		validChildren = new Hash();
-		validChildren.set('swf', ['fileattributes', 'setbackgroundcolor', 'scriptlimits', 'definebitsjpeg', 'definebitslossless', 'defineshape', 'definesprite', 'definebutton', 'definebinarydata', 'definesound', 'definefont', 'defineedittext', 'defineabc', 'definescalinggrid', 'placeobject', 'removeobject', 'startsound', 'symbolclass', 'exportassets', 'metadata', 'framelabel', 'showframe', 'endframe', 'custom']);
+		validChildren = new Map();
+		validChildren.set('swf', ['fileattributes', 'setbackgroundcolor', 'scriptlimits', 'definebitsjpeg', 'definebitslossless', 'defineshape', 'definesprite', 'definebutton', 'definebinarydata', 'definesound', 'definefont', 'defineedittext', 'defineabc', 'definescalinggrid', 'placeobject', 'removeobject', 'startsound', 'symbolclass', 'exportassets', 'metadata', 'framelabel', 'showframe', 'endframe', 'custom', 'defineswf']);
 		validChildren.set('defineshape', ['beginfill', 'begingradientfill', 'beginbitmapfill', 'linestyle', 'moveto', 'lineto', 'curveto', 'endfill', 'endline', 'clear', 'drawcircle', 'drawellipse', 'drawrect', 'drawroundrect', 'drawroundrectcomplex', 'custom']);
 		validChildren.set('definesprite', ['placeobject', 'removeobject', 'startsound', 'framelabel', 'showframe', 'endframe', 'tween', 'custom']);
 		validChildren.set('definebutton', ['buttonstate', 'custom']);
@@ -771,8 +755,8 @@ class SwfWriter
 	private function readBlur():BlurFilterData
 	{
 		return{
-			blurX : #if haxe3 Tools.toFixed16(getFloat('blurX', 4.0, false)), #else haxe.Int32.ofInt(Tools.toFixed16(getFloat('blurX', 4.0, false))), #end
-			blurY : #if haxe3 Tools.toFixed16(getFloat('blurY', 4.0, false)), #else haxe.Int32.ofInt(Tools.toFixed16(getFloat('blurY', 4.0, false))), #end
+			blurX : Tools.toFixed16(getFloat('blurX', 4.0, false)),
+			blurY : Tools.toFixed16(getFloat('blurY', 4.0, false)),
 			passes : getInt('passes', 1, false)};
 	}
 	private function readGlow():FilterData
@@ -780,10 +764,10 @@ class SwfWriter
 		return{
 			 color : toRGBA(getString("color","0xFF0000FF",false)),
 			 color2 :null,
-			 blurX : #if haxe3 Tools.toFixed16(getFloat("blurX", 4.0,false)), #else haxe.Int32.ofInt(Tools.toFixed16(getFloat("blurX", 4.0,false))), #end
-			 blurY : #if haxe3 Tools.toFixed16(getFloat("blurY", 4.0, false)), #else haxe.Int32.ofInt(Tools.toFixed16(getFloat("blurY", 4.0, false))),#end
-			 angle : #if haxe3 0, #else haxe.Int32.ofInt(0),#end
-			 distance: #if haxe3 0, #else haxe.Int32.ofInt(0),#end
+			 blurX : Tools.toFixed16(getFloat("blurX", 4.0,false)),
+			 blurY : Tools.toFixed16(getFloat("blurY", 4.0, false)),
+			 angle : 0,
+			 distance: 0,
 			 strength : Tools.toFixed8(getFloat("strength",1.0,false)),
 			 flags:readFilterFlags()};
 	}
@@ -792,10 +776,10 @@ class SwfWriter
 		return{
 			 color : toRGBA(getString("color1","0xFFFFFFFF",false)),
 			 color2 : toRGBA(getString("color2","0x000000FF",false)),
-			 blurX : #if haxe3 Tools.toFixed16(getFloat("blurX", 4.0,false)), #else haxe.Int32.ofInt(Tools.toFixed16(getFloat("blurX", 4.0,false))), #end
-			 blurY : #if haxe3 Tools.toFixed16(getFloat("blurY", 4.0, false)), #else haxe.Int32.ofInt(Tools.toFixed16(getFloat("blurY", 4.0, false))), #end
-			 angle : #if haxe3 Tools.toFixed16(getFloat("angle",45.0,false)*Math.PI/180), #else haxe.Int32.ofInt(Tools.toFixed16(getFloat("angle",45.0,false)*Math.PI/180)), #end
-			 distance: #if haxe3 Tools.toFixed16(getFloat("distance",4.0,false)), #else haxe.Int32.ofInt(Tools.toFixed16(getFloat("distance",4.0,false))), #end
+			 blurX : Tools.toFixed16(getFloat("blurX", 4.0,false)),
+			 blurY : Tools.toFixed16(getFloat("blurY", 4.0, false)),
+			 angle : Tools.toFixed16(getFloat("angle",45.0,false)*Math.PI/180),
+			 distance: Tools.toFixed16(getFloat("distance",4.0,false)),
 			 strength : Tools.toFixed8(getFloat("strength",1.0,false)),
 			 flags:readFilterFlags(true,false,false,1)};
 	}
@@ -804,10 +788,10 @@ class SwfWriter
 		return{
 			 color : toRGBA(getString("color1","0x000000FF",false)),
 			 color2 : null,
-			  blurX : #if haxe3 Tools.toFixed16(getFloat("blurX", 4.0,false)), #else haxe.Int32.ofInt(Tools.toFixed16(getFloat("blurX", 4.0,false))), #end
-			 blurY : #if haxe3 Tools.toFixed16(getFloat("blurY", 4.0, false)), #else haxe.Int32.ofInt(Tools.toFixed16(getFloat("blurY", 4.0, false))), #end
-			 angle : #if haxe3 Tools.toFixed16(getFloat("angle",45.0,false)*Math.PI/180), #else haxe.Int32.ofInt(Tools.toFixed16(getFloat("angle",45.0,false)*Math.PI/180)), #end
-			 distance: #if haxe3 Tools.toFixed16(getFloat("distance",4.0,false)), #else haxe.Int32.ofInt(Tools.toFixed16(getFloat("distance",4.0,false))), #end
+			  blurX : Tools.toFixed16(getFloat("blurX", 4.0,false)),
+			 blurY : Tools.toFixed16(getFloat("blurY", 4.0, false)),
+			 angle : Tools.toFixed16(getFloat("angle",45.0,false)*Math.PI/180),
+			 distance: Tools.toFixed16(getFloat("distance",4.0,false)),
 			 strength : Tools.toFixed8(getFloat("strength",1.0,false)),
 			 flags:readFilterFlags()};
 	}
@@ -819,10 +803,10 @@ class SwfWriter
 			data :{
 				 color :null,
 				 color2 :null,
-				 blurX : #if haxe3 Tools.toFixed16(getFloat("blurX", 4.0,false)), #else haxe.Int32.ofInt(Tools.toFixed16(getFloat("blurX", 4.0,false))), #end
-				 blurY : #if haxe3 Tools.toFixed16(getFloat("blurY", 4.0, false)), #else haxe.Int32.ofInt(Tools.toFixed16(getFloat("blurY", 4.0, false))), #end
-				 angle : #if haxe3 Tools.toFixed16(getFloat("angle",45.0,false)*Math.PI/180), #else haxe.Int32.ofInt(Tools.toFixed16(getFloat("angle",45.0,false)*Math.PI/180)), #end
-				 distance: #if haxe3 Tools.toFixed16(getFloat("distance",4.0,false)), #else haxe.Int32.ofInt(Tools.toFixed16(getFloat("distance",4.0,false))), #end
+				 blurX : Tools.toFixed16(getFloat("blurX", 4.0,false)),
+				 blurY : Tools.toFixed16(getFloat("blurY", 4.0, false)),
+				 angle : Tools.toFixed16(getFloat("angle",45.0,false)*Math.PI/180),
+				 distance: Tools.toFixed16(getFloat("distance",4.0,false)),
 				 strength : Tools.toFixed8(getFloat("strength",1.0,false)),
 				 flags:readFilterFlags()}};
 	}
@@ -833,10 +817,10 @@ class SwfWriter
 			data:{
 				color :null,
 				color2 : null,
-				blurX : #if haxe3 Tools.toFixed16(getFloat("blurX", 4.0,false)),#else haxe.Int32.ofInt(Tools.toFixed16(getFloat("blurX", 4.0,false))), #end
-				blurY : #if haxe3 Tools.toFixed16(getFloat("blurY", 4.0, false)),#else haxe.Int32.ofInt(Tools.toFixed16(getFloat("blurY", 4.0, false))), #end
-				angle : #if haxe3 Tools.toFixed16(getFloat("angle",45.0,false)*Math.PI/180),#else haxe.Int32.ofInt(Tools.toFixed16(getFloat("angle",45.0,false)*Math.PI/180)), #end
-				distance: #if haxe3 Tools.toFixed16(getFloat("distance",4.0,false)), #else haxe.Int32.ofInt(Tools.toFixed16(getFloat("distance",4.0,false))), #end
+				blurX : Tools.toFixed16(getFloat("blurX", 4.0,false)),
+				blurY : Tools.toFixed16(getFloat("blurY", 4.0, false)),
+				angle : Tools.toFixed16(getFloat("angle",45.0,false)*Math.PI/180),
+				distance: Tools.toFixed16(getFloat("distance",4.0,false)),
 				strength : Tools.toFixed8(getFloat("strength",1.0,false)),
 				flags:readFilterFlags(true, false, false, 1)}};
 	}
@@ -1068,7 +1052,9 @@ class SwfWriter
 	private function endframe():SWFTag
 	{
 		return TEnd;
-	}	
+	}
+	
+	//CUSTOM
 	private function custom():SWFTag
 	{
 		var tagId = getInt('tagId', null, false);
@@ -1090,6 +1076,37 @@ class SwfWriter
 			data = getBytes(file);
 		}
 		return TUnknown(tagId, data);
+	}
+	private function defineswf():Array<SWFTag>
+	{
+		var tags:Array<SWFTag>=new Array();
+		var data:haxe.io.Bytes;
+		var file = getString('file', "", false);
+		if(file == "")
+		{
+			var str = getString('data', "", true);
+			var arr:Array<String> = str.split(',');
+			var buffer = new haxe.io.BytesBuffer();
+			for(i in 0...arr.length)
+			{
+				buffer.addByte(Std.parseInt(arr[i]));
+			}
+			data = buffer.getBytes();
+		}
+		else
+		{
+			if(!StringTools.endsWith(file, '.swf'))
+			{
+				error('ERROR: ' + currentTag.nodeName + ' can only be used with swf files. TAG: ' + currentTag.toString());
+			}
+			data = getBytes(file);
+		}
+		var swfBytesInput = new haxe.io.BytesInput(data);
+		var swfReader = new format.swf.Reader(swfBytesInput);
+		var header = swfReader.readHeader();
+		var tags : Array<SWFTag> = swfReader.readTagList(true);
+		swfBytesInput.close();
+		return tags;
 	}
 
 	//FILE HANDLING:
@@ -1182,19 +1199,6 @@ class SwfWriter
 		var y = getInt('y', 0) * 20;
 		translate = {x : x, y : y};
 		return {scale : scale, rotate : rotate, translate : translate};
-	}
-	function parseInt32(s:String):Int32
-	{
-		#if haxe3 
-			return Std.parseInt(s); 
-		#else
-		var f=Std.parseFloat(s);
-		if(f<-0x40000000)
-			return haxe.Int32.add(haxe.Int32.ofInt(-0x40000000),haxe.Int32.ofInt(Std.int(f+0x3fffffff)));
-		if(f>0x3fffffff)
-			return haxe.Int32.add(haxe.Int32.ofInt(0x3fffffff),haxe.Int32.ofInt(Std.int(f-0x3fffffff)));
-		return haxe.Int32.ofInt(Std.int(f));
-		#end
 	}
 	private function checkDictionary(id : Int) : Void
 	{

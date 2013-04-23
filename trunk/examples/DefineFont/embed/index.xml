@@ -1,0 +1,19 @@
+<?xml version="1.0" ?>
+<swf>
+
+	<FileAttributes/>
+
+	<DefineFont id="1" file="../../assets/chopin.ttf" charCodes="32-126"/><!--basic latin( http://jrgraphix.net/research/unicode_blocks.php?block=0  )-->
+	<DefineEditText id="2" fontID="1" fontHeight="20" textColor="0x000000" alpha="1" initialText="1234567890Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum." width="400" height="400" wordWrap="true" multiline="true" password="false" input="true" autoSize="false" selectable="true" border="true" wasStatic="false" html="false" useOutlines="true"  fontClass="" maxLength="0" align="0" leftMargin="0" rightMargin="0" indent="0" leading="0" variableName="" file=""/>
+	<PlaceObject id="2" name="tf1" depth="1"/>
+	<SymbolClass id="1" class="com.example.CopinFont" base="flash.text.Font"/>
+	
+	<DefineFont id="3" file="../../assets/Impact Label.ttf" charCodes="20-30,31-126"/><!--basic latin( http://jrgraphix.net/research/unicode_blocks.php?block=0  )-->
+	<SymbolClass id="3" class="MyFontTTF" />
+	
+	<DefineABC file="Main.swf" isBoot="true"/>
+	<!--<SymbolClass id="0" class="flash.Boot" />-->
+
+	<ShowFrame/>
+</swf>
+

@@ -60,13 +60,8 @@ class ImageWriter
 			input.readInt32();//0x0D0A1A0A
 			input.readInt32();//0x0000000D THDR
 			input.readInt32();//0x49484452
-			#if haxe3
-				width = input.readInt32();
-				height = input.readInt32();
-			#else
-				width = input.readUInt30();
-				height = input.readUInt30();
-			#end
+			width = input.readInt32();
+			height = input.readInt32();
 		}
 		else if(extension == 'gif' )
 		{

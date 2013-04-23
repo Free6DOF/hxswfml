@@ -1,0 +1,5 @@
+-main Movie
+-swf script.swf
+
+--next
+-cmd hxswfml xml2swf library.xml movie.swf

@@ -1,0 +1,4 @@
+-main Main
+-swf script.swf
+
+-cmd hxswfml xml2swf index.xml index.swf

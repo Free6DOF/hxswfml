@@ -310,22 +310,14 @@ class Writer {
 	}
 
 	public function write( d : ABCData ) {
-		#if haxe3
 		o.writeInt32(0x002E0010); // as3 magic header
-		#else
-		o.writeInt31(0x002E0010); // as3 magic header
-		#end
 		writeList(d.ints,opw.writeInt32);
 		writeList(d.uints,opw.writeInt32);
 		writeList(d.floats,o.writeDouble);
 		writeList(d.strings,writeString);
 		writeList(d.namespaces,writeNamespace);
 		writeList(d.nssets,writeNsSet);
-		#if haxe3
-		writeList(d.names,writeName.callback(-1));
-		#else
-		writeList(d.names,callback(writeName,-1));
-		#end
+		writeList(d.names,function(n) writeName(-1,n));
 		writeList2(d.methodTypes,writeMethodType);
 		writeList2(d.metadatas,writeMetadata);
 		writeList2(d.classes,writeClass);

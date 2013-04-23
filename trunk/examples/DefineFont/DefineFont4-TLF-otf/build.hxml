@@ -1,0 +1,9 @@
+Main
+-main Main
+-swf Main.swf
+-swf-version 10
+
+-cmd hxswfml xml2swf index.xml index.swf
+-cmd del Main.swf
+
+-cmd index.swf

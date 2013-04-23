@@ -1,0 +1,10 @@
+#compile the script 
+Main
+-main Main
+-swf script.swf
+-D flash-use-stage
+
+# build swf from xml
+-cmd hxswfml xml2swf index.xml index.swf
+
+-cmd del script.swf

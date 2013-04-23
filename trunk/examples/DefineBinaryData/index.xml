@@ -1,0 +1,11 @@
+<swf>
+<fileattributes/>
+
+<definebinarydata id="1" file="../assets/haxe.png"/>
+<symbolclass id="1" class="MyBinData" />
+
+<defineabc file="script.swf" isBoot="true"/>
+<!--<symbolclass id="0" class="flash.Boot" />-->
+
+<showframe/>
+</swf>
