@@ -1,0 +1,20 @@
+<?xml version="1.0" ?>
+<swf width="800" height="600" fps="30">
+	
+	<FileAttributes actionscript3="true"/>
+	
+	<DefineABC file="script.swf" isBoot="true"/>
+	<!--<SymbolClass id="0" class="boot_a0b6" />-->
+	<!--<SymbolClass id="0" class="flash.Boot" />-->
+	<ShowFrame/>
+	
+	<DefineBitsJPEG id="1" file="../../assets/image1.jpg" />
+	<SymbolClass id="1" class="MyHeavyImage" />
+	
+	<DefineBitsJPEG id="2" file="../../assets/image2.jpg" />
+	<DefineShape id="3" bitmapId="2" />
+	<PlaceObject id="3" depth="1" x="100" y="100"/>
+	<ShowFrame/>
+	
+</swf>
+

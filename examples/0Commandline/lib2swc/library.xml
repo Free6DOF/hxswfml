@@ -1,0 +1,39 @@
+<lib>
+	<bitmapdata file="../../assets/haxe.png" class="MyBitmapData"/>
+	<bitmap file="../../assets/haxe.png" class="MyBitmap"/>
+	<sprite file="../../assets/haxe.png" class="MySprite"/>
+	<movieclip file="../../assets/haxe.png" class="MyMovieClip"/>
+	<button file="../../assets/haxe.png" class="MySimpleButton"/>
+	<bytearray file="../../assets/haxe.png" class="MyByteArray"/>
+	<sound file="../../assets/chopin.mp3" class="MySound"/>
+	<font file="../../assets/chopin.ttf" class="MyFont" glyphs="32-126"/>
+</lib>
+
+<!--
+lib attributes: 
+
+version="10" 
+width="800" 
+height="600" 
+fps="30" 
+backgroundcolor="0xffffff" 
+frameCount="1" 
+actionscript3="true" 
+compressed="false" 
+useDirectBlit="false" 
+useGPU="false" 
+hasMetaData="false" 
+useNetWork="false"
+
+supported baseclasses:
+
+flash.display.BitmapData
+flash.display.Bitmap
+flash.display.Sprite
+flash.display.MovieClip
+flash.display.SimpleButton
+flash.utils.ByteArray
+flash.media.Sound
+flash.text.Font
+
+-->

@@ -1,0 +1,10 @@
+#compile original haxe source to swf
+-main Main
+-swf Main.swf
+-debug
+
+#convert abc inside swf to xml and haxe
+-cmd hxswfml abc2hxm Main.swf Main1.zip -main flash.Boot -source
+-cmd hxswfml abc2hxm Main.swf Main2.zip -main flash.Boot -source -folders
+-cmd hxswfml abc2xml Main.swf ./xml/Main.xml -source
+#-cmd pause

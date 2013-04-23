@@ -1,0 +1,12 @@
+<?xml version="1.0" ?>
+<?oxygen SCHSchema="http://hxswfml.googlecode.com/svn/trunk/doc/hxswfml.xsd"?>
+<swf
+	xmlns="http://hxswfml.googlecode.com"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://hxswfml.googlecode.com http://hxswfml.googlecode.com/svn/trunk/doc/hxswfml.xsd">
+	<FileAttributes useNetwork="true"/>
+	<SetBackgroundColor/>
+	<DefineBitsJPEG id="1" file="../../assets/haxe.png" />
+	<SymbolClass id="1" class="MyPNG" />
+	<ShowFrame/>
+</swf>

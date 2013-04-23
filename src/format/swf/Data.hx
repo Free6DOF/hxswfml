@@ -28,9 +28,6 @@
  * DAMAGE.
  */
 package format.swf;
-typedef Fixed = #if haxe3 Int; #else haxe.Int32; #end
-typedef Int32 = Fixed;
-typedef Fixed8 = Int;
 
 typedef SWF = {
 	var header : SWFHeader;
@@ -140,7 +137,7 @@ typedef SWFHeader = {
 	var compressed : Bool;
 	var width : Int;
 	var height : Int;
-	var fps : Fixed8;
+	var fps : Int;
 	var nframes : Int;
 }
 
@@ -343,7 +340,7 @@ enum LineCapStyle {
 enum LineJoinStyle {
 	LJRound;
 	LJBevel;
-	LJMiter(limitFactor : Fixed8);
+	LJMiter(limitFactor : Int);
 }
 
 enum LS2Fill {
@@ -363,7 +360,7 @@ typedef Gradient = {
 }
 
 typedef FocalGradient = {
-	var focalPoint : Fixed8;
+	var focalPoint : Int;
 	var data : Gradient;
 }
 
@@ -469,17 +466,17 @@ typedef FilterFlags = {
 typedef FilterData = {
 	var color : RGBA;
 	var color2 : RGBA;
-	var blurX : Fixed;
-	var blurY : Fixed;
-	var angle : Fixed;
-	var distance : Fixed;
-	var strength : Fixed8;
+	var blurX : Int;
+	var blurY : Int;
+	var angle : Int;
+	var distance : Int;
+	var strength : Int;
 	var flags : FilterFlags;
 }
 
 typedef BlurFilterData = {
-	var blurX : Fixed;
-	var blurY : Fixed;
+	var blurX : Int;
+	var blurY : Int;
 	var passes : Int;
 }
 
@@ -531,7 +528,7 @@ typedef Sound = {
 	var rate : SoundRate;
 	var is16bit : Bool;
 	var isStereo : Bool;
-	var samples : Fixed;
+	var samples : Int;
 	var data : SoundData;
 };
 

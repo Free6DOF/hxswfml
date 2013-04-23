@@ -1,0 +1,43 @@
+<?xml version="1.0" ?>
+<swf width="800" height="600" fps="30" version="10" compressed="true" frameCount="1" >
+	
+	<FileAttributes actionscript3="true" useNetwork="false" useDirectBlit="false" useGPU="false" hasMetaData="false" />
+	
+	<SetBackgroundColor color="0xaaaaaa" />
+
+	<ScriptLimits maxRecursionDepth="256" scriptTimeoutSeconds="15" />
+	
+	<DefineShape id="1" >
+		<BeginFill color="0xff0000"/>
+		<DrawRect width="100" height="100" />
+	</DefineShape>
+	<DefineShape id="2" >
+		<BeginFill color="0x00ff00"/>
+		<DrawRect width="100" height="100" />
+	</DefineShape>
+	<DefineShape id="3" >
+		<BeginFill color="0x0000ff"/>
+		<DrawRect width="100" height="100" />
+	</DefineShape>
+	<DefineShape id="4" >
+		<BeginFill color="0x000000"/>
+		<DrawRect width="100" height="100" />
+	</DefineShape>
+	
+	<DefineButton id="5">
+		<ButtonState up='true' id='1' depth='1' />
+		<ButtonState over='true' id='2' depth='1' />
+		<ButtonState down='true' id='3' depth='1' />
+		<ButtonState hit='true' id='4' depth='1' />
+		</DefineButton>
+	
+	<PlaceObject name="button" id="5" depth="1" x="200" y="200" />
+	
+	<DefineABC file="Script.swf" isBoot="true"/>
+	
+	<!--<SymbolClass id="0" class="flash.Boot" />-->
+
+	<ShowFrame/>
+	
+</swf>
+

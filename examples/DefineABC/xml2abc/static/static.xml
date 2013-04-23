@@ -1,0 +1,139 @@
+<!--
+package [Global]
+{
+	import flash.display.MovieClip
+    public class Main extends MovieClip 
+    {
+		public var mc:MovieClip=new MovieClip();
+		public var arr:Array = ["a",1,mc];
+		public var str1 : String = "hello";
+        public static var str2 : String = "world";
+        
+        public static function Main()
+        {
+            return;
+        }
+        public function Main()
+        {
+					/*
+            super();
+			trace(arr);
+            trace(this.str1, this.str2, this.str1, this.str2, blah, blah);
+            this.test1();
+            Main.test2();
+            //FAILED to Decompile Block:NEED TO IMPLEMENT THIS opcode: getglobalslot
+					*/
+			super();
+            trace(this.str1, this.str2, this.str1, this.str2, this.str1, this.str2);
+            this.test1();
+            Main.test2();
+            Main.test2();
+			Main.test2();
+			return;
+        }
+        public static function test2()
+        {
+            trace("World");
+            return;
+        }
+        public function test1()
+        {
+            this.trace("Hello");
+            return;
+        }
+    }
+}
+-->
+<swf>
+
+	<FileAttributes/>
+	
+	<DefineABC name="Main">
+		<abcfiles>
+			<abcfile>
+			<import name="flash.display.MovieClip" />
+
+			<class name="Main" extends="MovieClip">
+				
+				<var name="str1"  type="String" value="hello" />
+				
+				<var static="true" name="str2" type="String" value="world"  />
+				
+				<function name="Main" >
+					<OThis/>
+					<OScope/>
+					
+					<OThis/>
+					<OConstructSuper v="0" />
+					
+					<OFindPropStrict v="trace"/>
+						<!--
+						<OThis/>
+						<OGetProp v="strX" />undefined-->
+							
+						<!--
+						<OFindProp v="strX"/>
+						<OGetProp v="strX" />undefined-->
+							
+						<!--
+						<OFindPropStrict v="strX"/>
+						<OGetProp v="strX" />ReferenceError: Error #1065: Variable strX is not defined.-->
+
+						<OThis/><!--[object Main] -->
+						<OGetProp v="str1" /><!--hello-->
+							
+						<OFindProp v="str2"/><!--[class Main] -->
+						<OGetProp v="str2" /><!--world-->
+						
+						<OGetLex v="str1" /><!--[object Main].str1--><!--hello-->
+						<OGetLex v="str2" /><!--[class Main].str2--><!--world-->
+						
+						<OThis/><!--[object Main] -->
+						<OGetSlot v="1"/><!--hello-->
+						
+						<OFindProp v="str2"/><!--[class Main] -->
+						<OGetSlot v="1"/><!--world-->
+					<OCallPropVoid v="trace" nargs="6" /><!-- hello world hello world hello world -->
+
+					<OThis/><!--[object Main] -->
+					<OCallPropVoid v="test1" nargs="0" />
+
+					<OGetLex v="Main"/><!--[class Main] -->
+					<OCallPropVoid v="test2" nargs="0" />
+
+					<OGetLex v="Main"/><!--[class Main] <OGetGlobalSlot v="1" /><!--[class Main] -->
+					<OCallPropVoid v="test2" nargs="0" />
+					
+					<OGetLex v="Main"/><!--[class Main] <OGetGlobalSlot v="1" /><!--[class Main] -->
+					<OCallStatic v="3" nargs="0"/>
+					<OPop/>
+
+					<ORetVoid/>
+				</function>
+				
+				<function name="test1">
+					<OThis/>
+					<OScope/>
+					<OFindProp v="trace"/>
+						<OString v="Hello" />
+					<OCallPropVoid v="trace" nargs="1" />
+					<ORetVoid/>
+				</function>
+				
+				<function static="true" name="test2">
+					<OFindProp v="trace"/>
+						<OString v="World" />
+					<OCallPropVoid v="trace" nargs="1" />
+					<ORetVoid/>
+				</function>
+				
+			</class>
+			</abcfile>
+		</abcfiles>
+	</DefineABC>
+	
+	<SymbolClass id="0" class="Main"/>
+	
+	<ShowFrame/>
+	
+</swf>

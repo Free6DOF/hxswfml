@@ -1,0 +1,2 @@
+[object global] [object Main] [object Main] [object Main] [object Main] [object Main] [object global]
+hello hello hello hello hello hello

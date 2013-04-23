@@ -1,0 +1,5 @@
+<?xml version="1.0" ?>
+<lib version="10">
+	<font file="../../../assets/File.otf" name="File" class="FileFont"/>
+</lib>
+

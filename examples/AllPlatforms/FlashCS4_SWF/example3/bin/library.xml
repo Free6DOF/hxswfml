@@ -1,0 +1,38 @@
+<abcfiles>
+	<abcfile name="com/Test">
+		
+		<!--
+		<init name="com.Test" return="void" >
+			<OThis />
+			<OScope />
+			<OGetGlobalScope />
+			<OGetLex v="flash.display.MovieClip" />
+			<OScope />
+			<OGetLex v="flash.display.MovieClip" />
+			<OClassDef v="com.Test" />
+			<OPopScope />
+			<OInitProp v="com.Test" />
+			<ORetVoid />
+		</init>
+		-->
+		<class name="com.Test" extends="flash.display.MovieClip" sealed="false">
+			<function name="com.Test" return="void">
+				<OThis />
+				<OScope />
+				<OThis />
+				<OConstructSuper v="0" />
+				<OFindPropStrict v="trace" />
+                <OString v="hello world"/>
+                <OCallPropVoid v="trace" nargs="1" />
+				<ORetVoid />
+			</function>
+			<!--
+			<function name="com.Test" static="true" args="" return="void" > 
+				<OThis />
+				<OScope />
+				<ORetVoid />
+			</function>
+			-->
+		</class>
+	</abcfile>
+</abcfiles>

@@ -1,0 +1,14 @@
+<?xml version="1.0"?>
+<swf>	
+	<FileAttributes />
+	  
+	<DefineBitsJpeg id="1" file="../assets/haxe.png" />
+	<SymbolClass id="1" class="HaxePng" base="flash.display.BitmapData"/>
+	<!--
+	<DefineBitsJpeg id="2" file="../assets/nightly.png" />
+	<SymbolClass id="2" class="NightlyPng" base="flash.display.BitmapData"/>	
+	 
+	<DefineBitsJpeg id="3" file="../assets/neko.jpg" />
+	<SymbolClass id="3" class="NekoJpg" base="flash.display.BitmapData"/>	
+	-->
+</swf>

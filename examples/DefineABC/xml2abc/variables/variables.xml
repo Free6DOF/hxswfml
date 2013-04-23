@@ -1,0 +1,158 @@
+<!--
+package 
+{
+    import flash.display.*;
+
+    public class Main extends MovieClip
+    {
+        public var any;
+        public var str1:String;
+        public var str2:String = "hello world";
+        public var nr1:int;
+        public var nr2:int = -10;
+        public var nr3:uint;
+        public var nr4:uint = 10;
+        public var nr5:Number;
+        public var nr6:Number = 10.5;
+        public var b1:Boolean;
+        public var b2:Boolean = true;
+        public var obj:Object;
+        public var arr:Array;
+        public var mc:MovieClip;
+        public const nr8:int = 12;
+        public static var nr7:int = 11;
+
+        public function Main()
+        {
+			super();
+            trace(this.any);
+            trace(this.nr1);
+            trace(this.nr2);
+            trace(this.nr3);
+            trace(this.nr4);
+            trace(this.nr5);
+            trace(this.nr6);
+            trace(this.b1);
+            trace(this.b2);
+            trace(this.obj);
+            trace(this.arr);
+            trace(this.mc);
+            trace(Main.nr7);
+            trace(this.nr8);
+            return;
+        }// end function
+
+    }
+}
+-->
+<swf>
+
+	<FileAttributes/>
+	
+	<DefineABC name="Main">
+		<abcfiles>
+			<abcfile>
+			<import name="flash.display.MovieClip" />
+
+			<class name="Main" extends="MovieClip">
+				
+				<var name="any" />
+				
+				<var name="str1"  type="String" />
+				<var name="str2"  type="String" value="hello world" />
+				
+				<var name="nr1"  type="int" />
+				<var name="nr2"  type="int" value="-10" />
+				
+				<var name="nr3"  type="uint" />
+				<var name="nr4"  type="uint" value="10" />
+				
+				<var name="nr5"  type="Number" />
+				<var name="nr6"  type="Number" value="10.5" />
+				
+				<var name="b1" type="Boolean" />
+				<var name="b2" type="Boolean" value="true" />
+				
+
+				<var name="obj" type="Object" />
+				<var name="arr" type="Array" />
+				<var name="mc" type="MovieClip"/>
+				
+				<var static="true" name="nr7" type="int" value="11" />
+				<var const="true" name="nr8" type="int" value="12" />
+
+				<function name="Main" >
+					<OThis/>
+					<OScope/>
+					
+					<OThis/><OConstructSuper v="0" />
+					
+					<OFindPropStrict v="trace"/>
+						<OThis/><OGetProp v="any" />
+					<OCallPropVoid v="trace" nargs="1" />
+					
+					<OFindPropStrict v="trace"/>
+						<OThis/><OGetProp v="nr1" />
+					<OCallPropVoid v="trace" nargs="1" />
+					
+					<OFindPropStrict v="trace"/>
+						<OThis/><OGetProp v="nr2" />
+					<OCallPropVoid v="trace" nargs="1" />
+					
+					<OFindPropStrict v="trace"/>
+						<OThis/><OGetProp v="nr3" />
+					<OCallPropVoid v="trace" nargs="1" />
+					
+					<OFindPropStrict v="trace"/>
+						<OThis/><OGetProp v="nr4" />
+					<OCallPropVoid v="trace" nargs="1" />
+					
+					<OFindPropStrict v="trace"/>
+						<OThis/><OGetProp v="nr5" />
+					<OCallPropVoid v="trace" nargs="1" />
+					
+					<OFindPropStrict v="trace"/>
+						<OThis/><OGetProp v="nr6" />
+					<OCallPropVoid v="trace" nargs="1" />
+					
+					<OFindPropStrict v="trace"/>
+						<OThis/><OGetProp v="b1" />
+					<OCallPropVoid v="trace" nargs="1" />
+					
+					<OFindPropStrict v="trace"/>
+						<OThis/><OGetProp v="b2" />
+					<OCallPropVoid v="trace" nargs="1" />
+					
+					<OFindPropStrict v="trace"/>
+						<OThis/><OGetProp v="obj" />
+					<OCallPropVoid v="trace" nargs="1" />
+					
+					<OFindPropStrict v="trace"/>
+						<OThis/><OGetProp v="arr" />
+					<OCallPropVoid v="trace" nargs="1" />
+					
+					<OFindPropStrict v="trace"/>
+						<OThis/><OGetProp v="mc" />
+					<OCallPropVoid v="trace" nargs="1" />
+					
+					
+					<OFindPropStrict v="trace"/>
+						<OGetLex v="Main" /><OGetProp v="nr7" />
+					<OCallPropVoid v="trace" nargs="1" />
+					
+					<OFindPropStrict v="trace"/>
+						<OThis/><OGetProp v="nr8" />
+					<OCallPropVoid v="trace" nargs="1" />
+						
+					<ORetVoid/>
+				</function>
+			</class>
+			</abcfile>
+		</abcfiles>
+	</DefineABC>
+	
+	<SymbolClass id="0" class="Main"/>
+	
+	<ShowFrame/>
+	
+</swf>

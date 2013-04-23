@@ -1,0 +1,2104 @@
+<abcfiles>
+	<abcfile name="anonymous_0">
+		<init name="flash.Lib" return="void" ><!-- maxStack="2" nRegs="1" initScope="1" maxScope="3" -->
+			<OThis />
+			<OScope />
+			<ODebugFile v="C:/Program Files/Motion-Twin/haxe/std/flash9/Lib.hx" />
+			<ODebugLine v="27" />
+<!--  27)class Lib {-->
+			<OGetGlobalScope />
+			<OGetLex v="Object" />
+			<OScope />
+			<OGetLex v="Object" />
+			<OClassDef v="flash.Lib" />
+			<OPopScope />
+			<OInitProp v="flash.Lib" />
+			<ORetVoid />
+		</init>
+		<class name="flash.Lib" extends="Object" sealed="true">
+			<var name="current" type="flash.display.MovieClip" static="true" />
+			<function name="flash.Lib" args="" return="void" > <!-- maxStack="1" nRegs="1" initScope="1" maxScope="2" -->
+				<OThis />
+				<OScope />
+				<ODebugFile v="" />
+				<ODebugLine v="1" />
+				<ORetVoid />
+			</function>
+
+			<function name="flash.Lib" static="true" args="" return="void" > <!-- maxStack="0" nRegs="1" initScope="1" maxScope="1" -->
+				<ODebugFile v="C:/Program Files/Motion-Twin/haxe/std/flash9/Lib.hx" />
+				<ODebugLine v="27" />
+<!--  27)class Lib {-->
+				<ORetVoid />
+			</function>
+
+			<function name="getTimer" static="true" final="true" args="" return="int" > <!-- maxStack="1" nRegs="1" initScope="1" maxScope="1" -->
+				<ODebugFile v="C:/Program Files/Motion-Twin/haxe/std/flash9/Lib.hx" />
+				<ODebugLine v="31" />
+<!--  31)	public inline static function getTimer() : Int {-->
+				<ODebugLine v="32" />
+<!--  32)		return untyped __global__["flash.utils.getTimer"]();-->
+				<OFindPropStrict v="flash.utils.getTimer" />
+				<OCallProperty v="flash.utils.getTimer" nargs="0" />
+				<ORet />
+			</function>
+
+			<function name="eval" static="true" final="true" args="String" return="*" newBlock="true" > <!-- maxStack="3" nRegs="9" initScope="1" maxScope="5" -->
+				<OThis />
+				<OScope />
+				<ONewBlock />
+				<ODup />
+				<OSetReg v="2" />
+				<OScope />
+				<ONull />
+				<OAsAny />
+				<OSetReg v="6" />
+				<ONull />
+				<OAsType v="String" />
+				<OSetReg v="8" />
+				<ODebugFile v="C:/Program Files/Motion-Twin/haxe/std/flash9/Lib.hx" />
+				<ODebugLine v="35" />
+<!--  35)	public static function eval( path : String ) : Dynamic {-->
+				<ODebugReg name="path" r="0" line="35"/>
+				<ODebugLine v="36" />
+<!--  36)		var p = path.split(".");-->
+				<ODebugReg name="p" r="2" line="36"/>
+				<OReg v="1" />
+				<OString v="." />
+				<OCallProperty v="http://adobe.com/AS3/2006/builtin.split" nargs="1" />
+				<OCast v="Array" />
+				<OCast v="Array" />
+				<OSetReg v="3" />
+				<ODebugLine v="37" />
+<!--  37)		var fields = new Array();-->
+				<ODebugReg name="fields" r="3" line="37"/>
+				<OArray v="0" />
+				<OCast v="Array" />
+				<OSetReg v="4" />
+				<ODebugLine v="38" />
+<!--  38)		var o : Dynamic = null;-->
+				<ODebugReg name="o" r="4" line="38"/>
+				<ONull />
+				<OAsAny />
+				<OAsAny />
+				<OSetReg v="5" />
+				<ODebugLine v="39" />
+<!--  39)		while( p.length > 0 ) {-->
+				<JAlways jump="jump1" offset="82" />
+				<OLabel name="label1"/>
+<!-- label1 -->
+				<ODebugLine v="40" />
+<!--  40)			try {-->
+				<ODebugLine v="41" />
+<!--  41)				o = untyped __global__["flash.utils.getDefinitionByName"](p.join("."));-->
+				<OFindPropStrict v="flash.utils.getDefinitionByName" />
+				<OReg v="3" />
+				<OString v="." />
+				<OCallProperty v="http://adobe.com/AS3/2006/builtin.join" nargs="1" />
+				<OCast v="String" />
+				<OCallProperty v="flash.utils.getDefinitionByName" nargs="1" />
+				<OAsAny />
+				<OSetReg v="5" />
+				<JAlways jump="jump2" offset="41" />
+				<OThis />
+				<OScope />
+				<OReg v="2" />
+				<OScope />
+				<ODebugReg name="e" r="5" line="41"/>
+				<OAsAny />
+				<OSetReg v="6" />
+				<OReg v="6" />
+				<OAsType v="Error" />
+				<JFalse jump="jump3" offset="6" />
+				<OGetLex v="flash.Boot" />
+				<OReg v="6" />
+				<OInitProp v="lastError" />
+				<OJump name="jump3"/>
+<!-- jump3 -->
+				<ODebugLine v="42" />
+<!--  42)			} catch( e : Dynamic ) {-->
+				<ODebugLine v="43" />
+<!--  43)				fields.unshift(p.pop());-->
+				<OReg v="4" />
+				<OReg v="3" />
+				<OCallProperty v="http://adobe.com/AS3/2006/builtin.pop" nargs="0" />
+				<OCast v="String" />
+				<OCallPropVoid v="http://adobe.com/AS3/2006/builtin.unshift" nargs="1" />
+				<OJump name="jump2"/>
+<!-- jump2 -->
+				<ODebugLine v="45" />
+<!--  45)			if( o != null )-->
+				<OReg v="5" />
+				<ONull />
+				<OAsAny />
+				<JEq jump="jump4" offset="6" />
+				<ODebugLine v="46" />
+<!--  46)				break;-->
+				<JAlways jump="jump5" offset="12" />
+				<OJump name="jump1"/>
+<!-- jump1 -->
+				<OJump name="jump4"/>
+<!-- jump4 -->
+				<ODebugLine v="39" />
+<!--  39)		while( p.length > 0 ) {-->
+				<OReg v="3" />
+				<OGetProp v="length" />
+				<OToInt />
+				<OSmallInt v="0" />
+				<JGt label="label1" offset="-94" />
+				<OJump name="jump5"/>
+<!-- jump5 -->
+				<ODebugLine v="48" />
+<!--  48)		for( f in fields ) {-->
+				<ODebugReg name="_g" r="6" line="48"/>
+				<OSmallInt v="0" />
+				<OToInt />
+				<OSetReg v="7" />
+				<JAlways jump="jump7" offset="45" />
+				<OLabel name="label2"/>
+<!-- label2 -->
+				<ODebugReg name="f" r="7" line="48"/>
+				<OReg v="4" />
+				<OReg v="7" />
+				<OGetProp v="#arrayProp" />
+				<OCast v="String" />
+				<OCast v="String" />
+				<OSetReg v="8" />
+				<OIncrIReg v="7" />
+				<ODebugLine v="49" />
+<!--  49)			if( o == null ) return null;-->
+				<OReg v="5" />
+				<ONull />
+				<OAsAny />
+				<JNeq jump="jump8" offset="3" />
+				<ONull />
+				<OAsAny />
+				<ORet />
+				<OJump name="jump8"/>
+<!-- jump8 -->
+				<ODebugLine v="50" />
+<!--  50)			o = untyped o[f];-->
+				<OReg v="5" />
+				<OReg v="8" />
+				<OGetProp v="#arrayProp" />
+				<OAsAny />
+				<OAsAny />
+				<OSetReg v="5" />
+				<OJump name="jump7"/>
+<!-- jump7 -->
+				<ODebugLine v="48" />
+<!--  48)		for( f in fields ) {-->
+				<OReg v="7" />
+				<OReg v="4" />
+				<OGetProp v="length" />
+				<OToInt />
+				<JLt label="label2" offset="-58" />
+				<ODebugLine v="52" />
+<!--  52)		return o;-->
+				<OReg v="5" />
+				<ORet />
+			</function>
+
+			<function name="getURL" static="true" final="true" args="flash.net.URLRequest,String" return="void" defaultParameters="null" > <!-- maxStack="4" nRegs="4" initScope="1" maxScope="1" -->
+				<ODebugFile v="C:/Program Files/Motion-Twin/haxe/std/flash9/Lib.hx" />
+				<ODebugLine v="55" />
+<!--  55)	public static function getURL( url : flash.net.URLRequest, ?target : String ) {-->
+				<ODebugReg name="url" r="0" line="55"/>
+				<ODebugReg name="target" r="1" line="55"/>
+				<ODebugLine v="56" />
+<!--  56)		var f = untyped __global__["flash.net.navigateToURL"];-->
+				<ODebugReg name="f" r="2" line="56"/>
+				<OGetLex v="flash.net.navigateToURL" />
+				<OCast v="Function" />
+				<OCast v="Function" />
+				<OSetReg v="3" />
+				<ODebugLine v="57" />
+<!--  57)		if( target == null )-->
+				<OReg v="2" />
+				<ONull />
+				<OCast v="String" />
+				<JNeq jump="jump1" offset="13" />
+				<ODebugLine v="58" />
+<!--  58)			f(url);-->
+				<OReg v="3" />
+				<OGetGlobalScope />
+				<OReg v="1" />
+				<OCallStack v="1" />
+				<OAsAny />
+				<OPop />
+				<JAlways jump="jump2" offset="10" />
+				<OJump name="jump1"/>
+<!-- jump1 -->
+				<ODebugLine v="60" />
+<!--  60)			(cast f)(url,target);-->
+				<OReg v="3" />
+				<OGetGlobalScope />
+				<OReg v="1" />
+				<OReg v="2" />
+				<OCallStack v="2" />
+				<OAsAny />
+				<OPop />
+				<OJump name="jump2"/>
+<!-- jump2 -->
+				<ODebugLine v="61" />
+<!--  61)	}-->
+				<ORetVoid />
+			</function>
+
+			<function name="fscommand" static="true" final="true" args="String,String" return="void" defaultParameters="null" > <!-- maxStack="4" nRegs="3" initScope="1" maxScope="1" -->
+				<ODebugFile v="C:/Program Files/Motion-Twin/haxe/std/flash9/Lib.hx" />
+				<ODebugLine v="63" />
+<!--  63)	public static function fscommand( cmd : String, ?param : String ) {-->
+				<ODebugReg name="cmd" r="0" line="63"/>
+				<ODebugReg name="param" r="1" line="63"/>
+				<ODebugLine v="64" />
+<!--  64)		untyped __global__["flash.system.fscommand"](cmd,if( param == null ) "" else param);-->
+				<OFindPropStrict v="flash.system.fscommand" />
+				<OReg v="1" />
+				<OReg v="2" />
+				<ONull />
+				<OCast v="String" />
+				<JNeq jump="jump1" offset="6" />
+				<OString v="" />
+				<JAlways jump="jump2" offset="1" />
+				<OJump name="jump1"/>
+<!-- jump1 -->
+				<OReg v="2" />
+				<OJump name="jump2"/>
+<!-- jump2 -->
+				<OCallProperty v="flash.system.fscommand" nargs="2" />
+				<OPop />
+				<ODebugLine v="65" />
+<!--  65)	}-->
+				<ORetVoid />
+			</function>
+
+			<function name="trace" static="true" final="true" args="*" return="void" > <!-- maxStack="2" nRegs="2" initScope="1" maxScope="1" -->
+				<ODebugFile v="C:/Program Files/Motion-Twin/haxe/std/flash9/Lib.hx" />
+				<ODebugLine v="67" />
+<!--  67)	public static function trace( arg : Dynamic ) {-->
+				<ODebugReg name="arg" r="0" line="67"/>
+				<ODebugLine v="68" />
+<!--  68)		untyped __global__["trace"](arg);-->
+				<OFindPropStrict v="trace" />
+				<OReg v="1" />
+				<OCallProperty v="trace" nargs="1" />
+				<OPop />
+				<ODebugLine v="69" />
+<!--  69)	}-->
+				<ORetVoid />
+			</function>
+
+			<function name="attach" static="true" final="true" args="String" return="flash.display.MovieClip" > <!-- maxStack="2" nRegs="3" initScope="1" maxScope="1" -->
+				<ODebugFile v="C:/Program Files/Motion-Twin/haxe/std/flash9/Lib.hx" />
+				<ODebugLine v="71" />
+<!--  71)	public static function attach( name : String ) : flash.display.MovieClip {-->
+				<ODebugReg name="name" r="0" line="71"/>
+				<ODebugLine v="72" />
+<!--  72)		var cl = untyped __as__(__global__["flash.utils.getDefinitionByName"](name),Class);-->
+				<ODebugReg name="cl" r="1" line="72"/>
+				<OFindPropStrict v="flash.utils.getDefinitionByName" />
+				<OReg v="1" />
+				<OCallProperty v="flash.utils.getDefinitionByName" nargs="1" />
+				<OGetLex v="Class" />
+				<OpAs />
+				<OAsAny />
+				<OSetReg v="2" />
+				<ODebugLine v="73" />
+<!--  73)		return untyped __new__(cl);-->
+				<OReg v="2" />
+				<OConstruct v="0" />
+				<ORet />
+			</function>
+
+			<function name="as" static="true" final="true" args="*,Class" return="Object" > <!-- maxStack="2" nRegs="3" initScope="1" maxScope="1" -->
+				<ODebugFile v="C:/Program Files/Motion-Twin/haxe/std/flash9/Lib.hx" />
+				<ODebugLine v="76" />
+<!--  76)	public inline static function as<T>( v : Dynamic, c : Class<T> ) : Null<T> {-->
+				<ODebugReg name="v" r="0" line="76"/>
+				<ODebugReg name="c" r="1" line="76"/>
+				<ODebugLine v="77" />
+<!--  77)		return untyped __as__(v,c);-->
+				<OReg v="1" />
+				<OReg v="2" />
+				<OpAs />
+				<ORet />
+			</function>
+
+		</class>
+		<init name="Void" return="void" ><!-- maxStack="3" nRegs="2" initScope="1" maxScope="3" -->
+			<OThis />
+			<OScope />
+			<ODebugFile v="C:/Program Files/Motion-Twin/haxe/std/StdTypes.hx" />
+			<ODebugLine v="31" />
+<!--  31)extern enum Void { }-->
+			<OGetGlobalScope />
+			<OGetLex v="Object" />
+			<OScope />
+			<OGetLex v="Object" />
+			<OClassDef v="Void" />
+			<OPopScope />
+			<ODup />
+			<OSetReg v="1" />
+			<OInitProp v="Void" />
+			<OReg v="1" />
+			<OArray v="0" />
+			<OSetProp v="__constructs__" />
+			<ORetVoid />
+		</init>
+		<class name="Void" extends="Object" sealed="true" final="true">
+			<var name="tag" type="String"/>
+			<var name="index" type="int"/>
+			<var name="params" type="Array"/>
+			<var name="__enum__" type="Boolean" value="true" const="true"/>
+			<var name="__isenum" type="Boolean" value="true" const="true" static="true" />
+			<var name="__constructs__" static="true" />
+			<function name="Void" args="String,int,*" return="void" > <!-- maxStack="2" nRegs="4" initScope="1" maxScope="2" -->
+				<OThis />
+				<OScope />
+				<ODebugFile v="C:/Program Files/Motion-Twin/haxe/std/StdTypes.hx" />
+				<ODebugLine v="31" />
+<!--  31)extern enum Void { }-->
+				<ODebugReg name="tag" r="0" line="31"/>
+				<ODebugReg name="index" r="1" line="31"/>
+				<ODebugReg name="params" r="2" line="31"/>
+				<OFindProp v="tag" />
+				<OReg v="1" />
+				<OInitProp v="tag" />
+				<OFindProp v="index" />
+				<OReg v="2" />
+				<OInitProp v="index" />
+				<OFindProp v="params" />
+				<OReg v="3" />
+				<OInitProp v="params" />
+				<ORetVoid />
+			</function>
+
+			<function name="Void" static="true" args="" return="void" > <!-- maxStack="0" nRegs="1" initScope="1" maxScope="1" -->
+				<ODebugFile v="C:/Program Files/Motion-Twin/haxe/std/StdTypes.hx" />
+				<ODebugLine v="31" />
+<!--  31)extern enum Void { }-->
+				<ORetVoid />
+			</function>
+
+			<function name="toString" final="true" args="" return="String" > <!-- maxStack="2" nRegs="1" initScope="1" maxScope="1" -->
+				<ODebugFile v="C:/Program Files/Motion-Twin/haxe/std/StdTypes.hx" />
+				<ODebugLine v="31" />
+<!--  31)extern enum Void { }-->
+				<OGetLex v="flash.Boot" />
+				<OThis />
+				<OCallProperty v="enum_to_string" nargs="1" />
+				<ORet />
+			</function>
+
+		</class>
+		<init name="Dynamic" return="void" ><!-- maxStack="2" nRegs="1" initScope="1" maxScope="3" -->
+			<OThis />
+			<OScope />
+			<ODebugFile v="C:/Program Files/Motion-Twin/haxe/std/StdTypes.hx" />
+			<ODebugLine v="71" />
+<!--  71)extern class Dynamic<T> {-->
+			<OGetGlobalScope />
+			<OGetLex v="Object" />
+			<OScope />
+			<OGetLex v="Object" />
+			<OClassDef v="Dynamic" />
+			<OPopScope />
+			<OInitProp v="Dynamic" />
+			<ORetVoid />
+		</init>
+		<class name="Dynamic" extends="Object" sealed="true">
+			<function name="Dynamic" args="" return="void" > <!-- maxStack="1" nRegs="1" initScope="1" maxScope="2" -->
+				<OThis />
+				<OScope />
+				<ODebugFile v="" />
+				<ODebugLine v="1" />
+				<ORetVoid />
+			</function>
+
+			<function name="Dynamic" static="true" args="" return="void" > <!-- maxStack="0" nRegs="1" initScope="1" maxScope="1" -->
+				<ODebugFile v="C:/Program Files/Motion-Twin/haxe/std/StdTypes.hx" />
+				<ODebugLine v="71" />
+<!--  71)extern class Dynamic<T> {-->
+				<ORetVoid />
+			</function>
+
+		</class>
+		<init name="IntIter" return="void" ><!-- maxStack="2" nRegs="1" initScope="1" maxScope="3" -->
+			<OThis />
+			<OScope />
+			<ODebugFile v="C:/Program Files/Motion-Twin/haxe/std/IntIter.hx" />
+			<ODebugLine v="29" />
+<!--  29)class IntIter {-->
+			<OGetGlobalScope />
+			<OGetLex v="Object" />
+			<OScope />
+			<OGetLex v="Object" />
+			<OClassDef v="IntIter" />
+			<OPopScope />
+			<OInitProp v="IntIter" />
+			<ORetVoid />
+		</init>
+		<class name="IntIter" extends="Object" sealed="true">
+			<var name="min" type="int"/>
+			<var name="max" type="int"/>
+			<function name="IntIter" args="int,int" return="void" defaultParameters="null,null" > <!-- maxStack="2" nRegs="3" initScope="1" maxScope="2" -->
+				<OThis />
+				<OScope />
+				<ODebugFile v="C:/Program Files/Motion-Twin/haxe/std/IntIter.hx" />
+				<ODebugLine v="38" />
+<!--  38)	public function new( min : Int, max : Int ) {-->
+				<ODebugReg name="min" r="0" line="38"/>
+				<ODebugReg name="max" r="1" line="38"/>
+				<OGetLex v="flash.Boot" />
+				<OGetProp v="skip_constructor" />
+				<JFalse jump="jump1" offset="1" />
+				<ORetVoid />
+				<OJump name="jump1"/>
+<!-- jump1 -->
+				<ODebugLine v="39" />
+<!--  39)		this.min = min;-->
+				<OFindProp v="min" />
+				<OReg v="1" />
+				<OInitProp v="min" />
+				<ODebugLine v="40" />
+<!--  40)		this.max = max;-->
+				<OFindProp v="max" />
+				<OReg v="2" />
+				<OInitProp v="max" />
+				<ODebugLine v="41" />
+<!--  41)	}-->
+				<ORetVoid />
+			</function>
+
+			<function name="IntIter" static="true" args="" return="void" > <!-- maxStack="0" nRegs="1" initScope="1" maxScope="1" -->
+				<ODebugFile v="C:/Program Files/Motion-Twin/haxe/std/IntIter.hx" />
+				<ODebugLine v="29" />
+<!--  29)class IntIter {-->
+				<ORetVoid />
+			</function>
+
+			<function name="next" args="" return="int" > <!-- maxStack="3" nRegs="2" initScope="1" maxScope="2" -->
+				<OThis />
+				<OScope />
+				<ODebugFile v="C:/Program Files/Motion-Twin/haxe/std/IntIter.hx" />
+				<ODebugLine v="53" />
+<!--  53)	public function next() {-->
+				<ODebugLine v="54" />
+<!--  54)		return min++;-->
+				<OFindProp v="min" />
+				<OFindProp v="min" />
+				<OGetProp v="min" />
+				<ODup />
+				<OToInt />
+				<OSetReg v="1" />
+				<OpIIncr />
+				<OInitProp v="min" />
+				<OReg v="1" />
+				<ORet />
+			</function>
+
+			<function name="hasNext" args="" return="Boolean" > <!-- maxStack="2" nRegs="1" initScope="1" maxScope="2" -->
+				<OThis />
+				<OScope />
+				<ODebugFile v="C:/Program Files/Motion-Twin/haxe/std/IntIter.hx" />
+				<ODebugLine v="46" />
+<!--  46)	public function hasNext() {-->
+				<ODebugLine v="47" />
+<!--  47)		return min < max;-->
+				<OFindProp v="min" />
+				<OGetProp v="min" />
+				<OFindProp v="max" />
+				<OGetProp v="max" />
+				<OpLt />
+				<ORet />
+			</function>
+
+		</class>
+		<init name="haxe.Log" return="void" ><!-- maxStack="4" nRegs="1" initScope="1" maxScope="3" -->
+			<OThis />
+			<OScope />
+			<ODebugFile v="C:/Program Files/Motion-Twin/haxe/std/haxe/Log.hx" />
+			<ODebugLine v="27" />
+<!--  27)class Log {-->
+			<OGetGlobalScope />
+			<OGetLex v="Object" />
+			<OScope />
+			<OGetLex v="Object" />
+			<OClassDef v="haxe.Log" />
+			<ODup />
+			<OFunction v="function__25" />
+			<OInitProp v="trace" />
+			<ODup />
+			<OFunction v="function__26" />
+			<OInitProp v="clear" />
+			<ODup />
+			<OFunction v="function__27" />
+			<OInitProp v="setColor" />
+			<OPopScope />
+			<OInitProp v="haxe.Log" />
+			<ORetVoid />
+		</init>
+		<class name="haxe.Log" extends="Object" sealed="true">
+			<var name="trace" type="Function" static="true" />
+			<var name="clear" type="Function" static="true" />
+			<var name="setColor" type="Function" static="true" />
+			<function name="haxe.Log" args="" return="void" > <!-- maxStack="1" nRegs="1" initScope="1" maxScope="2" -->
+				<OThis />
+				<OScope />
+				<ODebugFile v="" />
+				<ODebugLine v="1" />
+				<ORetVoid />
+			</function>
+
+			<function name="haxe.Log" static="true" args="" return="void" > <!-- maxStack="0" nRegs="1" initScope="1" maxScope="1" -->
+				<ODebugFile v="C:/Program Files/Motion-Twin/haxe/std/haxe/Log.hx" />
+				<ODebugLine v="27" />
+<!--  27)class Log {-->
+				<ORetVoid />
+			</function>
+
+		</class>
+		<init name="Std" return="void" ><!-- maxStack="2" nRegs="1" initScope="1" maxScope="3" -->
+			<OThis />
+			<OScope />
+			<ODebugFile v="C:/Program Files/Motion-Twin/haxe/std/Std.hx" />
+			<ODebugLine v="29" />
+<!--  29)class Std {-->
+			<OGetGlobalScope />
+			<OGetLex v="Object" />
+			<OScope />
+			<OGetLex v="Object" />
+			<OClassDef v="Std" />
+			<OPopScope />
+			<OInitProp v="Std" />
+			<ORetVoid />
+		</init>
+		<class name="Std" extends="Object" sealed="true">
+			<function name="Std" args="" return="void" > <!-- maxStack="1" nRegs="1" initScope="1" maxScope="2" -->
+				<OThis />
+				<OScope />
+				<ODebugFile v="" />
+				<ODebugLine v="1" />
+				<ORetVoid />
+			</function>
+
+			<function name="Std" static="true" args="" return="void" > <!-- maxStack="0" nRegs="1" initScope="1" maxScope="1" -->
+				<ODebugFile v="C:/Program Files/Motion-Twin/haxe/std/Std.hx" />
+				<ODebugLine v="29" />
+<!--  29)class Std {-->
+				<ORetVoid />
+			</function>
+
+			<function name="is" static="true" final="true" args="*,*" return="Boolean" > <!-- maxStack="3" nRegs="3" initScope="1" maxScope="1" -->
+				<ODebugFile v="C:/Program Files/Motion-Twin/haxe/std/Std.hx" />
+				<ODebugLine v="34" />
+<!--  34)	public static function is( v : Dynamic, t : Dynamic ) : Bool {-->
+				<ODebugReg name="v" r="0" line="34"/>
+				<ODebugReg name="t" r="1" line="34"/>
+				<ODebugLine v="35" />
+<!--  35)		return untyped-->
+				<ODebugLine v="37" />
+<!--  37)		flash.Boot.__instanceof(v,t);-->
+				<OGetLex v="flash.Boot" />
+				<OReg v="1" />
+				<OReg v="2" />
+				<OCallProperty v="__instanceof" nargs="2" />
+				<OToBool />
+				<ORet />
+			</function>
+
+			<function name="string" static="true" final="true" args="*" return="String" > <!-- maxStack="3" nRegs="2" initScope="1" maxScope="1" -->
+				<ODebugFile v="C:/Program Files/Motion-Twin/haxe/std/Std.hx" />
+				<ODebugLine v="54" />
+<!--  54)	public static function string( s : Dynamic ) : String {-->
+				<ODebugReg name="s" r="0" line="54"/>
+				<ODebugLine v="55" />
+<!--  55)		return untyped-->
+				<ODebugLine v="57" />
+<!--  57)		flash.Boot.__string_rec(s,"");-->
+				<OGetLex v="flash.Boot" />
+				<OReg v="1" />
+				<OString v="" />
+				<OCallProperty v="__string_rec" nargs="2" />
+				<OCast v="String" />
+				<ORet />
+			</function>
+
+			<function name="_int" static="true" final="true" args="Number" return="int" > <!-- maxStack="1" nRegs="2" initScope="1" maxScope="1" -->
+				<ODebugFile v="C:/Program Files/Motion-Twin/haxe/std/Std.hx" />
+				<ODebugLine v="74" />
+<!--  74)	public #if (flash9 || php) inline #end static function int( x : Float ) : Int {-->
+				<ODebugReg name="x" r="0" line="74"/>
+				<ODebugLine v="76" />
+<!--  76)		return untyped __int__(x);-->
+				<OReg v="1" />
+				<OToInt />
+				<ORet />
+			</function>
+
+			<function name="parseInt" static="true" final="true" args="String" return="Object" > <!-- maxStack="2" nRegs="3" initScope="1" maxScope="1" -->
+				<ODebugFile v="C:/Program Files/Motion-Twin/haxe/std/Std.hx" />
+				<ODebugLine v="90" />
+<!--  90)	public static function parseInt( x : String ) : Null<Int> {-->
+				<ODebugReg name="x" r="0" line="90"/>
+				<ODebugLine v="91" />
+<!--  91)		untyped {-->
+				<ODebugLine v="93" />
+<!--  93)		var v = __global__["parseInt"](x);-->
+				<ODebugReg name="v" r="1" line="93"/>
+				<OFindPropStrict v="parseInt" />
+				<OReg v="1" />
+				<OCallProperty v="parseInt" nargs="1" />
+				<OAsAny />
+				<OSetReg v="2" />
+				<ODebugLine v="94" />
+<!--  94)		if( __global__["isNaN"](v) )-->
+				<OFindPropStrict v="isNaN" />
+				<OReg v="2" />
+				<OCallProperty v="isNaN" nargs="1" />
+				<JFalse jump="jump1" offset="5" />
+				<ODebugLine v="95" />
+<!--  95)			return null;-->
+				<ONull />
+				<OAsAny />
+				<ORet />
+				<OJump name="jump1"/>
+<!-- jump1 -->
+				<ODebugLine v="96" />
+<!--  96)		return v;-->
+				<OReg v="2" />
+				<ORet />
+			</function>
+
+			<function name="parseFloat" static="true" final="true" args="String" return="Number" > <!-- maxStack="2" nRegs="2" initScope="1" maxScope="1" -->
+				<ODebugFile v="C:/Program Files/Motion-Twin/haxe/std/Std.hx" />
+				<ODebugLine v="131" />
+<!--  131)	public static function parseFloat( x : String ) : Float {-->
+				<ODebugReg name="x" r="0" line="131"/>
+				<ODebugLine v="132" />
+<!--  132)		return untyped-->
+				<ODebugLine v="134" />
+<!--  134)		__global__["parseFloat"](x);-->
+				<OFindPropStrict v="parseFloat" />
+				<OReg v="1" />
+				<OCallProperty v="parseFloat" nargs="1" />
+				<ORet />
+			</function>
+
+			<function name="random" static="true" final="true" args="int" return="int" > <!-- maxStack="3" nRegs="2" initScope="1" maxScope="1" -->
+				<ODebugFile v="C:/Program Files/Motion-Twin/haxe/std/Std.hx" />
+				<ODebugLine v="153" />
+<!--  153)	public static function random( x : Int ) : Int {-->
+				<ODebugReg name="x" r="0" line="153"/>
+				<ODebugLine v="154" />
+<!--  154)		return untyped-->
+				<ODebugLine v="156" />
+<!--  156)		Math.floor(Math.random()*x);-->
+				<OGetLex v="Math" />
+				<OGetLex v="Math" />
+				<OCallProperty v="random" nargs="0" />
+				<OToNumber />
+				<OReg v="1" />
+				<OpMul />
+				<OCallProperty v="floor" nargs="1" />
+				<OToInt />
+				<ORet />
+			</function>
+
+		</class>
+		<init name="Main" return="void" ><!-- maxStack="2" nRegs="1" initScope="1" maxScope="3" -->
+			<OThis />
+			<OScope />
+			<ODebugFile v="Main.hx" />
+			<ODebugLine v="5" />
+<!--  5)class Main extends flash.display.MovieClip-->
+			<OGetGlobalScope />
+			<OGetLex v="flash.display.MovieClip" />
+			<OScope />
+			<OGetLex v="flash.display.MovieClip" />
+			<OClassDef v="Main" />
+			<OPopScope />
+			<OInitProp v="Main" />
+			<ORetVoid />
+		</init>
+		<class name="Main" extends="flash.display.MovieClip">
+			<function name="Main" args="" return="void" > <!-- maxStack="10" nRegs="3" initScope="1" maxScope="2" -->
+				<OThis />
+				<OScope />
+				<ODebugFile v="Main.hx" />
+				<ODebugLine v="12" />
+<!--  12)	{-->
+				<OGetLex v="flash.Boot" />
+				<OGetProp v="skip_constructor" />
+				<JFalse jump="jump1" offset="1" />
+				<ORetVoid />
+				<OJump name="jump1"/>
+<!-- jump1 -->
+				<ODebugLine v="13" />
+<!--  13)		super();-->
+				<OThis />
+				<OConstructSuper v="0" />
+				<ODebugLine v="14" />
+<!--  14)		var tf = new TextField();-->
+				<ODebugReg name="tf" r="0" line="14"/>
+				<OFindPropStrict v="flash.text.TextField" />
+				<OConstructProperty v="flash.text.TextField" nargs="0" />
+				<OCast v="flash.text.TextField" />
+				<OSetReg v="1" />
+				<ODebugLine v="15" />
+<!--  15)		tf.border = true;-->
+				<OReg v="1" />
+				<OTrue />
+				<OInitProp v="border" />
+				<ODebugLine v="16" />
+<!--  16)		tf.text = "hello world";-->
+				<OReg v="1" />
+				<OString v="hello world" />
+				<OInitProp v="text" />
+				<ODebugLine v="17" />
+<!--  17)		tf.x=tf.y=100;-->
+				<OReg v="1" />
+				<OReg v="1" />
+				<OSmallInt v="100" />
+				<OToNumber />
+				<ODup />
+				<OSetReg v="2" />
+				<OInitProp v="y" />
+				<OReg v="2" />
+				<OInitProp v="x" />
+				<ODebugLine v="18" />
+<!--  18)		addChild(tf);-->
+				<OFindProp v="addChild" />
+				<OReg v="1" />
+				<OCallPropVoid v="addChild" nargs="1" />
+				<ODebugLine v="19" />
+<!--  19)		trace('test');-->
+				<OGetLex v="haxe.Log" />
+				<OString v="test" />
+				<OString v="fileName" />
+				<OString v="Main.hx" />
+				<OString v="lineNumber" />
+				<OSmallInt v="19" />
+				<OString v="className" />
+				<OString v="Main" />
+				<OString v="methodName" />
+				<OString v="new" />
+				<OObject v="4" />
+				<OCallPropVoid v="trace" nargs="2" />
+				<ODebugLine v="20" />
+<!--  20)		untyped __global__['trace']('test');-->
+				<OFindPropStrict v="trace" />
+				<OString v="test" />
+				<OCallProperty v="trace" nargs="1" />
+				<OPop />
+				<ODebugLine v="21" />
+<!--  21)	}-->
+				<ORetVoid />
+			</function>
+
+			<function name="Main" static="true" args="" return="void" > <!-- maxStack="0" nRegs="1" initScope="1" maxScope="1" -->
+				<ODebugFile v="Main.hx" />
+				<ODebugLine v="5" />
+<!--  5)class Main extends flash.display.MovieClip-->
+				<ORetVoid />
+			</function>
+
+			<function name="main" static="true" final="true" args="" return="void" > <!-- maxStack="2" nRegs="1" initScope="1" maxScope="1" -->
+				<ODebugFile v="Main.hx" />
+				<ODebugLine v="8" />
+<!--  8)	{-->
+				<ODebugLine v="9" />
+<!--  9)		Lib.current.addChild(new Main());-->
+				<OGetLex v="flash.Lib" />
+				<OGetProp v="current" />
+				<OFindPropStrict v="Main" />
+				<OConstructProperty v="Main" nargs="0" />
+				<OCallPropVoid v="addChild" nargs="1" />
+				<ODebugLine v="10" />
+<!--  10)	}-->
+				<ORetVoid />
+			</function>
+
+		</class>
+		<init name="flash.Boot" return="void" ><!-- maxStack="2" nRegs="1" initScope="1" maxScope="3" -->
+			<OThis />
+			<OScope />
+			<ODebugFile v="C:/Program Files/Motion-Twin/haxe/std/flash9/Boot.hx" />
+			<ODebugLine v="27" />
+<!--  27)class Boot extends flash.display.MovieClip, implements Dynamic {-->
+			<OGetGlobalScope />
+			<OGetLex v="flash.display.MovieClip" />
+			<OScope />
+			<OGetLex v="flash.display.MovieClip" />
+			<OClassDef v="flash.Boot" />
+			<OPopScope />
+			<OInitProp v="flash.Boot" />
+			<OGetGlobalScope />
+			<OGetProp v="flash.Boot" />
+			<OFunction v="function__59" />
+			<OInitProp v="init" />
+			<ORetVoid />
+		</init>
+		<class name="flash.Boot" extends="flash.display.MovieClip">
+			<var name="init" type="Function" static="true" />
+			<var name="tf" type="flash.text.TextField" static="true" />
+			<var name="lines" type="Array" static="true" />
+			<var name="lastError" type="Error" static="true" />
+			<var name="skip_constructor" type="Boolean" static="true" />
+			<function name="flash.Boot" args="flash.display.MovieClip" return="void" newBlock="true" defaultParameters="null" locals="cca:Object::false" > <!-- maxStack="3" nRegs="5" initScope="1" maxScope="5" -->
+				<OThis />
+				<OScope />
+				<ONewBlock />
+				<ODup />
+				<OSetReg v="2" />
+				<OScope />
+				<ONull />
+				<OAsAny />
+				<OSetReg v="3" />
+				<ODebugFile v="C:/Program Files/Motion-Twin/haxe/std/flash9/Boot.hx" />
+				<ODebugLine v="36" />
+<!--  36)	public function new(?mc:flash.display.MovieClip) {-->
+				<ODebugReg name="mc" r="0" line="36"/>
+				<OGetLex v="flash.Boot" />
+				<OGetProp v="skip_constructor" />
+				<JFalse jump="jump1" offset="1" />
+				<ORetVoid />
+				<OJump name="jump1"/>
+<!-- jump1 -->
+				<ODebugLine v="37" />
+<!--  37)		super();-->
+				<OThis />
+				<OConstructSuper v="0" />
+				<ODebugLine v="38" />
+<!--  38)		untyped {-->
+				<ODebugLine v="39" />
+<!--  39)			var aproto = Array.prototype;-->
+				<ODebugReg name="aproto" r="2" line="39"/>
+				<OGetLex v="Array" />
+				<OGetProp v="prototype" />
+				<OAsAny />
+				<OSetReg v="3" />
+				<ODebugLine v="40" />
+<!--  40)			aproto.copy = function() {-->
+				<OReg v="3" />
+				<OFunction v="function__42" />
+				<OInitProp v="copy" />
+				<ODebugLine v="43" />
+<!--  43)			aproto.insert = function(i,x) {-->
+				<OReg v="3" />
+				<OFunction v="function__43" />
+				<OInitProp v="insert" />
+				<ODebugLine v="46" />
+<!--  46)			aproto.remove = function(obj) {-->
+				<OReg v="3" />
+				<OFunction v="function__44" />
+				<OInitProp v="remove" />
+				<ODebugLine v="52" />
+<!--  52)			aproto.iterator = function() {-->
+				<OReg v="3" />
+				<OFunction v="function__45" />
+				<OInitProp v="iterator" />
+				<ODebugLine v="64" />
+<!--  64)			aproto.setPropertyIsEnumerable("copy", false);-->
+				<OReg v="3" />
+				<OString v="copy" />
+				<OFalse />
+				<OCallPropVoid v="setPropertyIsEnumerable" nargs="2" />
+				<ODebugLine v="65" />
+<!--  65)			aproto.setPropertyIsEnumerable("insert", false);-->
+				<OReg v="3" />
+				<OString v="insert" />
+				<OFalse />
+				<OCallPropVoid v="setPropertyIsEnumerable" nargs="2" />
+				<ODebugLine v="66" />
+<!--  66)			aproto.setPropertyIsEnumerable("remove", false);-->
+				<OReg v="3" />
+				<OString v="remove" />
+				<OFalse />
+				<OCallPropVoid v="setPropertyIsEnumerable" nargs="2" />
+				<ODebugLine v="67" />
+<!--  67)			aproto.setPropertyIsEnumerable("iterator", false);-->
+				<OReg v="3" />
+				<OString v="iterator" />
+				<OFalse />
+				<OCallPropVoid v="setPropertyIsEnumerable" nargs="2" />
+				<ODebugLine v="68" />
+<!--  68)			var cca = String.prototype.charCodeAt;-->
+				<OGetScope v="1" />
+				<OGetLex v="String" />
+				<OGetProp v="prototype" />
+				<OGetProp v="charCodeAt" />
+				<OAsAny />
+				<OSetSlot v="1" />
+				<ODebugLine v="69" />
+<!--  69)			String.prototype.charCodeAt = function(i) {-->
+				<OGetLex v="String" />
+				<OGetProp v="prototype" />
+				<OFunction v="function__48" />
+				<OInitProp v="charCodeAt" />
+				<ODebugLine v="76" />
+<!--  76)		lines = new Array();-->
+				<OGetLex v="flash.Boot" />
+				<OArray v="0" />
+				<OInitProp v="lines" />
+				<ODebugLine v="77" />
+<!--  77)		var c = if( mc == null ) this else mc;-->
+				<ODebugReg name="c" r="3" line="77"/>
+				<OReg v="1" />
+				<ONull />
+				<OCast v="flash.display.MovieClip" />
+				<JNeq jump="jump2" offset="7" />
+				<OThis />
+				<OCast v="flash.display.MovieClip" />
+				<JAlways jump="jump3" offset="1" />
+				<OJump name="jump2"/>
+<!-- jump2 -->
+				<OReg v="1" />
+				<OJump name="jump3"/>
+<!-- jump3 -->
+				<OCast v="flash.display.MovieClip" />
+				<OSetReg v="4" />
+				<ODebugLine v="78" />
+<!--  78)		flash.Lib.current = c;-->
+				<OGetLex v="flash.Lib" />
+				<OReg v="4" />
+				<OInitProp v="current" />
+				<ODebugLine v="79" />
+<!--  79)		try {-->
+				<ODebugLine v="80" />
+<!--  80)			untyped if( c.stage != null && c.stage.align == "" )-->
+				<OFalse />
+				<OReg v="4" />
+				<OGetProp v="stage" />
+				<ONull />
+				<OCast v="flash.display.Stage" />
+				<JEq jump="jump4" offset="11" />
+				<OPop />
+				<OReg v="4" />
+				<OGetProp v="stage" />
+				<OGetProp v="align" />
+				<OString v="" />
+				<OpEq />
+				<OToBool />
+				<OJump name="jump4"/>
+<!-- jump4 -->
+				<JFalse jump="jump5" offset="15" />
+				<ODebugLine v="81" />
+<!--  81)				c.stage.align = "TOP_LEFT";-->
+				<OReg v="4" />
+				<OGetProp v="stage" />
+				<OString v="TOP_LEFT" />
+				<OInitProp v="align" />
+				<JAlways jump="jump6" offset="6" />
+				<OJump name="jump5"/>
+<!-- jump5 -->
+				<ODebugLine v="80" />
+<!--  80)			untyped if( c.stage != null && c.stage.align == "" )-->
+				<ONull />
+				<OCast v="String" />
+				<OPop />
+				<OJump name="jump6"/>
+<!-- jump6 -->
+				<JAlways jump="jump7" offset="13" />
+				<OThis />
+				<OScope />
+				<OReg v="2" />
+				<OScope />
+				<ODebugReg name="e" r="2" line="80"/>
+				<OAsAny />
+				<OSetReg v="3" />
+				<ODebugLine v="82" />
+<!--  82)		} catch( e : Dynamic ) {-->
+				<OJump name="jump7"/>
+<!-- jump7 -->
+				<ODebugLine v="85" />
+<!--  85)		if( init != null )-->
+				<OGetLex v="flash.Boot" />
+				<OGetProp v="init" />
+				<OCast v="Function" />
+				<ONull />
+				<OCast v="Function" />
+				<JEq jump="jump8" offset="7" />
+				<ODebugLine v="86" />
+<!--  86)			init();-->
+				<OGetLex v="flash.Boot" />
+				<OCallPropVoid v="init" nargs="0" />
+				<OJump name="jump8"/>
+<!-- jump8 -->
+				<ODebugLine v="87" />
+<!--  87)	}-->
+				<ORetVoid />
+			</function>
+
+			<function name="flash.Boot" static="true" args="" return="void" > <!-- maxStack="0" nRegs="1" initScope="1" maxScope="1" -->
+				<ODebugFile v="C:/Program Files/Motion-Twin/haxe/std/flash9/Boot.hx" />
+				<ODebugLine v="27" />
+<!--  27)class Boot extends flash.display.MovieClip, implements Dynamic {-->
+				<ORetVoid />
+			</function>
+
+			<function name="enum_to_string" static="true" final="true" args="Object" return="String" > <!-- maxStack="3" nRegs="2" initScope="1" maxScope="1" -->
+				<ODebugFile v="C:/Program Files/Motion-Twin/haxe/std/flash9/Boot.hx" />
+				<ODebugLine v="89" />
+<!--  89)	public static function enum_to_string( e : { tag : String, params : Array<Dynamic> } ) {-->
+				<ODebugReg name="e" r="0" line="89"/>
+				<ODebugLine v="90" />
+<!--  90)		if( e.params == null )-->
+				<OReg v="1" />
+				<OGetProp v="params" />
+				<OCast v="Array" />
+				<ONull />
+				<OCast v="Array" />
+				<JNeq jump="jump1" offset="8" />
+				<ODebugLine v="91" />
+<!--  91)			return e.tag;-->
+				<OReg v="1" />
+				<OGetProp v="tag" />
+				<OCast v="String" />
+				<ORet />
+				<OJump name="jump1"/>
+<!-- jump1 -->
+				<ODebugLine v="92" />
+<!--  92)		return e.tag+"("+e.params.join(",")+")";-->
+				<OReg v="1" />
+				<OGetProp v="tag" />
+				<OCast v="String" />
+				<OString v="(" />
+				<OpAdd />
+				<OCast v="String" />
+				<OReg v="1" />
+				<OGetProp v="params" />
+				<OCast v="Array" />
+				<OString v="," />
+				<OCallProperty v="http://adobe.com/AS3/2006/builtin.join" nargs="1" />
+				<OCast v="String" />
+				<OpAdd />
+				<OCast v="String" />
+				<OString v=")" />
+				<OpAdd />
+				<OCast v="String" />
+				<ORet />
+			</function>
+
+			<function name="__instanceof" static="true" final="true" args="*,*" return="Boolean" newBlock="true" > <!-- maxStack="2" nRegs="5" initScope="1" maxScope="5" -->
+				<OThis />
+				<OScope />
+				<ONewBlock />
+				<ODup />
+				<OSetReg v="3" />
+				<OScope />
+				<ONull />
+				<OAsAny />
+				<OSetReg v="4" />
+				<ODebugFile v="C:/Program Files/Motion-Twin/haxe/std/flash9/Boot.hx" />
+				<ODebugLine v="95" />
+<!--  95)	public static function __instanceof( v : Dynamic, t : Dynamic ) {-->
+				<ODebugReg name="v" r="0" line="95"/>
+				<ODebugReg name="t" r="1" line="95"/>
+				<ODebugLine v="96" />
+<!--  96)		try {-->
+				<ODebugLine v="97" />
+<!--  97)			if( t == Dynamic )-->
+				<OReg v="2" />
+				<OGetLex v="Dynamic" />
+				<JNeq jump="jump1" offset="4" />
+				<ODebugLine v="98" />
+<!--  98)				return true;-->
+				<OTrue />
+				<ORet />
+				<OJump name="jump1"/>
+<!-- jump1 -->
+				<ODebugLine v="99" />
+<!--  99)			return untyped __is__(v,t);-->
+				<OReg v="1" />
+				<OReg v="2" />
+				<OpIs />
+				<ORet />
+				<JAlways jump="jump2" offset="14" />
+				<OThis />
+				<OScope />
+				<OReg v="3" />
+				<OScope />
+				<ODebugReg name="e" r="3" line="99"/>
+				<OAsAny />
+				<OSetReg v="4" />
+				<ODebugLine v="100" />
+<!--  100)		} catch( e : Dynamic ) {-->
+				<OJump name="jump2"/>
+<!-- jump2 -->
+				<ODebugLine v="102" />
+<!--  102)		return false;-->
+				<OFalse />
+				<ORet />
+			</function>
+
+			<function name="__clear_trace" static="true" final="true" args="" return="void" > <!-- maxStack="2" nRegs="1" initScope="1" maxScope="1" -->
+				<ODebugFile v="C:/Program Files/Motion-Twin/haxe/std/flash9/Boot.hx" />
+				<ODebugLine v="105" />
+<!--  105)	public static function __clear_trace() {-->
+				<ODebugLine v="106" />
+<!--  106)		if( tf == null )-->
+				<OGetLex v="flash.Boot" />
+				<OGetProp v="tf" />
+				<ONull />
+				<OCast v="flash.text.TextField" />
+				<JNeq jump="jump1" offset="3" />
+				<ODebugLine v="107" />
+<!--  107)			return;-->
+				<ORetVoid />
+				<OJump name="jump1"/>
+<!-- jump1 -->
+				<ODebugLine v="108" />
+<!--  108)		flash.Lib.current.removeChild(tf);-->
+				<OGetLex v="flash.Lib" />
+				<OGetProp v="current" />
+				<OGetLex v="flash.Boot" />
+				<OGetProp v="tf" />
+				<OCallPropVoid v="removeChild" nargs="1" />
+				<ODebugLine v="109" />
+<!--  109)		tf = null;-->
+				<OGetLex v="flash.Boot" />
+				<ONull />
+				<OCast v="flash.text.TextField" />
+				<OInitProp v="tf" />
+				<ODebugLine v="110" />
+<!--  110)		lines = new Array();-->
+				<OGetLex v="flash.Boot" />
+				<OArray v="0" />
+				<OInitProp v="lines" />
+				<ODebugLine v="111" />
+<!--  111)	}-->
+				<ORetVoid />
+			</function>
+
+			<function name="__set_trace_color" static="true" final="true" args="uint" return="void" > <!-- maxStack="2" nRegs="2" initScope="1" maxScope="1" -->
+				<ODebugFile v="C:/Program Files/Motion-Twin/haxe/std/flash9/Boot.hx" />
+				<ODebugLine v="113" />
+<!--  113)	public static function __set_trace_color(rgb) {-->
+				<ODebugReg name="rgb" r="0" line="113"/>
+				<ODebugLine v="114" />
+<!--  114)		getTrace().textColor = rgb;-->
+				<OGetLex v="flash.Boot" />
+				<OCallProperty v="getTrace" nargs="0" />
+				<OCast v="flash.text.TextField" />
+				<OReg v="1" />
+				<OInitProp v="textColor" />
+				<ODebugLine v="115" />
+<!--  115)	}-->
+				<ORetVoid />
+			</function>
+
+			<function name="getTrace" static="true" final="true" args="" return="flash.text.TextField" > <!-- maxStack="3" nRegs="3" initScope="1" maxScope="1" -->
+				<ONull />
+				<OAsType v="flash.text.TextFormat" />
+				<OSetReg v="2" />
+				<ODebugFile v="C:/Program Files/Motion-Twin/haxe/std/flash9/Boot.hx" />
+				<ODebugLine v="117" />
+<!--  117)	public static function getTrace() {-->
+				<ODebugLine v="118" />
+<!--  118)		var mc = flash.Lib.current;-->
+				<ODebugReg name="mc" r="0" line="118"/>
+				<OGetLex v="flash.Lib" />
+				<OGetProp v="current" />
+				<OCast v="flash.display.MovieClip" />
+				<OSetReg v="1" />
+				<ODebugLine v="119" />
+<!--  119)		if( tf == null ) {-->
+				<OGetLex v="flash.Boot" />
+				<OGetProp v="tf" />
+				<ONull />
+				<OCast v="flash.text.TextField" />
+				<JNeq jump="jump1" offset="107" />
+				<ODebugLine v="120" />
+<!--  120)			tf = new flash.text.TextField();-->
+				<OGetLex v="flash.Boot" />
+				<OFindPropStrict v="flash.text.TextField" />
+				<OConstructProperty v="flash.text.TextField" nargs="0" />
+				<OInitProp v="tf" />
+				<ODebugLine v="121" />
+<!--  121)			var format = tf.getTextFormat();-->
+				<ODebugReg name="format" r="1" line="121"/>
+				<OGetLex v="flash.Boot" />
+				<OGetProp v="tf" />
+				<OCallProperty v="getTextFormat" nargs="0" />
+				<OCast v="flash.text.TextFormat" />
+				<OCast v="flash.text.TextFormat" />
+				<OSetReg v="2" />
+				<ODebugLine v="122" />
+<!--  122)			format.font = "_sans";-->
+				<OReg v="2" />
+				<OString v="_sans" />
+				<OInitProp v="font" />
+				<ODebugLine v="123" />
+<!--  123)			tf.defaultTextFormat = format;-->
+				<OGetLex v="flash.Boot" />
+				<OGetProp v="tf" />
+				<OReg v="2" />
+				<OInitProp v="defaultTextFormat" />
+				<ODebugLine v="124" />
+<!--  124)			tf.selectable = false;-->
+				<OGetLex v="flash.Boot" />
+				<OGetProp v="tf" />
+				<OFalse />
+				<OInitProp v="selectable" />
+				<ODebugLine v="125" />
+<!--  125)			tf.width = if( mc.stage == null ) 800 else mc.stage.stageWidth;-->
+				<OGetLex v="flash.Boot" />
+				<OGetProp v="tf" />
+				<OReg v="1" />
+				<OGetProp v="stage" />
+				<ONull />
+				<OCast v="flash.display.Stage" />
+				<JNeq jump="jump2" offset="6" />
+				<OIntRef v="800" />
+				<JAlways jump="jump3" offset="5" />
+				<OJump name="jump2"/>
+<!-- jump2 -->
+				<OReg v="1" />
+				<OGetProp v="stage" />
+				<OGetProp v="stageWidth" />
+				<OJump name="jump3"/>
+<!-- jump3 -->
+				<OInitProp v="width" />
+				<ODebugLine v="126" />
+<!--  126)			tf.autoSize = flash.text.TextFieldAutoSize.LEFT;-->
+				<OGetLex v="flash.Boot" />
+				<OGetProp v="tf" />
+				<OGetLex v="flash.text.TextFieldAutoSize" />
+				<OGetProp v="LEFT" />
+				<OInitProp v="autoSize" />
+				<ODebugLine v="127" />
+<!--  127)			tf.mouseEnabled = false;-->
+				<OGetLex v="flash.Boot" />
+				<OGetProp v="tf" />
+				<OFalse />
+				<OInitProp v="mouseEnabled" />
+				<OJump name="jump1"/>
+<!-- jump1 -->
+				<ODebugLine v="129" />
+<!--  129)		mc.addChild(tf); // on top-->
+				<OReg v="1" />
+				<OGetLex v="flash.Boot" />
+				<OGetProp v="tf" />
+				<OCallPropVoid v="addChild" nargs="1" />
+				<ODebugLine v="130" />
+<!--  130)		return tf;-->
+				<OGetLex v="flash.Boot" />
+				<OGetProp v="tf" />
+				<ORet />
+			</function>
+
+			<function name="__trace" static="true" final="true" args="*,Object" return="void" > <!-- maxStack="6" nRegs="6" initScope="1" maxScope="1" -->
+				<ODebugFile v="C:/Program Files/Motion-Twin/haxe/std/flash9/Boot.hx" />
+				<ODebugLine v="133" />
+<!--  133)	public static function __trace( v : Dynamic, pos : haxe.PosInfos ) {-->
+				<ODebugReg name="v" r="0" line="133"/>
+				<ODebugReg name="pos" r="1" line="133"/>
+				<ODebugLine v="134" />
+<!--  134)		var tf = getTrace();-->
+				<ODebugReg name="tf" r="2" line="134"/>
+				<OGetLex v="flash.Boot" />
+				<OCallProperty v="getTrace" nargs="0" />
+				<OCast v="flash.text.TextField" />
+				<OCast v="flash.text.TextField" />
+				<OSetReg v="3" />
+				<ODebugLine v="135" />
+<!--  135)		var pstr = if( pos == null ) "(null)" else pos.fileName+":"+pos.lineNumber;-->
+				<ODebugReg name="pstr" r="3" line="135"/>
+				<OReg v="2" />
+				<ONull />
+				<OAsAny />
+				<JNeq jump="jump1" offset="7" />
+				<OString v="(null)" />
+				<JAlways jump="jump2" offset="18" />
+				<OJump name="jump1"/>
+<!-- jump1 -->
+				<OReg v="2" />
+				<OGetProp v="fileName" />
+				<OCast v="String" />
+				<OString v=":" />
+				<OpAdd />
+				<OCast v="String" />
+				<OReg v="2" />
+				<OGetProp v="lineNumber" />
+				<OToInt />
+				<OpAdd />
+				<OCast v="String" />
+				<OJump name="jump2"/>
+<!-- jump2 -->
+				<OCast v="String" />
+				<OSetReg v="4" />
+				<ODebugLine v="136" />
+<!--  136)		lines = lines.concat((pstr +": "+__string_rec(v,"")).split("\n"));-->
+				<OGetLex v="flash.Boot" />
+				<OGetLex v="flash.Boot" />
+				<OGetProp v="lines" />
+				<OReg v="4" />
+				<OString v=": " />
+				<OpAdd />
+				<OCast v="String" />
+				<OGetLex v="flash.Boot" />
+				<OReg v="1" />
+				<OString v="" />
+				<OCallProperty v="__string_rec" nargs="2" />
+				<OCast v="String" />
+				<OpAdd />
+				<OCast v="String" />
+				<OString v="
+" />
+				<OCallProperty v="http://adobe.com/AS3/2006/builtin.split" nargs="1" />
+				<OCast v="Array" />
+				<OCallProperty v="http://adobe.com/AS3/2006/builtin.concat" nargs="1" />
+				<OCast v="Array" />
+				<OInitProp v="lines" />
+				<ODebugLine v="137" />
+<!--  137)		tf.text = lines.join("\n");-->
+				<OReg v="3" />
+				<OGetLex v="flash.Boot" />
+				<OGetProp v="lines" />
+				<OString v="
+" />
+				<OCallProperty v="http://adobe.com/AS3/2006/builtin.join" nargs="1" />
+				<OCast v="String" />
+				<OInitProp v="text" />
+				<ODebugLine v="138" />
+<!--  138)		var stage = flash.Lib.current.stage;-->
+				<ODebugReg name="stage" r="4" line="138"/>
+				<OGetLex v="flash.Lib" />
+				<OGetProp v="current" />
+				<OGetProp v="stage" />
+				<OCast v="flash.display.Stage" />
+				<OSetReg v="5" />
+				<ODebugLine v="139" />
+<!--  139)		if( stage == null )-->
+				<OReg v="5" />
+				<ONull />
+				<OCast v="flash.display.Stage" />
+				<JNeq jump="jump3" offset="4" />
+				<ODebugLine v="140" />
+<!--  140)			return;-->
+				<ORetVoid />
+				<OJump name="jump3"/>
+<!-- jump3 -->
+				<ODebugLine v="141" />
+<!--  141)		while( lines.length > 1 && tf.height > stage.stageHeight ) {-->
+				<JAlways jump="jump4" offset="29" />
+				<OLabel name="label1"/>
+<!-- label1 -->
+				<ODebugLine v="142" />
+<!--  142)			lines.shift();-->
+				<OGetLex v="flash.Boot" />
+				<OGetProp v="lines" />
+				<OCallPropVoid v="http://adobe.com/AS3/2006/builtin.shift" nargs="0" />
+				<ODebugLine v="143" />
+<!--  143)			tf.text = lines.join("\n");-->
+				<OReg v="3" />
+				<OGetLex v="flash.Boot" />
+				<OGetProp v="lines" />
+				<OString v="
+" />
+				<OCallProperty v="http://adobe.com/AS3/2006/builtin.join" nargs="1" />
+				<OCast v="String" />
+				<OInitProp v="text" />
+				<OJump name="jump4"/>
+<!-- jump4 -->
+				<ODebugLine v="141" />
+<!--  141)		while( lines.length > 1 && tf.height > stage.stageHeight ) {-->
+				<OFalse />
+				<OGetLex v="flash.Boot" />
+				<OGetProp v="lines" />
+				<OGetProp v="length" />
+				<OToInt />
+				<OSmallInt v="1" />
+				<JNotGt jump="jump5" offset="10" />
+				<OPop />
+				<OReg v="3" />
+				<OGetProp v="height" />
+				<OReg v="5" />
+				<OGetProp v="stageHeight" />
+				<OpGt />
+				<OToBool />
+				<OJump name="jump5"/>
+<!-- jump5 -->
+				<JTrue label="label1" offset="-60" />
+				<ODebugLine v="145" />
+<!--  145)	}-->
+				<ORetVoid />
+			</function>
+
+			<function name="__string_rec" static="true" final="true" args="*,String" return="String" > <!-- maxStack="5" nRegs="14" initScope="1" maxScope="1" -->
+				<ONull />
+				<OAsType v="String" />
+				<OSetReg v="4" />
+				<ONull />
+				<OAsType v="Array" />
+				<OSetReg v="5" />
+				<ONull />
+				<OAsType v="Array" />
+				<OSetReg v="6" />
+				<OSmallInt v="0" />
+				<OSetReg v="7" />
+				<ONull />
+				<OAsAny />
+				<OSetReg v="8" />
+				<ONull />
+				<OAsType v="String" />
+				<OSetReg v="9" />
+				<OFalse />
+				<OSetReg v="10" />
+				<OSmallInt v="0" />
+				<OSetReg v="11" />
+				<OSmallInt v="0" />
+				<OSetReg v="12" />
+				<ONull />
+				<OAsType v="String" />
+				<OSetReg v="13" />
+				<ODebugFile v="C:/Program Files/Motion-Twin/haxe/std/flash9/Boot.hx" />
+				<ODebugLine v="147" />
+<!--  147)	public static function __string_rec( v : Dynamic, str : String ) {-->
+				<ODebugReg name="v" r="0" line="147"/>
+				<ODebugReg name="str" r="1" line="147"/>
+				<ODebugLine v="148" />
+<!--  148)		var cname = untyped __global__["flash.utils.getQualifiedClassName"](v);-->
+				<ODebugReg name="cname" r="2" line="148"/>
+				<OFindPropStrict v="flash.utils.getQualifiedClassName" />
+				<OReg v="1" />
+				<OCallProperty v="flash.utils.getQualifiedClassName" nargs="1" />
+				<OCast v="String" />
+				<OSetReg v="3" />
+				<ODebugLine v="149" />
+<!--  149)		switch( cname ) {-->
+				<OReg v="3" />
+				<OCast v="String" />
+				<OSetReg v="4" />
+				<OReg v="4" />
+				<ODebugLine v="150" />
+<!--  150)		case "Object":-->
+				<OString v="Object" />
+				<JNeq jump="jump1" offset="291" />
+				<ODebugLine v="151" />
+<!--  151)			var k : Array<String> = untyped __keys__(v);-->
+				<ODebugReg name="k" r="4" line="151"/>
+				<OSmallInt v="0" />
+				<OToInt />
+				<OSetReg v="7" />
+				<OArray v="0" />
+				<OCast v="Array" />
+				<OSetReg v="6" />
+				<OReg v="1" />
+				<OAsAny />
+				<OSetReg v="8" />
+				<JAlways jump="jump2" offset="11" />
+				<OLabel name="label1"/>
+<!-- label1 -->
+				<OReg v="6" />
+				<OReg v="8" />
+				<OReg v="7" />
+				<OForIn />
+				<OCallPropVoid v="http://adobe.com/AS3/2006/builtin.push" nargs="1" />
+				<OJump name="jump2"/>
+<!-- jump2 -->
+				<ONext v1="8" v2="7" />
+				<JTrue label="label1" offset="-18" />
+				<OReg v="6" />
+				<OCast v="Array" />
+				<OSetReg v="5" />
+				<ODebugLine v="152" />
+<!--  152)			var s = "{";-->
+				<ODebugReg name="s" r="8" line="152"/>
+				<OString v="{" />
+				<OCast v="String" />
+				<OSetReg v="9" />
+				<ODebugLine v="153" />
+<!--  153)			var first = true;-->
+				<ODebugReg name="first" r="9" line="153"/>
+				<OTrue />
+				<OToBool />
+				<OSetReg v="10" />
+				<ODebugLine v="154" />
+<!--  154)			for( i in 0...k.length ) {-->
+				<ODebugReg name="_g1" r="6" line="154"/>
+				<OSmallInt v="0" />
+				<OToInt />
+				<OSetReg v="7" />
+				<ODebugReg name="_g" r="10" line="154"/>
+				<OReg v="5" />
+				<OGetProp v="length" />
+				<OToInt />
+				<OToInt />
+				<OSetReg v="11" />
+				<JAlways jump="jump4" offset="114" />
+				<OLabel name="label2"/>
+<!-- label2 -->
+				<ODebugReg name="i" r="11" line="154"/>
+				<OReg v="7" />
+				<OIncrIReg v="7" />
+				<OToInt />
+				<OSetReg v="12" />
+				<ODebugLine v="155" />
+<!--  155)				var key = k[i];-->
+				<ODebugReg name="key" r="12" line="155"/>
+				<OReg v="5" />
+				<OReg v="12" />
+				<OGetProp v="#arrayProp" />
+				<OCast v="String" />
+				<OCast v="String" />
+				<OSetReg v="13" />
+				<ODebugLine v="156" />
+<!--  156)				if( first )-->
+				<OReg v="10" />
+				<JFalse jump="jump5" offset="11" />
+				<ODebugLine v="157" />
+<!--  157)					first = false;-->
+				<OFalse />
+				<OToBool />
+				<OSetReg v="10" />
+				<JAlways jump="jump6" offset="14" />
+				<OJump name="jump5"/>
+<!-- jump5 -->
+				<ODebugLine v="159" />
+<!--  159)					s += ",";-->
+				<OReg v="9" />
+				<OString v="," />
+				<OpAdd />
+				<OCast v="String" />
+				<OCast v="String" />
+				<OSetReg v="9" />
+				<OJump name="jump6"/>
+<!-- jump6 -->
+				<ODebugLine v="160" />
+<!--  160)				s += " "+key+" : "+__string_rec(v[untyped key],str);-->
+				<OReg v="9" />
+				<OString v=" " />
+				<OReg v="13" />
+				<OpAdd />
+				<OCast v="String" />
+				<OString v=" : " />
+				<OpAdd />
+				<OCast v="String" />
+				<OGetLex v="flash.Boot" />
+				<OReg v="1" />
+				<OReg v="13" />
+				<OGetProp v="#arrayProp" />
+				<OAsAny />
+				<OReg v="2" />
+				<OCallProperty v="__string_rec" nargs="2" />
+				<OCast v="String" />
+				<OpAdd />
+				<OCast v="String" />
+				<OpAdd />
+				<OCast v="String" />
+				<OCast v="String" />
+				<OSetReg v="9" />
+				<OJump name="jump4"/>
+<!-- jump4 -->
+				<ODebugLine v="154" />
+<!--  154)			for( i in 0...k.length ) {-->
+				<OReg v="7" />
+				<OReg v="11" />
+				<JLt label="label2" offset="-125" />
+				<ODebugLine v="162" />
+<!--  162)			if( !first )-->
+				<OReg v="10" />
+				<OpNot />
+				<JFalse jump="jump8" offset="15" />
+				<ODebugLine v="163" />
+<!--  163)				s += " ";-->
+				<OReg v="9" />
+				<OString v=" " />
+				<OpAdd />
+				<OCast v="String" />
+				<OCast v="String" />
+				<OSetReg v="9" />
+				<OJump name="jump8"/>
+<!-- jump8 -->
+				<ODebugLine v="164" />
+<!--  164)			s += "}";-->
+				<OReg v="9" />
+				<OString v="}" />
+				<OpAdd />
+				<OCast v="String" />
+				<OCast v="String" />
+				<OSetReg v="9" />
+				<ODebugLine v="165" />
+<!--  165)			return s;-->
+				<OReg v="9" />
+				<ORet />
+				<JAlways jump="jump9" offset="234" />
+				<OJump name="jump1"/>
+<!-- jump1 -->
+				<OReg v="4" />
+				<ODebugLine v="166" />
+<!--  166)		case "Array":-->
+				<OString v="Array" />
+				<JNeq jump="jump10" offset="191" />
+				<ODebugLine v="167" />
+<!--  167)			var s = "[";-->
+				<ODebugReg name="s" r="8" line="167"/>
+				<OString v="[" />
+				<OCast v="String" />
+				<OSetReg v="9" />
+				<ODebugLine v="168" />
+<!--  168)			var i;-->
+				<ODebugReg name="i" r="7" line="168"/>
+				<ODebugLine v="169" />
+<!--  169)			var first = true;-->
+				<ODebugReg name="first" r="9" line="169"/>
+				<OTrue />
+				<OToBool />
+				<OSetReg v="10" />
+				<ODebugLine v="170" />
+<!--  170)			var a : Array<Dynamic> = v;-->
+				<ODebugReg name="a" r="4" line="170"/>
+				<OReg v="1" />
+				<OCast v="Array" />
+				<OSetReg v="5" />
+				<ODebugLine v="171" />
+<!--  171)			for( i in 0...a.length ) {-->
+				<ODebugReg name="_g1" r="6" line="171"/>
+				<OSmallInt v="0" />
+				<OToInt />
+				<OSetReg v="7" />
+				<ODebugReg name="_g" r="10" line="171"/>
+				<OReg v="5" />
+				<OGetProp v="length" />
+				<OToInt />
+				<OToInt />
+				<OSetReg v="11" />
+				<JAlways jump="jump11" offset="76" />
+				<OLabel name="label3"/>
+<!-- label3 -->
+				<ODebugReg name="i1" r="11" line="171"/>
+				<OReg v="7" />
+				<OIncrIReg v="7" />
+				<OToInt />
+				<OSetReg v="12" />
+				<ODebugLine v="172" />
+<!--  172)				if( first )-->
+				<OReg v="10" />
+				<JFalse jump="jump12" offset="11" />
+				<ODebugLine v="173" />
+<!--  173)					first = false;-->
+				<OFalse />
+				<OToBool />
+				<OSetReg v="10" />
+				<JAlways jump="jump13" offset="14" />
+				<OJump name="jump12"/>
+<!-- jump12 -->
+				<ODebugLine v="175" />
+<!--  175)					s += ",";-->
+				<OReg v="9" />
+				<OString v="," />
+				<OpAdd />
+				<OCast v="String" />
+				<OCast v="String" />
+				<OSetReg v="9" />
+				<OJump name="jump13"/>
+<!-- jump13 -->
+				<ODebugLine v="176" />
+<!--  176)				s += __string_rec(a[i],str);-->
+				<OReg v="9" />
+				<OGetLex v="flash.Boot" />
+				<OReg v="5" />
+				<OReg v="12" />
+				<OGetProp v="#arrayProp" />
+				<OAsAny />
+				<OReg v="2" />
+				<OCallProperty v="__string_rec" nargs="2" />
+				<OCast v="String" />
+				<OpAdd />
+				<OCast v="String" />
+				<OCast v="String" />
+				<OSetReg v="9" />
+				<OJump name="jump11"/>
+<!-- jump11 -->
+				<ODebugLine v="171" />
+<!--  171)			for( i in 0...a.length ) {-->
+				<OReg v="7" />
+				<OReg v="11" />
+				<JLt label="label3" offset="-87" />
+				<ODebugLine v="178" />
+<!--  178)			return s+"]";-->
+				<OReg v="9" />
+				<OString v="]" />
+				<OpAdd />
+				<OCast v="String" />
+				<ORet />
+				<JAlways jump="jump15" offset="32" />
+				<OJump name="jump10"/>
+<!-- jump10 -->
+				<ODebugLine v="179" />
+<!--  179)		default:-->
+				<ODebugLine v="180" />
+<!--  180)			switch( untyped __typeof__(v) ) {-->
+				<OReg v="1" />
+				<OTypeof />
+				<OCast v="String" />
+				<OSetReg v="4" />
+				<OReg v="4" />
+				<ODebugLine v="181" />
+<!--  181)			case "function": return "<function>";-->
+				<OString v="function" />
+				<JNeq jump="jump16" offset="8" />
+				<OString v="&lt;function>" />
+				<ORet />
+				<JAlways jump="jump17" offset="0" />
+				<OJump name="jump9"/>
+<!-- jump9 -->
+				<OJump name="jump15"/>
+<!-- jump15 -->
+				<OJump name="jump16"/>
+<!-- jump16 -->
+				<OJump name="jump17"/>
+<!-- jump17 -->
+				<ODebugLine v="184" />
+<!--  184)		return new String(v);-->
+				<OFindPropStrict v="String" />
+				<OReg v="1" />
+				<OConstructProperty v="String" nargs="1" />
+				<ORet />
+			</function>
+
+			<function name="__unprotect__" static="true" final="true" args="String" return="String" > <!-- maxStack="1" nRegs="2" initScope="1" maxScope="1" -->
+				<ODebugFile v="C:/Program Files/Motion-Twin/haxe/std/flash9/Boot.hx" />
+				<ODebugLine v="187" />
+<!--  187)	static function __unprotect__( s : String ) {-->
+				<ODebugReg name="s" r="0" line="187"/>
+				<ODebugLine v="188" />
+<!--  188)		return s;-->
+				<OReg v="1" />
+				<ORet />
+			</function>
+
+		</class>
+		<init name="@Main" return="void" ><!-- maxStack="2" nRegs="1" initScope="1" maxScope="3" -->
+			<OThis />
+			<OScope />
+			<ODebugFile v="" />
+			<ODebugLine v="1" />
+			<OGetGlobalScope />
+			<OGetLex v="Object" />
+			<OScope />
+			<OGetLex v="Object" />
+			<OClassDef v="@Main" />
+			<OPopScope />
+			<OInitProp v="@Main" />
+			<ORetVoid />
+		</init>
+		<class name="@Main" extends="Object" sealed="true">
+			<var name="init" type="Object" static="true" />
+			<function name="@Main" args="" return="void" > <!-- maxStack="1" nRegs="1" initScope="1" maxScope="2" -->
+				<OThis />
+				<OScope />
+				<ODebugFile v="" />
+				<ODebugLine v="1" />
+				<ORetVoid />
+			</function>
+
+			<function name="@Main" static="true" args="" return="void" > <!-- maxStack="0" nRegs="1" initScope="1" maxScope="1" -->
+				<ODebugFile v="" />
+				<ODebugLine v="1" />
+				<ORetVoid />
+			</function>
+
+		</class>
+		<function f="function__47" name="function__47" kind="KFunction" args="" return="*" > <!-- maxStack="4" nRegs="2" initScope="1" maxScope="1" -->
+			<ODebugFile v="C:/Program Files/Motion-Twin/haxe/std/flash9/Boot.hx" />
+			<ODebugLine v="59" />
+<!--  59)					next : function() {-->
+			<ODebugLine v="60" />
+<!--  60)						return arr[cur++];-->
+			<OGetLex v="arr" />
+			<OFindProp v="cur" />
+			<OGetLex v="cur" />
+			<ODup />
+			<OToInt />
+			<OSetReg v="1" />
+			<OpIIncr />
+			<OSetProp v="cur" />
+			<OReg v="1" />
+			<OGetProp v="#arrayProp" />
+			<OAsAny />
+			<ORet />
+		</function>
+		<function f="function__46" name="function__46" kind="KFunction" args="" return="Boolean" > <!-- maxStack="2" nRegs="1" initScope="1" maxScope="1" -->
+			<ODebugFile v="C:/Program Files/Motion-Twin/haxe/std/flash9/Boot.hx" />
+			<ODebugLine v="56" />
+<!--  56)					hasNext : function() {-->
+			<ODebugLine v="57" />
+<!--  57)						return cur < arr.length;-->
+			<OGetLex v="cur" />
+			<OGetLex v="arr" />
+			<OGetProp v="length" />
+			<OToInt />
+			<OpLt />
+			<ORet />
+		</function>
+		<function f="function__61" name="function__61" kind="KFunction" args="Number" return="Boolean" > <!-- maxStack="2" nRegs="2" initScope="1" maxScope="1" -->
+			<ODebugFile v="C:/Program Files/Motion-Twin/haxe/std/Math.hx" />
+			<ODebugLine v="85" />
+<!--  85)		Math.isNaN = function(i) {-->
+			<ODebugReg name="i" r="0" line="85"/>
+			<ODebugLine v="86" />
+<!--  86)			return-->
+			<ODebugLine v="88" />
+<!--  88)			__global__["isNaN"](i);-->
+			<OFindPropStrict v="isNaN" />
+			<OReg v="1" />
+			<OCallProperty v="isNaN" nargs="1" />
+			<ORet />
+		</function>
+		<function f="function__60" name="function__60" kind="KFunction" args="Number" return="Boolean" > <!-- maxStack="2" nRegs="2" initScope="1" maxScope="1" -->
+			<ODebugFile v="C:/Program Files/Motion-Twin/haxe/std/Math.hx" />
+			<ODebugLine v="73" />
+<!--  73)		Math.isFinite = function(i) {-->
+			<ODebugReg name="i" r="0" line="73"/>
+			<ODebugLine v="74" />
+<!--  74)			return-->
+			<ODebugLine v="76" />
+<!--  76)			__global__["isFinite"](i);-->
+			<OFindPropStrict v="isFinite" />
+			<OReg v="1" />
+			<OCallProperty v="isFinite" nargs="1" />
+			<ORet />
+		</function>
+		<function f="function__48" name="function__48" kind="KFunction" args="*" return="*" > <!-- maxStack="3" nRegs="3" initScope="1" maxScope="2" -->
+			<OThis />
+			<OScope />
+			<ODebugFile v="C:/Program Files/Motion-Twin/haxe/std/flash9/Boot.hx" />
+			<ODebugLine v="69" />
+<!--  69)			String.prototype.charCodeAt = function(i) {-->
+			<ODebugReg name="i" r="0" line="69"/>
+			<ODebugLine v="70" />
+<!--  70)				var x = cca.call(this,i);-->
+			<ODebugReg name="x" r="1" line="70"/>
+			<OGetLex v="cca" />
+			<OThis />
+			<OReg v="1" />
+			<OCallProperty v="call" nargs="2" />
+			<OAsAny />
+			<OAsAny />
+			<OSetReg v="2" />
+			<ODebugLine v="71" />
+<!--  71)				if( __global__["isNaN"](x) )-->
+			<OFindPropStrict v="isNaN" />
+			<OReg v="2" />
+			<OCallProperty v="isNaN" nargs="1" />
+			<JFalse jump="jump1" offset="5" />
+			<ODebugLine v="72" />
+<!--  72)					return null;-->
+			<ONull />
+			<OAsAny />
+			<ORet />
+			<OJump name="jump1"/>
+<!-- jump1 -->
+			<ODebugLine v="73" />
+<!--  73)				return x;-->
+			<OReg v="2" />
+			<ORet />
+		</function>
+		<function f="function__45" name="function__45" kind="KFunction" args="" return="Object" newBlock="true" locals="arr:Array::false,cur:int::false" > <!-- maxStack="4" nRegs="1" initScope="1" maxScope="3" -->
+			<OThis />
+			<OScope />
+			<ONewBlock />
+			<OScope />
+			<ODebugFile v="C:/Program Files/Motion-Twin/haxe/std/flash9/Boot.hx" />
+			<ODebugLine v="52" />
+<!--  52)			aproto.iterator = function() {-->
+			<ODebugLine v="53" />
+<!--  53)				var cur = 0;-->
+			<OGetScope v="1" />
+			<OSmallInt v="0" />
+			<OSetSlot v="1" />
+			<ODebugLine v="54" />
+<!--  54)				var arr : Array<Dynamic> = this;-->
+			<OGetScope v="1" />
+			<OThis />
+			<OSetSlot v="2" />
+			<ODebugLine v="55" />
+<!--  55)				return {-->
+			<OString v="hasNext" />
+			<ODebugLine v="56" />
+<!--  56)					hasNext : function() {-->
+			<OFunction v="function__46" />
+			<OString v="next" />
+			<ODebugLine v="59" />
+<!--  59)					next : function() {-->
+			<OFunction v="function__47" />
+			<OObject v="2" />
+			<ORet />
+		</function>
+		<function f="function__44" name="function__44" kind="KFunction" args="*" return="Boolean" > <!-- maxStack="3" nRegs="3" initScope="1" maxScope="2" -->
+			<OThis />
+			<OScope />
+			<ODebugFile v="C:/Program Files/Motion-Twin/haxe/std/flash9/Boot.hx" />
+			<ODebugLine v="46" />
+<!--  46)			aproto.remove = function(obj) {-->
+			<ODebugReg name="obj" r="0" line="46"/>
+			<ODebugLine v="47" />
+<!--  47)				var idx = this.indexOf(obj);-->
+			<ODebugReg name="idx" r="1" line="47"/>
+			<OThis />
+			<OReg v="1" />
+			<OCallProperty v="indexOf" nargs="1" />
+			<OAsAny />
+			<OToInt />
+			<OSetReg v="2" />
+			<ODebugLine v="48" />
+<!--  48)				if( idx == -1 ) return false;-->
+			<OReg v="2" />
+			<OSmallInt v="-1" />
+			<JNeq jump="jump1" offset="2" />
+			<OFalse />
+			<ORet />
+			<OJump name="jump1"/>
+<!-- jump1 -->
+			<ODebugLine v="49" />
+<!--  49)				this.splice(idx,1);-->
+			<OThis />
+			<OReg v="2" />
+			<OSmallInt v="1" />
+			<OCallPropVoid v="splice" nargs="2" />
+			<ODebugLine v="50" />
+<!--  50)				return true;-->
+			<OTrue />
+			<ORet />
+		</function>
+		<function f="function__43" name="function__43" kind="KFunction" args="*,*" return="void" > <!-- maxStack="4" nRegs="3" initScope="1" maxScope="2" -->
+			<OThis />
+			<OScope />
+			<ODebugFile v="C:/Program Files/Motion-Twin/haxe/std/flash9/Boot.hx" />
+			<ODebugLine v="43" />
+<!--  43)			aproto.insert = function(i,x) {-->
+			<ODebugReg name="i" r="0" line="43"/>
+			<ODebugReg name="x" r="1" line="43"/>
+			<ODebugLine v="44" />
+<!--  44)				this.splice(i,0,x);-->
+			<OThis />
+			<OReg v="1" />
+			<OSmallInt v="0" />
+			<OReg v="2" />
+			<OCallPropVoid v="splice" nargs="3" />
+			<ODebugLine v="45" />
+<!--  45)			};-->
+			<ORetVoid />
+		</function>
+		<function f="function__42" name="function__42" kind="KFunction" args="" return="*" > <!-- maxStack="1" nRegs="1" initScope="1" maxScope="2" -->
+			<OThis />
+			<OScope />
+			<ODebugFile v="C:/Program Files/Motion-Twin/haxe/std/flash9/Boot.hx" />
+			<ODebugLine v="40" />
+<!--  40)			aproto.copy = function() {-->
+			<ODebugLine v="41" />
+<!--  41)				return this.slice();-->
+			<OThis />
+			<OCallProperty v="slice" nargs="0" />
+			<OAsAny />
+			<ORet />
+		</function>
+		<function f="function__59" name="function__59" kind="KFunction" args="" return="void" > <!-- maxStack="2" nRegs="1" initScope="1" maxScope="1" -->
+			<ODebugFile v="" />
+			<ODebugLine v="1" />
+			<ODebugFile v="C:/Program Files/Motion-Twin/haxe/std/Math.hx" />
+			<ODebugLine v="59" />
+<!--  59)	private static function __init__() : Void untyped {-->
+			<ODebugLine v="65" />
+<!--  65)		NaN = __global__["Number"].NaN;-->
+			<OGetLex v="Math" />
+			<OGetLex v="Number" />
+			<OAsAny />
+			<OGetProp v="NaN" />
+			<OToNumber />
+			<OInitProp v="NaN" />
+			<ODebugLine v="66" />
+<!--  66)		NEGATIVE_INFINITY = __global__["Number"].NEGATIVE_INFINITY;-->
+			<OGetLex v="Math" />
+			<OGetLex v="Number" />
+			<OAsAny />
+			<OGetProp v="NEGATIVE_INFINITY" />
+			<OToNumber />
+			<OInitProp v="NEGATIVE_INFINITY" />
+			<ODebugLine v="67" />
+<!--  67)		POSITIVE_INFINITY = __global__["Number"].POSITIVE_INFINITY;-->
+			<OGetLex v="Math" />
+			<OGetLex v="Number" />
+			<OAsAny />
+			<OGetProp v="POSITIVE_INFINITY" />
+			<OToNumber />
+			<OInitProp v="POSITIVE_INFINITY" />
+			<ODebugLine v="73" />
+<!--  73)		Math.isFinite = function(i) {-->
+			<OGetLex v="Math" />
+			<OFunction v="function__60" />
+			<OInitProp v="isFinite" />
+			<ODebugLine v="85" />
+<!--  85)		Math.isNaN = function(i) {-->
+			<OGetLex v="Math" />
+			<OFunction v="function__61" />
+			<OInitProp v="isNaN" />
+			<ODebugFile v="C:/Program Files/Motion-Twin/haxe/std/Std.hx" />
+			<ODebugLine v="175" />
+<!--  175)	static function __init__() untyped {-->
+			<ONull />
+			<OAsAny />
+			<OPop />
+			<OGetLex v="flash.Boot" />
+			<ODebugFile v="C:/Program Files/Motion-Twin/haxe/std/flash9/Boot.hx" />
+			<ODebugLine v="34" />
+<!--  34)	public static var skip_constructor = false;-->
+			<OFalse />
+			<OInitProp v="skip_constructor" />
+			<OGetLex v="@Main" />
+			<ODebugFile v="" />
+			<ODebugLine v="1" />
+			<OGetLex v="Main" />
+			<OCallProperty v="main" nargs="0" />
+			<OCast v="Object" />
+			<OInitProp v="init" />
+			<ORetVoid />
+		</function>
+		<function f="function__27" name="function__27" kind="KFunction" args="int" return="void" > <!-- maxStack="2" nRegs="2" initScope="1" maxScope="1" -->
+			<ODebugFile v="C:/Program Files/Motion-Twin/haxe/std/haxe/Log.hx" />
+			<ODebugLine v="52" />
+<!--  52)	public static dynamic function setColor( rgb : Int ) {-->
+			<ODebugReg name="rgb" r="0" line="52"/>
+			<ODebugLine v="53" />
+<!--  53)		untyped flash.Boot.__set_trace_color(rgb);-->
+			<OGetLex v="flash.Boot" />
+			<OReg v="1" />
+			<OCallPropVoid v="__set_trace_color" nargs="1" />
+			<ODebugLine v="54" />
+<!--  54)	}-->
+			<ORetVoid />
+		</function>
+		<function f="function__26" name="function__26" kind="KFunction" args="" return="void" > <!-- maxStack="1" nRegs="1" initScope="1" maxScope="1" -->
+			<ODebugFile v="C:/Program Files/Motion-Twin/haxe/std/haxe/Log.hx" />
+			<ODebugLine v="43" />
+<!--  43)	public static dynamic function clear() : Void {-->
+			<ODebugLine v="45" />
+<!--  45)		untyped flash.Boot.__clear_trace();-->
+			<OGetLex v="flash.Boot" />
+			<OCallPropVoid v="__clear_trace" nargs="0" />
+			<ODebugLine v="49" />
+<!--  49)	}-->
+			<ORetVoid />
+		</function>
+		<function f="function__25" name="function__25" kind="KFunction" args="*,Object" return="void" defaultParameters="null" > <!-- maxStack="3" nRegs="3" initScope="1" maxScope="1" -->
+			<ODebugFile v="C:/Program Files/Motion-Twin/haxe/std/haxe/Log.hx" />
+			<ODebugLine v="29" />
+<!--  29)	public static dynamic function trace( v : Dynamic, ?infos : PosInfos ) : Void {-->
+			<ODebugReg name="v" r="0" line="29"/>
+			<ODebugReg name="infos" r="1" line="29"/>
+			<ODebugLine v="31" />
+<!--  31)		untyped flash.Boot.__trace(v,infos);-->
+			<OGetLex v="flash.Boot" />
+			<OReg v="1" />
+			<OReg v="2" />
+			<OCallPropVoid v="__trace" nargs="2" />
+			<ODebugLine v="41" />
+<!--  41)	}-->
+			<ORetVoid />
+		</function>
+	</abcfile>
+</abcfiles>

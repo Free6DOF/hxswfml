@@ -1,0 +1,9 @@
+-cmd hxswfml ttf2swf ../../assets/chopin.ttf ChopinScript.swf -class ChopinFont -glyphs 32-126
+
+--next
+Main
+-main Main
+-swf index.swf
+-swf-header 1024:1024:30:FFFFFF
+
+#-cmd pause

@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<swf xmlns="http://hxswfml.googlecode.com" width="1024" height="768" >
+
+<SetBackgroundColor color="0xDDDDDD"/>
+
+<DefineBitsJPEG id="1" file="../../assets/haxe.png"/>
+
+<DefineShape id="2" bitmapId="1" />
+
+<DefineSprite id="3" frameCount="1">
+	<PlaceObject id="2" depth="1" />
+	<ShowFrame/>
+</DefineSprite>
+
+<PlaceObject id="3" depth="1" x="10" y="10">
+	<!-- no filter -->
+</PlaceObject>
+
+<PlaceObject id="3" depth="2" x="260" y="10">
+	<blur/><!--<Blur blurX="6.5" blurY="6.5" passes="3"/>-->
+</PlaceObject>
+
+<PlaceObject id="3" depth="3" x="510" y="10">
+	<Glow/><!--<Glow color="0xFF0000FF" blurX="4.0" blurY="4.0" strength="2.0" inner="false" knockout="false" passes="1"/>-->
+</PlaceObject>
+
+<PlaceObject id="3" depth="4" x="760" y="10">
+	<Bevel/><!--<Bevel color1="0xFFFFFFFF" color2="0x000000FF" blurX="4.0" blurY="4.0" angle="45.0" distance="4.0" strength="1.0" inner="true"	knockout="false" ontop="false" 	passes="1"/>-->
+</PlaceObject>
+
+<PlaceObject id="3" depth="5" x="10" y="220">
+	<DropShadow/><!--<DropShadow color="0x000000FF" blurX="4.0" blurY="4.0" angle="45.0" distance="4.0" strength="1.0" inner="false"  knockout="false" passes="1"/>-->
+</PlaceObject>
+
+<PlaceObject id="3" depth="6" x="260" y="220">
+	<GradientGlow/><!--<GradientGlow colors="0:0xFFFFFF00,255:0x000000FF" blurX="4.0" blurY="4.0" angle="45.0" distance="4.0" strength="1.0" inner="false"  knockout="false" ontop="false" passes="1"/>-->
+</PlaceObject>
+
+<PlaceObject id="3" depth="7" x="510" y="220">
+	<GradientBevel/><!--<GradientBevel colors="0:0xFFFFFFFF,128:0xFF000000,255:0x000000FF" blurX="4.0" blurY="4.0" angle="45.0" distance="4.0" strength="1.0" inner="true" knockout="false" ontop="false" passes="1"/>-->
+</PlaceObject>
+
+<PlaceObject id="3" depth="8" x="760" y="220">
+	<ColorMatrix/><!--<ColorMatrix data="0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1"/>-->
+</PlaceObject>
+
+<ShowFrame/>
+</swf>
+
+<!-- filter value ranges
+
+blurX, blurY, strength: [0.0 - 255.0]
+distance: [0.0 - 8.0]
+angle: [0.0 - 360.0]
+passes: [1 - 15]
+-->

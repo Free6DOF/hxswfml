@@ -1,0 +1,72 @@
+<!--
+package 
+{
+    import flash.display.*;
+    import flash.events.*;
+
+    public class Main extends MovieClip
+    {
+        public var mc:Object;
+
+        public function Main()
+        {
+            mc.buttonMode = true;
+            mc.addEventListener(MouseEvent.CLICK, onClick);
+            return;
+        }
+
+        public function onClick(param1:MouseEvent)
+        {
+            param1.currentTarget.x = param1.currentTarget.x + 10;
+            param1.currentTarget.y = param1.currentTarget.y + 10;
+            return;
+        }
+
+    }
+}
+-->
+<abcfiles>
+<abcfile>
+			<class name="Main" extends="flash.display.MovieClip" >
+
+				<var name="mc"/>
+
+				<function name="Main">
+					<OThis/>
+					<OScope/>
+					
+					<OThis/>
+					<OConstructSuper v="0" />
+					
+					<OGetLex v="mc"/>
+						<OTrue/>
+					<OSetProp v="buttonMode"/>
+					
+					<OGetLex v="mc" />
+						<OGetLex v="flash.events.MouseEvent"/><OGetProp v="CLICK"/>
+						<OGetLex v="onClick"/>
+					<OCallPropVoid v="addEventListener" nargs="2"/>
+					
+					<ORetVoid/>
+					
+				</function>
+				
+
+				<function name="onClick" args="flash.events.MouseEvent">
+					<OThis/>
+					<OScope/>
+					
+					<OReg v="1"/><OGetProp v="currentTarget"/>
+						<OReg v="1"/><OGetProp v="currentTarget"/><OGetProp v="x"/><OSmallInt v="10" /><OpAdd/>
+					<OSetProp v="x" />
+					
+					<OReg v="1"/><OGetProp v="currentTarget"/>
+						<OReg v="1"/><OGetProp v="currentTarget"/><OGetProp v="y"/><OSmallInt v="10" /><OpAdd/>
+					<OSetProp v="y" />
+					
+					<ORetVoid/>
+				</function>
+				
+			</class>
+		</abcfile>
+</abcfiles>

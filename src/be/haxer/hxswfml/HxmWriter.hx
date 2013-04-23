@@ -2,32 +2,15 @@ package be.haxer.hxswfml;
 import format.swf.Data;
 import format.abc.Data;
 
-#if (haxe3 && (neko || cpp || php || java))
+#if (neko || cpp || php || java)
 	import sys.FileSystem;
 	import sys.io.File;
-#else
-	#if neko
-	import neko.Sys;
-	import neko.Lib;
-	import neko.FileSystem;
-	import neko.io.File;
-	#elseif php
-	import php.Sys;
-	import php.Lib;
-	import php.FileSystem;
-	import php.io.File;
-	#elseif cpp
-	import cpp.Sys;
-	import cpp.Lib;
-	import cpp.FileSystem;
-	import cpp.io.File;
-	#end
 #end
+
 /**
  * ...
  * @author Jan J. Flanders
  */
-
 
 class HxmWriter
 {
@@ -48,14 +31,14 @@ class HxmWriter
 	var maxScopeStack:Int;
 	var currentStack:Int;
 	var currentScopeStack:Int;
-	var imports:Hash<String>;
-	var functionClosures:Hash <Index<MethodType >> ;
-	var inits:Hash<Index<MethodType>> ;
-	var classDefs:Hash<Index<ClassDef>> ;
-	var jumps:Hash < Void->Void > ;
-	var switches:Hash<Void->Void> ;
+	var imports:Map<String,String>;
+	var functionClosures:Map<String,Index<MethodType >> ;
+	var inits:Map<String,Index<MethodType>> ;
+	var classDefs:Map<String,Index<ClassDef>> ;
+	var jumps:Map<String, Void->Void > ;
+	var switches:Map<String,Void->Void> ;
 	//var labels:Hash<JumpStyle->Bool->Int>;
-	var labels:Hash<Null<JumpStyle>->Int>;
+	var labels:Map<String,Null<JumpStyle>->Int>;
 	var abcFile:ABCData;
 	var swfTags:Array<SWFTag>;
 	var classNames:Array<String>;
@@ -107,10 +90,9 @@ class HxmWriter
 			var start = 
 			'import format.abc.Data;\n'+
 			'import format.swf.Data;\n'+
-			'import neko.Sys;\n'+
 			'import neko.Lib;\n'+
-			'import neko.FileSystem;\n'+
-			'import neko.io.File;\n'+
+			'import sys.FileSystem;\n'+
+			'import sys.io.File;\n'+
 			'class GenSWF\n'+
 			'{\n'+
 			'\tpublic static function main()\n'+
@@ -119,10 +101,10 @@ class HxmWriter
 			'\t}\n'+
 			'\tpublic function new()\n'+
 			'\t{\n'+
-			'\t\tvar inits:Hash<Index<MethodType>> = new Hash();\n'+
-			'\t\tvar classes:Hash<Index<ClassDef>> = new Hash();\n'+
+			'\t\tvar inits:Map<String,Index<MethodType>> = new Map();\n'+
+			'\t\tvar classes:Map<String,Index<ClassDef>> = new Map();\n'+
 			'\t\tvar ctx:format.abc.Context = new format.abc.Context();\n'+
-			'\t\tvar localFunctions:Hash<Index<MethodType>>=new Hash();\n'+
+			'\t\tvar localFunctions:Map<String,Index<MethodType>>=new Map();\n'+
 			'\t\t//------------------\n'+
 			'\t\tinitLocalFunctions(localFunctions, ctx, classes);\n'+
 			'\t\t//------------------\n';
@@ -169,6 +151,7 @@ class HxmWriter
 			'-main GenSWF\n'+
 			'#replace with path to the format lib of hxswfml\n'+
 			'-cp ../../../../../src\n'+ 
+			'-D no-pattern-matching\n'+
 			'-x gen_swf';
 
 			
@@ -181,7 +164,7 @@ class HxmWriter
 						compressed : false, 
 						dataSize : data1.length,
 						data : data1,
-						crc32 : format.tools.CRC32.encode(data1),
+						crc32 : haxe.crypto.Crc32.make(data1),
 						extraFields : new List()
 					});
 			zipdata.add({
@@ -191,7 +174,7 @@ class HxmWriter
 						compressed : false, 
 						dataSize : data2.length,
 						data : data2,
-						crc32 : format.tools.CRC32.encode(data2),
+						crc32 : haxe.crypto.Crc32.make(data2),
 						extraFields : new List()
 					});
 			var zipBytesOutput = new haxe.io.BytesOutput();
@@ -201,14 +184,13 @@ class HxmWriter
 		}
 		else
 		{
-			var zipFileSystem:Hash<String>=new Hash();
+			var zipFileSystem:Map<String,String>=new Map();
 			var start = 
 			'import format.abc.Data;\n'+
 			'import format.swf.Data;\n'+
-			'import neko.Sys;\n'+
 			'import neko.Lib;\n'+
-			'import neko.FileSystem;\n'+
-			'import neko.io.File;\n'+
+			'import sys.FileSystem;\n'+
+			'import sys.io.File;\n'+
 			'class GenSWF\n'+
 			'{\n'+
 			'\tpublic static function main()\n'+
@@ -217,10 +199,10 @@ class HxmWriter
 			'\t}\n'+
 			'\tpublic function new()\n'+
 			'\t{\n'+
-			'\t\tvar inits:Hash<Index<MethodType>> = new Hash();\n'+
-			'\t\tvar classes:Hash<Index<ClassDef>> = new Hash();\n'+
+			'\t\tvar inits:Map<String,Index<MethodType>> = new Map();\n'+
+			'\t\tvar classes:Map<String,Index<ClassDef>> = new Map();\n'+
 			'\t\tvar ctx:format.abc.Context = new format.abc.Context();\n'+
-			'\t\tvar localFunctions:Hash<Index<MethodType>>=new Hash();\n\t\t//------------------\n'+
+			'\t\tvar localFunctions:Map<String,Index<MethodType>>=new Map();\n\t\t//------------------\n'+
 			'\t\tLocalFunctions_abc.write(ctx, inits,classes, localFunctions);\n';
 			
 			for(i in packages)
@@ -246,7 +228,7 @@ class HxmWriter
 							compressed : false, 
 							dataSize : 0,
 							data : null,
-							crc32 : #if haxe3 0 #else haxe.Int32.ofInt(0) #end,
+							crc32 : 0,
 							extraFields : new List()
 						});
 						cf += '/' + f + '_'+'/';
@@ -259,7 +241,7 @@ class HxmWriter
 				'import format.abc.Data;\n'+
 				'class '+cn+'_abc\n'+
 				'{\n'+
-					'\tpublic static function write(ctx:format.abc.Context, inits:Hash<Index<MethodType>>,classes:Hash<Index<ClassDef>>, localFunctions:Hash<Index<MethodType>>):Void\n'+
+					'\tpublic static function write(ctx:format.abc.Context, inits:Map<String,Index<MethodType>>,classes:Map<String,Index<ClassDef>>, localFunctions:Map<String,Index<MethodType>>):Void\n'+
 					'\t{\n';
 				var post=''+
 					'\t}\n'+
@@ -273,7 +255,7 @@ class HxmWriter
 						compressed : false, 
 						dataSize : data3.length,
 						data : data3,
-						crc32 : format.tools.CRC32.encode(data3),
+						crc32 : haxe.crypto.Crc32.make(data3),
 						extraFields : new List()
 					});
 			}
@@ -282,7 +264,7 @@ class HxmWriter
 			'import format.abc.Data;\n'+
 			'class LocalFunctions_abc\n'+
 			'{\n'+
-				'\tpublic static function write(ctx:format.abc.Context, inits:Hash<Index<MethodType>>,classes:Hash<Index<ClassDef>>, localFunctions:Hash<Index<MethodType>>):Void\n'+
+				'\tpublic static function write(ctx:format.abc.Context, inits:Map<String,Index<MethodType>>,classes:Map<String,Index<ClassDef>>, localFunctions:Map<String,Index<MethodType>>):Void\n'+
 				'\t{\n'+
 					'\t\tvar f = null;\n'+
 					localFunctions+
@@ -297,7 +279,7 @@ class HxmWriter
 					compressed : false, 
 					dataSize : data4.length,
 					data : data4,
-					crc32 : format.tools.CRC32.encode(data4),
+					crc32 : haxe.crypto.Crc32.make(data4),
 					extraFields : new List()
 				});
 			var end = 
@@ -330,6 +312,7 @@ class HxmWriter
 			'-main GenSWF\n'+
 			'#replace with path to the format lib of hxswfml\n'+
 			'-cp ../../../../../src\n'+ 
+			'-D no-pattern-matching\n'+
 			'-x gen_swf';
 			var data1 = haxe.io.Bytes.ofString(buildFile);
 			zipdata.add({
@@ -339,7 +322,7 @@ class HxmWriter
 						compressed : false, 
 						dataSize : data1.length,
 						data : data1,
-						crc32 : format.tools.CRC32.encode(data1),
+						crc32 : haxe.crypto.Crc32.make(data1),
 						extraFields : new List()
 					});
 			var data2 = haxe.io.Bytes.ofString(start+end);
@@ -350,7 +333,7 @@ class HxmWriter
 						compressed : false, 
 						dataSize : data2.length,
 						data : data2,
-						crc32 : format.tools.CRC32.encode(data2),
+						crc32 : haxe.crypto.Crc32.make(data2),
 						extraFields : new List()
 					});
 			var zipBytesOutput = new haxe.io.BytesOutput();
@@ -365,17 +348,17 @@ class HxmWriter
 		var ctx_xml:Xml = xml;
 		ctx = new format.abc.Context();
 		
-		jumps = new Hash();
-		labels = new Hash();
-		switches = new Hash();
+		jumps = new Map();
+		labels = new Map();
+		switches = new Map();
 		curClassName="";
 		var statics:Array<OpCode>=new Array();
-		imports = new Hash();
+		imports = new Map();
 		opStack=[];
 		scStack=[];
-		functionClosures = new Hash();
-		inits= new Hash();
-		classDefs = new Hash();
+		functionClosures = new Map();
+		inits= new Map();
+		classDefs = new Map();
 		classNames = new Array();
 		swcClasses = new Array();
 		var ctx = ctx;
@@ -472,8 +455,8 @@ class HxmWriter
 								var _value = (value==null)?null: switch (type)
 								{
 									case 'String': VString(ctx.string(value));
-									case 'int': #if haxe3 VInt(ctx.int(Std.parseInt(value))); #else VInt(ctx.int(haxe.Int32.ofInt(Std.parseInt(value))));#end
-									case 'uint': #if haxe3 VUInt(ctx.uint(Std.parseInt(value))); #else VUInt(ctx.uint(haxe.Int32.ofInt(Std.parseInt(value))));#end
+									case 'int': VInt(ctx.int(Std.parseInt(value)));
+									case 'uint': VUInt(ctx.uint(Std.parseInt(value)));
 									case 'Number':  VFloat(ctx.float(Std.parseFloat(value)));
 									case 'Boolean': VBool(value == 'true');
 									default : null; //throw('You must provide a datatype for: ' +  name +  ' if you provide a value here.(Supported types for predefined values are String, int, uint, Number, Boolean)');
@@ -481,8 +464,8 @@ class HxmWriter
 								var _svalue = (value==null)?"null": switch (type)
 								{
 									case 'String': "VString(ctx.string('"+value+"'))";
-									case 'int': "VInt(ctx.int(#if haxe3 " + Std.parseInt(value) + " #else haxe.Int32.ofInt("+Std.parseInt(value)+") #end ))";
-									case 'uint': "VUInt(ctx.uint(#if haxe3 "+ Std.parseInt(value) + " #else haxe.Int32.ofInt("+Std.parseInt(value)+") #end ))";
+									case 'int': "VInt(ctx.int(" + Std.parseInt(value) + "))";
+									case 'uint': "VUInt(ctx.uint("+ Std.parseInt(value) + "))";
 									case 'Number':  "VFloat(ctx.float("+Std.parseFloat(value)+"))";
 									case 'Boolean': "VBool("+(value == 'true')+")";
 									default : "null"; //throw('You must provide a datatype for: ' +  name +  ' if you provide a value here.(Supported types for predefined values are String, int, uint, Number, Boolean)');
@@ -741,12 +724,8 @@ class HxmWriter
 												
 				case	"OIntRef", "OUIntRef" :
 						var v = Std.parseInt(o.get('v'));
-						__op=o.nodeName+"(ctx.int(#if haxe3 " + v + " #else haxe.Int32.ofInt("+v+") #end))";
-						#if haxe3
+						__op=o.nodeName+"(ctx.int(" + v + "))";
 						Type.createEnum(OpCode, o.nodeName, [ctx.int(Std.parseInt(o.get('v')))]);
-						#else
-						Type.createEnum(OpCode, o.nodeName, [ctx.int(haxe.Int32.ofInt(Std.parseInt(o.get('v'))))]);
-						#end
 												
 				case	"OFloat":
 						__op=o.nodeName+"(ctx.float(Std.parseFloat('"+o.get('v')+"')))";

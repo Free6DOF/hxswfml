@@ -1,0 +1,9 @@
+-cmd cd preloader
+-cmd haxe build.hxml
+-cmd cd ..
+
+-cmd cd movie
+-cmd haxe build.hxml
+-cmd cd ..
+
+-cmd hxswfml xml2swf index.xml index.swf

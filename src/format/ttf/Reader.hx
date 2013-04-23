@@ -7,7 +7,7 @@ import haxe.io.BytesInput;
 class Reader
 {
 	var input : haxe.io.Input;
-	var tablesHash:Hash<Bytes>;
+	var tablesHash:Map<String,Bytes>;
 	var glyphIndexArray:Array<GlyphIndex>;
 	var kerningPairs:Array<KerningPair>;
 	public var fontName:String;
@@ -80,7 +80,7 @@ class Reader
 	}
 	function readDirectory(header):Array<Entry>
 	{
-		tablesHash = new Hash();
+		tablesHash = new Map();
 		var directory:Array<Entry> = new Array();
 		for(i in 0...header.numTables) 
 		{
@@ -98,12 +98,12 @@ class Reader
 		for(i in 0...directory.length) 
 		{
 			var entry = directory[i];
-			var start = #if haxe3 entry.offset; #else haxe.Int32.toInt(entry.offset);#end
+			var start = entry.offset;
 			var end : Int;
 			if(i== directory.length-1)
-				end = start+ #if haxe3 entry.length #else haxe.Int32.toInt(entry.length); #end
+				end = start + entry.length;
 			else
-				end = #if haxe3 directory[i+1].offset; #else haxe.Int32.toInt(directory[i+1].offset);#end
+				end = directory[i+1].offset;
 			var bytes = input.read(end-start);
 			tablesHash.set(entry.tableName.split('/').join('_'), bytes);
 		}
@@ -111,8 +111,8 @@ class Reader
 	}
 	function sortOnOffset32(e1, e2):Int
 	{
-		var x = #if haxe3 e1.offset; #else haxe.Int32.toInt(e1.offset); #end
-		var y = #if haxe3 e2.offset; #else haxe.Int32.toInt(e2.offset); #end
+		var x = e1.offset;
+		var y = e2.offset;
 		var result = 0;
 		if(x<y) result= -1;
 		if(x==y) result= 0;
@@ -535,7 +535,7 @@ class Reader
 			{
 				platformId : input.readUInt16(),
 				platformSpecificId : input.readUInt16(),
-				offset : #if haxe3 input.readInt32() #else input.readUInt30() #end
+				offset : input.readInt32()
 			});
 		}
 		var subTables:Array<CmapSubTable> = new Array();
@@ -742,11 +742,7 @@ class Reader
 			glyphNameIndex : new Array(),
 			psGlyphName : new Array()
 		}
-		#if haxe3
-			if (postData.version == 0x00020000)
-		#else
-			if (haxe.Int32.toInt(postData.version) == 0x00020000)
-		#end
+		if (postData.version == 0x00020000)
 		{
 			postData.numGlyphs = input.readUInt16();
 			for (i in 0...postData.numGlyphs)
@@ -929,7 +925,6 @@ class Reader
 			var checksum = input.readInt32();
 			var offset = input.readInt32();
 			var length =input.readInt32();
-			//var bytes = null;//Bytes.alloc(length).sub(haxe.Int32.toInt(offset), haxe.Int32.toInt(length));
 			tables[i] = 
 			{
 				tableName : tableName,

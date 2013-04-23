@@ -1,0 +1,79 @@
+<swf width="800" height="200" fps="30" frameCount="280">
+
+<!-- characters / symbols / library -->
+<DefineBitsJpeg id="1" file="../assets/spritesheet.png" />
+
+<DefineShape id="2">
+	<BeginBitmapFill bitmapId="1" x="-179" y="-134"/>
+	<DrawRect x="0" y="0" width="30" height="30"/>
+</defineShape>
+
+<DefineShape id="3">
+	<BeginBitmapFill bitmapId="1" x="-207" y="-134"/>
+	<DrawRect x="0" y="0" width="36" height="30"/>
+</defineShape>
+
+<DefineShape id="4">
+	<BeginBitmapFill bitmapId="1" x="-245" y="-134"/>
+	<DrawRect x="0" y="0" width="36" height="30"/>
+</defineShape>
+
+<DefineShape id="5">
+	<BeginBitmapFill bitmapId="1" x="-283" y="-134"/>
+	<DrawRect x="0" y="0" width="36" height="30"/>
+</defineShape>
+
+<DefineShape id="6">
+	<BeginBitmapFill bitmapId="1" x="-319" y="-134"/>
+	<DrawRect x="0" y="0" width="36" height="30"/>
+</defineShape>
+
+<DefineSprite id="7" frameCount="16">
+	<PlaceObject id="3" depth="1" />	
+	<ShowFrame count="4"/>
+	
+	<PlaceObject id="4" depth="1" move="true"/>	
+	<ShowFrame count="4"/>
+	
+	<PlaceObject id="5" depth="1" move="true"/>	
+	<ShowFrame count="4"/>
+	
+	<PlaceObject id="6" depth="1" move="true"/>	
+	<ShowFrame count="4"/>
+</DefineSprite>
+
+<!-- actual movie / frames -->
+
+<!-- place the sitting bird shape-->
+<PlaceObject id="2" depth="1" y="100"/>
+
+<!-- show the shape for 16 frames -->
+<ShowFrame count="16"/>
+
+<!-- replace the sitting bird shape with the animated bird movieclip-->
+<RemoveObject depth="1"/>
+<PlaceObject id="7" depth="1" y="100"/>
+
+<!-- show the animated bird movieclip during 120 frames and tween its x property from 0 to 400 -->
+<!-- Tween is a shortcut for consecutive (placeobject + showframe) tags-->
+<Tween depth="1" frameCount="120">
+	<Tw prop="x" start="0" end="400"/>
+	<Tw prop="y" start="100" end="100"/>
+</Tween>
+
+<!-- replace the animated bird movieclip back with the sitting bird shape-->
+<RemoveObject depth="1"/>
+<PlaceObject id="2" depth="1" x="400" y="100"/>
+
+<!-- show the shape for 24 frames-->
+<ShowFrame count="24"/>
+
+<!-- replace the sitting bird shape again with the animated bird movieclip and let it continue its journey-->
+<RemoveObject depth="1"/>
+<PlaceObject id="7" depth="1" y="100"/>
+<Tween depth="1" frameCount="120">
+	<Tw prop="x" start="400" end="800"/>
+	<Tw prop="y" start="100" end="100"/>
+</Tween>
+
+</swf>

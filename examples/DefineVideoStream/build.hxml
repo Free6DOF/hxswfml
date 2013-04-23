@@ -1,0 +1,6 @@
+-main Main
+-swf script.swf
+
+-cmd hxswfml xml2swf index.xml index.swf
+-cmd del script.swf
+#-cmd pause

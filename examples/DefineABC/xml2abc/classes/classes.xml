@@ -1,0 +1,126 @@
+<!--
+package 
+{
+    import flash.display.MovieClip;
+
+    public class Main extends MovieClip
+    {
+        public var test:Test;
+
+        public function Main()
+        {
+            this.test = new Test();
+            trace(this.test.nr1, Test.nr2, this.test.func1(), Test.func2(), Test.func2());
+            return;
+        }
+    }
+
+
+    public class Test extends Object
+    {
+        public var nr1:int = 1;
+        public static var nr2:int = 2;
+
+        public function Test()
+        {
+            return;
+        }
+
+        public function func1()
+        {
+            return "Hello";
+        }
+
+        public static function func2()
+        {
+            return "world";
+        }
+
+    }
+}
+-->
+<swf>
+	<FileAttributes/>
+	
+	<DefineABC name="Main">
+		<abcfiles>
+			<abcfile>
+			<import name="flash.display.MovieClip" />
+
+			<class name="Main" extends="MovieClip">
+				
+				<var name="test"  type="Test" />
+				
+				<function name="Main" >
+					<OThis/><!--[object Main] -->
+					<OScope/>
+					
+					<OThis/><!--[object Main] -->
+					<OConstructSuper v="0" />
+
+					<OThis/><!--[object Main] -->
+						<OFindPropStrict v="Test"/><!--[object global] -->
+						<OConstructProperty v="Test" nargs="0" /><!--[object Test] -->
+					<OInitProp v="test" />
+
+					<OFindPropStrict v="trace"/><!--[object global] -->				
+						<OThis/><!--[object Main] -->
+						<OGetProp v="test"/><!--[object Test] -->
+						<OGetProp v="nr1"/><!--1 -->
+						
+						<OGetLex v="Test" /><!--[class Test] -->
+						<OGetProp v="nr2"/><!--2 -->
+
+						<OThis/><!--[object Main] -->		
+						<OGetProp v="test"/><!--[object Test] -->
+						<OCallProperty v="func1" nargs="0"/><!--Hello -->
+
+						<OGetLex v="Test" /><!--[class Test] -->
+						<OCallProperty v="func2" nargs="0"/><!--world-->
+						
+						<OFindPropStrict v="Test"/><!--[object global] -->
+						<OGetProp v="Test" /><!--[class Test] -->
+						<OCallProperty v="func2" nargs="0"/><!--world-->
+						
+					<OCallPropVoid v="trace" nargs="5" />
+						
+					<ORetVoid/>
+				</function>
+			</class>
+			
+			<class name="Test">
+				<var name="nr1"  type="int" value="1" />
+				<var static="true" name="nr2"  type="int" value="2" />
+				
+				<function name="Test" >
+					<OThis/>	
+					<OScope/>
+					<OThis/><!--[object Test] -->	
+					<OConstructSuper v="0" />
+					<ORetVoid/>
+					</function>
+				
+				<function name="func1">
+					<OThis/>	
+					<OScope/>
+					<OString v="Hello" />
+					<ORet/>
+					</function>
+				
+				<function static="true" name="func2" >
+					<OThis/>
+					<OScope/>
+					<OString v="world" />
+					<ORet/>
+					</function>
+				
+			</class>
+		</abcfile>
+		</abcfiles>
+	</DefineABC>
+	
+	<SymbolClass id="0" class="Main"/>
+	
+	<ShowFrame/>
+	
+</swf>

@@ -41,11 +41,7 @@ class Reader {
 	}
 
 	inline function readInt() {
-		#if haxe3
 			return ch.readInt32();
-		#else
-			return ch.readUInt30();
-		#end
 	}
 	
 	public function readHeader() : Header {

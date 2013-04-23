@@ -1,0 +1,37 @@
+#flash
+-main Test
+-cp ../lib
+-swf flash/test.swf
+-swf-version 10
+-swf-header 1024:900:30:FFFFFF
+-resource ../ttf2hash/ChopinScript.hash@chopin
+-cmd "echo swf done"
+
+--next
+-main Test
+-cp ../lib
+--remap flash:nme
+-lib nme
+-js js/test.js
+-resource ../ttf2hash/ChopinScript.hash@chopin
+-cmd "echo js done"
+
+--next
+-main Test
+-cp ../lib
+-lib nme
+--remap flash:nme
+-neko neko/test.n
+-resource ../ttf2hash/ChopinScript.hash@chopin
+-cmd "echo neko done"
+
+--next
+-main Test
+-cp ../lib
+-lib nme
+--remap flash:nme
+-cpp cpp
+-resource ../ttf2hash/ChopinScript.hash@chopin
+-cmd "echo cpp done"
+
+-cmd pause

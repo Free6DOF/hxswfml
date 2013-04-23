@@ -1,0 +1,5 @@
+<swf>	
+	<DefineSound id="1" file="../assets/chopin.mp3" />
+	<StartSound id="1" loopCount="0" />
+	<ShowFrame/>
+</swf>

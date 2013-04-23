@@ -172,13 +172,7 @@ class Reader {
 		var pnames = new Array();
 		if ( (flags & 0x08) != 0 )
 		{
-			#if haxe3
-			for(i in readList2(readValue.callback(true)))
-				dparams.push(i);
-			#else
-			for(i in readList2(callback(readValue, true)))
-				dparams.push(i);
-			#end
+			dparams = readList2(function() return readValue(true));
 		}
 		if( (flags & 0x80) != 0 ) {
 			pnames = new Array();
@@ -325,38 +319,19 @@ class Reader {
 
 	public function read() 
 	{
-		#if haxe3
 		if( i.readInt32() != 0x002E0010 )
 			throw "invalid header";
-		#else
-		if( i.readUInt30() != 0x002E0010 )
-			throw "invalid header";
-		#end
 		var data = new ABCData();
 		data.ints = readList(opr.readInt32);
-		//trace(data.ints);
 		data.uints = readList(opr.readInt32);
-		//trace(data.uints);
 		data.floats = readList(i.readDouble);
-		//trace(data.floats);
 		data.strings = readList(readString);
-		//trace(data.strings);
 		data.namespaces = readList(readNamespace);
-		//trace(data.namespaces);
 		data.nssets = readList(readNsSet);
-		//trace(data.nssets);
-		#if haxe3
-		data.names = readList(readName.callback(-1));
-		#else
-		data.names = readList(callback(readName,-1));
-		#end
-		//trace(data.names);
+		data.names = readList(function() return readName(-1));
 		data.methodTypes = readList2(readMethodType);
-		//trace(data.methodTypes);
 		data.metadatas = readList2(readMetadata);
-		//trace(data.metadatas);
 		data.classes = readList2(readClass);
-		//trace(data.classes);
 		for( c in data.classes ) {
 			c.statics = readIndex();
 			c.staticFields = readList2(readField);

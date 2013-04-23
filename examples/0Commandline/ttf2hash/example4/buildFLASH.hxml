@@ -1,0 +1,1 @@
+#flash-main Test-cp ../lib-swf flash/test.swf-swf-version 10-swf-header 1024:900:30:FFFFFF-resource ../ttf2hash/ChopinScript.hash@chopin-cmd "echo swf done"

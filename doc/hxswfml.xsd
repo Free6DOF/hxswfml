@@ -1162,6 +1162,16 @@
 		</xs:complexType>
 	</xs:element>
 	<!--____________________________________________________________-->
+	<xs:element name="DefineSwf">
+		<xs:annotation>
+			<xs:documentation>This element allows you to include all the tags from an external swf. If a path to a file is supplied that will be used. Otherwise you need to supply the bytes as a comma seperated list in the data attribute. </xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:attribute name="file" type="xs:string" use="optional"/>
+			<xs:attribute name="data" type="xs:string" use="optional"/>
+		</xs:complexType>
+	</xs:element>
+	<!--____________________________________________________________-->
 	<xs:element name="Tween">
 		<xs:annotation>
 			<xs:documentation>This element is a shortcut for many consecutieve placeObjects to create a tweening effect. This element must be preceeded by a PlaceObject element.</xs:documentation>

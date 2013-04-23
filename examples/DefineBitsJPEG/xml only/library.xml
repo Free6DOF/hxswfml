@@ -1,0 +1,5 @@
+<swf>	
+	<FileAttributes />
+	<DefineBitsJpeg id="1" file="../../assets/haxe.png" />
+	<SymbolClass id="1" class="MyBitmapData" base="flash.display.BitmapData"/>	
+</swf>

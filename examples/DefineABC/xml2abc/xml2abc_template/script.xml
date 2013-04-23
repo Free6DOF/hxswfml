@@ -1,0 +1,15 @@
+<?xml version="1.0" ?>
+<abcfiles>
+	<abcfile>	
+		<import name="flash.display.Sprite"/>
+		<class  name="Main" extends="Sprite">
+			<var name="foo" type="String" value="hello"/>
+			<function  name="Main" args="" return="void">
+					<OThis />
+					<OScope />
+					<!-- opcodes -->
+					<ORetVoid />
+			</function>
+		</class>
+	</abcfile>
+</abcfiles>

@@ -342,11 +342,7 @@ class Writer {
 	}
 	
 	inline function writeInt( v : Int ) {
-		#if haxe3
-			o.writeInt32(v);
-		#else
-			o.writeUInt30(v);
-		#end
+		o.writeInt32(v);
 	}
 	
 	function writeTID( id : Int, len : Int ) {
@@ -1661,11 +1657,7 @@ class Writer {
 		var bytes = o.getBytes();
 		var size = bytes.length;
 		if( compressed ) bytes = format.tools.Deflate.run(bytes);
-		#if haxe3 
 		output.writeInt32 (size + 8); 
-		#else 
-		output.writeUInt30(size + 8);
-		#end
 		output.write(bytes);
 	}
 

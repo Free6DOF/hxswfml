@@ -1,0 +1,9 @@
+<?xml version="1.0" ?>
+<swf width="800" height="600" fps="24" version="10" compressed="true" frameCount="1" >
+	<FileAttributes actionscript3="true" />
+	<DefineSprite id="1" file="../assets/sample.flv" /><!-- fps="30" width="320" height="240" -->
+	<PlaceObject id="1" depth="1" name="my_mc" />
+	<DefineABC file="script.swf"/>
+	<SymbolClass id="0" class="flash.Boot"/>
+	<ShowFrame/>
+</swf>

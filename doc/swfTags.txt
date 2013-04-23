@@ -395,7 +395,19 @@
         Usage: 
 				<Custom file="./assets/DoABC.bytes" comment="entire DoABC tag"/>
         <Custom tagId="83" file="./assets/DefineShape4.bytes" comment="DefineShape4 tag with id:1 and contents:red square with black border"/>
-        <Custom tagId="12" data="0x07,0x00" comment="DoAction tag with following code: 0x07, 0x00 means stop(); in AS2"/>
+        <Custom tagId="1
+		2" data="0x07,0x00" comment="DoAction tag with following code: 0x07, 0x00 means stop(); in AS2"/>
+		
+<DefineSwf/>
+				Parent: <swf>
+				Children: none
+				Attributes: data, file
+                Required: data or file
+                Default:
+        Signature: <DefineSwf file="path/to/file/containing/movie.swf" data="?" />
+        Usage: 
+				<DefineSwf file="./assets/movie.swf" />
+				<DefineSwf data="0x43,0x57,0x53, ..." />
 
 <swf></swf>
         Parent: none (root/document element)

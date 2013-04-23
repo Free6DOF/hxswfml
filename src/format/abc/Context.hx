@@ -51,7 +51,7 @@ class Context
 	public var curFunction : { f : Function, ops : Array<OpCode> };
 	public var isExtending:Bool;
 	var data : ABCData;
-	var hstrings : Hash<Int>;
+	var hstrings : Map<String,Int>;
 	var curClass : ClassDef;
 
 	var classes : Array<Field>;
@@ -72,11 +72,11 @@ class Context
 		classSupers = new List();
 		bytepos = new NullOutput();
 		opw = new OpWriter(bytepos);
-		hstrings = new Hash();
+		hstrings = new Map();
 
 		data = new ABCData();
-		data.ints = new Array<Int32>();
-		data.uints = new Array<Int32>();
+		data.ints = new Array<Int>();
+		data.uints = new Array<Int>();
 		data.floats = new Array();
 		data.strings = new Array();
 		data.namespaces = new Array();
@@ -113,66 +113,31 @@ class Context
 		arr.push(n);
 		return Idx(arr.length);
 	}
-	/*
-	function elookup2(n)
+
+	public function int(n):Index<Int>
 	{
-		var arr = data.names;
-		var nParams = Type.enumParameters(n);
-		for( i in 0...arr.length )
-		{
-			var itemParams = Type.enumParameters(arr[i]);
-			var t=0;
-			if(itemParams.length==nParams.length)
-				for(j in 0...itemParams.length)
-				{
-					if(Type.enumParameters(itemParams[j])[0]==Type.enumParameters(nParams[j])[0])
-						t++;
-					else
-						break;
-				}
-			if(t==itemParams.length)
-				return Idx(i + 1);
-		}
-		arr.push(n);
-		return Idx(arr.length);
-	}
-	*/
-	public function int(n):Index<Int32>
-	{
-		//return lookup(data.ints, i);
 		var arr = data.ints;
 		for ( i in 0...arr.length ) 
 		{
-			//if (Int32.compare(cast arr[i], Int32.ofInt(cast n)) == 0) 
-			#if haxe3 
 			if(arr[i] == n) 
-			#else 
-			if (haxe.Int32.compare(arr[i], n) == 0) 
-			#end
 				return Idx(i + 1);
 		}
 		arr.push(n);
 		return Idx(arr.length);
 	}
-	public function uint(n):Index<Int32>
+	public function uint(n):Index<Int>
 	{
-		//return lookup(data.uints,i);
 		var arr = data.uints;
 		for ( i in 0...arr.length ) 
 		{
-			#if haxe3
 			if (arr[i] == n) 
-			#else
-			if (haxe.Int32.compare(cast arr[i], haxe.Int32.ofInt(cast n)) == 0) 
-			#end
-			return Idx(i + 1);
+				return Idx(i + 1);
 		}			
 		arr.push(n);
 		return Idx(arr.length);
 	}
 	public function float(f):Index<Float>
 	{
-		//return lookup(data.floats,f);
 		var arr=data.floats;
 		for ( i in 0...arr.length ) 
 			if (arr[i] == f) 
@@ -195,7 +160,6 @@ class Context
 	}
 	public function _namespace(n) :Index<Namespace>
 	{
-		//return lookup(data.namespaces,n);
 		var arr = data.namespaces;
 		for( i in 0...arr.length )
 			if( Type.enumEq(arr[i],n) )
@@ -225,7 +189,6 @@ class Context
 	}
 	public function name(n):Index<Name>
 	{
-		//return lookup(data.names,n);
 		var arr = data.names;
 		for( i in 0...arr.length )
 			if( Type.enumEq(arr[i],n) )
@@ -310,16 +273,6 @@ class Context
 		
 		endClass();
 		var tpath = this.type(path);
-		/*
-				beginFunction([],null);
-				var st = curFunction.f.type;
-				op(ORetVoid);
-				endFunction();
-				beginFunction([],null);
-				var cst = curFunction.f.type;
-				op(ORetVoid);
-				endFunction();
-				*/
 		fieldSlot = 1;
 
 		curClass = {
@@ -330,12 +283,8 @@ class Context
 			isInterface : false,
 			isFinal : false,
 			_namespace : null,
-			
 			constructor : null,
 			statics : null,
-			/*
-												constructor : cst,
-												statics : st,*/
 			fields : [],
 			staticFields : [],
 		};
@@ -343,7 +292,7 @@ class Context
 		classes.push(
 		{
 			name: tpath,
-			slot: classes.length+1,//0,
+			slot: classes.length+1,
 			kind: FClass(Idx(data.classes.length - 1)),
 			metadatas: null,
 		});
@@ -421,7 +370,7 @@ class Context
 			var fl = if( isStatic ) curClass.staticFields else curClass.fields;
 			fl.push({
 				name : property(mname, ns),
-				slot : fl.length+1,//0,
+				slot : fl.length+1,
 				kind : FMethod(curFunction.f.type,kind,isFinal,isOverride),
 				metadatas : null,
 			});
@@ -577,24 +526,6 @@ class Context
 			}
 		};
 	}
-	/*
-	public function backwardJump() 
-	{
-		var start = bytepos.n;
-		var me = this;
-		op(OLabel);
-		return function(jcond:Null<format.abc.JumpStyle>, ?isSwitch:Bool = false) 
-		{
-			if (isSwitch)
-				return start - me.bytepos.n
-			else
-			{
-				me.op(OJump(jcond, start - me.bytepos.n - 4));
-				return 0;
-			}
-		};
-	}
-	*/
 	public function jump( jcond ) 
 	{
 		var ops = curFunction.ops;

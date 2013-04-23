@@ -521,8 +521,8 @@ class Reader {
 				color2 : null,
 				blurX : readFixed(),
 				blurY : readFixed(),
-				angle : #if haxe3 0, #else haxe.Int32.ofInt(0), #end
-				distance : #if haxe3 0, #else haxe.Int32.ofInt(0), #end
+				angle : 0,
+				distance : 0,
 				strength : readFixed8(),
 				flags : readFilterFlags(false),
 			});
@@ -1217,11 +1217,7 @@ class Reader {
 	}
 
 	inline function readInt() {
-		#if haxe3
 			return i.readInt32();
-		#else
-			return i.readUInt30();
-		#end
 	}
 	
 	public function readHeader() : SWFHeader {
@@ -1257,31 +1253,41 @@ class Reader {
 		};
 	}
 
-	public function readTagList() {
+	public function readTagList(?light:Bool=false) {
 		var a = new Array();
 		while( true ) {
-			var t = readTag();
+			var t = readTag(light);
 			if( t == null )
 				break;
 			a.push(t);
 		}
 		return a;
 	}
-	public function readTag() : SWFTag {
+	public function readTag(?light:Bool=false) : SWFTag {
 		var h = i.readUInt16();
 		var id = h >> 6;
-		var len = h & 63;
+		var tlen = h & 63;
+		var len = tlen;
 		var ext = false;
-		if( len == 63 ) {
+		if( tlen == 63 ) {
 			len = readInt();
 			if( len < 63 ) ext = true;
 		}
-		/*
-    var old_i = i;
-    var old_bits = bits;
-    i = new haxe.io.BytesInput(i.read(len));
-    bits = new format.tools.BitsInput(i);
-		*/
+		if(light)
+		{
+			return switch( id ) 
+			{
+				case TagId.End: null;
+				default: 
+					var output = new haxe.io.BytesOutput();
+					output.bigEndian = false;
+					output.writeUInt16(h);
+					if( tlen == 63 ) output.writeInt32 (len);
+					output.write(i.read(len));
+					TUnknown(null,output.getBytes());
+			}
+		}
+		else 
 		return switch( id ) {
 		case TagId.ShowFrame:
 			TShowFrame;
