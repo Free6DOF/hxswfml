@@ -1,6 +1,6 @@
 <?php
-require_once './lib/php/Boot.class.php';
-include "./lib/be/haxer/hxswfml/SwfWriter.class.php";
+require_once '../../../bin/php/lib/php/Boot.class.php';
+include "../../../bin/php/lib/be/haxer/hxswfml/SwfWriter.class.php";
 $content1 = file_get_contents('index1.xml');
 $trimmed1 = trim($content1);
 $hxswfml1 = &New be_haxer_hxswfml_SwfWriter(true);

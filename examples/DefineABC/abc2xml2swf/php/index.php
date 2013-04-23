@@ -1,6 +1,6 @@
 <?php
-require_once dirname(__FILE__).'/lib/php/Boot.class.php';
-include "lib/be/haxer/hxswfml/AbcReader.class.php";
+require_once '../../../../bin/php/lib/php/Boot.class.php';
+include "../../../../bin/php/lib/be/haxer/hxswfml/AbcReader.class.php";
 
 $filename = "original.swf";
 $handle = fopen($filename, "rb");
