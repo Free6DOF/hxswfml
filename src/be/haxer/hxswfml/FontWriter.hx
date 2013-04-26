@@ -187,6 +187,7 @@ class FontWriter
 				default:
 			}
 		}
+		if(os2Data==null) os2Data = cast {usWinAscent:hheaData.ascender, usWinDescent:hheaData.descender};
 		this.fontName = fontName!=null? fontName : reader.fontName;
 		var scale = 1024/headData.unitsPerEm;
 		var glyphIndexArray:Array<GlyphIndex>=new Array();
