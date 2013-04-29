@@ -297,6 +297,7 @@ class FontWriter
 								var c1 = data[0];
 								var part1 = glyfData[c1.glyphIndex];
 								var dat1:GlyphSimple = Type.enumParameters(part1)[1];
+								if(dat1==null) continue;
 								var dat1bis:GlyphSimple={endPtsOfContours:[],instructions:[],xCoordinates:[],yCoordinates:[],flags:dat1.flags, xDeltas:[], yDeltas:[]}
 								if(dat1.endPtsOfContours != null)
 									for(i in dat1.endPtsOfContours) dat1bis.endPtsOfContours.push(i);
