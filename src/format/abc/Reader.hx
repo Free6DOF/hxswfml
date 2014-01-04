@@ -147,9 +147,9 @@ class Reader {
 		case 0x04: VUInt(Idx(idx));
 		case 0x06: VFloat(Idx(idx));
 		case 0x05, 0x08, 0x16, 0x17, 0x18, 0x19, 0x1A: VNamespace(n,Idx(idx));
-		case 0x0A: if( idx != 0x0A ) /* throw "assert readValue2 " + n; */ VBool(false);
-		case 0x0B: if( idx != 0x0B ) /* throw "assert readValue2 " + n; */ VBool(true);
-		case 0x0C: if( idx != 0x0C ) /* throw "assert readValue2 " + n; */ VNull;
+		case 0x0A: if( idx != 0x0A ) throw "assert readValue2 " + n; VBool(false);
+		case 0x0B: if( idx != 0x0B ) throw "assert readValue2 " + n; VBool(true);
+		case 0x0C: if( idx != 0x0C ) throw "assert readValue2 " + n; VNull;
 		default: throw "assert readValue3 "+ n;
 		}
 	}
