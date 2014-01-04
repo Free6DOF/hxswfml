@@ -992,7 +992,8 @@ class HxmWriter
 						{
 							__op=o.nodeName+"(ctx.string('"+o.get('name')+"'),"+Std.parseInt(o.get('r'))+","+Std.parseInt(o.get('line'))+")";
 							Type.createEnum(OpCode, o.nodeName, [ctx.string(o.get('name')), Std.parseInt(o.get('r')), Std.parseInt(o.get('line'))]);
-						}						
+						}			
+						else null;
 				default	: 
 						throw (o.nodeName + ' Unknown opcode.');
 			}

@@ -276,7 +276,7 @@ class Main
 	}
 	static function printUsage():Void
 	{
-		Lib.println("hxswfml - xml based swf and abc assembler. 2009-2013");
+		Lib.println("hxswfml - xml based swf and abc assembler. 2009-2014");
 		Lib.println("Usage: hxswfml <operation> input-file output-file [args] [options]");
 		Lib.println("");
 
