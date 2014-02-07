@@ -1,0 +1,1 @@
+-cmd hxswfml xml2lib library.xml library.swf--next-main Main-swf-lib library.swf-swf main.swf#--next#delete library.swf

@@ -1,0 +1,3 @@
+<lib>
+	<sound gapless="true" file="../../assets/anticipation-loop.mp3" class="MySound" />
+</lib>
