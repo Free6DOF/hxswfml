@@ -265,11 +265,11 @@
 <DefineSound/>
         Parent: <swf>
         Children: none
-        Attributes:
+        Attributes: id, file, gapless
                 Required: id, file 
-                Default:
-        Signature: <DefineSound id="?" file=".path/to/file *.mp3" />
-        Usage: <DefineSound id="1" file="song.mp3" />
+                Default: gapless=false
+        Signature: <DefineSound id="?" file=".path/to/file *.mp3" gapless="false"/>
+        Usage: <DefineSound id="1" file="song.mp3" gapless="true"/>
 
 <DefineFont/>
         Parent: <swf>

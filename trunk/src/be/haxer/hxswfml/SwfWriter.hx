@@ -108,7 +108,7 @@ class SwfWriter
 		validElements.set('definebutton', ['id']);
 		validElements.set('buttonstate', ['id', 'depth', 'hit', 'down', 'over', 'up', 'x', 'y', 'scaleX', 'scaleY', 'rotate0', 'rotate1']);
 		validElements.set('definebinarydata', ['id', 'file']);
-		validElements.set('definesound', ['id', 'file']);
+		validElements.set('definesound', ['id', 'file', 'gapless']);
 		validElements.set('definefont', ['id', 'file','charCodes', 'name']);
 		validElements.set('defineedittext', ['id', 'initialText', 'fontID', 'useOutlines', 'width', 'height', 'wordWrap', 'multiline', 'password', 'input', 'autoSize', 'selectable', 'border', 'wasStatic', 'html', 'fontClass', 'fontHeight', 'textColor', 'alpha', 'maxLength', 'align', 'leftMargin', 'rightMargin', 'indent', 'leading', 'variableName', 'file']);
 		validElements.set('defineabc', ['file', 'name', 'isBoot']);
@@ -491,6 +491,7 @@ class SwfWriter
 	{
 		var file = getString('file', "", true);
 		var sid = getInt('id', null, true, true);
+		var gapless = getBool('gapless',false);
 		#if(neko || cpp || php)
 		checkFileExistence(file);
 		var mp3FileBytes = File.read(file, true);
@@ -498,7 +499,7 @@ class SwfWriter
 		var mp3FileBytes = new haxe.io.BytesInput(getBytes(file));
 		#end
 		var audioWriter = new AudioWriter();
-		audioWriter.write(mp3FileBytes, currentTag);
+		gapless? audioWriter.writeGapless(mp3FileBytes, currentTag) : audioWriter.write(mp3FileBytes, currentTag);
 		return audioWriter.getTag(sid);
 	}
 	private function definebinarydata():SWFTag
