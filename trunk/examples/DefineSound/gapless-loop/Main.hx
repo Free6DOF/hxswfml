@@ -1,0 +1,1 @@
+package;import flash.display.MovieClip;import flash.media.Sound;import flash.media.SoundChannel;import flash.Lib;class Main extends MovieClip{	public function new ()	{		super();		var sound = new MySound();		var sndChannel:SoundChannel = sound.play(0,1000);	}	public static function main()	{		Lib.current.addChild(new Main());	}}
