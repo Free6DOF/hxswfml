@@ -66,6 +66,7 @@ class FontWriter
 		var cmapData=null;
 		var glyfData=null;
 		var dump = new StringBuf();
+		
 		for(table in tables)
 		{
 			switch(table)
@@ -75,10 +76,9 @@ class FontWriter
 				default:
 			}
 		}
+		dump.add("fontName = " + reader.fontName + "\n\n");
+		dump.add("charCodes = " + '"' + getAllRange(tables) + '"' + "\n");
 		
-		dump.add("fontName = ");
-		dump.add(reader.fontName);
-		dump.add("\n\n");
 		var glyphIndexArray:Array<GlyphIndex>=new Array();
 		for(s in cmapData)
 		{
@@ -92,7 +92,7 @@ class FontWriter
 		}
 		if(glyphIndexArray.length==0)
 			throw("ERROR: Cmap4 encoding table not found");
-
+		
 		for(i in 0...glyphIndexArray.length-1)
 		{
 			if(glyphIndexArray[i]!=null)
@@ -164,7 +164,7 @@ class FontWriter
 		
 		var header = ttf.header;
 		var tables = ttf.tables;
-		
+		var allRange = getAllRange(ttf.tables);
 		var glyfData=null;
 		var hmtxData=null;
 		var cmapData=null;
@@ -208,10 +208,11 @@ class FontWriter
 		var ranges /*:Array<format.ttf.Data.UnicodeRange>*/ = new Array();
 		if(rangesStr=="all")
 		{
-			ranges.push({start:0, end:glyphIndexArray.length-1});
+			//ranges.push({start:0, end:glyphIndexArray.length-1});
+			rangesStr = getAllRange(tables);
 		}
-		else
-		{
+		//else
+		//{
 			var parts:Array<String> = rangesStr.split('[').join("").split(']').join("").split(' ').join('').split(',');
 			for(i in 0... parts.length)
 			{
@@ -220,7 +221,7 @@ class FontWriter
 				else
 					ranges.push({start:Std.parseInt(parts[i].split('-')[0]), end:Std.parseInt(parts[i].split('-')[1])});
 			}
-		}
+		//}
 		switch(outType)
 		{
 			case 'swf', 'zip', 'path', 'hash': outputType = outType;
@@ -765,6 +766,85 @@ class FontWriter
 		writer.write(swfFile);
 		var swfBytes:Bytes = swfOutput.getBytes();
 		return swfBytes;
+	}
+		private function getAllRange(tables:Array<Table>):String
+	{
+		var cmapData=null;
+		var glyfData=null;
+		for(table in tables)
+		{
+			switch(table)
+			{
+				case TGlyf(descriptions): glyfData = descriptions;
+				case TCmap(subtables): cmapData = subtables;
+				default:
+			}
+		}
+		var glyphIndexArray:Array<GlyphIndex>=new Array();
+		for(s in cmapData)
+		{
+			switch(s)
+			{
+				case Cmap4(header, array): 
+					glyphIndexArray = array;
+					break;
+				default: 
+			}
+		}
+		var ranges = [];
+		var range = "";
+		var lastCC = 0;
+		var addRange = function(charCode, end)
+		{
+			if(range == "")
+			{
+				lastCC = charCode;
+				range += lastCC;
+			}
+			else
+			{
+				if(lastCC+1 == charCode)
+				{
+					lastCC += 1;
+				}
+				else
+				{
+					range += "-"+ lastCC;
+					ranges.push(range);
+					
+					lastCC = charCode;
+					range = ""+lastCC;
+				}
+			}
+			if(end)
+			{
+				range += "-"+ lastCC;
+				ranges.push(range);
+			}
+			
+		}
+		for(i in 0...glyphIndexArray.length-1)
+		{
+			if(glyphIndexArray[i]!=null && glyphIndexArray[i].charCode!=0)
+			{
+				var index = glyphIndexArray[i].index;
+				switch(glyfData[index])
+				{
+					case TGlyphNull: if(i==glyphIndexArray.length-1) addRange(-1, true );
+					case TGlyphSimple(header, data): if(data.xCoordinates.length>1) addRange(glyphIndexArray[i].charCode, i==glyphIndexArray.length-1);
+					case TGlyphComposite(header, components): addRange(glyphIndexArray[i].charCode,i==glyphIndexArray.length-1);
+				}
+			}
+			if(i==glyphIndexArray.length-2) addRange(-1, true );
+		}
+		var out = [];
+		for(r in ranges)
+		{
+			var startEnd = r.split("-");
+			if(startEnd.length ==4) continue;
+			startEnd[0] == startEnd[1]?out.push(startEnd[0]):out.push(r);
+		}
+		return out.toString();
 	}
 	var qCpoint:GlyfPath;
 	var implicitStart:Bool;
