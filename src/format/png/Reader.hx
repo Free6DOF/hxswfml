@@ -100,6 +100,7 @@ class Reader {
 		case "IHDR": CHeader(readHeader(new haxe.io.BytesInput(data)));
 		case "IDAT": CData(data);
 		case "PLTE": CPalette(data);
+		case "tRNS": CTransparency(data);
 		default: CUnknown(id,data);
 		}
 	}

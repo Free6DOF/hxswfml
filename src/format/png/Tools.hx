@@ -53,7 +53,11 @@ class Tools {
 		var rgba = haxe.io.Bytes.alloc(h.width * h.height * 4);
 		var data = null;
 		var fullData : haxe.io.BytesBuffer = null;
+		var palette:Array<Array<Int>> = [];
+		var paletteTrans:Array<Int>=[];
 		for( c in d )
+		{
+			trace(c);
 			switch( c ) {
 			case CData(b):
 				if( fullData != null )
@@ -66,8 +70,31 @@ class Tools {
 					fullData.add(b);
 					data = null;
 				}
+			case CPalette(b):
+				var input = new haxe.io.BytesInput(b);
+				for(i in 0...Std.int(b.length/3))
+				{
+					var paletteColor = [];
+					paletteColor.push(input.readByte());
+					paletteColor.push(input.readByte());
+					paletteColor.push(input.readByte());
+					palette.push(paletteColor);
+				}
+				
+			case CTransparency(b):
+				var input = new haxe.io.BytesInput(b);
+				for(i in 0...b.length)
+				{
+					paletteTrans.push(input.readByte());
+				}
+				for(i in 0...palette.length - paletteTrans.length)
+				{
+					paletteTrans.push(0xFF);
+				}
+				
 			default:
 			}
+		}
 		if( fullData != null )
 			data = fullData.getBytes();
 		if( data == null )
@@ -201,8 +228,63 @@ class Tools {
 			b.writeBytes(realData.getData(), start, h.width * h.height * 4);
 			#end
 
+		case ColIndexed:
+			if( h.colbits != 8 && h.colbits != 4)
+				throw "Unsupported color mode: "+h.colbits +". Currently only 4 and 8 are supported for ColorIndexed png types.";
+			var g=0;
+			var s=0;
+			for(y in 0...h.height)
+			{
+				var filter = data.get(g); g++;
+				trace("filter:"+filter);
+				for(x in 0...Std.int(h.width/(8/h.colbits)))
+				{
+					var byte = data.get(g); g++;
+					if(h.colbits==8)
+					{
+						var index = byte;
+						var color = palette[index];
+						var red = color[0];
+						var green = color[1];
+						var blue = color[2];
+						var alpha = paletteTrans[index];
+						
+						rgba.set(s,red); s++;
+						rgba.set(s,green); s++;
+						rgba.set(s,blue); s++;
+						rgba.set(s,alpha); s++;
+					}
+					else if(h.colbits==4)
+					{
+						var index = byte  >> 4;//upper 4 bits
+						var color = palette[index];
+						var red = color[0];
+						var green = color[1];
+						var blue = color[2];
+						var alpha = paletteTrans[index];
+						
+						rgba.set(s,red); s++;
+						rgba.set(s,green); s++;
+						rgba.set(s,blue); s++;
+						rgba.set(s,alpha); s++;
+						
+						var index = byte % 16; // lower 4 bits
+						var color = palette[index];
+						var red = color[0];
+						var green = color[1];
+						var blue = color[2];
+						var alpha = paletteTrans[index];
+
+						rgba.set(s,red); s++;
+						rgba.set(s,green); s++;
+						rgba.set(s,blue); s++;
+						rgba.set(s,alpha); s++;
+					}
+				}
+			}
+		
 		default:
-			throw "Unsupported color mode "+Std.string(h.color);
+			throw "Unsupported PNG image type : "+Std.string(h.color);
 		}
 		return rgba;
 	}
