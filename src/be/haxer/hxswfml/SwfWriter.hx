@@ -665,6 +665,20 @@ class SwfWriter
 						error('ERROR: isBoot="true" but no document class was found inside the given file ' + file + '. TAG : ' + currentTag.toString());
 					abcTags.push(docClass);
 				}
+				if(abcTags.length == 1 && name != "" && name != null)
+				{
+					var tempTags : Array<SWFTag> = new Array();
+					for (tag in abcTags)
+						switch (tag)
+						{
+							case TActionScript3(data, ctx): 
+									tempTags.push(TActionScript3(data, {id : 1, label : name}));
+							case TSymbolClass(symbols):
+								tempTags.push(tag);
+							default :
+						}
+					abcTags = tempTags;
+				}
 			}
 			else if(StringTools.endsWith(file, '.xml'))
 			{
