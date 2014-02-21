@@ -45,6 +45,7 @@ enum Chunk {
 	CHeader( h : Header );
 	CData( b : haxe.io.Bytes );
 	CPalette( b : haxe.io.Bytes );
+	CTransparency( b : haxe.io.Bytes );
 	CUnknown( id : String, data : haxe.io.Bytes );
 }
 

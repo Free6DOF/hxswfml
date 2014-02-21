@@ -62,6 +62,8 @@ class Writer {
 				writeChunk("IDAT",d);
 			case CPalette(b):
 				writeChunk("PLTE",b);
+			case CTransparency(b):
+				writeChunk("tRNS",b);
 			case CUnknown(id,data):
 				writeChunk(id,data);
 			}
