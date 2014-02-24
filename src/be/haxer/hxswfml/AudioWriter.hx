@@ -107,7 +107,7 @@ class AudioWriter
 						encoderDelay = giEncoderDelay;
 						endPadding = giEndPadding;
 
-					case Element.Info(info): // ignore
+					case Info(info): // ignore
 					case Unknown(bytes): // ignore
 					case End: break;
 				}
