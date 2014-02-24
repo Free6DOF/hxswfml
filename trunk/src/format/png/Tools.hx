@@ -57,7 +57,6 @@ class Tools {
 		var paletteTrans:Array<Int>=[];
 		for( c in d )
 		{
-			trace(c);
 			switch( c ) {
 			case CData(b):
 				if( fullData != null )
@@ -124,7 +123,6 @@ class Tools {
 			//ABRG
 			for( y in 0...h.height ) {
 				var f = data.get(r++);
-				//trace("f:"+f);
 				switch( f ) {
 				case 0://Each byte is unchanged.
 					if( alpha )
@@ -236,7 +234,6 @@ class Tools {
 			for(y in 0...h.height)
 			{
 				var filter = data.get(g); g++;
-				trace("filter:"+filter);
 				for(x in 0...Std.int(h.width/(8/h.colbits)))
 				{
 					var byte = data.get(g); g++;
