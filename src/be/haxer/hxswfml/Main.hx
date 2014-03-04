@@ -196,7 +196,7 @@ class Main
 					fontWriter.write(File.getBytes(inFile),ranges, 'swf');
 					File.write(outFile,true).write(fontWriter.getSWF(1,className, 10, true, 1024, 1024, 30, 1));
 					
-				case "dumpttf":
+				case "ttfdump":
 					if (args.length < 3) printUsage();
 					var inFile = args[1];
 					var outFile = args[2];
@@ -355,6 +355,11 @@ class Main
 		Lib.println("ttf2hash");
 		Lib.println("  in : ttf file");
 		Lib.println("  options : -glyphs, -precision");
+		Lib.println("");
+		
+		Lib.println("ttfdump");
+		Lib.println("  in : ttf file");
+		Lib.println("  out : txt file");
 		Lib.println("");
 
 		Lib.println("flv2swf");

@@ -1,0 +1,4 @@
+<lib>
+	<font file="../../../../assets/calibri.ttf" class="CalibriFont" glyphs="32,48-58"/>
+	<font file="../../../../assets/chopin.ttf" class="ChopinFont" glyphs="all"/>
+</lib> 
