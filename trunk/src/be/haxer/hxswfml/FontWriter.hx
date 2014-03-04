@@ -208,20 +208,18 @@ class FontWriter
 		var ranges /*:Array<format.ttf.Data.UnicodeRange>*/ = new Array();
 		if(rangesStr=="all")
 		{
-			//ranges.push({start:0, end:glyphIndexArray.length-1});
 			rangesStr = getAllRange(tables);
 		}
-		//else
-		//{
-			var parts:Array<String> = rangesStr.split('[').join("").split(']').join("").split(' ').join('').split(',');
-			for(i in 0... parts.length)
-			{
-				if(parts[i].indexOf('-')==-1)
-					ranges.push({start:Std.parseInt(parts[i]), end:Std.parseInt(parts[i])});
-				else
-					ranges.push({start:Std.parseInt(parts[i].split('-')[0]), end:Std.parseInt(parts[i].split('-')[1])});
-			}
-		//}
+		
+		var parts:Array<String> = rangesStr.split('[').join("").split(']').join("").split(' ').join('').split(',');
+		for(i in 0... parts.length)
+		{
+			if(parts[i].indexOf('-')==-1)
+				ranges.push({start:Std.parseInt(parts[i]), end:Std.parseInt(parts[i])});
+			else
+				ranges.push({start:Std.parseInt(parts[i].split('-')[0]), end:Std.parseInt(parts[i].split('-')[1])});
+		}
+
 		switch(outType)
 		{
 			case 'swf', 'zip', 'path', 'hash': outputType = outType;
@@ -411,7 +409,10 @@ class FontWriter
 			{
 				case KernSub0(kerningPairs):
 					for (pair in kerningPairs)
-						kerning.push({charCode1:pair.left,	charCode2:pair.right,	adjust:Std.int(pair.value*scale*20)});
+					{
+						if(pairInRange(pair))
+							kerning.push({charCode1:pair.left,	charCode2:pair.right,	adjust:Std.int(pair.value*scale*20)});
+					}
 				default:
 			}
 		}
@@ -767,7 +768,7 @@ class FontWriter
 		var swfBytes:Bytes = swfOutput.getBytes();
 		return swfBytes;
 	}
-		private function getAllRange(tables:Array<Table>):String
+	private function getAllRange(tables:Array<Table>):String
 	{
 		var cmapData=null;
 		var glyfData=null;
@@ -791,7 +792,7 @@ class FontWriter
 				default: 
 			}
 		}
-		var ranges = [];
+		var ranges = ["32-32"];
 		var range = "";
 		var lastCC = 0;
 		var addRange = function(charCode, end)
@@ -841,7 +842,7 @@ class FontWriter
 		for(r in ranges)
 		{
 			var startEnd = r.split("-");
-			if(startEnd.length ==4) continue;
+			if(startEnd.length == 4) continue;
 			startEnd[0] == startEnd[1]?out.push(startEnd[0]):out.push(r);
 		}
 		return out.toString();
@@ -949,6 +950,19 @@ class FontWriter
 				arr.push({type:2, x:startPoint.x, y:startPoint.y, cx:implicitCP.x, cy:implicitCP.y});
 			}
 		}
+	}
+	private function pairInRange(pair):Bool
+	{
+		var left = false;
+		var right = false;
+		for(c in chars)
+		{
+			
+			if(c == pair.left) left = true;
+			else if(c == pair.right) right = true;
+			if(left && right) return true;
+		}
+		return false;
 	}
 	private function init()
 	{

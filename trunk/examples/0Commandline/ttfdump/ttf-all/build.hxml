@@ -1,0 +1,9 @@
+-cmd cd lib
+-cmd hxswfml xml2lib library.xml fonts.swf
+-cmd cd ..
+
+--next
+-cp src
+-main Main
+-swf-lib ./lib/fonts.swf
+-swf bin/index.swf
