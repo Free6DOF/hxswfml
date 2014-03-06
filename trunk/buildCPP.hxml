@@ -1,7 +1,6 @@
 #---- cpp ----#
 -cp src
 -main be.haxer.hxswfml.Main
--D no-pattern-matching
 -dce no
 --macro include('be.haxer.hxswfml', true)
 --macro include('format', true)

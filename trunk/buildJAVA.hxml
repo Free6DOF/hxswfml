@@ -1,0 +1,8 @@
+#---- java ----#
+-cp src
+-main be.haxer.hxswfml.Main
+--macro include('be.haxer.hxswfml')
+--macro include('format', true)
+-dce no
+-java bin/java
+-cmd echo "java created"

@@ -57,6 +57,7 @@ class Tools
 				case 0:Type.getEnumConstructs(LangUnicode)[platformSpecificId]; 
 				case 1:Type.getEnumConstructs(LangMacintosh)[platformSpecificId]; 
 				case 3:Type.getEnumConstructs(LangMicrosoft)[platformSpecificId]; 
+				default: throw "invalid ttf";
 			});
 
 			buf.add('\noffset: ');buf.add(header.offset);
