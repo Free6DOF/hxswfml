@@ -3,7 +3,6 @@
 -main be.haxer.hxswfml.Main
 --macro include('be.haxer.hxswfml', true)
 --macro include('format', true)
--D no-pattern-matching
 -dce no
 --php-front hxswfml.php
 -php bin/php

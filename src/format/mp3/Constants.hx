@@ -8,10 +8,10 @@ import format.mp3.Data;
  * values represent bit values
  */
 class MPEG {
-   public static var V1 = 3;
-   public static var V2 = 2;
-   public static var V25 = 0;
-   public static var Reserved = 1;
+   public static inline var V1 = 3;
+   public static inline var V2 = 2;
+   public static inline var V25 = 0;
+   public static inline var Reserved = 1;
    
    public static function enum2Num(m : MPEGVersion) : Int {
       return switch(m) {
@@ -174,10 +174,10 @@ class MPEG {
  * values represent bit values
  */
 class CLayer {
-   public static var LReserved = 0;
-   public static var LLayer3 = 1;
-   public static var LLayer2 = 2;
-   public static var LLayer1 = 3;
+   public static inline var LReserved = 0;
+   public static inline var LLayer3 = 1;
+   public static inline var LLayer2 = 2;
+   public static inline var LLayer1 = 3;
 
    public static function enum2Num(l : Layer) : Int {
       return switch(l) {
@@ -208,8 +208,8 @@ class CLayer {
 class CChannelMode {
    public static inline var CStereo = 0;
    public static inline var CJointStereo = 1;
-   public static var CDualChannel = 2;
-   public static var CMono = 3;
+   public static inline var CDualChannel = 2;
+   public static inline var CMono = 3;
 
    public static function enum2Num(c : ChannelMode) : Int {
       return switch(c) {
@@ -226,6 +226,7 @@ class CChannelMode {
          case CJointStereo: JointStereo;
          case CDualChannel: DualChannel;
          case CMono: Mono;
+		 default : throw "invalid mp3";
       }
    }
 }
@@ -256,6 +257,7 @@ class CEmphasis {
          case EMs50_15: Ms50_15;
          case ECCIT_J17: CCIT_J17;
          case EReserved: InvalidEmphasis;
+		 default: throw "invalid mp3";
       }
    }
 

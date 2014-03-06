@@ -2,7 +2,7 @@ package be.haxer.hxswfml;
 
 import be.haxer.hxswfml.SwfWriter;
 
-#if (neko || cpp || php || java)
+#if (neko || cpp || php || java || cs)
 	import sys.FileSystem;
 	import sys.io.File;
 	typedef Lib=Sys;

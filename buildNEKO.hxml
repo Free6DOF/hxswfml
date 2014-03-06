@@ -4,7 +4,6 @@
 --macro include('be.haxer.hxswfml')
 --macro include('format', true)
 -neko bin/neko/hxswfml.n
--D no-pattern-matching
 -dce no
 -cmd echo "neko(n) created"
 

@@ -3,6 +3,5 @@
 --macro include('be.haxer.hxswfml', true, ['be.haxer.hxswfml.Main'])
 --macro include('format', true)
 -D swf
--D no-pattern-matching
 -xml doc/api.xml
 -cmd echo "doc created"
