@@ -3,6 +3,7 @@
 -main be.haxer.hxswfml.Main
 --macro include('be.haxer.hxswfml')
 --macro include('format', true)
+-debug
 -dce no
 -cs bin/cs
 -cmd echo "cs created"

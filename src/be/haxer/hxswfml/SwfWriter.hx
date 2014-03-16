@@ -2,7 +2,7 @@ package be.haxer.hxswfml;
 import format.swf.Data;
 import format.swf.Tools;
 
-#if (neko || cpp || php || java)
+#if (neko || cpp || php || java || cs )
 	import sys.FileSystem;
 	import sys.io.File;
 #end
@@ -492,7 +492,7 @@ class SwfWriter
 		var file = getString('file', "", true);
 		var sid = getInt('id', null, true, true);
 		var gapless = getBool('gapless',false);
-		#if(neko || cpp || php)
+		#if (neko || cpp || php || java || cs)
 		checkFileExistence(file);
 		var mp3FileBytes = File.read(file, true);
 		#else
@@ -1128,7 +1128,7 @@ class SwfWriter
 	private function getContent(file:String):String
 	{
 		checkFileExistence(file);
-		#if (neko || php || cpp)
+		#if (neko || php || cpp || java || cs)
 			return File.getContent(file);
 		#elseif air
 			var f = new flash.filesystem.File();
@@ -1145,7 +1145,7 @@ class SwfWriter
 	private function getBytes(file:String):haxe.io.Bytes
 	{
 		checkFileExistence(file);
-		#if (neko || php || cpp)
+		#if (neko || php || cpp || java || cs)
 			return File.getBytes(file);
 		#elseif air
 			var f = new flash.filesystem.File();
@@ -1160,7 +1160,7 @@ class SwfWriter
 			return haxe.io.Bytes.ofData(library.get(file));
 		#end
 	}
-	private function getInt(att : String, defaultValue:Null<Int>, ?required : Bool = false, ?uniqueId : Bool = false, ?targetId : Bool = false)
+	private function getInt(att : String, defaultValue:Null<Int>, ?required : Bool = false, ?uniqueId : Bool = false, ?targetId : Bool = false):Null<Int>
 	{
 		if(currentTag.exists(att))
 			if(Math.isNaN(Std.parseInt(currentTag.get(att))))
@@ -1277,7 +1277,7 @@ class SwfWriter
 	}
 	private function checkFileExistence(file : String) : Void
 	{
-		#if (neko || cpp || php)
+		#if (neko || cpp || php || java || cs)
 		if(!FileSystem.exists(file))
 		{
 			error('ERROR: File: ' + file + ' could not be found at the given location. TAG: ' + currentTag.toString());

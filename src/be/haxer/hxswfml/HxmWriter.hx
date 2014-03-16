@@ -2,7 +2,7 @@ package be.haxer.hxswfml;
 import format.swf.Data;
 import format.abc.Data;
 
-#if (neko || cpp || php || java)
+#if (neko || cpp || php || java || cs)
 	import sys.FileSystem;
 	import sys.io.File;
 #end
@@ -2002,7 +2002,7 @@ class HxmWriter
 		debugLines=[];
 		#if (flash || js)
 		sourceInfo = false;
-		#elseif (neko || cpp || php)
+		#elseif (neko || cpp || php || java || cs)
 		if(sourceInfo)
 		{
 			if (FileSystem.exists(debugFileName))
