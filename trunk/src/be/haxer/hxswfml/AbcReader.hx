@@ -3,7 +3,7 @@ import format.swf.Data;
 import format.abc.Data;
 import haxe.io.BytesInput;
 
-#if (neko || cpp || php || java)
+#if (neko || cpp || php || java || cs)
 	import sys.io.File;
 	import sys.FileSystem;
 #end
@@ -1243,7 +1243,7 @@ class AbcReader
 		debugLines=[];
 		#if (flash || js)
 		sourceInfo = false;
-		#elseif (neko || cpp || php)
+		#elseif (neko || cpp || php || java || cs)
 		if(sourceInfo)
 		{
 			if (FileSystem.exists(debugFileName))

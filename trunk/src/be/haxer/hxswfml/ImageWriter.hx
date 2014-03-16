@@ -81,7 +81,7 @@ class ImageWriter
 		}
 		else
 		{
-			#if (js || php)
+			#if (js || php || java || cs)
 				tag = TBitsJPEG(id, JDJPEG2(bytes));
 			#else
 			if(extension=="png")
@@ -109,6 +109,8 @@ class ImageWriter
 				zlibBitmapData = cpp.zip.Compress.run(bitmapData, 1);
 				//#elseif php
 				//var zlibBitmapData = haxe.io.Bytes.ofData(untyped __call__("zlib_encode",bitmapData.getData(), 15, 1));
+				//#elseif (java || cs)
+				//zlibBitmapData = haxe.zip.Compress.run(bitmapData, 1);
 				#elseif flash9
 				var byteArray = bitmapData.getData();
 				byteArray.compress();
