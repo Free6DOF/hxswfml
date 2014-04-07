@@ -81,7 +81,7 @@ class ImageWriter
 		}
 		else
 		{
-			#if (js || php || java || cs)
+			#if (php || cs || js)
 				tag = TBitsJPEG(id, JDJPEG2(bytes));
 			#else
 			if(extension=="png")
@@ -102,20 +102,7 @@ class ImageWriter
 					}
 				}
 				var bitmapData:haxe.io.Bytes = format.png.Tools.rgba2argbmult(w,h,format.png.Tools.extract32(pngData));
-				var zlibBitmapData = null;
-				#if neko
-				zlibBitmapData = neko.zip.Compress.run(bitmapData, 1);
-				#elseif cpp
-				zlibBitmapData = cpp.zip.Compress.run(bitmapData, 1);
-				//#elseif php
-				//var zlibBitmapData = haxe.io.Bytes.ofData(untyped __call__("zlib_encode",bitmapData.getData(), 15, 1));
-				//#elseif (java || cs)
-				//zlibBitmapData = haxe.zip.Compress.run(bitmapData, 1);
-				#elseif flash9
-				var byteArray = bitmapData.getData();
-				byteArray.compress();
-				zlibBitmapData = haxe.io.Bytes.ofData(byteArray);
-				#end
+				var zlibBitmapData = format.tools.Deflate.run(bitmapData);
 				var data =
 				{
 					cid : id,
@@ -129,7 +116,6 @@ class ImageWriter
 			else
 			{
 				tag = TBitsJPEG(id, JDJPEG2(bytes));
-				//tag = TBitsJPEG(id, JDJPEG3(bytes,Bytes.alloc(0)));
 			}
 			#end
 		}

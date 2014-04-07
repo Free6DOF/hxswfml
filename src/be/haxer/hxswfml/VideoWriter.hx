@@ -163,8 +163,7 @@ class VideoWriter
 		if(flvHeader.hasVideo)
 		{
 			videoInfo = findVideoInfo(flvTags);
-			if(videoInfo.codecId==4 || videoInfo.codecId==5 || videoInfo.codecId==2){}
-			else
+			if(!(videoInfo.codecId==4 || videoInfo.codecId==5 || videoInfo.codecId==2))
 				throw ('Error: This flv contains an unsupported video codec: '+videoInfo.codecId+'('+videoFormats[videoInfo.codecId]+'). Currently only VP6 and VP6 with alpha can be transcoded.');
 		}
 		metaInfoObj = findMetaInfo(flvTags);

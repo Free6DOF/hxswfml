@@ -101,7 +101,7 @@ class Writer {
 	}
 
 	public function writeHeader( h : SWFHeader ) {
-		#if (php || cpp || cs)
+		#if (php || cs || js)
 		compressed=false;
 		#else
 		compressed = h.compressed;

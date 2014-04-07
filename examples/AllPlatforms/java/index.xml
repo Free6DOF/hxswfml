@@ -1,5 +1,5 @@
 <?xml version="1.0" ?>
-<swf frameCount="1" fps="30" width="900" height="300" compressed="false">	
+<swf frameCount="1" fps="30" width="900" height="300" compressed="true">	
 	<DefineShape id="1">
 		<LineStyle width="4" color="0x0000FF" alpha="1.0" />
 		<BeginFill color="0xFF0000" alpha="0.6" />

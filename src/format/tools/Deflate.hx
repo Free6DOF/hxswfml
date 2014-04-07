@@ -38,10 +38,22 @@ class Deflate {
 		var data = bytes.getData();
 		data.compress();
 		return haxe.io.Bytes.ofData(data);
+		#elseif java
+		var deflater = new java.util.zip.Deflater();
+		deflater.setInput(b.getData());
+		var outputStream = new java.io.ByteArrayOutputStream(b.length);
+		deflater.finish();
+		var buffer = haxe.io.Bytes.alloc(1024).getData();
+		while (!deflater.finished()) {
+			var count = deflater.deflate(buffer);
+			outputStream.write(buffer, 0, count);
+		}
+		try { outputStream.close(); }
+		catch (e : java.io.IOException) { throw e.getMessage(); }
+		return haxe.io.Bytes.ofData(outputStream.toByteArray());
 		#else
 		throw "Deflate is not supported on this platform";
 		return null;
 		#end
 	}
-
 }
